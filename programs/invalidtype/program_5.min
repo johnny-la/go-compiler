@@ -1,0 +1,10 @@
+var id: string;
+var str: string;
+var i: int;
+
+read i;
+
+while i do
+  id = -str;
+  i = i - 1;
+done

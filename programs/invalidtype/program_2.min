@@ -1,0 +1,5 @@
+var y: string;
+var z: float;
+
+y = "hello";
+z = y;

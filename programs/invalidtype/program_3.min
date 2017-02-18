@@ -1,0 +1,5 @@
+var x: string;
+
+if x + x then
+  print "Hello";
+endif
