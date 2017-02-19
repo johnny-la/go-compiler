@@ -1,0 +1,112 @@
+Package golite;
+
+Helpers
+  any_char = [0..9] | [11..0xffff];
+  tab = 9;
+  line_feed = 10;
+  carriage_return = 13;
+  space = ' ';
+  digit = ['0'..'9'];
+  positive_digit = ['1'..'9'];
+  integer = '0' | (positive_digit digit*);
+  float_decimal = '.' digit+;
+  letter = ['a'..'z'] | ['A'..'Z'];
+  string_symbols = letter | digit | ':' | ':' | '~' | '#' | '$' | '%' | '^' | '&' | '*' | '-' | '+' | '/' | '`' | ''' | '<' | '>' | '=' | '_' | '|' | ';' | ':' | '{' | '}' | '[' | ']' | '(' | ')' | space | '@' | '!' | '?' | '.' | ',';
+  escape_sequences = '\"' | '\a' | '\b' | '\f' | '\n' | '\r' | '\t' | '\v' | '\\';
+
+Tokens
+  whitespace = tab | space | line_feed | carriage_return;
+  plus = '+';
+  minus = '-';
+  star = '*';
+  slash = '/';
+  semicolon = ';';
+  l_paren = '(';
+  r_paren = ')';
+  equals = '=';
+  colon = ':';
+  var = 'var';
+  read = 'read';
+  print = 'print';
+  while = 'while';
+  do = 'do';
+  done = 'done';
+  if = 'if';
+  then = 'then';
+  else = 'else';
+  endif = 'endif';
+  comment = '//' any_char*;
+  type = 'int' | 'float' | 'string';
+  id = (letter | '_')(letter | digit | '_')*;
+  int = integer;
+  float = (integer) float_decimal?;
+  string = '"' (string_symbols | escape_sequences)* '"';
+
+Ignored Tokens
+  whitespace, comment;
+
+Productions
+cst_prog {-> program} =
+  {prog}    cst_decl* cst_stmt*   {-> New program([cst_decl.decl], [cst_stmt.stmt])}; 
+
+cst_decl {-> decl} =
+  {decl_var}   var id colon type semicolon {-> New decl.var(id,type)};
+
+cst_stmt {-> stmt} =
+  {cst_read}   read id semicolon  {-> New stmt.read(id)} |
+  {cst_print}  print cst_exp semicolon {-> New stmt.print(cst_exp.exp)} |
+  {cst_assign} id equals cst_exp semicolon {-> New stmt.assign(id, cst_exp.exp)} |
+  {cst_while}  while cst_exp do cst_stmt* done {-> New stmt.while(cst_exp.exp, [cst_stmt.stmt])} |
+  {cst_if}     if cst_exp then cst_stmt* cst_end_if {-> New stmt.if(cst_exp.exp, [cst_stmt.stmt], cst_end_if.stmt)};
+
+cst_end_if {-> stmt} =
+  {cst_endif}  endif {-> New stmt.empty()} |
+  {cst_else}   else cst_stmt* endif {-> New stmt.else([cst_stmt.stmt])};
+
+cst_exp {-> exp} =
+  {cst_plus}   cst_exp plus factor  {-> New exp.plus(cst_exp.exp,factor.exp)} |
+  {cst_minus}  cst_exp minus factor {-> New exp.minus(cst_exp.exp,factor.exp)} | 
+  {factor}     factor {-> factor.exp};
+
+factor {-> exp} = 
+  {cst_times}      factor star uterm  {-> New exp.mult(factor.exp,uterm.exp)} |
+  {cst_divide}     factor slash uterm {-> New exp.divide(factor.exp,uterm.exp)} |
+  {uterm}          uterm              {-> uterm.exp};
+
+uterm {-> exp} =
+  {cst_uminus}  minus uterm   {-> New exp.uminus(uterm.exp)} |
+  {term}        term          {-> term.exp};
+
+term {-> exp} =
+  {cst_id}        id     {-> New exp.id(id)} |
+  {cst_float}     float  {-> New exp.float(float)} |
+  {cst_int}       int    {-> New exp.int(int)} |
+  {cst_string}    string {-> New exp.string(string)} |
+  {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
+
+Abstract Syntax Tree
+program = decl* stmt*;
+
+decl =
+  {var}       id type;
+
+stmt =
+  {read}      id |
+  {print}     exp |
+  {assign}    id exp |
+  {while}     exp stmt* |
+  {if}        exp [stmt]:stmt* [end]:stmt |
+  {else}      stmt* |
+  {empty};
+
+exp =
+  {plus}   [l]:exp [r]:exp |
+  {minus}  [l]:exp [r]:exp |
+  {mult}   [l]:exp [r]:exp |
+  {divide} [l]:exp [r]:exp |
+  {uminus} exp |
+  {id} id |
+  {float} float |
+  {int} int |
+  {string} string;
+
