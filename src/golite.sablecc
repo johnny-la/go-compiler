@@ -22,6 +22,8 @@ Tokens
   plus = '+';
   minus = '-';
   star = '*';
+  plus_plus = '++';
+  minus_minus = '--';
   slash = '/';
   semicolon = ';';
   l_paren = '(';
