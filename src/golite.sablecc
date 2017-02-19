@@ -1,7 +1,10 @@
 Package golite;
 
 Helpers
-  any_char = [0..9] | [11..0xffff];
+  all_chars = [0..0xffff];
+  all_chars_but_linefeed = [all_chars-10];
+  all_chars_but_star_slash = [[all_chars-'*']-'/'];
+  star_without_slash = '*' [all_chars - '/'];
   tab = 9;
   line_feed = 10;
   carriage_return = 13;
@@ -35,7 +38,8 @@ Tokens
   then = 'then';
   else = 'else';
   endif = 'endif';
-  comment = '//' any_char*;
+  comment = '//' all_chars_but_linefeed*;
+  block_comment = '/*' (all_chars_but_star_slash | '/*' | star_without_slash)* '*/';
   type = 'int' | 'float' | 'string';
   id = (letter | '_')(letter | digit | '_')*;
   int = integer;
@@ -43,7 +47,7 @@ Tokens
   string = '"' (string_symbols | escape_sequences)* '"';
 
 Ignored Tokens
-  whitespace, comment;
+  whitespace, comment, block_comment;
 
 Productions
 cst_prog {-> program} =
