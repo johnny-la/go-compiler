@@ -12,41 +12,109 @@ Helpers
   digit = ['0'..'9'];
   positive_digit = ['1'..'9'];
   integer = '0' | (positive_digit digit*);
-  float_decimal = '.' digit+;
+  float_decimal = '.' digit*;
   letter = ['a'..'z'] | ['A'..'Z'];
   string_symbols = letter | digit | ':' | ':' | '~' | '#' | '$' | '%' | '^' | '&' | '*' | '-' | '+' | '/' | '`' | ''' | '<' | '>' | '=' | '_' | '|' | ';' | ':' | '{' | '}' | '[' | ']' | '(' | ')' | space | '@' | '!' | '?' | '.' | ',';
-  escape_sequences = '\"' | '\a' | '\b' | '\f' | '\n' | '\r' | '\t' | '\v' | '\\';
+  escape_single_quote = '\' ''';
+  escape_double_quote = '\"';
+  escape_sequences = '\a' | '\b' | '\f' | '\n' | '\r' | '\t' | '\v' | '\\' | escape_single_quote;
+  oct_digit = ['0' .. '7'] ;
+  hex_digit = digit | ['A' .. 'F'] | ['a' .. 'f'] ;
+  single_quote = ''' ;
+  double_quote = '"' ;
+  back_quote = '`' ;
+  not_end_of_line = [all_chars - [carriage_return + line_feed]] ;
 
 Tokens
-  whitespace = tab | space | line_feed | carriage_return;
+  break = 'break';
+  case = 'case';
+  chan = 'chan';
+  const = 'const';
+  continue = 'continue';
+  default = 'default';
+  defer = 'defer';
+  fallthrough = 'fallthrough';
+  for = 'for';
+  func = 'func';
+  go = 'go';
+  goto = 'goto';
+  import = 'import';
+  interface = 'interface';
+  map = 'map';
+  package = 'package';
+  range = 'range';
+  return = 'return';
+  select = 'select';
+  struct = 'struct';
+  switch = 'switch';
+  type = 'type';
   plus = '+';
   minus = '-';
   star = '*';
+  slash = '/';
+  modulo = '%';
+  ampersand = '&';
+  pipe = '|';
+  caret = '^';
+  shift_left = '<<';
+  shift_right = '>>';
+  ampersand_caret = '&^';
+  plus_equals = '+=';
+  minus_equals = '-=';
+  times_equals = '*=';
+  slash_equals = '/=';
+  modulo_equals = '%=';
+  ampersand_equals = '&=';
+  pipe_equals = '|=';
+  caret_equals = '^=';
+  shift_left_equals = '<<=';
+  shift_right_equals = '>>=';
+  ampersand_caret_equals = '&^=';
+  logical_and = '&&';
+  logical_or = '||';
+  left_arrow = '<-';
   plus_plus = '++';
   minus_minus = '--';
-  slash = '/';
-  semicolon = ';';
+  equals_equals = '==';
+  less = '<';
+  greater = '>';
+  equals = '=';
+  exclamation = '!';
+  exclamation_equals = '!=';
+  less_equals = '<=';
+  greater_equals = '>=';
+  colon_equals = ':=';
+  dot_dot_dot = '...';
   l_paren = '(';
   r_paren = ')';
-  equals = '=';
+  l_brack = '[';
+  r_brack = ']';
+  l_brace = '{';
+  r_brace = '}';
+  comma = ',';
+  semicolon = ';';
   colon = ':';
-  var = 'var';
-  read = 'read';
+  dot = '.';
   print = 'print';
-  while = 'while';
-  do = 'do';
-  done = 'done';
-  if = 'if';
-  then = 'then';
-  else = 'else';
-  endif = 'endif';
+  println = 'println';
+  append = 'append';
   comment = '//' all_chars_but_linefeed*;
   block_comment = '/*' (all_chars_but_star_slash | '/*' | star_without_slash)* '*/';
-  type = 'int' | 'float' | 'string';
-  id = (letter | '_')(letter | digit | '_')*;
   int = integer;
-  float = (integer) float_decimal?;
-  string = '"' (string_symbols | escape_sequences)* '"';
+  oct = '0' oct_digit+ ;
+  hex = '0' ['x' + 'X'] hex_digit+;
+  float = digit* '.' digit* | '.' digit+ ;
+  float64 = 'float64';
+  bool = 'bool';
+  rune = 'rune';
+  rune_literal = single_quote ([not_end_of_line - [single_quote + '\']] | escape_single_quote | escape_sequences) single_quote ;
+  raw_string_lit = back_quote [all_chars - back_quote]* back_quote ;
+  interpreted_string_literal = double_quote ([not_end_of_line - [double_quote + '\']] | escape_double_quote| escape_sequences)* double_quote ;
+  id = (letter | '_')(letter | digit | '_')*;
+  var = 'var';
+  if = 'if';
+  else = 'else';
+  whitespace = tab | space | line_feed | carriage_return;
 
 Ignored Tokens
   whitespace, comment, block_comment;
@@ -59,15 +127,8 @@ cst_decl {-> decl} =
   {decl_var}   var id colon type semicolon {-> New decl.var(id,type)};
 
 cst_stmt {-> stmt} =
-  {cst_read}   read id semicolon  {-> New stmt.read(id)} |
   {cst_print}  print cst_exp semicolon {-> New stmt.print(cst_exp.exp)} |
-  {cst_assign} id equals cst_exp semicolon {-> New stmt.assign(id, cst_exp.exp)} |
-  {cst_while}  while cst_exp do cst_stmt* done {-> New stmt.while(cst_exp.exp, [cst_stmt.stmt])} |
-  {cst_if}     if cst_exp then cst_stmt* cst_end_if {-> New stmt.if(cst_exp.exp, [cst_stmt.stmt], cst_end_if.stmt)};
-
-cst_end_if {-> stmt} =
-  {cst_endif}  endif {-> New stmt.empty()} |
-  {cst_else}   else cst_stmt* endif {-> New stmt.else([cst_stmt.stmt])};
+  {cst_assign} id equals cst_exp semicolon {-> New stmt.assign(id, cst_exp.exp)}; 
 
 cst_exp {-> exp} =
   {cst_plus}   cst_exp plus factor  {-> New exp.plus(cst_exp.exp,factor.exp)} |
@@ -87,7 +148,6 @@ term {-> exp} =
   {cst_id}        id     {-> New exp.id(id)} |
   {cst_float}     float  {-> New exp.float(float)} |
   {cst_int}       int    {-> New exp.int(int)} |
-  {cst_string}    string {-> New exp.string(string)} |
   {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
 
 Abstract Syntax Tree
@@ -113,6 +173,5 @@ exp =
   {uminus} exp |
   {id} id |
   {float} float |
-  {int} int |
-  {string} string;
+  {int} int;
 
