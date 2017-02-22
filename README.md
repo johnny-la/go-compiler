@@ -6,6 +6,7 @@ Compiler built in SableCC for a subset of the Go language
 - Statements
 
 ### Ralph
+- Scanner
 - Expressions
 
 ### Martin
