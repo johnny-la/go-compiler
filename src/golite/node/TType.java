@@ -7,14 +7,14 @@ import golite.analysis.*;
 @SuppressWarnings("nls")
 public final class TType extends Token
 {
-    public TType(String text)
+    public TType()
     {
-        setText(text);
+        super.setText("type");
     }
 
-    public TType(String text, int line, int pos)
+    public TType(int line, int pos)
     {
-        setText(text);
+        super.setText("type");
         setLine(line);
         setPos(pos);
     }
@@ -22,12 +22,18 @@ public final class TType extends Token
     @Override
     public Object clone()
     {
-      return new TType(getText(), getLine(), getPos());
+      return new TType(getLine(), getPos());
     }
 
     @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTType(this);
+    }
+
+    @Override
+    public void setText(@SuppressWarnings("unused") String text)
+    {
+        throw new RuntimeException("Cannot change TType text.");
     }
 }

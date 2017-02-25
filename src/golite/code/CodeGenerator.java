@@ -352,8 +352,4 @@ public class CodeGenerator extends DepthFirstAdapter
         print(node.getInt().getText());
     }
 
-    public void caseAStringExp(AStringExp node)
-    {
-        print(node.getString().getText());
-    }
 }
