@@ -1,1 +1,9 @@
 *.class
+
+src/golite/parser/ 
+src/golite/lexer/
+src/golite/node/ 
+src/golite/analysis/ 
+*.pretty.min 
+*.symbol.txt 
+*.c
