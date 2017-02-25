@@ -48,6 +48,8 @@ Tokens
   struct = 'struct';
   switch = 'switch';
   type = 'type';
+  op_equals = ('+' | '&' | '&^' | '-' | '|' | '<' | '*' | '^' | '/' | '<<' | '%' | '>>')
+ '=';
   plus = '+';
   minus = '-';
   star = '*';
@@ -59,17 +61,6 @@ Tokens
   shift_left = '<<';
   shift_right = '>>';
   ampersand_caret = '&^';
-  plus_equals = '+=';
-  minus_equals = '-=';
-  times_equals = '*=';
-  slash_equals = '/=';
-  modulo_equals = '%=';
-  ampersand_equals = '&=';
-  pipe_equals = '|=';
-  caret_equals = '^=';
-  shift_left_equals = '<<=';
-  shift_right_equals = '>>=';
-  ampersand_caret_equals = '&^=';
   logical_and = '&&';
   logical_or = '||';
   left_arrow = '<-';
@@ -128,8 +119,27 @@ cst_decl {-> decl} =
   {decl_var}   var id colon type semicolon {-> New decl.var(id,type)};
 
 cst_stmt {-> stmt} =
-  {cst_print}  print cst_exp semicolon {-> New stmt.print(cst_exp.exp)} |
-  {cst_assign} id equals cst_exp semicolon {-> New stmt.assign(id, cst_exp.exp)}; 
+  {cst_assign}     cst_assign_stmt     {-> cst_assign_stmt.stmt} |
+  {cst_short_decl} cst_short_decl_stmt {-> cst_short_decl_stmt.stmt} |
+  {cst_increment}  lvalue plus_plus    {-> New stmt.increment(lvalue.exp)} |
+  {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)} |
+  {cst_print}  print cst_exp semicolon {-> New stmt.print(cst_exp.exp)};
+  //{cst_assign} id equals cst_exp semicolon {-> New stmt.assign(id, cst_exp.exp)}; 
+
+cst_assign_stmt {-> stmt} =
+  {cst_assign_stmt} lvalue op_equals cst_exp {-> New stmt.assign_op(lvalue.exp,op_equals,cst_exp.exp)} |
+  {cst_assign_op_stmt} cst_assign_op_stmt {-> cst_assign_op_stmt.stmt};
+
+cst_assign_op_stmt {-> stmt} =
+  {lvalue_assign} lvalue equals cst_exp {-> New stmt.assign(lvalue.exp, cst_exp.exp)} |
+  {lvalue_assign_list} lvalue [l]:comma cst_assign_op_stmt [r]:comma cst_exp {-> New stmt.assign_list(lvalue.exp, cst_assign_op_stmt.stmt, cst_exp.exp)};
+
+cst_short_decl_stmt {-> stmt} =
+  {cst_short_decl} id colon_equals cst_exp {-> New stmt.short_decl(id, cst_exp.exp)};
+  //{cst_short_decl_list} cst_id_comma cst_short_decl_stmt [r]:comma cst_exp {-> New stmt.short_decl_list(cst_id_comma.id, cst_short_decl_stmt.stmt, cst_exp.exp)};
+
+cst_id_comma {-> id} =
+  {cst_id_comman} id comma {-> id};
 
 cst_exp {-> exp} =
   {cst_plus}   cst_exp plus factor  {-> New exp.plus(cst_exp.exp,factor.exp)} |
@@ -151,6 +161,17 @@ term {-> exp} =
   {cst_int}       int    {-> New exp.int(int)} |
   {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
 
+lvalue {-> exp} =
+  {cst_id}      id     {-> New exp.id(id)} |
+  {array_index} lvalue cst_index {-> New exp.array_index(lvalue.exp, cst_index.exp)} |
+  {struct_selector}  lvalue cst_selector  {-> New exp.struct_selector(lvalue.exp, cst_selector.exp)};
+
+cst_index {-> exp} =
+  {cst_index} l_brack cst_exp r_brack {-> cst_exp.exp};
+
+cst_selector {-> exp} =
+  {cst_selector} dot cst_exp {-> cst_exp.exp};
+
 Abstract Syntax Tree
 program = decl* stmt*;
 
@@ -158,20 +179,28 @@ decl =
   {var}       id type;
 
 stmt =
-  {read}      id |
-  {print}     exp |
-  {assign}    id exp |
-  {while}     exp stmt* |
-  {if}        exp [stmt]:stmt* [end]:stmt |
-  {else}      stmt* |
+  {read}            id |
+  {print}           exp |
+  {increment}       exp |
+  {decrement}       exp |
+  {assign}          [l]:exp [r]:exp |
+  {assign_op}       [l]:exp op_equals [r]:exp |
+  {assign_list}     [l]:exp stmt [r]:exp |
+  {short_decl}      id exp |
+  {short_decl_list} id stmt exp |
+  {while}           exp stmt* |
+  {if}              exp [stmt]:stmt* [end]:stmt |
+  {else}            stmt* |
   {empty};
 
 exp =
-  {plus}   [l]:exp [r]:exp |
-  {minus}  [l]:exp [r]:exp |
-  {mult}   [l]:exp [r]:exp |
-  {divide} [l]:exp [r]:exp |
-  {uminus} exp |
+  {plus}      [l]:exp [r]:exp |
+  {minus}     [l]:exp [r]:exp |
+  {mult}      [l]:exp [r]:exp |
+  {divide}    [l]:exp [r]:exp |
+  {uminus}    exp |
+  {array_index}      [lvalue]:exp [index]:exp |
+  {struct_selector}  [l]:exp [r]:exp |
   {id} id |
   {float} float |
   {int} int;
