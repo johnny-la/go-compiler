@@ -448,25 +448,4 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         }
         outAIntExp(node);
     }
-
-    public void inAStringExp(AStringExp node)
-    {
-        defaultIn(node);
-    }
-
-    public void outAStringExp(AStringExp node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseAStringExp(AStringExp node)
-    {
-        inAStringExp(node);
-        if(node.getString() != null)
-        {
-            node.getString().apply(this);
-        }
-        outAStringExp(node);
-    }
 }

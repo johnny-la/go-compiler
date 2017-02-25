@@ -252,11 +252,6 @@ public class TypeChecker extends DepthFirstAdapter
         nodeTypes.put(node, Type.FLOAT);
     }
 
-    public void outAStringExp(AStringExp node)
-    {
-        nodeTypes.put(node, Type.STRING);
-    }
-
     /** 
      * Returns the type of the given node
      */

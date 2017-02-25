@@ -114,10 +114,11 @@ Tokens
   var = 'var';
   if = 'if';
   else = 'else';
-  whitespace = tab | space | line_feed | carriage_return;
+  eol = line_feed | carriage_return | carriage_return line_feed;
+  blank = tab | space;
 
 Ignored Tokens
-  whitespace, comment, block_comment;
+  eol, blank, comment, block_comment;
 
 Productions
 cst_prog {-> program} =
