@@ -429,6 +429,15 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(")");
     }
 
+    public void caseAModuloExp(AModuloExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("%");
+        node.getR().apply(this);
+        print(")");
+    }
+
     public void caseALogicalOrExp(ALogicalOrExp node)
     {
         print("(");
@@ -464,6 +473,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getR().apply(this);
         print(")");
     }
+
 
     public void caseAEqualsEqualsExp(AEqualsEqualsExp node)
     {
@@ -534,6 +544,16 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(node.getInt().getText());
     }
 
+    public void caseAHexExp(AHexExp node)
+    {
+        print(node.getHex().getText());
+    }
+
+    public void caseAOctExp(AOctExp node)
+    {
+       print(node.getOct().getText()); 
+    }
+
     public void caseAUnaryExclamationExp(AUnaryExclamationExp node)
     {
         print("(!");
@@ -562,6 +582,58 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(")");
     }
 
+    public void caseACaretedFactorsExp(ACaretedFactorsExp node)
+    {
+        print("^");
+        print("(");
+        node.getExp().apply(this);
+        print(")");
+    }
+
+    public void caseAExclamatedFactorsExp(AExclamatedFactorsExp node)
+    {
+        print("!");
+        print("(");
+        node.getExp().apply(this);
+        print(")");
+    }
+
+    public void caseAAmpersandCaretExp(AAmpersandCaretExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("&^");
+        node.getR().apply(this);
+        print(")");
+    }
+
+    public void caseAAmpersandExp(AAmpersandExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("&");
+        node.getR().apply(this);
+        print(")"); 
+    }
+
+    public void caseAShiftLeftExp(AShiftLeftExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("<<");
+        node.getR().apply(this);
+        print(")");
+    }
+
+    public void caseAShiftRightExp(AShiftLeftExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print(">>");
+        node.getR().apply(this);
+        print(")");
+    }
+
     public void caseAAppendedExprExp(AAppendedExprExp node)
     {
         print("append(");
@@ -585,4 +657,5 @@ public class PrettyPrinter extends DepthFirstAdapter
     {
        print(node.getInterpretedStringLiteral().getText()); 
     }
+
 }
