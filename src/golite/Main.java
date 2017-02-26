@@ -106,6 +106,9 @@ public class Main
 
             Start tree = parser.parse();
 
+            Weeder weeder = new Weeder();
+            tree.apply(weeder);
+
             if (args[0] != null)
             {
                 String filename = args[0].split(".go")[0];
