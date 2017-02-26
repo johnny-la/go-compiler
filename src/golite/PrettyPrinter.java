@@ -376,77 +376,62 @@ public class PrettyPrinter extends DepthFirstAdapter
     // //         node.getType().getText().trim() + ";");
     // // }
    
-    // /** EXPRESSIONS */
-    // public void caseAPlusExp(APlusExp node)
-    // {
-    //     print("(");
-    //     node.getL().apply(this);
-    //     print("+");
-    //     node.getR().apply(this);
-    //     print(")");
-    // }
+    /** EXPRESSIONS */
+    public void caseAPlusExp(APlusExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("+");
+        node.getR().apply(this);
+        print(")");
+    }
 
-    // public void caseAMinusExp(AMinusExp node)
-    // {
-    //     print("(");
-    //     node.getL().apply(this);
-    //     print("-");
-    //     node.getR().apply(this);
-    //     print(")");
-    // }
+    public void caseAMinusExp(AMinusExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("-");
+        node.getR().apply(this);
+        print(")");
+    }
 
-    // public void caseAMultExp(AMultExp node)
-    // {
-    //     print("(");
-    //     node.getL().apply(this);
-    //     print("*");
-    //     node.getR().apply(this);
-    //     print(")");
-    // }
+    public void caseAMultExp(AMultExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("*");
+        node.getR().apply(this);
+        print(")");
+    }
 
-    // public void caseADivideExp(ADivideExp node)
-    // {
-    //     print("(");
-    //     node.getL().apply(this);
-    //     print("/");
-    //     node.getR().apply(this);
-    //     print(")");
-    // }
+    public void caseADivideExp(ADivideExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("/");
+        node.getR().apply(this);
+        print(")");
+    }
  
-    // // public void caseAUminusExp(AUminusExp node)
-    // // {
-    // //     print("(-");
-    // //     node.getExp().apply(this);
-    // //     print(")");
-    // // }
+    public void caseAUnaryMinusExp(AUnaryMinusExp node)
+    {
+        print("(-");
+        node.getExp().apply(this);
+        print(")");
+    }
  
-    // public void caseAIdExp(AIdExp node)
-    // {
-    //     print(node.getId().getText());
-    // }
+    public void caseAIdExp(AIdExp node)
+    {
+        print(node.getId().getText());
+    }
 
-    // public void caseAFloatExp(AFloatExp node)
-    // {
-    //     print(node.getFloat().getText());
-    // }
+    public void caseAFloat64LiteralExp(AFloat64Literal node)
+    {
+        print(node.getFloat().getText());
+    }
 
-    // public void caseAIntExp(AIntExp node)
-    // {
-    //     print(node.getInt().getText());
-    // }
-//     public void caseAIdExp(AIdExp node)
-//     {
-//         print(node.getId().getText());
-//     }
-
-//     public void caseAFloatExp(AFloatExp node)
-//     {
-//         print(node.getFloat().getText());
-//     }
-
-//     public void caseAIntExp(AIntExp node)
-//     {
-//         print(node.getInt().getText());
-//     }
-
+    public void caseAIntExp(AIntExp node)
+    {
+        print(node.getInt().getText());
+    }
 }
