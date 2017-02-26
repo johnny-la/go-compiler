@@ -85,7 +85,7 @@ public class Main
             {
                  // Read from stdin
                  parser = new Parser(
-                            new Lexer(
+                            new GoliteLexer(
                                 new PushbackReader(
                                     new InputStreamReader(System.in), 1024)));
             }
@@ -93,7 +93,7 @@ public class Main
             {
                 // Read from a file
                 parser = new Parser(
-                            new Lexer(
+                            new GoliteLexer(
                                 new PushbackReader(
                                     new BufferedReader(
                                         new FileReader(args[0])), 1024)));
