@@ -166,7 +166,14 @@ cst_stmt {-> stmt} =
 cst_exp {-> exp} =
   {cst_plus}   cst_exp plus factor  {-> New exp.plus(cst_exp.exp,factor.exp)} |
   {cst_minus}  cst_exp minus factor {-> New exp.minus(cst_exp.exp,factor.exp)} | 
-  {factor}     factor {-> factor.exp};
+  {factor}     factor {-> factor.exp} |
+  {unary_op}   unary_op {-> unary_op.exp};
+
+unary_op {-> exp} = 
+  {positive_expression} plus factor { -> New exp.unary_plus(factor.exp)} |
+  {negative_expression} minus factor {-> New exp.unary_minus(factor.exp)} |
+  {caret_expression} caret factor {-> New exp.unary_xor(factor.exp)} |
+  {exclamation_exoression} exclamation factor {-> New exp.unary_exclamation(factor.exp)};
 
 factor {-> exp} = 
   {cst_times}      factor star term  {-> New exp.mult(factor.exp,term.exp)} |
@@ -177,14 +184,10 @@ term {-> exp} =
   {cst_id}        id     {-> New exp.id(id)} |
   {cst_float}     float  {-> New exp.float(float)} |
   {cst_int}       int    {-> New exp.int(int)} |
-  {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp} |
-  {unary_op}      unary_op {-> unary_op.exp};
-
-unary_op {-> exp} =
-  {positive_exp} plus cst_exp {-> New exp.plus_exp(cst_exp.exp)} |
-  {negative_exp} minus cst_exp {-> New exp.minus_exp(cst_exp.exp)} |
-  {not_exp} exclamation cst_exp {-> New exp.not_exp(cst_exp.exp)} |
-  {xor_exp} caret cst_exp {-> New exp.xor_exp(cst_exp.exp)};  
+  {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
+  {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
+  {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
+  {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
 
 Abstract Syntax Tree
 program = decl* stmt*;
@@ -229,7 +232,10 @@ exp =
   {id} id |
   {float} float |
   {int} int |
-  {plus_exp} exp |
-  {minus_exp} exp |
-  {not_exp} exp |
-  {xor_exp} exp;
+  {unary_plus} exp |
+  {unary_minus} exp |
+  {unary_xor} exp |
+  {unary_exclamation} exp |
+  {rune_literal} rune_literal |
+  {raw_string_lit} raw_string_lit |
+  {interpreted_string_literal} interpreted_string_literal;

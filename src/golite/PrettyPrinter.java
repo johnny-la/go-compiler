@@ -165,12 +165,12 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(")");
     }
  
-    public void caseAUminusExp(AUminusExp node)
-    {
-        print("(-");
-        node.getExp().apply(this);
-        print(")");
-    }
+    // public void caseAUminusExp(AUminusExp node)
+    // {
+    //     print("(-");
+    //     node.getExp().apply(this);
+    //     print(")");
+    // }
  
     public void caseAIdExp(AIdExp node)
     {
