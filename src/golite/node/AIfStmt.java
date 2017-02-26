@@ -2,14 +2,13 @@
 
 package golite.node;
 
-import java.util.*;
 import golite.analysis.*;
 
 @SuppressWarnings("nls")
 public final class AIfStmt extends PStmt
 {
     private PExp _exp_;
-    private final LinkedList<PStmt> _stmt_ = new LinkedList<PStmt>();
+    private PStmt _block_;
     private PStmt _end_;
 
     public AIfStmt()
@@ -19,13 +18,13 @@ public final class AIfStmt extends PStmt
 
     public AIfStmt(
         @SuppressWarnings("hiding") PExp _exp_,
-        @SuppressWarnings("hiding") List<?> _stmt_,
+        @SuppressWarnings("hiding") PStmt _block_,
         @SuppressWarnings("hiding") PStmt _end_)
     {
         // Constructor
         setExp(_exp_);
 
-        setStmt(_stmt_);
+        setBlock(_block_);
 
         setEnd(_end_);
 
@@ -36,7 +35,7 @@ public final class AIfStmt extends PStmt
     {
         return new AIfStmt(
             cloneNode(this._exp_),
-            cloneList(this._stmt_),
+            cloneNode(this._block_),
             cloneNode(this._end_));
     }
 
@@ -71,30 +70,29 @@ public final class AIfStmt extends PStmt
         this._exp_ = node;
     }
 
-    public LinkedList<PStmt> getStmt()
+    public PStmt getBlock()
     {
-        return this._stmt_;
+        return this._block_;
     }
 
-    public void setStmt(List<?> list)
+    public void setBlock(PStmt node)
     {
-        for(PStmt e : this._stmt_)
+        if(this._block_ != null)
         {
-            e.parent(null);
+            this._block_.parent(null);
         }
-        this._stmt_.clear();
 
-        for(Object obj_e : list)
+        if(node != null)
         {
-            PStmt e = (PStmt) obj_e;
-            if(e.parent() != null)
+            if(node.parent() != null)
             {
-                e.parent().removeChild(e);
+                node.parent().removeChild(node);
             }
 
-            e.parent(this);
-            this._stmt_.add(e);
+            node.parent(this);
         }
+
+        this._block_ = node;
     }
 
     public PStmt getEnd()
@@ -127,7 +125,7 @@ public final class AIfStmt extends PStmt
     {
         return ""
             + toString(this._exp_)
-            + toString(this._stmt_)
+            + toString(this._block_)
             + toString(this._end_);
     }
 
@@ -141,8 +139,9 @@ public final class AIfStmt extends PStmt
             return;
         }
 
-        if(this._stmt_.remove(child))
+        if(this._block_ == child)
         {
+            this._block_ = null;
             return;
         }
 
@@ -165,22 +164,10 @@ public final class AIfStmt extends PStmt
             return;
         }
 
-        for(ListIterator<PStmt> i = this._stmt_.listIterator(); i.hasNext();)
+        if(this._block_ == oldChild)
         {
-            if(i.next() == oldChild)
-            {
-                if(newChild != null)
-                {
-                    i.set((PStmt) newChild);
-                    newChild.parent(this);
-                    oldChild.parent(null);
-                    return;
-                }
-
-                i.remove();
-                oldChild.parent(null);
-                return;
-            }
+            setBlock((PStmt) newChild);
+            return;
         }
 
         if(this._end_ == oldChild)

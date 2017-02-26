@@ -116,39 +116,66 @@ Productions
 cst_prog {-> program} =
   {prog}    cst_top_decl* cst_stmt*   {-> New program([cst_top_decl.decl], [cst_stmt.stmt])}; 
 
-
 cst_top_decl {-> decl} =
-  {var_decl} cst_var_decl {-> New decl.var_decl_ast(cst_var_decl.var_decl)} 
+  {var_decl} cst_var_decl {-> New decl.var_decl_ast(cst_var_decl.var_decl)} |
+  {type_decl} cst_type_decl {-> New decl.type_decl_ast(cst_type_decl.type_decl)}
   ;
 
+//type declaration and necessary subproductions here
+cst_type_decl {-> type_decl} =
+  {single_line} type_keyword type_top_level{-> type_top_level.type_decl} |
+  {multi_line} type_keyword l_paren type_top_level* r_paren semicolon {-> New type_decl.multiline_list([type_top_level.type_decl])}
+  ;
+
+type_top_level {-> type_decl} = 
+  {alias} type_aliasing semicolon {-> type_aliasing.type_decl} |
+  {struct} type_struct_declaration {-> type_struct_declaration.type_decl}
+  ;
+
+type_aliasing {-> type_decl} = 
+  id cst_type {-> New type_decl.type_alias(id, cst_type.var_type)}
+  ;
+  
+type_struct_declaration {-> type_decl} = 
+  id struct l_brace type_with_one_or_more_ids* r_brace {-> New type_decl.struct_with_id(id, 
+  [type_with_one_or_more_ids.type_decl])}
+  ;
+
+type_with_one_or_more_ids {-> type_decl} = 
+  {recurse} id comma type_with_one_or_more_ids {-> New type_decl.type_with_many_ids(id, type_with_one_or_more_ids.type_decl)} |
+  {base} id cst_type semicolon {-> New type_decl.type_alias(id, cst_type.var_type)}
+  ;
+
+//variable declaration and necessary subproductions here
 cst_var_decl {-> var_decl} =
   {cst_single_line_decl} var top_var_decl {-> top_var_decl.var_decl} |
   {cst_multi_line_decl} var l_paren top_var_decl* r_paren semicolon {-> New var_decl.multiline_list([top_var_decl.var_decl])}
   ;
 
 top_var_decl {-> var_decl} = 
-  {cst_miat} id_and_type semicolon {-> id_and_type.var_decl} |
-  {cst_miae} id_and_exp_maybe_type semicolon {-> id_and_exp_maybe_type.var_decl}
+  {cst_miat} var_id_and_type semicolon {-> var_id_and_type.var_decl} |
+  {cst_miae} var_id_and_exp_maybe_type semicolon {-> var_id_and_exp_maybe_type.var_decl}
   ;
 
-id_and_type {-> var_decl} = 
-  {miat_recurse} id comma id_and_type {-> New var_decl.inline_list_no_exp(id, id_and_type.var_decl)} |
+var_id_and_type {-> var_decl} = 
+  {miat_recurse} id comma var_id_and_type {-> New var_decl.inline_list_no_exp(id, var_id_and_type.var_decl)} |
   {miat_end} id cst_type {-> New var_decl.var_with_type(id, cst_type.var_type)}
   ;
 
-id_and_exp_maybe_type {-> var_decl} = 
-  {miae_recurse} id [l]:comma id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(id, id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
+var_id_and_exp_maybe_type {-> var_decl} = 
+  {miae_recurse} id [l]:comma var_id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(id, var_id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
   {miae_end} id equals cst_exp {-> New var_decl.var_with_only_exp(id, cst_exp.exp)} |
   {mtae_end} id cst_type equals cst_exp {-> New var_decl.var_with_type_and_exp(id, cst_type.var_type, cst_exp.exp)}
   ;
 
-//structs is just an id when declaring since no inline constructions
+//general type production for all declarations
 cst_type {-> var_type} = 
   {cst_base_type} type {-> New var_type.base_type(type)}|
   {cst_slices} l_brack r_brack cst_type {-> New var_type.slice(cst_type.var_type)} | 
   {cst_arrays} l_brack int r_brack cst_type {-> New var_type.array(cst_type.var_type)}|
   {cst_structs} id {-> New var_type.struct(id)}
   ;
+
 
 cst_stmt {-> stmt} =
   {cst_simple}     cst_simple_stmt     {-> cst_simple_stmt.stmt} |
@@ -262,10 +289,15 @@ Abstract Syntax Tree
 program = decl* stmt*;
 
 decl = 
-  {var_decl_ast} var_decl
+  {var_decl_ast} var_decl |
+  {type_decl_ast} type_decl
   ;
 
 type_decl = 
+  {type_alias} id var_type |
+  {type_with_many_ids} id type_decl |
+  {struct_with_id} id type_decl* |
+  {multiline_list} type_decl*
   ;
 
 var_decl = 
@@ -320,7 +352,7 @@ exp =
   {unary_exclamation} exp |
   {rune_literal} rune_literal |
   {raw_string_lit} raw_string_lit |
-  {interpreted_string_literal} interpreted_string_literal
+  {interpreted_string_literal} interpreted_string_literal |
   {array_index}      [lvalue]:exp [index]:exp |
   {struct_selector}  [l]:exp [r]:exp |
   {list}      [list]:exp [value]:exp |

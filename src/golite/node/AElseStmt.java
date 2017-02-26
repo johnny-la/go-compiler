@@ -2,13 +2,12 @@
 
 package golite.node;
 
-import java.util.*;
 import golite.analysis.*;
 
 @SuppressWarnings("nls")
 public final class AElseStmt extends PStmt
 {
-    private final LinkedList<PStmt> _stmt_ = new LinkedList<PStmt>();
+    private PStmt _stmt_;
 
     public AElseStmt()
     {
@@ -16,7 +15,7 @@ public final class AElseStmt extends PStmt
     }
 
     public AElseStmt(
-        @SuppressWarnings("hiding") List<?> _stmt_)
+        @SuppressWarnings("hiding") PStmt _stmt_)
     {
         // Constructor
         setStmt(_stmt_);
@@ -27,7 +26,7 @@ public final class AElseStmt extends PStmt
     public Object clone()
     {
         return new AElseStmt(
-            cloneList(this._stmt_));
+            cloneNode(this._stmt_));
     }
 
     @Override
@@ -36,30 +35,29 @@ public final class AElseStmt extends PStmt
         ((Analysis) sw).caseAElseStmt(this);
     }
 
-    public LinkedList<PStmt> getStmt()
+    public PStmt getStmt()
     {
         return this._stmt_;
     }
 
-    public void setStmt(List<?> list)
+    public void setStmt(PStmt node)
     {
-        for(PStmt e : this._stmt_)
+        if(this._stmt_ != null)
         {
-            e.parent(null);
+            this._stmt_.parent(null);
         }
-        this._stmt_.clear();
 
-        for(Object obj_e : list)
+        if(node != null)
         {
-            PStmt e = (PStmt) obj_e;
-            if(e.parent() != null)
+            if(node.parent() != null)
             {
-                e.parent().removeChild(e);
+                node.parent().removeChild(node);
             }
 
-            e.parent(this);
-            this._stmt_.add(e);
+            node.parent(this);
         }
+
+        this._stmt_ = node;
     }
 
     @Override
@@ -73,8 +71,9 @@ public final class AElseStmt extends PStmt
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._stmt_.remove(child))
+        if(this._stmt_ == child)
         {
+            this._stmt_ = null;
             return;
         }
 
@@ -85,22 +84,10 @@ public final class AElseStmt extends PStmt
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        for(ListIterator<PStmt> i = this._stmt_.listIterator(); i.hasNext();)
+        if(this._stmt_ == oldChild)
         {
-            if(i.next() == oldChild)
-            {
-                if(newChild != null)
-                {
-                    i.set((PStmt) newChild);
-                    newChild.parent(this);
-                    oldChild.parent(null);
-                    return;
-                }
-
-                i.remove();
-                oldChild.parent(null);
-                return;
-            }
+            setStmt((PStmt) newChild);
+            return;
         }
 
         throw new RuntimeException("Not a child.");
