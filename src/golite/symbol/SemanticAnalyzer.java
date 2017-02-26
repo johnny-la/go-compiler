@@ -61,11 +61,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     /**
      * Throws an exception if the variable was not declared
      */
-    private void checkVariableDeclared(String id)
+    /*private void checkVariableDeclared(String id)
     {
         if (symbolTable.contains(id) == false)
         {
             ErrorManager.printError("\"" + id + "\" is not declared");
         }
-    }
+    }*/
 }

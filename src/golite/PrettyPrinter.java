@@ -122,12 +122,12 @@ public class PrettyPrinter extends DepthFirstAdapter
         indentLevel--;
     }
 
-    /** DECLARAIONS */
-    public void caseAVarDecl(AVarDecl node)
-    {
-        println("var " + node.getId().getText() + ":" +
-            node.getType().getText().trim() + ";");
-    }
+    // /** DECLARAIONS */
+    // public void caseAVarDecl(AVarDecl node)
+    // {
+    //     println("var " + node.getId().getText() + ":" +
+    //         node.getType().getText().trim() + ";");
+    // }
    
     /** EXPRESSIONS */
     public void caseAPlusExp(APlusExp node)
@@ -166,12 +166,12 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(")");
     }
  
-    public void caseAUminusExp(AUminusExp node)
-    {
-        print("(-");
-        node.getExp().apply(this);
-        print(")");
-    }
+    // public void caseAUminusExp(AUminusExp node)
+    // {
+    //     print("(-");
+    //     node.getExp().apply(this);
+    //     print(")");
+    // }
  
     public void caseAIdExp(AIdExp node)
     {
