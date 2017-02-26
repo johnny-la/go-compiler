@@ -154,9 +154,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getSignature().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outANoReturnFuncDecl(node);
     }
@@ -187,9 +187,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getSignature().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outASingleReturnFuncDecl(node);
     }
@@ -229,9 +229,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getVarType().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outASingleIdToTypeSignature(node);
     }
@@ -254,9 +254,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getSignature().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outAManyIdToTypeSignature(node);
     }
@@ -304,36 +304,11 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getVarType().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outATypeAliasTypeDecl(node);
-    }
-
-    public void inATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
-    {
-        defaultIn(node);
-    }
-
-    public void outATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
-    {
-        inATypeAliasBaseTypeDecl(node);
-        if(node.getVarType() != null)
-        {
-            node.getVarType().apply(this);
-        }
-        if(node.getType() != null)
-        {
-            node.getType().apply(this);
-        }
-        outATypeAliasBaseTypeDecl(node);
     }
 
     public void inATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
@@ -354,9 +329,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getTypeDecl().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outATypeWithManyIdsTypeDecl(node);
     }
@@ -383,9 +358,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
                 e.apply(this);
             }
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outAStructWithIdTypeDecl(node);
     }
@@ -433,9 +408,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getVarType().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outAVarWithTypeVarDecl(node);
     }
@@ -458,9 +433,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getExp().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outAVarWithOnlyExpVarDecl(node);
     }
@@ -487,9 +462,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getVarType().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outAVarWithTypeAndExpVarDecl(node);
     }
@@ -512,9 +487,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getVarDecl().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outAInlineListNoExpVarDecl(node);
     }
@@ -541,9 +516,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getVarDecl().apply(this);
         }
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         outAInlineListWithExpVarDecl(node);
     }
@@ -659,6 +634,48 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getId().apply(this);
         }
         outAStructVarType(node);
+    }
+
+    public void inAIdIdType(AIdIdType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAIdIdType(AIdIdType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAIdIdType(AIdIdType node)
+    {
+        inAIdIdType(node);
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAIdIdType(node);
+    }
+
+    public void inATypeIdType(ATypeIdType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeIdType(ATypeIdType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeIdType(ATypeIdType node)
+    {
+        inATypeIdType(node);
+        if(node.getType() != null)
+        {
+            node.getType().apply(this);
+        }
+        outATypeIdType(node);
     }
 
     public void inAReadStmt(AReadStmt node)

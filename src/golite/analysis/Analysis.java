@@ -23,7 +23,6 @@ public interface Analysis extends Switch
     void caseAManyIdToTypeSignature(AManyIdToTypeSignature node);
     void caseAMultipleTypesSignature(AMultipleTypesSignature node);
     void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node);
-    void caseATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node);
     void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node);
     void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node);
     void caseAMultilineListTypeDecl(AMultilineListTypeDecl node);
@@ -37,6 +36,8 @@ public interface Analysis extends Switch
     void caseASliceVarType(ASliceVarType node);
     void caseAArrayVarType(AArrayVarType node);
     void caseAStructVarType(AStructVarType node);
+    void caseAIdIdType(AIdIdType node);
+    void caseATypeIdType(ATypeIdType node);
     void caseAReadStmt(AReadStmt node);
     void caseAPrintStmt(APrintStmt node);
     void caseAPrintlnStmt(APrintlnStmt node);

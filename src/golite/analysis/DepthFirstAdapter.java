@@ -144,9 +144,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseANoReturnFuncDecl(ANoReturnFuncDecl node)
     {
         inANoReturnFuncDecl(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getSignature() != null)
         {
@@ -173,9 +173,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node)
     {
         inASingleReturnFuncDecl(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getSignature() != null)
         {
@@ -223,9 +223,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseASingleIdToTypeSignature(ASingleIdToTypeSignature node)
     {
         inASingleIdToTypeSignature(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getVarType() != null)
         {
@@ -248,9 +248,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAManyIdToTypeSignature(AManyIdToTypeSignature node)
     {
         inAManyIdToTypeSignature(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getSignature() != null)
         {
@@ -298,40 +298,15 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node)
     {
         inATypeAliasTypeDecl(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getVarType() != null)
         {
             node.getVarType().apply(this);
         }
         outATypeAliasTypeDecl(node);
-    }
-
-    public void inATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
-    {
-        defaultIn(node);
-    }
-
-    public void outATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
-    {
-        inATypeAliasBaseTypeDecl(node);
-        if(node.getType() != null)
-        {
-            node.getType().apply(this);
-        }
-        if(node.getVarType() != null)
-        {
-            node.getVarType().apply(this);
-        }
-        outATypeAliasBaseTypeDecl(node);
     }
 
     public void inATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
@@ -348,9 +323,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
     {
         inATypeWithManyIdsTypeDecl(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getTypeDecl() != null)
         {
@@ -373,9 +348,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
     {
         inAStructWithIdTypeDecl(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         {
             List<PTypeDecl> copy = new ArrayList<PTypeDecl>(node.getTypeDecl());
@@ -425,9 +400,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
     {
         inAVarWithTypeVarDecl(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getVarType() != null)
         {
@@ -450,9 +425,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node)
     {
         inAVarWithOnlyExpVarDecl(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getExp() != null)
         {
@@ -475,9 +450,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node)
     {
         inAVarWithTypeAndExpVarDecl(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getVarType() != null)
         {
@@ -504,9 +479,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node)
     {
         inAInlineListNoExpVarDecl(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getVarDecl() != null)
         {
@@ -529,9 +504,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node)
     {
         inAInlineListWithExpVarDecl(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getVarDecl() != null)
         {
@@ -654,6 +629,48 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getId().apply(this);
         }
         outAStructVarType(node);
+    }
+
+    public void inAIdIdType(AIdIdType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAIdIdType(AIdIdType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAIdIdType(AIdIdType node)
+    {
+        inAIdIdType(node);
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAIdIdType(node);
+    }
+
+    public void inATypeIdType(ATypeIdType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeIdType(ATypeIdType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeIdType(ATypeIdType node)
+    {
+        inATypeIdType(node);
+        if(node.getType() != null)
+        {
+            node.getType().apply(this);
+        }
+        outATypeIdType(node);
     }
 
     public void inAReadStmt(AReadStmt node)

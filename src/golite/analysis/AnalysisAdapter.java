@@ -141,12 +141,6 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
     public void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
     {
         defaultCase(node);
@@ -220,6 +214,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAStructVarType(AStructVarType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAIdIdType(AIdIdType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseATypeIdType(ATypeIdType node)
     {
         defaultCase(node);
     }
