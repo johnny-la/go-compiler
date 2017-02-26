@@ -1367,8 +1367,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList8 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList7 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList6 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList5 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList4 = pop();
@@ -1399,8 +1397,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList9 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList8 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList7 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList6 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList5 = pop();
@@ -1433,8 +1429,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList9 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList8 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList7 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList6 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList5 = pop();
@@ -1472,8 +1466,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList10 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList9 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList8 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList7 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList6 = pop();
@@ -1513,9 +1505,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList10 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList9 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList8 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList7 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList6 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList5 = pop();
@@ -1530,15 +1519,13 @@ public class Parser
         @SuppressWarnings("unused") Object nullNode3 = null;
         PVarType pvartypeNode4;
         LinkedList<Object> listNode5 = new LinkedList<Object>();
-        TId tidNode6;
         tidNode2 = (TId)nodeArrayList2.get(0);
         pvartypeNode4 = (PVarType)nodeArrayList5.get(0);
         {
             // Block
         }
-        tidNode6 = (TId)nodeArrayList8.get(0);
 
-        pfuncdeclNode1 = new ASingleReturnFuncDecl(tidNode2, null, pvartypeNode4, listNode5, tidNode6);
+        pfuncdeclNode1 = new ASingleReturnFuncDecl(tidNode2, null, pvartypeNode4, listNode5);
         }
 	nodeList.add(pfuncdeclNode1);
         return nodeList;
@@ -1551,9 +1538,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList11 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList10 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList9 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList8 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList7 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList6 = pop();
@@ -1569,16 +1553,14 @@ public class Parser
         PSignature psignatureNode3;
         PVarType pvartypeNode4;
         LinkedList<Object> listNode5 = new LinkedList<Object>();
-        TId tidNode6;
         tidNode2 = (TId)nodeArrayList2.get(0);
         psignatureNode3 = (PSignature)nodeArrayList4.get(0);
         pvartypeNode4 = (PVarType)nodeArrayList6.get(0);
         {
             // Block
         }
-        tidNode6 = (TId)nodeArrayList9.get(0);
 
-        pfuncdeclNode1 = new ASingleReturnFuncDecl(tidNode2, psignatureNode3, pvartypeNode4, listNode5, tidNode6);
+        pfuncdeclNode1 = new ASingleReturnFuncDecl(tidNode2, psignatureNode3, pvartypeNode4, listNode5);
         }
 	nodeList.add(pfuncdeclNode1);
         return nodeList;
@@ -1591,9 +1573,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList11 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList10 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList9 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList8 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList7 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList6 = pop();
@@ -1609,7 +1588,6 @@ public class Parser
         @SuppressWarnings("unused") Object nullNode3 = null;
         PVarType pvartypeNode4;
         LinkedList<Object> listNode6 = new LinkedList<Object>();
-        TId tidNode7;
         tidNode2 = (TId)nodeArrayList2.get(0);
         pvartypeNode4 = (PVarType)nodeArrayList5.get(0);
         {
@@ -1621,9 +1599,8 @@ public class Parser
 	  listNode6.addAll(listNode5);
 	}
         }
-        tidNode7 = (TId)nodeArrayList9.get(0);
 
-        pfuncdeclNode1 = new ASingleReturnFuncDecl(tidNode2, null, pvartypeNode4, listNode6, tidNode7);
+        pfuncdeclNode1 = new ASingleReturnFuncDecl(tidNode2, null, pvartypeNode4, listNode6);
         }
 	nodeList.add(pfuncdeclNode1);
         return nodeList;
@@ -1636,9 +1613,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList12 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList11 = pop();
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList10 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList9 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList8 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList7 = pop();
@@ -1655,7 +1629,6 @@ public class Parser
         PSignature psignatureNode3;
         PVarType pvartypeNode4;
         LinkedList<Object> listNode6 = new LinkedList<Object>();
-        TId tidNode7;
         tidNode2 = (TId)nodeArrayList2.get(0);
         psignatureNode3 = (PSignature)nodeArrayList4.get(0);
         pvartypeNode4 = (PVarType)nodeArrayList6.get(0);
@@ -1668,9 +1641,8 @@ public class Parser
 	  listNode6.addAll(listNode5);
 	}
         }
-        tidNode7 = (TId)nodeArrayList10.get(0);
 
-        pfuncdeclNode1 = new ASingleReturnFuncDecl(tidNode2, psignatureNode3, pvartypeNode4, listNode6, tidNode7);
+        pfuncdeclNode1 = new ASingleReturnFuncDecl(tidNode2, psignatureNode3, pvartypeNode4, listNode6);
         }
 	nodeList.add(pfuncdeclNode1);
         return nodeList;
@@ -5027,7 +4999,7 @@ public class Parser
 			{{-1, REDUCE, 123}, },
 			{{-1, REDUCE, 122}, },
 			{{-1, REDUCE, 120}, {76, SHIFT, 12}, },
-			{{-1, ERROR, 237}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 266}, {23, SHIFT, 8}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
+			{{-1, ERROR, 237}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 7}, {23, SHIFT, 8}, {58, SHIFT, 266}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
 			{{-1, ERROR, 238}, {57, SHIFT, 268}, },
 			{{-1, ERROR, 239}, {76, SHIFT, 195}, },
 			{{-1, REDUCE, 19}, },
@@ -5056,53 +5028,33 @@ public class Parser
 			{{-1, REDUCE, 86}, },
 			{{-1, REDUCE, 156}, },
 			{{-1, REDUCE, 124}, },
-			{{-1, ERROR, 266}, {27, SHIFT, 29}, {28, SHIFT, 30}, {34, SHIFT, 31}, {47, SHIFT, 32}, {53, SHIFT, 33}, {60, SHIFT, 281}, {65, SHIFT, 34}, {66, SHIFT, 35}, {69, SHIFT, 36}, {73, SHIFT, 37}, {74, SHIFT, 38}, {75, SHIFT, 39}, {76, SHIFT, 40}, },
-			{{-1, ERROR, 267}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 282}, {23, SHIFT, 8}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
-			{{-1, ERROR, 268}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 283}, {23, SHIFT, 8}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
+			{{-1, REDUCE, 8}, },
+			{{-1, ERROR, 267}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 7}, {23, SHIFT, 8}, {58, SHIFT, 281}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
+			{{-1, ERROR, 268}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 7}, {23, SHIFT, 8}, {58, SHIFT, 282}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
 			{{-1, REDUCE, 18}, },
-			{{-1, ERROR, 270}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 285}, {23, SHIFT, 8}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
-			{{-1, ERROR, 271}, {57, SHIFT, 287}, },
+			{{-1, ERROR, 270}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 7}, {23, SHIFT, 8}, {58, SHIFT, 284}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
+			{{-1, ERROR, 271}, {57, SHIFT, 286}, },
 			{{-1, REDUCE, 16}, },
 			{{-1, REDUCE, 43}, },
 			{{-1, REDUCE, 38}, {27, SHIFT, 94}, {28, SHIFT, 95}, {33, SHIFT, 96}, {34, SHIFT, 97}, {38, SHIFT, 98}, {39, SHIFT, 99}, {43, SHIFT, 100}, {44, SHIFT, 101}, {45, SHIFT, 102}, {48, SHIFT, 103}, {49, SHIFT, 104}, {50, SHIFT, 105}, },
 			{{-1, REDUCE, 111}, },
 			{{-1, ERROR, 276}, {76, SHIFT, 255}, },
-			{{-1, ERROR, 277}, {60, SHIFT, 289}, },
+			{{-1, ERROR, 277}, {60, SHIFT, 288}, },
 			{{-1, REDUCE, 28}, },
 			{{-1, REDUCE, 152}, },
 			{{-1, REDUCE, 88}, },
-			{{-1, ERROR, 281}, {58, SHIFT, 290}, },
-			{{-1, ERROR, 282}, {27, SHIFT, 29}, {28, SHIFT, 30}, {34, SHIFT, 31}, {47, SHIFT, 32}, {53, SHIFT, 33}, {60, SHIFT, 291}, {65, SHIFT, 34}, {66, SHIFT, 35}, {69, SHIFT, 36}, {73, SHIFT, 37}, {74, SHIFT, 38}, {75, SHIFT, 39}, {76, SHIFT, 40}, },
-			{{-1, ERROR, 283}, {27, SHIFT, 29}, {28, SHIFT, 30}, {34, SHIFT, 31}, {47, SHIFT, 32}, {53, SHIFT, 33}, {65, SHIFT, 34}, {66, SHIFT, 35}, {69, SHIFT, 36}, {73, SHIFT, 37}, {74, SHIFT, 38}, {75, SHIFT, 39}, {76, SHIFT, 292}, },
-			{{-1, ERROR, 284}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 293}, {23, SHIFT, 8}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
-			{{-1, ERROR, 285}, {27, SHIFT, 29}, {28, SHIFT, 30}, {34, SHIFT, 31}, {47, SHIFT, 32}, {53, SHIFT, 33}, {60, SHIFT, 294}, {65, SHIFT, 34}, {66, SHIFT, 35}, {69, SHIFT, 36}, {73, SHIFT, 37}, {74, SHIFT, 38}, {75, SHIFT, 39}, {76, SHIFT, 40}, },
-			{{-1, ERROR, 286}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 295}, {23, SHIFT, 8}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
-			{{-1, ERROR, 287}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 296}, {23, SHIFT, 8}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
+			{{-1, REDUCE, 10}, },
+			{{-1, REDUCE, 12}, },
+			{{-1, ERROR, 283}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 7}, {23, SHIFT, 8}, {58, SHIFT, 289}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
+			{{-1, REDUCE, 9}, },
+			{{-1, ERROR, 285}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 7}, {23, SHIFT, 8}, {58, SHIFT, 290}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
+			{{-1, ERROR, 286}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 7}, {23, SHIFT, 8}, {58, SHIFT, 291}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
 			{{-1, REDUCE, 29}, },
 			{{-1, REDUCE, 30}, },
-			{{-1, REDUCE, 8}, },
-			{{-1, ERROR, 291}, {58, SHIFT, 298}, },
-			{{-1, REDUCE, 133}, {53, SHIFT, 93}, {60, SHIFT, 299}, },
-			{{-1, ERROR, 293}, {27, SHIFT, 29}, {28, SHIFT, 30}, {34, SHIFT, 31}, {47, SHIFT, 32}, {53, SHIFT, 33}, {65, SHIFT, 34}, {66, SHIFT, 35}, {69, SHIFT, 36}, {73, SHIFT, 37}, {74, SHIFT, 38}, {75, SHIFT, 39}, {76, SHIFT, 300}, },
-			{{-1, ERROR, 294}, {58, SHIFT, 301}, },
-			{{-1, ERROR, 295}, {27, SHIFT, 29}, {28, SHIFT, 30}, {34, SHIFT, 31}, {47, SHIFT, 32}, {53, SHIFT, 33}, {60, SHIFT, 302}, {65, SHIFT, 34}, {66, SHIFT, 35}, {69, SHIFT, 36}, {73, SHIFT, 37}, {74, SHIFT, 38}, {75, SHIFT, 39}, {76, SHIFT, 40}, },
-			{{-1, ERROR, 296}, {27, SHIFT, 29}, {28, SHIFT, 30}, {34, SHIFT, 31}, {47, SHIFT, 32}, {53, SHIFT, 33}, {65, SHIFT, 34}, {66, SHIFT, 35}, {69, SHIFT, 36}, {73, SHIFT, 37}, {74, SHIFT, 38}, {75, SHIFT, 39}, {76, SHIFT, 303}, },
-			{{-1, ERROR, 297}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 304}, {23, SHIFT, 8}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
-			{{-1, REDUCE, 10}, },
-			{{-1, ERROR, 299}, {58, SHIFT, 305}, },
-			{{-1, REDUCE, 133}, {53, SHIFT, 93}, {60, SHIFT, 306}, },
-			{{-1, REDUCE, 9}, },
-			{{-1, ERROR, 302}, {58, SHIFT, 307}, },
-			{{-1, REDUCE, 133}, {53, SHIFT, 93}, {60, SHIFT, 308}, },
-			{{-1, ERROR, 304}, {27, SHIFT, 29}, {28, SHIFT, 30}, {34, SHIFT, 31}, {47, SHIFT, 32}, {53, SHIFT, 33}, {65, SHIFT, 34}, {66, SHIFT, 35}, {69, SHIFT, 36}, {73, SHIFT, 37}, {74, SHIFT, 38}, {75, SHIFT, 39}, {76, SHIFT, 309}, },
-			{{-1, REDUCE, 12}, },
-			{{-1, ERROR, 306}, {58, SHIFT, 310}, },
-			{{-1, REDUCE, 11}, },
-			{{-1, ERROR, 308}, {58, SHIFT, 311}, },
-			{{-1, REDUCE, 133}, {53, SHIFT, 93}, {60, SHIFT, 312}, },
 			{{-1, REDUCE, 14}, },
+			{{-1, REDUCE, 11}, },
 			{{-1, REDUCE, 13}, },
-			{{-1, ERROR, 312}, {58, SHIFT, 313}, },
+			{{-1, ERROR, 292}, {0, SHIFT, 1}, {2, SHIFT, 2}, {6, SHIFT, 3}, {10, SHIFT, 4}, {20, SHIFT, 7}, {23, SHIFT, 8}, {58, SHIFT, 293}, {63, SHIFT, 10}, {64, SHIFT, 11}, {76, SHIFT, 12}, },
 			{{-1, REDUCE, 15}, },
         };*/
     private static int[][][] gotoTable;
@@ -5117,16 +5069,16 @@ public class Parser
 			{{-1, 68}, {66, 143}, {144, 218}, },
 			{{-1, 69}, },
 			{{-1, 70}, },
-			{{-1, 256}, {257, 279}, {276, 288}, },
+			{{-1, 256}, {257, 279}, {276, 287}, },
 			{{-1, 18}, },
 			{{-1, 57}, {55, 121}, {122, 200}, },
 			{{-1, 58}, {126, 204}, },
 			{{-1, 59}, {126, 205}, },
 			{{-1, 128}, {65, 141}, {67, 146}, {194, 238}, {195, 240}, {202, 244}, {241, 271}, {245, 273}, {255, 277}, },
-			{{-1, 19}, {28, 85}, {84, 85}, {106, 177}, {180, 177}, {208, 177}, {267, 85}, {284, 85}, {286, 85}, {297, 85}, },
+			{{-1, 19}, {28, 85}, {84, 85}, {106, 177}, {180, 177}, {208, 177}, {267, 85}, {283, 85}, {285, 85}, {292, 85}, },
 			{{-1, 20}, {4, 51}, {8, 62}, {115, 190}, {191, 234}, {192, 235}, {236, 265}, },
 			{{-1, 21}, {181, 232}, },
-			{{-1, 60}, {1, 41}, {4, 52}, {8, 63}, {33, 91}, {49, 116}, {64, 140}, {71, 149}, {72, 149}, {73, 153}, {74, 154}, {77, 155}, {78, 156}, {80, 160}, {92, 162}, {93, 164}, {117, 193}, {124, 201}, {131, 149}, {206, 247}, {221, 258}, {224, 259}, {225, 260}, {227, 262}, {246, 274}, },
+			{{-1, 149}, {1, 41}, {4, 52}, {7, 60}, {8, 63}, {33, 91}, {49, 116}, {64, 140}, {73, 153}, {74, 154}, {77, 155}, {78, 156}, {80, 160}, {92, 162}, {93, 164}, {117, 193}, {124, 201}, {206, 247}, {221, 258}, {224, 259}, {225, 260}, {227, 262}, {246, 274}, },
 			{{-1, 42}, },
 			{{-1, 43}, },
 			{{-1, 44}, },
@@ -5154,7 +5106,7 @@ public class Parser
 			{{-1, 81}, },
 			{{-1, 82}, },
 			{{-1, 27}, },
-			{{-1, 28}, {27, 84}, {237, 267}, {268, 284}, {270, 286}, {287, 297}, },
+			{{-1, 28}, {27, 84}, {237, 267}, {268, 283}, {270, 285}, {286, 292}, },
 			{{-1, 144}, },
 			{{-1, 257}, },
 			{{-1, 122}, },
@@ -5175,9 +5127,10 @@ public class Parser
 			"expecting: '('",
 			"expecting: op equals, '++', '--', '=', ':=', '[', ',', '.'",
 			"expecting: EOF",
-			"expecting: 'if', 'break', 'continue', 'for', 'return', 'switch', 'print', 'println', id, EOF",
+			"expecting: 'if', 'break', 'continue', 'for', 'return', 'switch', '}', 'print', 'println', id, EOF",
 			"expecting: 'if', 'break', 'case', 'continue', 'default', 'for', 'return', 'switch', '{', '}', ';', 'print', 'println', id, EOF",
 			"expecting: op equals, '++', '--', '=', '[', ',', '.'",
+			"expecting: 'if', 'break', 'continue', 'for', 'return', 'switch', 'print', 'println', id, EOF",
 			"expecting: '(', int, float64 literal, rune literal, raw string lit, interpreted string literal, id",
 			"expecting: 'if', 'break', 'case', 'continue', 'default', 'for', 'return', 'switch', op equals, '+', '-', '*', '/', '%', '&', '|', '^', '<<', '>>', '&^', '&&', '||', '++', '--', '==', '<', '>', '=', '!=', '<=', '>=', ')', '[', ']', '{', '}', ',', ';', ':', '.', 'print', 'println', id, EOF",
 			"expecting: 'if', 'break', 'case', 'continue', 'default', 'for', 'return', 'switch', op equals, '+', '-', '*', '/', '%', '&', '|', '^', '<<', '>>', '&^', '&&', '||', '++', '--', '==', '<', '>', '=', '!=', '<=', '>=', '(', ')', '[', ']', '{', '}', ',', ';', ':', '.', 'print', 'println', id, EOF",
@@ -5225,12 +5178,10 @@ public class Parser
 			"expecting: ']'",
 			"expecting: ',', ':'",
 			"expecting: '}', id",
-			"expecting: 'if', 'break', 'continue', 'for', 'return', 'switch', 'print', 'println', id",
-			"expecting: 'if', 'break', 'continue', 'for', 'return', 'switch', '+', '-', '*', '/', '%', '&', '|', '^', '<<', '>>', '&^', '&&', '||', '==', '<', '>', '!=', '<=', '>=', '(', ';', 'print', 'println', id",
         };*/
     private static int[] errors;
 /*      {
-			0, 1, 2, 2, 3, 4, 5, 1, 6, 7, 8, 8, 9, 10, 0, 0, 0, 0, 0, 11, 2, 2, 2, 12, 12, 12, 13, 0, 11, 14, 14, 14, 14, 1, 8, 15, 15, 15, 15, 15, 16, 17, 18, 18, 18, 18, 18, 15, 15, 3, 19, 20, 17, 21, 8, 22, 23, 0, 20, 20, 24, 25, 20, 17, 6, 26, 27, 28, 0, 20, 29, 30, 30, 1, 1, 12, 12, 1, 1, 4, 1, 13, 13, 0, 11, 11, 15, 15, 15, 15, 15, 31, 1, 30, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 32, 33, 14, 14, 14, 14, 14, 14, 14, 34, 35, 3, 2, 22, 20, 22, 22, 36, 1, 37, 4, 36, 38, 39, 39, 1, 40, 2, 25, 40, 25, 6, 25, 25, 17, 20, 20, 27, 27, 21, 20, 29, 2, 41, 42, 2, 42, 43, 43, 44, 45, 46, 47, 46, 48, 15, 49, 18, 50, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 51, 52, 51, 51, 53, 2, 15, 15, 15, 15, 15, 15, 15, 21, 34, 34, 35, 54, 55, 56, 42, 0, 20, 22, 57, 26, 58, 20, 47, 1, 59, 51, 2, 25, 2, 25, 2, 25, 25, 0, 20, 27, 60, 2, 1, 2, 13, 1, 1, 18, 1, 42, 42, 33, 51, 2, 2, 21, 21, 34, 61, 21, 4, 42, 54, 4, 0, 36, 26, 1, 57, 25, 2, 2, 2, 25, 0, 29, 55, 60, 60, 41, 44, 31, 56, 50, 18, 42, 21, 3, 61, 61, 42, 61, 21, 56, 36, 57, 2, 4, 20, 29, 60, 18, 52, 3, 1, 61, 3, 61, 61, 60, 60, 0, 52, 62, 1, 52, 3, 1, 61, 0, 52, 62, 0, 52, 62, 1, 0, 52, 0, 52, 62, 0, 0, 52, 0, 
+			0, 1, 2, 2, 3, 4, 5, 1, 6, 7, 8, 8, 9, 10, 0, 0, 0, 0, 0, 11, 2, 2, 2, 12, 12, 12, 13, 0, 14, 15, 15, 15, 15, 1, 8, 16, 16, 16, 16, 16, 17, 18, 19, 19, 19, 19, 19, 16, 16, 3, 20, 21, 18, 22, 8, 23, 24, 0, 21, 21, 25, 26, 21, 18, 6, 27, 28, 29, 0, 21, 30, 31, 31, 1, 1, 12, 12, 1, 1, 4, 1, 13, 13, 0, 14, 11, 16, 16, 16, 16, 16, 32, 1, 31, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 33, 34, 15, 15, 15, 15, 15, 15, 15, 35, 36, 3, 2, 23, 21, 23, 23, 37, 1, 38, 4, 37, 39, 40, 40, 1, 41, 2, 26, 41, 26, 6, 26, 26, 18, 21, 21, 28, 28, 22, 21, 30, 2, 42, 43, 2, 43, 44, 44, 45, 46, 47, 48, 47, 49, 16, 50, 19, 51, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 52, 53, 52, 52, 54, 2, 16, 16, 16, 16, 16, 16, 16, 22, 35, 35, 36, 55, 56, 57, 43, 0, 21, 23, 58, 27, 59, 21, 48, 1, 60, 52, 2, 26, 2, 26, 2, 26, 26, 0, 21, 28, 61, 2, 1, 2, 13, 1, 1, 19, 1, 43, 43, 34, 52, 2, 2, 22, 22, 35, 33, 22, 4, 43, 55, 4, 0, 37, 27, 1, 58, 26, 2, 2, 2, 26, 0, 30, 56, 61, 61, 42, 45, 32, 57, 51, 19, 43, 22, 0, 33, 33, 43, 33, 22, 57, 37, 58, 2, 4, 21, 30, 61, 19, 0, 0, 33, 0, 33, 33, 61, 61, 0, 0, 0, 33, 0, 
         };*/
 
     static 
