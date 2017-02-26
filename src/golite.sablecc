@@ -349,6 +349,10 @@ cst_exp_list {-> exp} =
   {cst_exp}      cst_exp     {-> cst_exp.exp} |
   {cst_exp_list} cst_exp_list comma cst_exp {-> New exp.list(cst_exp_list.exp, cst_exp.exp)};
 
+cst_id_list {-> exp} =
+  {cst_id}       id                   {-> New exp.id(id)} |
+  {cst_id_list}  cst_id_list comma id {-> New exp.id_list(cst_id_list.exp, id)};
+
 term {-> exp} =
   {cst_id}        id     {-> New exp.id(id)} |
   {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
@@ -362,6 +366,12 @@ lvalue {-> exp} =
   {cst_id}      id     {-> New exp.id(id)} |
   {array_index} lvalue cst_index {-> New exp.array_index(lvalue.exp, cst_index.exp)} |
   {struct_selector}  lvalue cst_selector  {-> New exp.struct_selector(lvalue.exp, cst_selector.exp)};
+
+lvalue_no_id {-> exp} =
+  {cst_index}      id cst_index     {-> New exp.array_index(New exp.id(id), cst_index.exp)} |
+  {cst_selector}   id cst_selector  {-> New exp.struct_selector(New exp.id(id), cst_selector.exp)} |
+  {cst_lvalue_index}    lvalue_no_id cst_index    {-> New exp.array_index(lvalue_no_id.exp, cst_index.exp)} |
+  {cst_lvalue_selector} lvalue_no_id cst_selector {-> New exp.struct_selector(lvalue_no_id.exp, cst_selector.exp)};
 
 cst_index {-> exp} =
   {cst_index} l_brack cst_exp r_brack {-> cst_exp.exp};
@@ -474,5 +484,6 @@ exp =
   {array_index}      [lvalue]:exp [index]:exp |
   {struct_selector}  [l]:exp [r]:exp |
   {list}      [list]:exp [value]:exp |
+  {id_list}   [list]:exp [value]:id  |
   {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
   {empty};
