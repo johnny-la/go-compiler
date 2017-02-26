@@ -121,12 +121,12 @@ public class PrettyPrinter extends DepthFirstAdapter
         indentLevel--;
     }
 
-    /** DECLARAIONS */
-    public void caseAVarDecl(AVarDecl node)
-    {
-        println("var " + node.getId().getText() + ":" +
-            node.getType().getText().trim() + ";");
-    }
+    // /** DECLARAIONS */
+    // public void caseAVarDecl(AVarDecl node)
+    // {
+    //     println("var " + node.getId().getText() + ":" +
+    //         node.getType().getText().trim() + ";");
+    // }
    
     /** EXPRESSIONS */
     public void caseAPlusExp(APlusExp node)
