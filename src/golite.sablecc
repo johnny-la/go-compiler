@@ -114,11 +114,11 @@ Ignored Tokens
 
 Productions
 cst_prog {-> program} =
-  {prog} top_level_declarations* cst_block {-> New program([top_level_declarations.decl], [cst_block.stmt])}
+  {prog} top_level_declarations* cst_block* {-> New program([top_level_declarations.decl], [cst_block.stmt])}
   ; 
 
 top_level_declarations{-> decl} = 
-  {func_decl} cst_func_decl {-> New decl.func_decl_ast(cst_func_decl.func_decl)} |
+  {func_decl} cst_func_decl semicolon {-> New decl.func_decl_ast(cst_func_decl.func_decl)} |
   {declarations} declarations {-> declarations.decl}
   ;
 
@@ -129,16 +129,16 @@ declarations {-> decl} =
 
 //function declarations here
 cst_func_decl{-> func_decl} = 
-  {no_return} func id l_paren multi_sig? r_paren l_brace cst_stmt* r_brace 
+  {no_return} func id l_paren multi_sig? r_paren cst_block 
   {-> New func_decl.no_return(id, 
                            multi_sig.signature,
-                          [cst_stmt.stmt]
+                          [cst_block.stmt]
         )} |
-  {single_return} func [name]:id l_paren multi_sig? r_paren cst_type l_brace cst_stmt* r_brace 
+  {single_return} func [name]:id l_paren multi_sig? r_paren cst_type cst_block 
   {-> New func_decl.single_return(name, 
                            multi_sig.signature,
                            cst_type.var_type,
-                          [cst_stmt.stmt]
+                          [cst_block.stmt]
   )}
   ;
 
