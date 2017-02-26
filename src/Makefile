@@ -7,6 +7,8 @@ pp:
 	vim golite/PrettyPrinter.java
 lexer:
 	vim golite/GoliteLexer.java
+weed:
+	vim golite/Weeder.java
 Main:
 	vim golite/Main.java
 edit:
