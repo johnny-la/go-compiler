@@ -7,8 +7,8 @@ import golite.analysis.*;
 @SuppressWarnings("nls")
 public final class AAssignStmt extends PStmt
 {
-    private TId _id_;
-    private PExp _exp_;
+    private PExp _l_;
+    private PExp _r_;
 
     public AAssignStmt()
     {
@@ -16,13 +16,13 @@ public final class AAssignStmt extends PStmt
     }
 
     public AAssignStmt(
-        @SuppressWarnings("hiding") TId _id_,
-        @SuppressWarnings("hiding") PExp _exp_)
+        @SuppressWarnings("hiding") PExp _l_,
+        @SuppressWarnings("hiding") PExp _r_)
     {
         // Constructor
-        setId(_id_);
+        setL(_l_);
 
-        setExp(_exp_);
+        setR(_r_);
 
     }
 
@@ -30,8 +30,8 @@ public final class AAssignStmt extends PStmt
     public Object clone()
     {
         return new AAssignStmt(
-            cloneNode(this._id_),
-            cloneNode(this._exp_));
+            cloneNode(this._l_),
+            cloneNode(this._r_));
     }
 
     @Override
@@ -40,16 +40,16 @@ public final class AAssignStmt extends PStmt
         ((Analysis) sw).caseAAssignStmt(this);
     }
 
-    public TId getId()
+    public PExp getL()
     {
-        return this._id_;
+        return this._l_;
     }
 
-    public void setId(TId node)
+    public void setL(PExp node)
     {
-        if(this._id_ != null)
+        if(this._l_ != null)
         {
-            this._id_.parent(null);
+            this._l_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +62,19 @@ public final class AAssignStmt extends PStmt
             node.parent(this);
         }
 
-        this._id_ = node;
+        this._l_ = node;
     }
 
-    public PExp getExp()
+    public PExp getR()
     {
-        return this._exp_;
+        return this._r_;
     }
 
-    public void setExp(PExp node)
+    public void setR(PExp node)
     {
-        if(this._exp_ != null)
+        if(this._r_ != null)
         {
-            this._exp_.parent(null);
+            this._r_.parent(null);
         }
 
         if(node != null)
@@ -87,30 +87,30 @@ public final class AAssignStmt extends PStmt
             node.parent(this);
         }
 
-        this._exp_ = node;
+        this._r_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._id_)
-            + toString(this._exp_);
+            + toString(this._l_)
+            + toString(this._r_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._id_ == child)
+        if(this._l_ == child)
         {
-            this._id_ = null;
+            this._l_ = null;
             return;
         }
 
-        if(this._exp_ == child)
+        if(this._r_ == child)
         {
-            this._exp_ = null;
+            this._r_ = null;
             return;
         }
 
@@ -121,15 +121,15 @@ public final class AAssignStmt extends PStmt
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._id_ == oldChild)
+        if(this._l_ == oldChild)
         {
-            setId((TId) newChild);
+            setL((PExp) newChild);
             return;
         }
 
-        if(this._exp_ == oldChild)
+        if(this._r_ == oldChild)
         {
-            setExp((PExp) newChild);
+            setR((PExp) newChild);
             return;
         }
 

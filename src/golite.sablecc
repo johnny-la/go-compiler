@@ -26,6 +26,8 @@ Helpers
   not_end_of_line = [all_chars - [carriage_return + line_feed]] ;
 
 Tokens
+  if = 'if';
+  else = 'else';
   break = 'break';
   case = 'case';
   chan = 'chan';
@@ -48,6 +50,8 @@ Tokens
   select = 'select';
   struct = 'struct';
   switch = 'switch';
+  op_equals = ('+' | '&' | '&^' | '-' | '|' | '<' | '*' | '^' | '/' | '<<' | '%' | '>>')
+ '=';
   type = 'float64'|'rune'|'int'|'bool'|'string';
   type_keyword = 'type';
   plus = '+';
@@ -61,17 +65,6 @@ Tokens
   shift_left = '<<';
   shift_right = '>>';
   ampersand_caret = '&^';
-  plus_equals = '+=';
-  minus_equals = '-=';
-  times_equals = '*=';
-  slash_equals = '/=';
-  modulo_equals = '%=';
-  ampersand_equals = '&=';
-  pipe_equals = '|=';
-  caret_equals = '^=';
-  shift_left_equals = '<<=';
-  shift_right_equals = '>>=';
-  ampersand_caret_equals = '&^=';
   logical_and = '&&';
   logical_or = '||';
   left_arrow = '<-';
@@ -113,8 +106,6 @@ Tokens
   raw_string_lit = back_quote [all_chars - back_quote]* back_quote ;
   interpreted_string_literal = double_quote ([not_end_of_line - [double_quote + '\']] | escape_double_quote| escape_sequences)* double_quote ;
   id = (letter | '_')(letter | digit | '_')*;
-  if = 'if';
-  else = 'else';
   eol = line_feed | carriage_return | carriage_return line_feed;
   blank = tab | space;
 
@@ -125,33 +116,59 @@ Productions
 cst_prog {-> program} =
   {prog}    cst_top_decl* cst_stmt*   {-> New program([cst_top_decl.decl], [cst_stmt.stmt])}; 
 
-
 cst_top_decl {-> decl} =
-  {var_decl} cst_var_decl {-> New decl.var_decl_ast(cst_var_decl.var_decl)} 
+  {var_decl} cst_var_decl {-> New decl.var_decl_ast(cst_var_decl.var_decl)} |
+  {type_decl} cst_type_decl {-> New decl.type_decl_ast(cst_type_decl.type_decl)}
   ;
 
+//type declaration and necessary subproductions here
+cst_type_decl {-> type_decl} =
+  {single_line} type_keyword type_top_level{-> type_top_level.type_decl} |
+  {multi_line} type_keyword l_paren type_top_level* r_paren semicolon {-> New type_decl.multiline_list([type_top_level.type_decl])}
+  ;
+
+type_top_level {-> type_decl} = 
+  {alias} type_aliasing semicolon {-> type_aliasing.type_decl} |
+  {struct} type_struct_declaration {-> type_struct_declaration.type_decl}
+  ;
+
+type_aliasing {-> type_decl} = 
+  id cst_type {-> New type_decl.type_alias(id, cst_type.var_type)}
+  ;
+  
+type_struct_declaration {-> type_decl} = 
+  id struct l_brace type_with_one_or_more_ids* r_brace {-> New type_decl.struct_with_id(id, 
+  [type_with_one_or_more_ids.type_decl])}
+  ;
+
+type_with_one_or_more_ids {-> type_decl} = 
+  {recurse} id comma type_with_one_or_more_ids {-> New type_decl.type_with_many_ids(id, type_with_one_or_more_ids.type_decl)} |
+  {base} id cst_type semicolon {-> New type_decl.type_alias(id, cst_type.var_type)}
+  ;
+
+//variable declaration and necessary subproductions here
 cst_var_decl {-> var_decl} =
   {cst_single_line_decl} var top_var_decl {-> top_var_decl.var_decl} |
   {cst_multi_line_decl} var l_paren top_var_decl* r_paren semicolon {-> New var_decl.multiline_list([top_var_decl.var_decl])}
   ;
 
 top_var_decl {-> var_decl} = 
-  {cst_miat} id_and_type semicolon {-> id_and_type.var_decl} |
-  {cst_miae} id_and_exp_maybe_type semicolon {-> id_and_exp_maybe_type.var_decl}
+  {cst_miat} var_id_and_type semicolon {-> var_id_and_type.var_decl} |
+  {cst_miae} var_id_and_exp_maybe_type semicolon {-> var_id_and_exp_maybe_type.var_decl}
   ;
 
-id_and_type {-> var_decl} = 
-  {miat_recurse} id comma id_and_type {-> New var_decl.inline_list_no_exp(id, id_and_type.var_decl)} |
+var_id_and_type {-> var_decl} = 
+  {miat_recurse} id comma var_id_and_type {-> New var_decl.inline_list_no_exp(id, var_id_and_type.var_decl)} |
   {miat_end} id cst_type {-> New var_decl.var_with_type(id, cst_type.var_type)}
   ;
 
-id_and_exp_maybe_type {-> var_decl} = 
-  {miae_recurse} id [l]:comma id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(id, id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
+var_id_and_exp_maybe_type {-> var_decl} = 
+  {miae_recurse} id [l]:comma var_id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(id, var_id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
   {miae_end} id equals cst_exp {-> New var_decl.var_with_only_exp(id, cst_exp.exp)} |
   {mtae_end} id cst_type equals cst_exp {-> New var_decl.var_with_type_and_exp(id, cst_type.var_type, cst_exp.exp)}
   ;
 
-//structs is just an id when declaring since no inline constructions
+//general type production for all declarations
 cst_type {-> var_type} = 
   {cst_base_type} type {-> New var_type.base_type(type)}|
   {cst_slices} l_brack r_brack cst_type {-> New var_type.slice(cst_type.var_type)} | 
@@ -160,8 +177,25 @@ cst_type {-> var_type} =
   ;
 
 cst_stmt {-> stmt} =
-  {cst_print}  print cst_exp semicolon {-> New stmt.print(cst_exp.exp)} |
-  {cst_assign} id equals cst_exp semicolon {-> New stmt.assign(id, cst_exp.exp)}; 
+  {cst_simple}     cst_simple_stmt     {-> cst_simple_stmt.stmt} |
+  {cst_print}      print l_paren cst_exp_list? r_paren {-> New stmt.print(cst_exp_list.exp)} |
+  {cst_println}    println l_paren cst_exp_list? r_paren {-> New stmt.println(cst_exp_list.exp)} |
+  {cst_return}     return cst_exp  {-> New stmt.return(cst_exp.exp)} |
+  {cst_if}         cst_if_stmt     {-> cst_if_stmt.stmt} |
+  {cst_switch}     cst_switch_stmt {-> cst_switch_stmt.stmt} |
+  {cst_for}        for cst_for_condition cst_block {-> New stmt.for(cst_for_condition.exp, cst_block.stmt)} |
+  {cst_break}      break           {-> New stmt.break()} |
+  {cst_continue}   continue        {-> New stmt.continue()};
+
+cst_simple_stmt {-> stmt} =
+  //{cst_empty}      /*empty*/           {-> New stmt.empty()} |
+  {cst_increment}  lvalue plus_plus    {-> New stmt.increment(lvalue.exp)} |
+  {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)} |
+  {cst_assign}     cst_assign_stmt     {-> cst_assign_stmt.stmt} |
+  {cst_short_decl} cst_short_decl_stmt {-> cst_short_decl_stmt.stmt};
+
+cst_if_stmt {-> stmt} = 
+  {cst_if} if cst_exp cst_block cst_end_if? {-> New stmt.if(cst_exp.exp, cst_block.stmt, cst_end_if.stmt)};
 
 cst_exp {-> exp} = 
   {factor}     factor {-> factor.exp} |
@@ -169,19 +203,6 @@ cst_exp {-> exp} =
   {binary_op}  binary_op {-> binary_op.exp} |
   {function_call} function_call {-> function_call.exp} |
   {append_expr} append_expr {-> append_expr.exp};
-
-function_call {-> exp} =
-  {empty_args} id l_paren r_paren {-> New exp.function_call(id)} |
-  {one_or_more_args} id l_paren cst_exp input_arg_list* r_paren {-> New exp.function_call(id)};
-
-input_arg_list =
-  {multiple_args} comma cst_exp;
-  
-append_expr {-> exp} =
-  append l_paren cst_exp comma other_exp r_paren { -> New exp.appended_expr(cst_exp.exp, other_exp.exp)};
-
-other_exp {-> exp} =
-  cst_exp { -> cst_exp.exp};
 
 binary_op {-> exp} =
   {cst_plus}   cst_exp plus factor  {-> New exp.plus(cst_exp.exp,factor.exp)} |
@@ -206,6 +227,18 @@ unary_op {-> exp} =
   {caret_expression} caret factor {-> New exp.unary_xor(factor.exp)} |
   {exclamation_exoression} exclamation factor {-> New exp.unary_exclamation(factor.exp)};
 
+function_call {-> exp} =
+  {empty_args} id l_paren r_paren {-> New exp.function_call(id)} |
+  {one_or_more_args} id l_paren cst_exp input_arg_list* r_paren {-> New exp.function_call(id)};
+
+input_arg_list =
+  {multiple_args} comma cst_exp;
+  
+append_expr {-> exp} =
+  append l_paren cst_exp comma other_exp r_paren { -> New exp.appended_expr(cst_exp.exp, other_exp.exp)};
+
+other_exp {-> exp} =
+  cst_exp { -> cst_exp.exp};
 
 factor {-> exp} = 
   {cst_times}       factor star term  {-> New exp.mult(factor.exp,term.exp)} |
@@ -217,6 +250,55 @@ factor {-> exp} =
   {cst_ampersand_caret} factor ampersand_caret term {-> New exp.ampersand_caret(factor.exp, term.exp)} |
   {term}            term              {-> term.exp};
 
+cst_end_if {-> stmt} =
+  {cst_else_if} else cst_if_stmt {-> New stmt.elseif(cst_if_stmt.stmt)} |
+  {cst_else}    else cst_block   {-> New stmt.else(cst_block.stmt)};
+
+cst_block {-> stmt} =
+  {cst_block} l_brace cst_stmt_list r_brace {-> New stmt.block([cst_stmt_list.stmt])};
+
+cst_stmt_list {-> stmt*} =
+  {cst_stmt_list} cst_stmt_eos* {-> [cst_stmt_eos.stmt]};
+
+cst_stmt_eos {-> stmt} =    
+  {cst_stmt_eos}  cst_stmt {-> cst_stmt.stmt}; // Add eos
+
+cst_switch_stmt {-> stmt} =
+  {cst_switch} switch cst_simple_stmt_eol? cst_exp? l_brace cst_switch_case_clause* r_brace {-> New stmt.empty()};
+
+cst_simple_stmt_eol {-> stmt} =
+  {cst_simple_eol} cst_simple_stmt semicolon {-> cst_simple_stmt.stmt};
+
+cst_switch_case_clause {-> stmt} =
+  {cst_case_clause} cst_switch_case colon cst_stmt_list {-> New stmt.empty()};
+
+cst_switch_case {-> stmt} =
+  {cst_case}   case cst_exp_list {-> New stmt.empty()} |
+  {cst_switch} default {-> New stmt.empty()}; 
+
+cst_for_condition {-> exp} =
+  {cst_exp}      cst_exp {-> cst_exp.exp} |
+  {cst_clause}   [l]:cst_simple_stmt? [sl]:semicolon cst_exp? [sr]:semicolon [r]:cst_simple_stmt? {-> New exp.for_cond(l.stmt, cst_exp.exp, r.stmt)};
+
+cst_assign_stmt {-> stmt} =
+  {cst_assign_stmt} lvalue op_equals cst_exp {-> New stmt.assign_op(lvalue.exp,op_equals,cst_exp.exp)} |
+  {cst_assign_op_stmt} cst_assign_op_stmt {-> cst_assign_op_stmt.stmt};
+
+cst_assign_op_stmt {-> stmt} =
+  {lvalue_assign} lvalue equals cst_exp {-> New stmt.assign(lvalue.exp, cst_exp.exp)} |
+  {lvalue_assign_list} lvalue [l]:comma cst_assign_op_stmt [r]:comma cst_exp {-> New stmt.assign_list(lvalue.exp, cst_assign_op_stmt.stmt, cst_exp.exp)};
+
+cst_short_decl_stmt {-> stmt} =
+  {cst_short_decl} id colon_equals cst_exp {-> New stmt.short_decl(id, cst_exp.exp)};
+  //{cst_short_decl_list} cst_id_comma cst_short_decl_stmt [r]:comma cst_exp {-> New stmt.short_decl_list(cst_id_comma.id, cst_short_decl_stmt.stmt, cst_exp.exp)};
+
+cst_id_comma {-> id} =
+  {cst_id_comman} id comma {-> id};
+
+cst_exp_list {-> exp} =
+  {cst_exp}      cst_exp     {-> cst_exp.exp} |
+  {cst_exp_list} cst_exp_list comma cst_exp {-> New exp.list(cst_exp_list.exp, cst_exp.exp)};
+
 term {-> exp} =
   {cst_id}        id     {-> New exp.id(id)} |
   {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
@@ -226,15 +308,31 @@ term {-> exp} =
   {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
   {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
 
+lvalue {-> exp} =
+  {cst_id}      id     {-> New exp.id(id)} |
+  {array_index} lvalue cst_index {-> New exp.array_index(lvalue.exp, cst_index.exp)} |
+  {struct_selector}  lvalue cst_selector  {-> New exp.struct_selector(lvalue.exp, cst_selector.exp)};
+
+cst_index {-> exp} =
+  {cst_index} l_brack cst_exp r_brack {-> cst_exp.exp};
+
+cst_selector {-> exp} =
+  {cst_selector} dot cst_exp {-> cst_exp.exp};
+
 Abstract Syntax Tree
 
 program = decl* stmt*;
 
 decl = 
-  {var_decl_ast} var_decl
+  {var_decl_ast} var_decl |
+  {type_decl_ast} type_decl
   ;
 
 type_decl = 
+  {type_alias} id var_type |
+  {type_with_many_ids} id type_decl |
+  {struct_with_id} id type_decl* |
+  {multiline_list} type_decl*
   ;
 
 var_decl = 
@@ -254,12 +352,25 @@ var_type =
   ;
 
 stmt =
-  {read}      id |
-  {print}     exp |
-  {assign}    id exp |
-  {while}     exp stmt* |
-  {if}        exp [stmt]:stmt* [end]:stmt |
-  {else}      stmt* |
+  {read}            id |
+  {print}           exp? |
+  {println}         exp? |
+  {return}          exp |
+  {increment}       exp |
+  {decrement}       exp |
+  {assign}          [l]:exp [r]:exp |
+  {assign_op}       [l]:exp op_equals [r]:exp |
+  {assign_list}     [l]:exp stmt [r]:exp |
+  {short_decl}      id exp |
+  {short_decl_list} id stmt exp |
+  {block}           stmt* |
+  {while}           exp stmt* |
+  {if}              exp [block]:stmt [end]:stmt?  |
+  {elseif}          stmt |
+  {else}            stmt |
+  {for}             [condition]:exp [block]:stmt |
+  {break}    |
+  {continue} | 
   {empty};
 
 exp =
@@ -293,4 +404,8 @@ exp =
   {raw_string_lit} raw_string_lit |
   {interpreted_string_literal} interpreted_string_literal |
   {function_call} id|
-  {appended_expr} [l]:exp [r]:exp;
+  {appended_expr} [l]:exp [r]:exp |
+  {array_index}      [lvalue]:exp [index]:exp |
+  {struct_selector}  [l]:exp [r]:exp |
+  {list}      [list]:exp [value]:exp |
+  {for_cond}  [first]:stmt? [second]:exp? [third]:stmt?;

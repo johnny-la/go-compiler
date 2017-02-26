@@ -46,24 +46,24 @@ public class TypeChecker extends DepthFirstAdapter
         }
     }
 
-    public void outAAssignStmt(AAssignStmt node)
-    {
-        Type idType = getIdType(node.getId());   
-        Type expType = getType(node.getExp());
+    // public void outAAssignStmt(AAssignStmt node)
+    // {
+    //     Type idType = getIdType(node.getId());   
+    //     Type expType = getType(node.getExp());
         
-        boolean compatibleTypes = false;
+    //     boolean compatibleTypes = false;
 
-        if (idType == expType || (idType == Type.FLOAT && expType == Type.INT))
-        {
-            compatibleTypes = true;
-        }
+    //     if (idType == expType || (idType == Type.FLOAT && expType == Type.INT))
+    //     {
+    //         compatibleTypes = true;
+    //     }
         
-        if (!compatibleTypes)
-        {
-            ErrorManager.printError("\"" + node.getId().getText().trim() + 
-                    "\" assigned type " + expType + ". Expecting type: " + idType);
-        }
-    }
+    //     if (!compatibleTypes)
+    //     {
+    //         ErrorManager.printError("\"" + node.getId().getText().trim() + 
+    //                 "\" assigned type " + expType + ". Expecting type: " + idType);
+    //     }
+    // }
 
     /** 
      * Converts the given string into its corresponding type
@@ -193,20 +193,20 @@ public class TypeChecker extends DepthFirstAdapter
         return Type.INVALID;
     }
 
-    public void outAUminusExp(AUminusExp node)
-    {
-        Type expType = getType(node.getExp());
+    // public void outAUminusExp(AUminusExp node)
+    // {
+    //     Type expType = getType(node.getExp());
 
-        if (expType == Type.INT || expType == Type.FLOAT)
-        {
-            nodeTypes.put(node, expType);
-        }
-        else
-        {
-            ErrorManager.printError("Error: unary minus on incompatible type: "
-                   + expType + ". ( " + node.getExp() + ")"); 
-        }
-    }
+    //     if (expType == Type.INT || expType == Type.FLOAT)
+    //     {
+    //         nodeTypes.put(node, expType);
+    //     }
+    //     else
+    //     {
+    //         ErrorManager.printError("Error: unary minus on incompatible type: "
+    //                + expType + ". ( " + node.getExp() + ")"); 
+    //     }
+    // }
 
     public void outAIdExp(AIdExp node)
     {
@@ -247,10 +247,10 @@ public class TypeChecker extends DepthFirstAdapter
         nodeTypes.put(node, Type.INT);
     }
 
-    public void outAFloatExp(AFloatExp node)
-    {
-        nodeTypes.put(node, Type.FLOAT);
-    }
+    // public void outAFloatExp(AFloatExp node)
+    // {
+    //     nodeTypes.put(node, Type.FLOAT);
+    // }
 
     /** 
      * Returns the type of the given node
