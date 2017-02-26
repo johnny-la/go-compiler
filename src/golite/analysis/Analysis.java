@@ -13,9 +13,17 @@ public interface Analysis extends Switch
 
     void caseStart(Start node);
     void caseAProgram(AProgram node);
+    void caseAFuncDeclAstDecl(AFuncDeclAstDecl node);
     void caseAVarDeclAstDecl(AVarDeclAstDecl node);
     void caseATypeDeclAstDecl(ATypeDeclAstDecl node);
+    void caseANoReturnFuncDecl(ANoReturnFuncDecl node);
+    void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node);
+    void caseAFuncDecl(AFuncDecl node);
+    void caseASingleIdToTypeSignature(ASingleIdToTypeSignature node);
+    void caseAManyIdToTypeSignature(AManyIdToTypeSignature node);
+    void caseAMultipleTypesSignature(AMultipleTypesSignature node);
     void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node);
+    void caseATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node);
     void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node);
     void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node);
     void caseAMultilineListTypeDecl(AMultilineListTypeDecl node);

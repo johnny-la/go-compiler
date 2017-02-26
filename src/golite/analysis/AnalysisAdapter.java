@@ -81,6 +81,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node)
     {
         defaultCase(node);
@@ -93,7 +99,49 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseANoReturnFuncDecl(ANoReturnFuncDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFuncDecl(AFuncDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseASingleIdToTypeSignature(ASingleIdToTypeSignature node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAManyIdToTypeSignature(AManyIdToTypeSignature node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAMultipleTypesSignature(AMultipleTypesSignature node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
     {
         defaultCase(node);
     }

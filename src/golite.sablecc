@@ -114,12 +114,44 @@ Ignored Tokens
 
 Productions
 cst_prog {-> program} =
-  {prog}    cst_top_decl* cst_stmt*   {-> New program([cst_top_decl.decl], [cst_stmt.stmt])}; 
+  {prog} top_level_declarations* cst_stmt* {-> New program([top_level_declarations.decl], [cst_stmt.stmt])}
+  ; 
 
-cst_top_decl {-> decl} =
+top_level_declarations{-> decl} = 
+  {func_decl} cst_func_decl {-> New decl.func_decl_ast(cst_func_decl.func_decl)} |
+  {declarations} declarations {-> declarations.decl}
+  ;
+
+declarations {-> decl} =
   {var_decl} cst_var_decl {-> New decl.var_decl_ast(cst_var_decl.var_decl)} |
   {type_decl} cst_type_decl {-> New decl.type_decl_ast(cst_type_decl.type_decl)}
   ;
+
+//function declarations here
+cst_func_decl{-> func_decl} = 
+  {no_return} func id l_paren multi_sig? r_paren l_brace cst_stmt* return r_brace 
+  {-> New func_decl.no_return(id, 
+                           multi_sig.signature,
+                          [cst_stmt.stmt]
+        )} |
+  {single_return} func [name]:id l_paren multi_sig? r_paren cst_type l_brace cst_stmt* return [ret]:id r_brace 
+  {-> New func_decl.single_return(name, 
+                           multi_sig.signature,
+                           cst_type.var_type,
+                          [cst_stmt.stmt],
+                           ret
+  )}
+  ;
+
+multi_sig {-> signature} = 
+  signature+ {-> New signature.multiple_types([signature.signature])}
+  ;
+
+signature {-> signature} = 
+  {recurse} id comma signature {-> New signature.many_id_to_type(id, signature.signature)} |
+  {base} id cst_type{-> New signature.single_id_to_type(id, cst_type.var_type)}
+  ;
+
 
 //type declaration and necessary subproductions here
 cst_type_decl {-> type_decl} =
@@ -133,7 +165,8 @@ type_top_level {-> type_decl} =
   ;
 
 type_aliasing {-> type_decl} = 
-  id cst_type {-> New type_decl.type_alias(id, cst_type.var_type)}
+  {id_alias} id cst_type {-> New type_decl.type_alias(id, cst_type.var_type)} |
+  {type_alias} type cst_type {-> New type_decl.type_alias_base(type, cst_type.var_type)}
   ;
   
 type_struct_declaration {-> type_decl} = 
@@ -289,12 +322,25 @@ Abstract Syntax Tree
 program = decl* stmt*;
 
 decl = 
+  {func_decl_ast} func_decl |
   {var_decl_ast} var_decl |
   {type_decl_ast} type_decl
   ;
 
+func_decl = 
+  {no_return} id signature? stmt* |
+  {single_return} [name]:id signature? var_type stmt* [return]:id |
+  ;
+
+signature = 
+  {single_id_to_type} id var_type |
+  {many_id_to_type} id signature |
+  {multiple_types} signature* 
+  ;
+
 type_decl = 
   {type_alias} id var_type |
+  {type_alias_base} type var_type |
   {type_with_many_ids} id type_decl |
   {struct_with_id} id type_decl* |
   {multiline_list} type_decl*

@@ -67,6 +67,27 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAProgram(node);
     }
 
+    public void inAFuncDeclAstDecl(AFuncDeclAstDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncDeclAstDecl(AFuncDeclAstDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node)
+    {
+        inAFuncDeclAstDecl(node);
+        if(node.getFuncDecl() != null)
+        {
+            node.getFuncDecl().apply(this);
+        }
+        outAFuncDeclAstDecl(node);
+    }
+
     public void inAVarDeclAstDecl(AVarDeclAstDecl node)
     {
         defaultIn(node);
@@ -109,6 +130,169 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outATypeDeclAstDecl(node);
     }
 
+    public void inANoReturnFuncDecl(ANoReturnFuncDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outANoReturnFuncDecl(ANoReturnFuncDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseANoReturnFuncDecl(ANoReturnFuncDecl node)
+    {
+        inANoReturnFuncDecl(node);
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        if(node.getSignature() != null)
+        {
+            node.getSignature().apply(this);
+        }
+        {
+            List<PStmt> copy = new ArrayList<PStmt>(node.getStmt());
+            for(PStmt e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outANoReturnFuncDecl(node);
+    }
+
+    public void inASingleReturnFuncDecl(ASingleReturnFuncDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outASingleReturnFuncDecl(ASingleReturnFuncDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node)
+    {
+        inASingleReturnFuncDecl(node);
+        if(node.getName() != null)
+        {
+            node.getName().apply(this);
+        }
+        if(node.getSignature() != null)
+        {
+            node.getSignature().apply(this);
+        }
+        if(node.getVarType() != null)
+        {
+            node.getVarType().apply(this);
+        }
+        {
+            List<PStmt> copy = new ArrayList<PStmt>(node.getStmt());
+            for(PStmt e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        if(node.getReturn() != null)
+        {
+            node.getReturn().apply(this);
+        }
+        outASingleReturnFuncDecl(node);
+    }
+
+    public void inAFuncDecl(AFuncDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncDecl(AFuncDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncDecl(AFuncDecl node)
+    {
+        inAFuncDecl(node);
+        outAFuncDecl(node);
+    }
+
+    public void inASingleIdToTypeSignature(ASingleIdToTypeSignature node)
+    {
+        defaultIn(node);
+    }
+
+    public void outASingleIdToTypeSignature(ASingleIdToTypeSignature node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseASingleIdToTypeSignature(ASingleIdToTypeSignature node)
+    {
+        inASingleIdToTypeSignature(node);
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        if(node.getVarType() != null)
+        {
+            node.getVarType().apply(this);
+        }
+        outASingleIdToTypeSignature(node);
+    }
+
+    public void inAManyIdToTypeSignature(AManyIdToTypeSignature node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAManyIdToTypeSignature(AManyIdToTypeSignature node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAManyIdToTypeSignature(AManyIdToTypeSignature node)
+    {
+        inAManyIdToTypeSignature(node);
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        if(node.getSignature() != null)
+        {
+            node.getSignature().apply(this);
+        }
+        outAManyIdToTypeSignature(node);
+    }
+
+    public void inAMultipleTypesSignature(AMultipleTypesSignature node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAMultipleTypesSignature(AMultipleTypesSignature node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAMultipleTypesSignature(AMultipleTypesSignature node)
+    {
+        inAMultipleTypesSignature(node);
+        {
+            List<PSignature> copy = new ArrayList<PSignature>(node.getSignature());
+            for(PSignature e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAMultipleTypesSignature(node);
+    }
+
     public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node)
     {
         defaultIn(node);
@@ -132,6 +316,31 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getVarType().apply(this);
         }
         outATypeAliasTypeDecl(node);
+    }
+
+    public void inATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node)
+    {
+        inATypeAliasBaseTypeDecl(node);
+        if(node.getType() != null)
+        {
+            node.getType().apply(this);
+        }
+        if(node.getVarType() != null)
+        {
+            node.getVarType().apply(this);
+        }
+        outATypeAliasBaseTypeDecl(node);
     }
 
     public void inATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
