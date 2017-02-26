@@ -69,14 +69,15 @@ public class PrettyPrinter extends DepthFirstAdapter
     public void caseAPrintStmt(APrintStmt node)
     {
         printi("print "); 
-        node.getExp().apply(this);
+        if (node.getExp() != null) node.getExp().apply(this);
         println(";");
     }
 
     public void caseAAssignStmt(AAssignStmt node)
     {
-        printi(node.getId().getText() + " = ");
-        node.getExp().apply(this);
+        node.getL().apply(this);
+        printi(" = ");
+        node.getR().apply(this);
         println(";");
     }
 
@@ -102,10 +103,10 @@ public class PrettyPrinter extends DepthFirstAdapter
         println(" then");
 
         indentLevel++;
-        printNodes(node.getStmt());
+        node.getBlock().apply(this);
 
         indentLevel--;
-        node.getEnd().apply(this);
+        if (node.getEnd() != null) node.getEnd().apply(this);
 
         println("endif");
     }
@@ -116,7 +117,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         println("");
  
         indentLevel++;
-        printNodes(node.getStmt());
+        node.getStmt().apply(this);
 
         indentLevel--;
     }
@@ -165,12 +166,12 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(")");
     }
  
-    public void caseAUminusExp(AUminusExp node)
-    {
-        print("(-");
-        node.getExp().apply(this);
-        print(")");
-    }
+    // public void caseAUminusExp(AUminusExp node)
+    // {
+    //     print("(-");
+    //     node.getExp().apply(this);
+    //     print(")");
+    // }
  
     public void caseAIdExp(AIdExp node)
     {
