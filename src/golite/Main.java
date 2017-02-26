@@ -85,7 +85,7 @@ public class Main
             {
                  // Read from stdin
                  parser = new Parser(
-                            new Lexer(
+                            new GoliteLexer(
                                 new PushbackReader(
                                     new InputStreamReader(System.in), 1024)));
             }
@@ -93,7 +93,7 @@ public class Main
             {
                 // Read from a file
                 parser = new Parser(
-                            new Lexer(
+                            new GoliteLexer(
                                 new PushbackReader(
                                     new BufferedReader(
                                         new FileReader(args[0])), 1024)));
@@ -111,7 +111,7 @@ public class Main
                 String filename = args[0].split(".min")[0];
                 // prettyPrint(tree, filename);
 
-                SymbolTable symbolTable = new SymbolTable();
+                /*SymbolTable symbolTable = new SymbolTable();
                 SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable);
                 printDebug("Semantic Analyzer:");
                 tree.apply(semanticAnalyzer);
@@ -132,7 +132,7 @@ public class Main
                 else
                 {
                     System.exit(1);
-                }
+                }*/
                 
             }
 
@@ -143,6 +143,7 @@ public class Main
         catch (Exception e)
         {
             System.out.print("INVALID: " + e);
+            e.printStackTrace();
             System.exit(1);
         }
     }
