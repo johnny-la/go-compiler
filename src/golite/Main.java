@@ -111,7 +111,7 @@ public class Main
                 String filename = args[0].split(".min")[0];
                 prettyPrint(tree, filename);
 
-                SymbolTable symbolTable = new SymbolTable();
+                /*SymbolTable symbolTable = new SymbolTable();
                 SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable);
                 printDebug("Semantic Analyzer:");
                 tree.apply(semanticAnalyzer);
@@ -132,7 +132,7 @@ public class Main
                 else
                 {
                     System.exit(1);
-                }
+                }*/
                 
             }
 
@@ -143,6 +143,7 @@ public class Main
         catch (Exception e)
         {
             System.out.print("INVALID: " + e);
+            e.printStackTrace();
             System.exit(1);
         }
     }
