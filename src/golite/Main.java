@@ -19,14 +19,14 @@ public class Main
     private static final boolean PRINT_TO_FILE = true;
 
     // Pretty prints the given AST
-    // private static void prettyPrint(Start tree, String filename)
-    // {
-    //     PrettyPrinter prettyPrinter = new PrettyPrinter();
-    //     String prettyPrint = prettyPrinter.prettyPrint(tree);
+    private static void prettyPrint(Start tree, String filename)
+    {
+        PrettyPrinter prettyPrinter = new PrettyPrinter();
+        String prettyPrint = prettyPrinter.prettyPrint(tree);
 
-    //     printDebug(prettyPrint);
-    //     printToFile(filename + PRETTY_PRINT_SUFFIX, prettyPrint);
-    // }
+        printDebug(prettyPrint);
+        printToFile(filename + PRETTY_PRINT_SUFFIX, prettyPrint);
+    }
 
     /**
      * Prints the given string to stdout if PRINT_TO_FILE == false
@@ -108,8 +108,8 @@ public class Main
 
             if (args[0] != null)
             {
-                String filename = args[0].split(".min")[0];
-                // prettyPrint(tree, filename);
+                String filename = args[0].split(".go")[0];
+                prettyPrint(tree, filename);
 
                 /*SymbolTable symbolTable = new SymbolTable();
                 SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable);

@@ -146,13 +146,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseANoReturnFuncDecl(ANoReturnFuncDecl node)
     {
         inANoReturnFuncDecl(node);
+        if(node.getBlock() != null)
         {
-            List<PStmt> copy = new ArrayList<PStmt>(node.getStmt());
-            Collections.reverse(copy);
-            for(PStmt e : copy)
-            {
-                e.apply(this);
-            }
+            node.getBlock().apply(this);
         }
         if(node.getSignature() != null)
         {
@@ -179,17 +175,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node)
     {
         inASingleReturnFuncDecl(node);
-        if(node.getReturn() != null)
+        if(node.getBlock() != null)
         {
-            node.getReturn().apply(this);
-        }
-        {
-            List<PStmt> copy = new ArrayList<PStmt>(node.getStmt());
-            Collections.reverse(copy);
-            for(PStmt e : copy)
-            {
-                e.apply(this);
-            }
+            node.getBlock().apply(this);
         }
         if(node.getVarType() != null)
         {
@@ -199,9 +187,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getSignature().apply(this);
         }
-        if(node.getName() != null)
+        if(node.getId() != null)
         {
-            node.getName().apply(this);
+            node.getId().apply(this);
         }
         outASingleReturnFuncDecl(node);
     }
@@ -645,6 +633,10 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getVarType().apply(this);
         }
+        if(node.getInt() != null)
+        {
+            node.getInt().apply(this);
+        }
         outAArrayVarType(node);
     }
 
@@ -793,6 +785,27 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getExp().apply(this);
         }
         outADecrementStmt(node);
+    }
+
+    public void inADeclStmt(ADeclStmt node)
+    {
+        defaultIn(node);
+    }
+
+    public void outADeclStmt(ADeclStmt node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseADeclStmt(ADeclStmt node)
+    {
+        inADeclStmt(node);
+        if(node.getDecl() != null)
+        {
+            node.getDecl().apply(this);
+        }
+        outADeclStmt(node);
     }
 
     public void inAAssignStmt(AAssignStmt node)
@@ -1114,6 +1127,40 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     {
         inAContinueStmt(node);
         outAContinueStmt(node);
+    }
+
+    public void inASemicolonStmt(ASemicolonStmt node)
+    {
+        defaultIn(node);
+    }
+
+    public void outASemicolonStmt(ASemicolonStmt node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseASemicolonStmt(ASemicolonStmt node)
+    {
+        inASemicolonStmt(node);
+        outASemicolonStmt(node);
+    }
+
+    public void inAEofStmt(AEofStmt node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAEofStmt(AEofStmt node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAEofStmt(AEofStmt node)
+    {
+        inAEofStmt(node);
+        outAEofStmt(node);
     }
 
     public void inAEmptyStmt(AEmptyStmt node)
