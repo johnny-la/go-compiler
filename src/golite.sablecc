@@ -98,7 +98,7 @@ Tokens
   int = integer;
   oct = '0' oct_digit+ ;
   hex = '0' ['x' + 'X'] hex_digit+;
-  float = digit* '.' digit* | '.' digit+ ;
+  float64_literal = digit* '.' digit* | '.' digit+ ;
   float64 = 'float64';
   bool = 'bool';
   rune = 'rune';
@@ -238,7 +238,7 @@ factor {-> exp} =
 
 term {-> exp} =
   {cst_id}        id     {-> New exp.id(id)} |
-  {cst_float}     float  {-> New exp.float(float)} |
+  {cst_float64}     float64_literal  {-> New exp.float64_literal(float64_literal)} |
   {cst_int}       int    {-> New exp.int(int)} |
   {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
   {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
@@ -311,7 +311,7 @@ exp =
   {mult}   [l]:exp [r]:exp |
   {divide} [l]:exp [r]:exp |
   {id} id |
-  {float} float |
+  {float64_literal} float64_literal |
   {int} int |
   {unary_plus} exp |
   {unary_minus} exp |
