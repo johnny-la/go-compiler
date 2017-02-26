@@ -13,9 +13,17 @@ public interface Analysis extends Switch
 
     void caseStart(Start node);
     void caseAProgram(AProgram node);
+    void caseAFuncDeclAstDecl(AFuncDeclAstDecl node);
     void caseAVarDeclAstDecl(AVarDeclAstDecl node);
     void caseATypeDeclAstDecl(ATypeDeclAstDecl node);
+    void caseANoReturnFuncDecl(ANoReturnFuncDecl node);
+    void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node);
+    void caseAFuncDecl(AFuncDecl node);
+    void caseASingleIdToTypeSignature(ASingleIdToTypeSignature node);
+    void caseAManyIdToTypeSignature(AManyIdToTypeSignature node);
+    void caseAMultipleTypesSignature(AMultipleTypesSignature node);
     void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node);
+    void caseATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node);
     void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node);
     void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node);
     void caseAMultilineListTypeDecl(AMultilineListTypeDecl node);
@@ -53,6 +61,21 @@ public interface Analysis extends Switch
     void caseAMinusExp(AMinusExp node);
     void caseAMultExp(AMultExp node);
     void caseADivideExp(ADivideExp node);
+    void caseAModuloExp(AModuloExp node);
+    void caseAAmpersandExp(AAmpersandExp node);
+    void caseAAmpersandCaretExp(AAmpersandCaretExp node);
+    void caseAShiftLeftExp(AShiftLeftExp node);
+    void caseAShiftRightExp(AShiftRightExp node);
+    void caseALogicalOrExp(ALogicalOrExp node);
+    void caseALogicalAndExp(ALogicalAndExp node);
+    void caseAEqualsEqualsExp(AEqualsEqualsExp node);
+    void caseANotEqualExp(ANotEqualExp node);
+    void caseALessExp(ALessExp node);
+    void caseALessEqualsExp(ALessEqualsExp node);
+    void caseAGreaterEqualsExp(AGreaterEqualsExp node);
+    void caseAGreaterExp(AGreaterExp node);
+    void caseAPipeExp(APipeExp node);
+    void caseACaretExp(ACaretExp node);
     void caseAIdExp(AIdExp node);
     void caseAFloat64LiteralExp(AFloat64LiteralExp node);
     void caseAIntExp(AIntExp node);
@@ -63,6 +86,8 @@ public interface Analysis extends Switch
     void caseARuneLiteralExp(ARuneLiteralExp node);
     void caseARawStringLitExp(ARawStringLitExp node);
     void caseAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node);
+    void caseAFunctionCallExp(AFunctionCallExp node);
+    void caseAAppendedExprExp(AAppendedExprExp node);
     void caseAArrayIndexExp(AArrayIndexExp node);
     void caseAStructSelectorExp(AStructSelectorExp node);
     void caseAListExp(AListExp node);
