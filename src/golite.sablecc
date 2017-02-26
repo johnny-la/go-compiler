@@ -128,17 +128,16 @@ declarations {-> decl} =
 
 //function declarations here
 cst_func_decl{-> func_decl} = 
-  {no_return} func id l_paren multi_sig? r_paren l_brace cst_stmt* return semicolon r_brace 
+  {no_return} func id l_paren multi_sig? r_paren l_brace cst_stmt* r_brace 
   {-> New func_decl.no_return(id, 
                            multi_sig.signature,
                           [cst_stmt.stmt]
         )} |
-  {single_return} func [name]:id l_paren multi_sig? r_paren cst_type l_brace cst_stmt* return [ret]:id semicolon r_brace 
+  {single_return} func [name]:id l_paren multi_sig? r_paren cst_type l_brace cst_stmt* r_brace 
   {-> New func_decl.single_return(name, 
                            multi_sig.signature,
                            cst_type.var_type,
-                          [cst_stmt.stmt],
-                           ret
+                          [cst_stmt.stmt]
   )}
   ;
 
@@ -364,7 +363,7 @@ decl =
 
 func_decl = 
   {no_return} id signature? stmt* |
-  {single_return} [name]:id signature? var_type stmt* [return]:id |
+  {single_return} id signature? var_type stmt*  |
   ;
 
 signature = 
