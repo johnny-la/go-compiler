@@ -369,6 +369,96 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAModuloExp(AModuloExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAAmpersandExp(AAmpersandExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAAmpersandCaretExp(AAmpersandCaretExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAShiftLeftExp(AShiftLeftExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAShiftRightExp(AShiftRightExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseALogicalOrExp(ALogicalOrExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseALogicalAndExp(ALogicalAndExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAEqualsEqualsExp(AEqualsEqualsExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseANotEqualExp(ANotEqualExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseALessExp(ALessExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseALessEqualsExp(ALessEqualsExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAGreaterEqualsExp(AGreaterEqualsExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAGreaterExp(AGreaterExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAPipeExp(APipeExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseACaretExp(ACaretExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAIdExp(AIdExp node)
     {
         defaultCase(node);
@@ -424,6 +514,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFunctionCallExp(AFunctionCallExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAAppendedExprExp(AAppendedExprExp node)
     {
         defaultCase(node);
     }

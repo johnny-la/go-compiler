@@ -1233,6 +1233,381 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outADivideExp(node);
     }
 
+    public void inAModuloExp(AModuloExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAModuloExp(AModuloExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAModuloExp(AModuloExp node)
+    {
+        inAModuloExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outAModuloExp(node);
+    }
+
+    public void inAAmpersandExp(AAmpersandExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAAmpersandExp(AAmpersandExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAAmpersandExp(AAmpersandExp node)
+    {
+        inAAmpersandExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outAAmpersandExp(node);
+    }
+
+    public void inAAmpersandCaretExp(AAmpersandCaretExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAAmpersandCaretExp(AAmpersandCaretExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAAmpersandCaretExp(AAmpersandCaretExp node)
+    {
+        inAAmpersandCaretExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outAAmpersandCaretExp(node);
+    }
+
+    public void inAShiftLeftExp(AShiftLeftExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAShiftLeftExp(AShiftLeftExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAShiftLeftExp(AShiftLeftExp node)
+    {
+        inAShiftLeftExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outAShiftLeftExp(node);
+    }
+
+    public void inAShiftRightExp(AShiftRightExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAShiftRightExp(AShiftRightExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAShiftRightExp(AShiftRightExp node)
+    {
+        inAShiftRightExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outAShiftRightExp(node);
+    }
+
+    public void inALogicalOrExp(ALogicalOrExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outALogicalOrExp(ALogicalOrExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseALogicalOrExp(ALogicalOrExp node)
+    {
+        inALogicalOrExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outALogicalOrExp(node);
+    }
+
+    public void inALogicalAndExp(ALogicalAndExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outALogicalAndExp(ALogicalAndExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseALogicalAndExp(ALogicalAndExp node)
+    {
+        inALogicalAndExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outALogicalAndExp(node);
+    }
+
+    public void inAEqualsEqualsExp(AEqualsEqualsExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAEqualsEqualsExp(AEqualsEqualsExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAEqualsEqualsExp(AEqualsEqualsExp node)
+    {
+        inAEqualsEqualsExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outAEqualsEqualsExp(node);
+    }
+
+    public void inANotEqualExp(ANotEqualExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outANotEqualExp(ANotEqualExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseANotEqualExp(ANotEqualExp node)
+    {
+        inANotEqualExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outANotEqualExp(node);
+    }
+
+    public void inALessExp(ALessExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outALessExp(ALessExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseALessExp(ALessExp node)
+    {
+        inALessExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outALessExp(node);
+    }
+
+    public void inALessEqualsExp(ALessEqualsExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outALessEqualsExp(ALessEqualsExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseALessEqualsExp(ALessEqualsExp node)
+    {
+        inALessEqualsExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outALessEqualsExp(node);
+    }
+
+    public void inAGreaterEqualsExp(AGreaterEqualsExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAGreaterEqualsExp(AGreaterEqualsExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAGreaterEqualsExp(AGreaterEqualsExp node)
+    {
+        inAGreaterEqualsExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outAGreaterEqualsExp(node);
+    }
+
+    public void inAGreaterExp(AGreaterExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAGreaterExp(AGreaterExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAGreaterExp(AGreaterExp node)
+    {
+        inAGreaterExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outAGreaterExp(node);
+    }
+
+    public void inAPipeExp(APipeExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAPipeExp(APipeExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAPipeExp(APipeExp node)
+    {
+        inAPipeExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outAPipeExp(node);
+    }
+
+    public void inACaretExp(ACaretExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outACaretExp(ACaretExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseACaretExp(ACaretExp node)
+    {
+        inACaretExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outACaretExp(node);
+    }
+
     public void inAIdExp(AIdExp node)
     {
         defaultIn(node);
@@ -1441,6 +1816,52 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getInterpretedStringLiteral().apply(this);
         }
         outAInterpretedStringLiteralExp(node);
+    }
+
+    public void inAFunctionCallExp(AFunctionCallExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFunctionCallExp(AFunctionCallExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFunctionCallExp(AFunctionCallExp node)
+    {
+        inAFunctionCallExp(node);
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAFunctionCallExp(node);
+    }
+
+    public void inAAppendedExprExp(AAppendedExprExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAAppendedExprExp(AAppendedExprExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAAppendedExprExp(AAppendedExprExp node)
+    {
+        inAAppendedExprExp(node);
+        if(node.getR() != null)
+        {
+            node.getR().apply(this);
+        }
+        if(node.getL() != null)
+        {
+            node.getL().apply(this);
+        }
+        outAAppendedExprExp(node);
     }
 
     public void inAArrayIndexExp(AArrayIndexExp node)

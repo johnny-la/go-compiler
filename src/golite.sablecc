@@ -50,8 +50,7 @@ Tokens
   select = 'select';
   struct = 'struct';
   switch = 'switch';
-  op_equals = ('+' | '&' | '&^' | '-' | '|' | '<' | '*' | '^' | '/' | '<<' | '%' | '>>')
- '=';
+  op_equals = ('+' | '&' | '&^' | '-' | '|' | '<' | '*' | '^' | '/' | '<<' | '%' | '>>') '=';
   type = 'float64'|'rune'|'int'|'bool'|'string';
   type_keyword = 'type';
   plus = '+';
@@ -129,12 +128,12 @@ declarations {-> decl} =
 
 //function declarations here
 cst_func_decl{-> func_decl} = 
-  {no_return} func id l_paren multi_sig? r_paren l_brace cst_stmt* return r_brace 
+  {no_return} func id l_paren multi_sig? r_paren l_brace cst_stmt* return semicolon r_brace 
   {-> New func_decl.no_return(id, 
                            multi_sig.signature,
                           [cst_stmt.stmt]
         )} |
-  {single_return} func [name]:id l_paren multi_sig? r_paren cst_type l_brace cst_stmt* return [ret]:id r_brace 
+  {single_return} func [name]:id l_paren multi_sig? r_paren cst_type l_brace cst_stmt* return [ret]:id semicolon r_brace 
   {-> New func_decl.single_return(name, 
                            multi_sig.signature,
                            cst_type.var_type,
