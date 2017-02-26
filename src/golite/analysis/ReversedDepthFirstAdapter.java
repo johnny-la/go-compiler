@@ -90,21 +90,129 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAVarDeclAstDecl(node);
     }
 
-    public void inATypeDecl(ATypeDecl node)
+    public void inATypeDeclAstDecl(ATypeDeclAstDecl node)
     {
         defaultIn(node);
     }
 
-    public void outATypeDecl(ATypeDecl node)
+    public void outATypeDeclAstDecl(ATypeDeclAstDecl node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseATypeDecl(ATypeDecl node)
+    public void caseATypeDeclAstDecl(ATypeDeclAstDecl node)
     {
-        inATypeDecl(node);
-        outATypeDecl(node);
+        inATypeDeclAstDecl(node);
+        if(node.getTypeDecl() != null)
+        {
+            node.getTypeDecl().apply(this);
+        }
+        outATypeDeclAstDecl(node);
+    }
+
+    public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeAliasTypeDecl(ATypeAliasTypeDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node)
+    {
+        inATypeAliasTypeDecl(node);
+        if(node.getVarType() != null)
+        {
+            node.getVarType().apply(this);
+        }
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outATypeAliasTypeDecl(node);
+    }
+
+    public void inATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
+    {
+        inATypeWithManyIdsTypeDecl(node);
+        if(node.getTypeDecl() != null)
+        {
+            node.getTypeDecl().apply(this);
+        }
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outATypeWithManyIdsTypeDecl(node);
+    }
+
+    public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
+    {
+        inAStructWithIdTypeDecl(node);
+        {
+            List<PTypeDecl> copy = new ArrayList<PTypeDecl>(node.getTypeDecl());
+            Collections.reverse(copy);
+            for(PTypeDecl e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAStructWithIdTypeDecl(node);
+    }
+
+    public void inAMultilineListTypeDecl(AMultilineListTypeDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAMultilineListTypeDecl(AMultilineListTypeDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAMultilineListTypeDecl(AMultilineListTypeDecl node)
+    {
+        inAMultilineListTypeDecl(node);
+        {
+            List<PTypeDecl> copy = new ArrayList<PTypeDecl>(node.getTypeDecl());
+            Collections.reverse(copy);
+            for(PTypeDecl e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAMultilineListTypeDecl(node);
     }
 
     public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)

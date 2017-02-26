@@ -87,7 +87,31 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseATypeDecl(ATypeDecl node)
+    public void caseATypeDeclAstDecl(ATypeDeclAstDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAMultilineListTypeDecl(AMultilineListTypeDecl node)
     {
         defaultCase(node);
     }

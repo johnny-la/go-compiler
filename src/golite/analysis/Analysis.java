@@ -14,7 +14,11 @@ public interface Analysis extends Switch
     void caseStart(Start node);
     void caseAProgram(AProgram node);
     void caseAVarDeclAstDecl(AVarDeclAstDecl node);
-    void caseATypeDecl(ATypeDecl node);
+    void caseATypeDeclAstDecl(ATypeDeclAstDecl node);
+    void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node);
+    void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node);
+    void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node);
+    void caseAMultilineListTypeDecl(AMultilineListTypeDecl node);
     void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node);
     void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node);
     void caseAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node);
