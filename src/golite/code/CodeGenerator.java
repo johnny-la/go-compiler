@@ -137,7 +137,7 @@ public class CodeGenerator extends DepthFirstAdapter
     }  
 
     /** PROGRAM */
-    public void caseAProgram(AProgram node)
+    /*public void caseAProgram(AProgram node)
     {
         println(fileHeader + "\n");
         // Print the declarations
@@ -149,10 +149,10 @@ public class CodeGenerator extends DepthFirstAdapter
         printNodes(node.getStmt());
         indentLevel--;
         println("}");
-    }
+    }*/
 
     /** STATEMENTS */
-    public void caseAReadStmt(AReadStmt node)
+    /*public void caseAReadStmt(AReadStmt node)
     {
         Type idType = typeChecker.getIdType(node.getId());
         String scanCode = getScanCode(idType);
@@ -230,10 +230,10 @@ public class CodeGenerator extends DepthFirstAdapter
         printNodes(node.getStmt());
 
         indentLevel--;
-    }
+    }*/
 
     /** DECLARAIONS */
-    public void caseAVarDecl(AVarDecl node)
+    /*public void caseAVarDecl(AVarDecl node)
     {
         Type varType = TypeChecker.stringToType(node.getType().getText());
         String varTypeString = node.getType().getText();
@@ -256,10 +256,10 @@ public class CodeGenerator extends DepthFirstAdapter
         println(varTypeString + " " + node.getId().getText() + 
                 ((varType == Type.STRING)? STRING_ARRAY_SIZE:"") + 
                 assignmentSuffix + ";");
-    }
+    }*/
    
     /** EXPRESSIONS */
-    public void caseAPlusExp(APlusExp node)
+    /*public void caseAPlusExp(APlusExp node)
     {
         Type type = typeChecker.getType(node.getL());
         
@@ -350,6 +350,6 @@ public class CodeGenerator extends DepthFirstAdapter
     public void caseAIntExp(AIntExp node)
     {
         print(node.getInt().getText());
-    }
+    }*/
 
 }
