@@ -128,6 +128,47 @@ public class PrettyPrinter extends DepthFirstAdapter
         printi(" )");
     }
 
+    //type declarations
+    public void caseATypeDeclAstDecl(ATypeDeclAstDecl node) {
+        printi("type ");
+        node.getTypeDecl().apply(this);
+        println("");
+    }
+
+    public void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node) {
+        printi(node.getId().getText() + " ");
+        node.getVarType().apply(this);
+    } 
+
+    public void caseATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node) {
+        printi(node.getType().getText() + " ");
+        node.getVarType().apply(this);
+    }
+
+    public void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node) {
+        printi(node.getId().getText() + ", ");
+        node.getTypeDecl().apply(this);
+    }
+
+    public void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node) {
+        printi(node.getId().getText() + " struct {");
+        println("");
+        for (Node n: node.getTypeDecl()) {
+            n.apply(this);
+            println("");
+        }
+        printi(" }");
+    }
+
+    public void caseAMultilineListTypeDecl(AMultilineListTypeDecl node) {
+        printi("(");
+        println("");
+        for (Node n: node.getTypeDecl()) {
+            n.apply(this);
+            println("");
+        }
+        printi(" )");
+    }
     // /** STATEMENTS */
     // public void caseAReadStmt(AReadStmt node)
     // {
