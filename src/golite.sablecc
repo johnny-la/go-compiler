@@ -114,7 +114,7 @@ Ignored Tokens
 
 Productions
 cst_prog {-> program} =
-  {prog} top_level_declarations* cst_stmt* {-> New program([top_level_declarations.decl], [cst_stmt.stmt])}
+  {prog} top_level_declarations* cst_block {-> New program([top_level_declarations.decl], [cst_block.stmt])}
   ; 
 
 top_level_declarations{-> decl} = 
