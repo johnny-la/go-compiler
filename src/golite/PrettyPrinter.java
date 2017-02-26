@@ -246,7 +246,7 @@ public class PrettyPrinter extends DepthFirstAdapter
             println(";");
         }
         indentLevel--;
-        println("}");
+        printi("}");
     }
 
     /*public void caseAAssignStmt(AAssignStmt node)
@@ -272,31 +272,102 @@ public class PrettyPrinter extends DepthFirstAdapter
         println("");
     }*/
 
-    // public void caseAIfStmt(AIfStmt node)
-    // {
-    //     printi("if ");
-    //     node.getExp().apply(this);
-    //     println(" then");
+    public void caseAIfStmt(AIfStmt node)
+    {
+        printi("if ");
+        node.getExp().apply(this);
+    
+        node.getBlock().apply(this);
 
-    //     indentLevel++;
-    //     node.getBlock().apply(this);
+        if (node.getEnd() != null) node.getEnd().apply(this);
+    }
 
-    //     indentLevel--;
-    //     if (node.getEnd() != null) node.getEnd().apply(this);
+    public void caseAElseIfStmt(AElseIfStmt node)
+    {
+        println(" else");
+        node.getStmt().apply(this);
+    }
 
-    //     println("endif");
-    // }
-
-    // public void caseAElseStmt(AElseStmt node)
-    // {
-    //     printi("else");
-    //     println("");
+    public void caseAElseStmt(AElseStmt node)
+    {
+        print(" else ");
  
-    //     indentLevel++;
-    //     node.getStmt().apply(this);
+        node.getStmt().apply(this);
+    }
 
-    //     indentLevel--;
-    // }
+    public void caseAForStmt(AForStmt node)
+    {
+        printi("for ");
+        node.getCondition().apply(this);
+        print(" ");
+        node.getBlock().apply(this);
+    }
+
+    public void caseAForCondExp(AForCondExp node)
+    {
+        if (node.getFirst() != null) node.getFirst().apply(this);
+        print("; ");
+        if (node.getSecond() != null) node.getSecond().apply(this);
+        print("; ");
+        if (node.getThird() != null) node.getThird().apply(this);
+    }
+
+    public void caseASwitchStmt(ASwitchStmt node)
+    {
+        printi("switch ");
+        if (node.getSimpleStmt() != null) 
+        { 
+            node.getSimpleStmt().apply(this);
+
+        }
+        if (node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+
+        println("{");
+        indentLevel++;
+        for (int i = 0; i < node.getCaseStmts().size(); i++)
+        {
+            node.getCaseStmts().get(i).apply(this);
+        }
+        indentLevel--;
+        printi("}");
+    }
+
+    public void caseACaseStmt(ACaseStmt node)
+    {
+        node.getCaseExp().apply(this);
+
+        for (int i = 0; i < node.getStmtList().size(); i++)
+        {
+            printi("");
+            node.getStmtList().get(i).apply(this);
+            println(";");
+        }
+    }
+
+    public void caseACaseExp(ACaseExp node)
+    {
+        printi("case ");
+        node.getExpList().apply(this);
+        println(":");
+    }
+
+    public void caseADefaultExp(ADefaultExp node)
+    {
+        printi("default:\n");
+    }
+
+    public void caseAContinueStmt(AContinueStmt node)
+    {
+        printi("continue");
+    }
+
+    public void caseABreakStmt(ABreakStmt node)
+    {
+        printi("break");
+    }
 
     // // /** DECLARAIONS */
     // // public void caseAVarDecl(AVarDecl node)

@@ -296,7 +296,7 @@ factor {-> exp} =
   {term}            term              {-> term.exp};
 
 cst_end_if {-> stmt} =
-  {cst_else_if} else cst_if_stmt {-> New stmt.elseif(cst_if_stmt.stmt)} |
+  {cst_else_if} else cst_if_stmt {-> New stmt.else_if(cst_if_stmt.stmt)} |
   {cst_else}    else cst_block   {-> New stmt.else(cst_block.stmt)};
 
 cst_block {-> stmt} =
@@ -309,21 +309,21 @@ cst_stmt_eos {-> stmt} =
   {cst_stmt_eos}  cst_stmt cst_eos {-> cst_stmt.stmt}; // Add eos
 
 cst_eos {-> stmt} =
-  {cst_semicolon} semicolon    {-> New stmt.semicolon()} |
-  {cst_eof}       end_of_file  {-> New stmt.eof()};
+  {cst_semicolon} semicolon    {-> New stmt.empty()} |
+  {cst_eof}       end_of_file  {-> New stmt.empty()};
 
 cst_switch_stmt {-> stmt} =
-  {cst_switch} switch cst_simple_stmt_eol? cst_exp? l_brace semicolon cst_switch_case_clause* r_brace {-> New stmt.empty()};
+  {cst_switch} switch cst_simple_stmt_eol? cst_exp? l_brace semicolon cst_switch_case_clause* r_brace {-> New stmt.switch(cst_simple_stmt_eol.stmt, cst_exp.exp, [cst_switch_case_clause.stmt])};
 
 cst_simple_stmt_eol {-> stmt} =
   {cst_simple_eol} cst_simple_stmt semicolon {-> cst_simple_stmt.stmt};
 
 cst_switch_case_clause {-> stmt} =
-  {cst_case_clause} cst_switch_case colon cst_stmt_list {-> New stmt.empty()};
+  {cst_case_clause} cst_switch_case colon cst_stmt_list {-> New stmt.case(cst_switch_case.exp, [cst_stmt_list.stmt])};
 
-cst_switch_case {-> stmt} =
-  {cst_case}   case cst_exp_list {-> New stmt.empty()} |
-  {cst_switch} default {-> New stmt.empty()}; 
+cst_switch_case {-> exp} =
+  {cst_case}   case cst_exp_list {-> New exp.case(cst_exp_list.exp)} |
+  {cst_switch} default {-> New exp.default()}; 
 
 cst_for_condition {-> exp} =
   {cst_empty}    /* empty */ {-> New exp.empty()} |
@@ -440,13 +440,13 @@ stmt =
   {block}           stmt* |
   {while}           exp stmt* |
   {if}              exp [block]:stmt [end]:stmt?  |
-  {elseif}          stmt |
+  {else_if}          stmt |
   {else}            stmt |
   {for}             [condition]:exp [block]:stmt |
+  {switch}          [simple_stmt]:stmt? exp? [case_stmts]:stmt* |
+  {case}            [case_exp]:exp  [stmt_list]:stmt* |
   {break}     |
   {continue}  | 
-  {semicolon} |
-  {eof}       |
   {empty};
 
 exp =
@@ -486,4 +486,6 @@ exp =
   {list}      [list]:exp [value]:exp |
   {id_list}   [list]:exp [value]:id  |
   {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
+  {case}      [exp_list]:exp |
+  {default} |
   {empty};
