@@ -1,55 +1,55 @@
-// package golite;
+package golite;
 
-// import golite.parser.*;
-// import golite.lexer.*;
-// import golite.node.*;
-// import golite.analysis.*;
+import golite.parser.*;
+import golite.lexer.*;
+import golite.node.*;
+import golite.analysis.*;
 
-// import java.util.*;
+import java.util.*;
 
-// public class PrettyPrinter extends DepthFirstAdapter
-// {
-//     private static int indentLevel;
-//     private static StringBuffer output; 
+public class PrettyPrinter extends DepthFirstAdapter
+{
+    private static int indentLevel;
+    private static StringBuffer output; 
 
-//     public static String prettyPrint(Node node)
-//     {
-//         // Reset the indentation level before printing the tree
-//         indentLevel = 0;
-//         // Create a new output string
-//         output = new StringBuffer();
+    public static String prettyPrint(Node node)
+    {
+        // Reset the indentation level before printing the tree
+        indentLevel = 0;
+        // Create a new output string
+        output = new StringBuffer();
 
-//         // Start the pretty printing at the given node
-//         node.apply(new PrettyPrinter());
+        // Start the pretty printing at the given node
+        node.apply(new PrettyPrinter());
 
-//         return output.toString();
-//     }
+        return output.toString();
+    }
 
-//     // Prints the given string without a newline
-//     private void print(String s)
-//     {
-//         output.append(s);
-//     }
+    // Prints the given string without a newline
+    private void print(String s)
+    {
+        output.append(s);
+    }
 
-//     // Prints the given string with preceding indentation
-//     private void printi(String s)
-//     {
-//         for (int i = 0; i < indentLevel; i++) { output.append("    "); }
-//         print(s);
-//     }
+    // Prints the given string with preceding indentation
+    private void printi(String s)
+    {
+        for (int i = 0; i < indentLevel; i++) { output.append("    "); }
+        print(s);
+    }
 
-//     // Prints the given string, along with a newline
-//     private void println(String s)
-//     {
-//         output.append(s);
-//         output.append("\n");
-//     }
+    // Prints the given string, along with a newline
+    private void println(String s)
+    {
+        output.append(s);
+        output.append("\n");
+    }
 
-//     // Pretty prints the list of nodes
-//     private void printNodes(LinkedList<? extends Node> nodes)
-//     {
-//         for (Node node : nodes) { node.apply(this); }
-//     }
+    // Pretty prints the list of nodes
+    private void printNodes(LinkedList<? extends Node> nodes)
+    {
+        for (Node node : nodes) { node.apply(this); }
+    }
 
 //     /** PROGRAM */
 //     public void caseAProgram(AProgram node)
@@ -188,4 +188,4 @@
 //         print(node.getInt().getText());
 //     }
 
-// }
+}
