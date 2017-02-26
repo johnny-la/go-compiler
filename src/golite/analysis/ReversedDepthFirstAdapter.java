@@ -287,13 +287,13 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseAMultipleTypesSignature(AMultipleTypesSignature node)
     {
         inAMultipleTypesSignature(node);
+        if(node.getLeaf() != null)
         {
-            List<PSignature> copy = new ArrayList<PSignature>(node.getSignature());
-            Collections.reverse(copy);
-            for(PSignature e : copy)
-            {
-                e.apply(this);
-            }
+            node.getLeaf().apply(this);
+        }
+        if(node.getRoot() != null)
+        {
+            node.getRoot().apply(this);
         }
         outAMultipleTypesSignature(node);
     }
