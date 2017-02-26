@@ -127,28 +127,28 @@ cst_prog {-> program} =
 
 
 cst_top_decl {-> decl} =
-  {var_decl} cst_var_decl_top {-> New decl.var_decl_ast(cst_var_decl_top.var_decl)} 
+  {var_decl} cst_var_decl {-> New decl.var_decl_ast(cst_var_decl.var_decl)} 
   ;
 
-cst_var_decl_top {-> var_decl} =
+cst_var_decl {-> var_decl} =
   {cst_single_line_decl} var top_var_decl {-> top_var_decl.var_decl} |
   {cst_multi_line_decl} var l_paren top_var_decl* r_paren semicolon {-> New var_decl.multiline_list([top_var_decl.var_decl])}
   ;
 
 top_var_decl {-> var_decl} = 
-  {cst_miat} id_and_type {-> id_and_type.var_decl} |
-  {cst_miae} id_and_exp_maybe_type {-> id_and_exp_maybe_type.var_decl}
+  {cst_miat} id_and_type semicolon {-> id_and_type.var_decl} |
+  {cst_miae} id_and_exp_maybe_type semicolon {-> id_and_exp_maybe_type.var_decl}
   ;
 
 id_and_type {-> var_decl} = 
   {miat_recurse} id comma id_and_type {-> New var_decl.inline_list_no_exp(id, id_and_type.var_decl)} |
-  {miat_end} id cst_type semicolon {-> New var_decl.var_with_type(id, cst_type.var_type)}
+  {miat_end} id cst_type {-> New var_decl.var_with_type(id, cst_type.var_type)}
   ;
 
 id_and_exp_maybe_type {-> var_decl} = 
   {miae_recurse} id [l]:comma id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(id, id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
-  {miae_end} id equals cst_exp semicolon {-> New var_decl.var_with_only_exp(id, cst_exp.exp)} |
-  {mtae_end} id cst_type equals cst_exp semicolon {-> New var_decl.var_with_type_and_exp(id, cst_type.var_type, cst_exp.exp)}
+  {miae_end} id equals cst_exp {-> New var_decl.var_with_only_exp(id, cst_exp.exp)} |
+  {mtae_end} id cst_type equals cst_exp {-> New var_decl.var_with_type_and_exp(id, cst_type.var_type, cst_exp.exp)}
   ;
 
 //structs is just an id when declaring since no inline constructions
@@ -184,6 +184,7 @@ term {-> exp} =
   {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
 
 Abstract Syntax Tree
+
 program = decl* stmt*;
 
 decl = 
