@@ -162,6 +162,7 @@ cst_stmt {-> stmt} =
 
 cst_simple_stmt {-> stmt} =
   //{cst_empty}      /*empty*/           {-> New stmt.empty()} |
+  //{cst_decl}       cst_top_decl        {-> New stmt.decl(cst_top_decl.decl)} |
   {cst_increment}  lvalue plus_plus    {-> New stmt.increment(lvalue.exp)} |
   {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)} |
   {cst_assign}     cst_assign_stmt     {-> cst_assign_stmt.stmt} |
@@ -290,6 +291,7 @@ stmt =
   {return}          exp |
   {increment}       exp |
   {decrement}       exp |
+  {decl}            decl |
   {assign}          [l]:exp [r]:exp |
   {assign_op}       [l]:exp op_equals [r]:exp |
   {assign_list}     [l]:exp stmt [r]:exp |
