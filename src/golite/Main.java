@@ -16,7 +16,7 @@ public class Main
                                 CODE_GENERATOR_SUFFIX = ".c";    
 
     // If true, print to file. Else, print to STDOUT
-    private static final boolean PRINT_TO_FILE = true;
+    private static final boolean PRINT_TO_FILE = false;
 
     // Pretty prints the given AST
     private static void prettyPrint(Start tree, String filename)

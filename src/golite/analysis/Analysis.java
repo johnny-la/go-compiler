@@ -53,13 +53,13 @@ public interface Analysis extends Switch
     void caseABlockStmt(ABlockStmt node);
     void caseAWhileStmt(AWhileStmt node);
     void caseAIfStmt(AIfStmt node);
-    void caseAElseifStmt(AElseifStmt node);
+    void caseAElseIfStmt(AElseIfStmt node);
     void caseAElseStmt(AElseStmt node);
     void caseAForStmt(AForStmt node);
+    void caseASwitchStmt(ASwitchStmt node);
+    void caseACaseStmt(ACaseStmt node);
     void caseABreakStmt(ABreakStmt node);
     void caseAContinueStmt(AContinueStmt node);
-    void caseASemicolonStmt(ASemicolonStmt node);
-    void caseAEofStmt(AEofStmt node);
     void caseAEmptyStmt(AEmptyStmt node);
     void caseAPlusExp(APlusExp node);
     void caseAMinusExp(AMinusExp node);
@@ -83,6 +83,8 @@ public interface Analysis extends Switch
     void caseAIdExp(AIdExp node);
     void caseAFloat64LiteralExp(AFloat64LiteralExp node);
     void caseAIntExp(AIntExp node);
+    void caseAOctExp(AOctExp node);
+    void caseAHexExp(AHexExp node);
     void caseAUnaryPlusExp(AUnaryPlusExp node);
     void caseAUnaryMinusExp(AUnaryMinusExp node);
     void caseAUnaryXorExp(AUnaryXorExp node);
@@ -95,7 +97,11 @@ public interface Analysis extends Switch
     void caseAArrayIndexExp(AArrayIndexExp node);
     void caseAStructSelectorExp(AStructSelectorExp node);
     void caseAListExp(AListExp node);
+    void caseAIdListExp(AIdListExp node);
     void caseAForCondExp(AForCondExp node);
+    void caseACaseExp(ACaseExp node);
+    void caseADefaultExp(ADefaultExp node);
+    void caseAEmptyExp(AEmptyExp node);
 
     void caseTIf(TIf node);
     void caseTElse(TElse node);
@@ -169,9 +175,6 @@ public interface Analysis extends Switch
     void caseTOct(TOct node);
     void caseTHex(THex node);
     void caseTFloat64Literal(TFloat64Literal node);
-    void caseTFloat64(TFloat64 node);
-    void caseTBool(TBool node);
-    void caseTRune(TRune node);
     void caseTRuneLiteral(TRuneLiteral node);
     void caseTRawStringLit(TRawStringLit node);
     void caseTInterpretedStringLiteral(TInterpretedStringLiteral node);

@@ -1038,25 +1038,25 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAIfStmt(node);
     }
 
-    public void inAElseifStmt(AElseifStmt node)
+    public void inAElseIfStmt(AElseIfStmt node)
     {
         defaultIn(node);
     }
 
-    public void outAElseifStmt(AElseifStmt node)
+    public void outAElseIfStmt(AElseIfStmt node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAElseifStmt(AElseifStmt node)
+    public void caseAElseIfStmt(AElseIfStmt node)
     {
-        inAElseifStmt(node);
+        inAElseIfStmt(node);
         if(node.getStmt() != null)
         {
             node.getStmt().apply(this);
         }
-        outAElseifStmt(node);
+        outAElseIfStmt(node);
     }
 
     public void inAElseStmt(AElseStmt node)
@@ -1105,6 +1105,66 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAForStmt(node);
     }
 
+    public void inASwitchStmt(ASwitchStmt node)
+    {
+        defaultIn(node);
+    }
+
+    public void outASwitchStmt(ASwitchStmt node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseASwitchStmt(ASwitchStmt node)
+    {
+        inASwitchStmt(node);
+        if(node.getSimpleStmt() != null)
+        {
+            node.getSimpleStmt().apply(this);
+        }
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        {
+            List<PStmt> copy = new ArrayList<PStmt>(node.getCaseStmts());
+            for(PStmt e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outASwitchStmt(node);
+    }
+
+    public void inACaseStmt(ACaseStmt node)
+    {
+        defaultIn(node);
+    }
+
+    public void outACaseStmt(ACaseStmt node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseACaseStmt(ACaseStmt node)
+    {
+        inACaseStmt(node);
+        if(node.getCaseExp() != null)
+        {
+            node.getCaseExp().apply(this);
+        }
+        {
+            List<PStmt> copy = new ArrayList<PStmt>(node.getStmtList());
+            for(PStmt e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outACaseStmt(node);
+    }
+
     public void inABreakStmt(ABreakStmt node)
     {
         defaultIn(node);
@@ -1137,40 +1197,6 @@ public class DepthFirstAdapter extends AnalysisAdapter
     {
         inAContinueStmt(node);
         outAContinueStmt(node);
-    }
-
-    public void inASemicolonStmt(ASemicolonStmt node)
-    {
-        defaultIn(node);
-    }
-
-    public void outASemicolonStmt(ASemicolonStmt node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseASemicolonStmt(ASemicolonStmt node)
-    {
-        inASemicolonStmt(node);
-        outASemicolonStmt(node);
-    }
-
-    public void inAEofStmt(AEofStmt node)
-    {
-        defaultIn(node);
-    }
-
-    public void outAEofStmt(AEofStmt node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseAEofStmt(AEofStmt node)
-    {
-        inAEofStmt(node);
-        outAEofStmt(node);
     }
 
     public void inAEmptyStmt(AEmptyStmt node)
@@ -1728,6 +1754,48 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAIntExp(node);
     }
 
+    public void inAOctExp(AOctExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAOctExp(AOctExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAOctExp(AOctExp node)
+    {
+        inAOctExp(node);
+        if(node.getOct() != null)
+        {
+            node.getOct().apply(this);
+        }
+        outAOctExp(node);
+    }
+
+    public void inAHexExp(AHexExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAHexExp(AHexExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAHexExp(AHexExp node)
+    {
+        inAHexExp(node);
+        if(node.getHex() != null)
+        {
+            node.getHex().apply(this);
+        }
+        outAHexExp(node);
+    }
+
     public void inAUnaryPlusExp(AUnaryPlusExp node)
     {
         defaultIn(node);
@@ -1893,6 +1961,10 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getId().apply(this);
         }
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
         outAFunctionCallExp(node);
     }
 
@@ -1996,6 +2068,31 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAListExp(node);
     }
 
+    public void inAIdListExp(AIdListExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAIdListExp(AIdListExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAIdListExp(AIdListExp node)
+    {
+        inAIdListExp(node);
+        if(node.getList() != null)
+        {
+            node.getList().apply(this);
+        }
+        if(node.getValue() != null)
+        {
+            node.getValue().apply(this);
+        }
+        outAIdListExp(node);
+    }
+
     public void inAForCondExp(AForCondExp node)
     {
         defaultIn(node);
@@ -2023,5 +2120,60 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getThird().apply(this);
         }
         outAForCondExp(node);
+    }
+
+    public void inACaseExp(ACaseExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outACaseExp(ACaseExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseACaseExp(ACaseExp node)
+    {
+        inACaseExp(node);
+        if(node.getExpList() != null)
+        {
+            node.getExpList().apply(this);
+        }
+        outACaseExp(node);
+    }
+
+    public void inADefaultExp(ADefaultExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outADefaultExp(ADefaultExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseADefaultExp(ADefaultExp node)
+    {
+        inADefaultExp(node);
+        outADefaultExp(node);
+    }
+
+    public void inAEmptyExp(AEmptyExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAEmptyExp(AEmptyExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAEmptyExp(AEmptyExp node)
+    {
+        inAEmptyExp(node);
+        outAEmptyExp(node);
     }
 }

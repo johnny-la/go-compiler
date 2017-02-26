@@ -321,7 +321,7 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseAElseifStmt(AElseifStmt node)
+    public void caseAElseIfStmt(AElseIfStmt node)
     {
         defaultCase(node);
     }
@@ -339,6 +339,18 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseASwitchStmt(ASwitchStmt node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseACaseStmt(ACaseStmt node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseABreakStmt(ABreakStmt node)
     {
         defaultCase(node);
@@ -346,18 +358,6 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAContinueStmt(AContinueStmt node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseASemicolonStmt(ASemicolonStmt node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseAEofStmt(AEofStmt node)
     {
         defaultCase(node);
     }
@@ -501,6 +501,18 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAOctExp(AOctExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAHexExp(AHexExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAUnaryPlusExp(AUnaryPlusExp node)
     {
         defaultCase(node);
@@ -573,7 +585,31 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAIdListExp(AIdListExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAForCondExp(AForCondExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseACaseExp(ACaseExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseADefaultExp(ADefaultExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAEmptyExp(AEmptyExp node)
     {
         defaultCase(node);
     }
@@ -1006,24 +1042,6 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTFloat64Literal(TFloat64Literal node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseTFloat64(TFloat64 node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseTBool(TBool node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseTRune(TRune node)
     {
         defaultCase(node);
     }
