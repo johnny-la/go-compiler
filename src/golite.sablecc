@@ -132,13 +132,13 @@ cst_func_decl{-> func_decl} =
   {no_return} func id l_paren multi_sig? r_paren cst_block 
   {-> New func_decl.no_return(id, 
                            multi_sig.signature,
-                          [cst_block.stmt]
+                           cst_block.stmt
         )} |
   {single_return} func [name]:id l_paren multi_sig? r_paren cst_type cst_block 
   {-> New func_decl.single_return(name, 
                            multi_sig.signature,
                            cst_type.var_type,
-                          [cst_block.stmt]
+                           cst_block.stmt
   )}
   ;
 
@@ -371,8 +371,8 @@ decl =
   ;
 
 func_decl = 
-  {no_return} id signature? stmt* |
-  {single_return} id signature? var_type stmt*  |
+  {no_return} id signature? [block]:stmt |
+  {single_return} id signature? var_type [block]:stmt  |
   ;
 
 signature = 
