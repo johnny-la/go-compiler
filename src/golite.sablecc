@@ -163,11 +163,42 @@ cst_stmt {-> stmt} =
   {cst_print}  print cst_exp semicolon {-> New stmt.print(cst_exp.exp)} |
   {cst_assign} id equals cst_exp semicolon {-> New stmt.assign(id, cst_exp.exp)}; 
 
-cst_exp {-> exp} =
+cst_exp {-> exp} = 
+  {factor}     factor {-> factor.exp} |
+  {unary_op}   unary_op {-> unary_op.exp} |
+  {binary_op}  binary_op {-> binary_op.exp} |
+  {function_call} function_call {-> function_call.exp} |
+  {append_expr} append_expr {-> append_expr.exp};
+
+function_call {-> exp} =
+  {empty_args} id l_paren r_paren {-> New exp.function_call(id)} |
+  {one_or_more_args} id l_paren cst_exp input_arg_list* r_paren {-> New exp.function_call(id)};
+
+input_arg_list =
+  {multiple_args} comma cst_exp;
+  
+append_expr {-> exp} =
+  append l_paren cst_exp comma other_exp r_paren { -> New exp.appended_expr(cst_exp.exp, other_exp.exp)};
+
+other_exp {-> exp} =
+  cst_exp { -> cst_exp.exp};
+
+binary_op {-> exp} =
   {cst_plus}   cst_exp plus factor  {-> New exp.plus(cst_exp.exp,factor.exp)} |
   {cst_minus}  cst_exp minus factor {-> New exp.minus(cst_exp.exp,factor.exp)} | 
-  {factor}     factor {-> factor.exp} |
-  {unary_op}   unary_op {-> unary_op.exp};
+  {cst_logical_or} cst_exp logical_or factor {-> New exp.logical_or(cst_exp.exp, factor.exp)} |
+  {cst_logical_and} cst_exp logical_and factor {-> New exp.logical_and(cst_exp.exp, factor.exp)} |
+  {cst_pipe} cst_exp pipe factor {-> New exp.pipe(cst_exp.exp, factor.exp)} |
+  {cst_caret} cst_exp caret factor {-> New exp.caret(cst_exp.exp, factor.exp)} |
+  {cst_rel_op} rel_op {-> rel_op.exp};
+
+rel_op {-> exp} = 
+  {cst_equals_equals} cst_exp equals_equals factor {-> New exp.equals_equals(cst_exp.exp, factor.exp)} |
+  {cst_not_equals} cst_exp exclamation_equals factor {-> New exp.not_equal(cst_exp.exp, factor.exp)} |
+  {cst_less_than} cst_exp less factor {-> New exp.less(cst_exp.exp, factor.exp)} |
+  {cst_greater_than} cst_exp greater factor {-> New exp.greater(cst_exp.exp, factor.exp)} |
+  {cst_less_than_equals} cst_exp less_equals factor {-> New exp.less_equals(cst_exp.exp, factor.exp)} |
+  {cst_greater_than_equals} cst_exp greater_equals factor {-> New exp.greater_equals(cst_exp.exp, factor.exp)};
 
 unary_op {-> exp} = 
   {positive_expression} plus factor { -> New exp.unary_plus(factor.exp)} |
@@ -175,14 +206,20 @@ unary_op {-> exp} =
   {caret_expression} caret factor {-> New exp.unary_xor(factor.exp)} |
   {exclamation_exoression} exclamation factor {-> New exp.unary_exclamation(factor.exp)};
 
+
 factor {-> exp} = 
-  {cst_times}      factor star term  {-> New exp.mult(factor.exp,term.exp)} |
-  {cst_divide}     factor slash term {-> New exp.divide(factor.exp,term.exp)} |
-  {term}           term              {-> term.exp};
+  {cst_times}       factor star term  {-> New exp.mult(factor.exp,term.exp)} |
+  {cst_divide}      factor slash term {-> New exp.divide(factor.exp,term.exp)} |
+  {cst_modulo}      factor modulo term {-> New exp.modulo(factor.exp, term.exp)} |
+  {cst_shift_left}  factor shift_left term {-> New exp.shift_left(factor.exp, term.exp)} |
+  {cst_shift_right} factor shift_right term {-> New exp.shift_right(factor.exp, term.exp)} |
+  {cst_ampersand}   factor ampersand term {-> New exp.ampersand(factor.exp, term.exp)} |
+  {cst_ampersand_caret} factor ampersand_caret term {-> New exp.ampersand_caret(factor.exp, term.exp)} |
+  {term}            term              {-> term.exp};
 
 term {-> exp} =
   {cst_id}        id     {-> New exp.id(id)} |
-  {cst_float64}     float64_literal  {-> New exp.float64_literal(float64_literal)} |
+  {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
   {cst_int}       int    {-> New exp.int(int)} |
   {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
   {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
@@ -230,6 +267,21 @@ exp =
   {minus}  [l]:exp [r]:exp |
   {mult}   [l]:exp [r]:exp |
   {divide} [l]:exp [r]:exp |
+  {modulo} [l]:exp [r]:exp |
+  {ampersand} [l]:exp [r]:exp |
+  {ampersand_caret} [l]:exp [r]:exp |
+  {shift_left} [l]:exp [r]:exp |
+  {shift_right} [l]:exp [r]:exp |
+  {logical_or} [l]:exp [r]:exp |
+  {logical_and} [l]:exp [r]:exp |
+  {equals_equals} [l]:exp [r]:exp |
+  {not_equal} [l]:exp [r]:exp |
+  {less} [l]:exp [r]:exp |
+  {less_equals} [l]:exp [r]:exp |
+  {greater_equals} [l]:exp [r]:exp |
+  {greater} [l]:exp [r]:exp |
+  {pipe} [l]:exp [r]:exp |
+  {caret} [l]:exp [r]:exp |
   {id} id |
   {float64_literal} float64_literal |
   {int} int |
@@ -239,4 +291,6 @@ exp =
   {unary_exclamation} exp |
   {rune_literal} rune_literal |
   {raw_string_lit} raw_string_lit |
-  {interpreted_string_literal} interpreted_string_literal;
+  {interpreted_string_literal} interpreted_string_literal |
+  {function_call} id|
+  {appended_expr} [l]:exp [r]:exp;
