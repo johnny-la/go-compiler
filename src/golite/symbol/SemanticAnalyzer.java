@@ -20,7 +20,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         this.symbolTable = symbolTable;
     }
    
-    public void inAVarDecl(AVarDecl node)
+    /*public void inAVarDecl(AVarDecl node)
     {
         String id = node.getId().getText();
 
@@ -56,7 +56,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
         // Ensure that the variable was declared before use
         checkVariableDeclared(id);
-    }
+    }*/
 
     /**
      * Throws an exception if the variable was not declared
