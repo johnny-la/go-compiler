@@ -54,7 +54,15 @@ public class PrettyPrinter extends DepthFirstAdapter
     /** PROGRAM */
     public void caseAProgram(AProgram node)
     {
-        printNodes(node.getDecl());
+        // Print declarations
+        for (int i = 0; i < node.getDecl().size(); i++)
+        {
+            Node decl = node.getDecl().get(i);
+            decl.apply(this);
+            // Don't print newlines/semicolons for function declarations
+            if (!(decl instanceof AFuncDeclAstDecl)) println(";");
+        }
+
         println("");
         printNodes(node.getStmt());
     }
@@ -63,128 +71,185 @@ public class PrettyPrinter extends DepthFirstAdapter
     //base case varTypes
 
     public void caseABaseTypeVarType(ABaseTypeVarType node) {
-        printi(node.getType().getText());
-        println("");
+        print(node.getType().getText());
     }
 
     public void caseASliceVarType(ASliceVarType node) {
-        printi("[]");
+        print("[]");
         node.getVarType().apply(this);
     }
 
     public void caseAArrayVarType(AArrayVarType node) {
-        printi("[" + node.getInt().getText() + "]");
+        print("[" + node.getInt().getText() + "]");
         node.getVarType().apply(this);
     }
 
     public void caseAStructVarType(AStructVarType node) {
-        printi(node.getId().getText());
+        print(node.getId().getText());
     }
 
     //var declarations
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node) {
-        printi("var ");
+        print("var ");
         node.getVarDecl().apply(this);
-        println("");
+        //println("");
 
     }
 
     public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
-        printi(node.getId().getText() + " ");
+        print(node.getId().getText() + " ");
         node.getVarType().apply(this);
     }
 
     public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
-        printi(node.getId().getText() + " = ");
+        print(node.getId().getText() + " = ");
         node.getExp().apply(this);
     }
 
     public void caseAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
-        printi(node.getId().getText() + " ");
+        print(node.getId().getText() + " ");
         node.getVarType().apply(this);
-        printi(" = ");
+        print(" = ");
         node.getExp().apply(this);
     }
 
     public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
-        printi(node.getId().getText() + ", ");
+        print(node.getId().getText() + ", ");
         node.getVarDecl().apply(this);
     }
 
     public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
-        printi(node.getId().getText() + ", ");
+        print(node.getId().getText() + ", ");
         node.getVarDecl().apply(this);
-        printi(", ");
+        print(", ");
         node.getExp().apply(this);
     }
 
     public void caseAMultilineListVarDecl(AMultilineListVarDecl node) {
-        printi("(");
-        println("");
+        println("(");
+        indentLevel++;
         for (Node n: node.getVarDecl()) {
+            printi("");
             n.apply(this);
             println("");
         }
-        printi(" )");
+        indentLevel--;
+        printi(")");
     }
 
     //type declarations
     public void caseATypeDeclAstDecl(ATypeDeclAstDecl node) {
-        printi("type ");
+        print("type ");
         node.getTypeDecl().apply(this);
-        println("");
+        //println("");
     }
 
     public void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node) {
-        printi(node.getId().getText() + " ");
+        print(node.getId().getText() + " ");
         node.getVarType().apply(this);
     } 
 
     public void caseATypeAliasBaseTypeDecl(ATypeAliasBaseTypeDecl node) {
-        printi(node.getType().getText() + " ");
+        print(node.getType().getText() + " ");
         node.getVarType().apply(this);
     }
 
     public void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node) {
-        printi(node.getId().getText() + ", ");
+        print(node.getId().getText() + ", ");
         node.getTypeDecl().apply(this);
     }
 
     public void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node) {
-        printi(node.getId().getText() + " struct {");
+        print(node.getId().getText() + " struct {");
         println("");
+
+        indentLevel++;
         for (Node n: node.getTypeDecl()) {
+            printi("");
             n.apply(this);
             println("");
         }
-        printi(" }");
+        
+        indentLevel--;
+        printi("}");
     }
 
     public void caseAMultilineListTypeDecl(AMultilineListTypeDecl node) {
-        printi("(");
-        println("");
+        println("(");
+        indentLevel++;
         for (Node n: node.getTypeDecl()) {
+            printi("");
             n.apply(this);
             println("");
         }
+        indentLevel--;
         printi(" )");
     }
 
     /** STATEMENTS */
-    public void caseAReadStmt(AReadStmt node)
-    {
-        printi("read " + node.getId().getText() + ";");
-        println("");
-    }
-  
     public void caseAPrintStmt(APrintStmt node)
     {
-        printi("print "); 
+        printi("print("); 
         if (node.getExp() != null) node.getExp().apply(this);
-        println(";");
+        print(")");
+    }
+
+    public void caseAPrintlnStmt(APrintlnStmt node)
+    {
+        printi("println(");
+        if (node.getExp() != null) node.getExp().apply(this);
+        print(")");
+    }
+
+    public void caseAReturnStmt(AReturnStmt node)
+    {
+        printi("return");
+        if (node.getExp() != null) 
+        {
+            print(" ");
+            node.getExp().apply(this);
+        }
+    }
+
+    public void caseAIncrementStmt(AIncrementStmt node)
+    {
+        printi("");
+        node.getExp().apply(this);
+        print("++");
+    }
+
+    public void caseADecrementStmt(ADecrementStmt node)
+    {
+        printi("");
+        node.getExp().apply(this);
+        print("--");
+    }
+
+    public void caseADeclStmt(ADeclStmt node)
+    {
+        printi("");
+        node.getDecl().apply(this);
     }
 
     public void caseAAssignStmt(AAssignStmt node)
+    {
+
+    }
+
+    public void caseABlockStmt(ABlockStmt node)
+    {
+        println("{");
+        indentLevel++;
+        for (int i = 0; i < node.getStmt().size(); i++)
+        {
+            node.getStmt().get(i).apply(this);
+            println(";");
+        }
+        indentLevel--;
+        println("}");
+    }
+
+    /*public void caseAAssignStmt(AAssignStmt node)
     {
         node.getL().apply(this);
         printi(" = ");
@@ -205,7 +270,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         indentLevel--;
         printi("done");
         println("");
-    }
+    }*/
 
     // public void caseAIfStmt(AIfStmt node)
     // {
