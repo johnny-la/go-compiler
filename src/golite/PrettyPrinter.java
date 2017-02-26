@@ -169,42 +169,43 @@ public class PrettyPrinter extends DepthFirstAdapter
         }
         printi(" )");
     }
-//     /** STATEMENTS */
-//     public void caseAReadStmt(AReadStmt node)
-//     {
-//         printi("read " + node.getId().getText() + ";");
-//         println("");
-//     }
+
+    /** STATEMENTS */
+    public void caseAReadStmt(AReadStmt node)
+    {
+        printi("read " + node.getId().getText() + ";");
+        println("");
+    }
   
-    // public void caseAPrintStmt(APrintStmt node)
-    // {
-    //     printi("print "); 
-    //     if (node.getExp() != null) node.getExp().apply(this);
-    //     println(";");
-    // }
+    public void caseAPrintStmt(APrintStmt node)
+    {
+        printi("print "); 
+        if (node.getExp() != null) node.getExp().apply(this);
+        println(";");
+    }
 
-    // public void caseAAssignStmt(AAssignStmt node)
-    // {
-    //     node.getL().apply(this);
-    //     printi(" = ");
-    //     node.getR().apply(this);
-    //     println(";");
-    // }
+    public void caseAAssignStmt(AAssignStmt node)
+    {
+        node.getL().apply(this);
+        printi(" = ");
+        node.getR().apply(this);
+        println(";");
+    }
 
-    // public void caseAWhileStmt(AWhileStmt node)
-    // {
-    //     printi("while ");
-    //     node.getExp().apply(this);
-    //     println(" do");
+    public void caseAWhileStmt(AWhileStmt node)
+    {
+        printi("while ");
+        node.getExp().apply(this);
+        println(" do");
 
-    //     // Print the statements in the while-loop
-    //     indentLevel++;
-    //     printNodes(node.getStmt());       
+        // Print the statements in the while-loop
+        indentLevel++;
+        printNodes(node.getStmt());       
  
-    //     indentLevel--;
-    //     printi("done");
-    //     println("");
-    // }
+        indentLevel--;
+        printi("done");
+        println("");
+    }
 
     // public void caseAIfStmt(AIfStmt node)
     // {
