@@ -354,6 +354,8 @@ term {-> exp} =
   {cst_id}        id     {-> New exp.id(id)} |
   {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
   {cst_int}       int    {-> New exp.int(int)} |
+  {cst_oct}       oct    {-> New exp.oct(oct)} |
+  {cst_hex}       hex    {-> New exp.hex(hex)} |
   {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
   {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
   {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
@@ -469,6 +471,8 @@ exp =
   {id} id |
   {float64_literal} float64_literal |
   {int} int |
+  {oct} oct |
+  {hex} hex |
   {unary_plus} exp |
   {unary_minus} exp |
   {unary_xor} exp |
