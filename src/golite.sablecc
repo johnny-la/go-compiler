@@ -119,19 +119,22 @@ cst_decl {-> decl} =
   {decl_var}   var id colon type semicolon {-> New decl.var(id,type)};
 
 cst_stmt {-> stmt} =
-  {cst_assign}     cst_assign_stmt     {-> cst_assign_stmt.stmt} |
-  {cst_short_decl} cst_short_decl_stmt {-> cst_short_decl_stmt.stmt} |
-  {cst_increment}  lvalue plus_plus    {-> New stmt.increment(lvalue.exp)} |
-  {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)} |
+  {cst_simple}     cst_simple_stmt     {-> cst_simple_stmt.stmt} |
   {cst_print}      print l_paren cst_exp_list? r_paren {-> New stmt.print(cst_exp_list.exp)} |
   {cst_println}    println l_paren cst_exp_list? r_paren {-> New stmt.println(cst_exp_list.exp)} |
   {cst_return}     return cst_exp  {-> New stmt.return(cst_exp.exp)} |
   {cst_if}         cst_if_stmt     {-> cst_if_stmt.stmt} |
-  {cst_switch}     cst_switch_stmt {-> cst_switch_stmt.stmt};
+  {cst_switch}     cst_switch_stmt {-> cst_switch_stmt.stmt} |
+  {cst_for}        for cst_for_condition cst_block {-> New stmt.for(cst_for_condition.exp, cst_block.stmt)} |
+  {cst_break}      break           {-> New stmt.break()} |
+  {cst_continue}   continue        {-> New stmt.continue()};
 
 cst_simple_stmt {-> stmt} =
+  //{cst_empty}      /*empty*/           {-> New stmt.empty()} |
   {cst_increment}  lvalue plus_plus    {-> New stmt.increment(lvalue.exp)} |
-  {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)};
+  {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)} |
+  {cst_assign}     cst_assign_stmt     {-> cst_assign_stmt.stmt} |
+  {cst_short_decl} cst_short_decl_stmt {-> cst_short_decl_stmt.stmt};
 
 cst_if_stmt {-> stmt} = 
   {cst_if} if cst_exp cst_block cst_end_if? {-> New stmt.if(cst_exp.exp, cst_block.stmt, cst_end_if.stmt)};
@@ -150,7 +153,10 @@ cst_stmt_eos {-> stmt} =
   {cst_stmt_eos}  cst_stmt {-> cst_stmt.stmt}; // Add eos
 
 cst_switch_stmt {-> stmt} =
-  {cst_switch} switch cst_exp? l_brace cst_switch_case_clause* r_brace {-> New stmt.empty()};
+  {cst_switch} switch cst_simple_stmt_eol? cst_exp? l_brace cst_switch_case_clause* r_brace {-> New stmt.empty()};
+
+cst_simple_stmt_eol {-> stmt} =
+  {cst_simple_eol} cst_simple_stmt semicolon {-> cst_simple_stmt.stmt};
 
 cst_switch_case_clause {-> stmt} =
   {cst_case_clause} cst_switch_case colon cst_stmt_list {-> New stmt.empty()};
@@ -158,6 +164,10 @@ cst_switch_case_clause {-> stmt} =
 cst_switch_case {-> stmt} =
   {cst_case}   case cst_exp_list {-> New stmt.empty()} |
   {cst_switch} default {-> New stmt.empty()}; 
+
+cst_for_condition {-> exp} =
+  {cst_exp}      cst_exp {-> cst_exp.exp} |
+  {cst_clause}   [l]:cst_simple_stmt? [sl]:semicolon cst_exp? [sr]:semicolon [r]:cst_simple_stmt? {-> New exp.for_cond(l.stmt, cst_exp.exp, r.stmt)};
 
 cst_assign_stmt {-> stmt} =
   {cst_assign_stmt} lvalue op_equals cst_exp {-> New stmt.assign_op(lvalue.exp,op_equals,cst_exp.exp)} |
@@ -232,6 +242,9 @@ stmt =
   {if}              exp [block]:stmt [end]:stmt?  |
   {elseif}          stmt |
   {else}            stmt |
+  {for}             [condition]:exp [block]:stmt |
+  {break}    |
+  {continue} | 
   {empty};
 
 exp =
@@ -242,7 +255,8 @@ exp =
   {uminus}    exp |
   {array_index}      [lvalue]:exp [index]:exp |
   {struct_selector}  [l]:exp [r]:exp |
-  {list}  [list]:exp [value]:exp |
+  {list}      [list]:exp [value]:exp |
+  {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
   {id} id |
   {float} float |
   {int} int;
