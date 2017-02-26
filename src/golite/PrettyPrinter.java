@@ -169,20 +169,6 @@ public class PrettyPrinter extends DepthFirstAdapter
         }
         printi(" )");
     }
-    // /** STATEMENTS */
-    // public void caseAReadStmt(AReadStmt node)
-    // {
-    //     printi("read " + node.getId().getText() + ";");
-    //     println("");
-    // }
-//     /** PROGRAM */
-//     public void caseAProgram(AProgram node)
-//     {
-//         printNodes(node.getDecl());
-//         println("");
-//         printNodes(node.getStmt());
-//     }
-
 //     /** STATEMENTS */
 //     public void caseAReadStmt(AReadStmt node)
 //     {
