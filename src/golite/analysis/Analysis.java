@@ -13,7 +13,18 @@ public interface Analysis extends Switch
 
     void caseStart(Start node);
     void caseAProgram(AProgram node);
-    void caseAVarDecl(AVarDecl node);
+    void caseAVarDeclAstDecl(AVarDeclAstDecl node);
+    void caseATypeDecl(ATypeDecl node);
+    void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node);
+    void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node);
+    void caseAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node);
+    void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node);
+    void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node);
+    void caseAMultilineListVarDecl(AMultilineListVarDecl node);
+    void caseABaseTypeVarType(ABaseTypeVarType node);
+    void caseASliceVarType(ASliceVarType node);
+    void caseAArrayVarType(AArrayVarType node);
+    void caseAStructVarType(AStructVarType node);
     void caseAReadStmt(AReadStmt node);
     void caseAPrintStmt(APrintStmt node);
     void caseAAssignStmt(AAssignStmt node);
@@ -42,6 +53,7 @@ public interface Analysis extends Switch
     void caseTFunc(TFunc node);
     void caseTGo(TGo node);
     void caseTGoto(TGoto node);
+    void caseTVar(TVar node);
     void caseTImport(TImport node);
     void caseTInterface(TInterface node);
     void caseTMap(TMap node);
@@ -52,6 +64,7 @@ public interface Analysis extends Switch
     void caseTStruct(TStruct node);
     void caseTSwitch(TSwitch node);
     void caseTType(TType node);
+    void caseTTypeKeyword(TTypeKeyword node);
     void caseTPlus(TPlus node);
     void caseTMinus(TMinus node);
     void caseTStar(TStar node);
@@ -115,7 +128,6 @@ public interface Analysis extends Switch
     void caseTRawStringLit(TRawStringLit node);
     void caseTInterpretedStringLiteral(TInterpretedStringLiteral node);
     void caseTId(TId node);
-    void caseTVar(TVar node);
     void caseTIf(TIf node);
     void caseTElse(TElse node);
     void caseTEol(TEol node);

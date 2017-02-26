@@ -69,29 +69,284 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAProgram(node);
     }
 
-    public void inAVarDecl(AVarDecl node)
+    public void inAVarDeclAstDecl(AVarDeclAstDecl node)
     {
         defaultIn(node);
     }
 
-    public void outAVarDecl(AVarDecl node)
+    public void outAVarDeclAstDecl(AVarDeclAstDecl node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAVarDecl(AVarDecl node)
+    public void caseAVarDeclAstDecl(AVarDeclAstDecl node)
     {
-        inAVarDecl(node);
-        if(node.getType() != null)
+        inAVarDeclAstDecl(node);
+        if(node.getVarDecl() != null)
         {
-            node.getType().apply(this);
+            node.getVarDecl().apply(this);
+        }
+        outAVarDeclAstDecl(node);
+    }
+
+    public void inATypeDecl(ATypeDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeDecl(ATypeDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeDecl(ATypeDecl node)
+    {
+        inATypeDecl(node);
+        outATypeDecl(node);
+    }
+
+    public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
+    {
+        inAVarWithTypeVarDecl(node);
+        if(node.getVarType() != null)
+        {
+            node.getVarType().apply(this);
         }
         if(node.getId() != null)
         {
             node.getId().apply(this);
         }
-        outAVarDecl(node);
+        outAVarWithTypeVarDecl(node);
+    }
+
+    public void inAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node)
+    {
+        inAVarWithOnlyExpVarDecl(node);
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAVarWithOnlyExpVarDecl(node);
+    }
+
+    public void inAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node)
+    {
+        inAVarWithTypeAndExpVarDecl(node);
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        if(node.getVarType() != null)
+        {
+            node.getVarType().apply(this);
+        }
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAVarWithTypeAndExpVarDecl(node);
+    }
+
+    public void inAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node)
+    {
+        inAInlineListNoExpVarDecl(node);
+        if(node.getVarDecl() != null)
+        {
+            node.getVarDecl().apply(this);
+        }
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAInlineListNoExpVarDecl(node);
+    }
+
+    public void inAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node)
+    {
+        inAInlineListWithExpVarDecl(node);
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        if(node.getVarDecl() != null)
+        {
+            node.getVarDecl().apply(this);
+        }
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAInlineListWithExpVarDecl(node);
+    }
+
+    public void inAMultilineListVarDecl(AMultilineListVarDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAMultilineListVarDecl(AMultilineListVarDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAMultilineListVarDecl(AMultilineListVarDecl node)
+    {
+        inAMultilineListVarDecl(node);
+        {
+            List<PVarDecl> copy = new ArrayList<PVarDecl>(node.getVarDecl());
+            Collections.reverse(copy);
+            for(PVarDecl e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAMultilineListVarDecl(node);
+    }
+
+    public void inABaseTypeVarType(ABaseTypeVarType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outABaseTypeVarType(ABaseTypeVarType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseABaseTypeVarType(ABaseTypeVarType node)
+    {
+        inABaseTypeVarType(node);
+        if(node.getType() != null)
+        {
+            node.getType().apply(this);
+        }
+        outABaseTypeVarType(node);
+    }
+
+    public void inASliceVarType(ASliceVarType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outASliceVarType(ASliceVarType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseASliceVarType(ASliceVarType node)
+    {
+        inASliceVarType(node);
+        if(node.getVarType() != null)
+        {
+            node.getVarType().apply(this);
+        }
+        outASliceVarType(node);
+    }
+
+    public void inAArrayVarType(AArrayVarType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAArrayVarType(AArrayVarType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAArrayVarType(AArrayVarType node)
+    {
+        inAArrayVarType(node);
+        if(node.getVarType() != null)
+        {
+            node.getVarType().apply(this);
+        }
+        outAArrayVarType(node);
+    }
+
+    public void inAStructVarType(AStructVarType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAStructVarType(AStructVarType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAStructVarType(AStructVarType node)
+    {
+        inAStructVarType(node);
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAStructVarType(node);
     }
 
     public void inAReadStmt(AReadStmt node)
