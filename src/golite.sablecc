@@ -320,4 +320,8 @@ exp =
   {unary_exclamation} exp |
   {rune_literal} rune_literal |
   {raw_string_lit} raw_string_lit |
-  {interpreted_string_literal} interpreted_string_literal;
+  {interpreted_string_literal} interpreted_string_literal
+  {array_index}      [lvalue]:exp [index]:exp |
+  {struct_selector}  [l]:exp [r]:exp |
+  {list}      [list]:exp [value]:exp |
+  {for_cond}  [first]:stmt? [second]:exp? [third]:stmt?;
