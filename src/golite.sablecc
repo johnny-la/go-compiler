@@ -26,6 +26,8 @@ Helpers
   not_end_of_line = [all_chars - [carriage_return + line_feed]] ;
 
 Tokens
+  if = 'if';
+  else = 'else';
   break = 'break';
   case = 'case';
   chan = 'chan';
@@ -48,6 +50,8 @@ Tokens
   select = 'select';
   struct = 'struct';
   switch = 'switch';
+  op_equals = ('+' | '&' | '&^' | '-' | '|' | '<' | '*' | '^' | '/' | '<<' | '%' | '>>')
+ '=';
   type = 'float64'|'rune'|'int'|'bool'|'string';
   type_keyword = 'type';
   plus = '+';
@@ -61,17 +65,6 @@ Tokens
   shift_left = '<<';
   shift_right = '>>';
   ampersand_caret = '&^';
-  plus_equals = '+=';
-  minus_equals = '-=';
-  times_equals = '*=';
-  slash_equals = '/=';
-  modulo_equals = '%=';
-  ampersand_equals = '&=';
-  pipe_equals = '|=';
-  caret_equals = '^=';
-  shift_left_equals = '<<=';
-  shift_right_equals = '>>=';
-  ampersand_caret_equals = '&^=';
   logical_and = '&&';
   logical_or = '||';
   left_arrow = '<-';
@@ -105,7 +98,7 @@ Tokens
   int = integer;
   oct = '0' oct_digit+ ;
   hex = '0' ['x' + 'X'] hex_digit+;
-  float = digit* '.' digit* | '.' digit+ ;
+  float64_literal = digit* '.' digit* | '.' digit+ ;
   float64 = 'float64';
   bool = 'bool';
   rune = 'rune';
@@ -113,8 +106,6 @@ Tokens
   raw_string_lit = back_quote [all_chars - back_quote]* back_quote ;
   interpreted_string_literal = double_quote ([not_end_of_line - [double_quote + '\']] | escape_double_quote| escape_sequences)* double_quote ;
   id = (letter | '_')(letter | digit | '_')*;
-  if = 'if';
-  else = 'else';
   eol = line_feed | carriage_return | carriage_return line_feed;
   blank = tab | space;
 
@@ -160,9 +151,75 @@ cst_type {-> var_type} =
   ;
 
 cst_stmt {-> stmt} =
-  {cst_print}  print cst_exp semicolon {-> New stmt.print(cst_exp.exp)} |
-  {cst_assign} id equals cst_exp semicolon {-> New stmt.assign(id, cst_exp.exp)}; 
+  {cst_simple}     cst_simple_stmt     {-> cst_simple_stmt.stmt} |
+  {cst_print}      print l_paren cst_exp_list? r_paren {-> New stmt.print(cst_exp_list.exp)} |
+  {cst_println}    println l_paren cst_exp_list? r_paren {-> New stmt.println(cst_exp_list.exp)} |
+  {cst_return}     return cst_exp  {-> New stmt.return(cst_exp.exp)} |
+  {cst_if}         cst_if_stmt     {-> cst_if_stmt.stmt} |
+  {cst_switch}     cst_switch_stmt {-> cst_switch_stmt.stmt} |
+  {cst_for}        for cst_for_condition cst_block {-> New stmt.for(cst_for_condition.exp, cst_block.stmt)} |
+  {cst_break}      break           {-> New stmt.break()} |
+  {cst_continue}   continue        {-> New stmt.continue()};
 
+cst_simple_stmt {-> stmt} =
+  //{cst_empty}      /*empty*/           {-> New stmt.empty()} |
+  {cst_increment}  lvalue plus_plus    {-> New stmt.increment(lvalue.exp)} |
+  {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)} |
+  {cst_assign}     cst_assign_stmt     {-> cst_assign_stmt.stmt} |
+  {cst_short_decl} cst_short_decl_stmt {-> cst_short_decl_stmt.stmt};
+
+cst_if_stmt {-> stmt} = 
+  {cst_if} if cst_exp cst_block cst_end_if? {-> New stmt.if(cst_exp.exp, cst_block.stmt, cst_end_if.stmt)};
+
+cst_end_if {-> stmt} =
+  {cst_else_if} else cst_if_stmt {-> New stmt.elseif(cst_if_stmt.stmt)} |
+  {cst_else}    else cst_block   {-> New stmt.else(cst_block.stmt)};
+
+cst_block {-> stmt} =
+  {cst_block} l_brace cst_stmt_list r_brace {-> New stmt.block([cst_stmt_list.stmt])};
+
+cst_stmt_list {-> stmt*} =
+  {cst_stmt_list} cst_stmt_eos* {-> [cst_stmt_eos.stmt]};
+
+cst_stmt_eos {-> stmt} =    
+  {cst_stmt_eos}  cst_stmt {-> cst_stmt.stmt}; // Add eos
+
+cst_switch_stmt {-> stmt} =
+  {cst_switch} switch cst_simple_stmt_eol? cst_exp? l_brace cst_switch_case_clause* r_brace {-> New stmt.empty()};
+
+cst_simple_stmt_eol {-> stmt} =
+  {cst_simple_eol} cst_simple_stmt semicolon {-> cst_simple_stmt.stmt};
+
+cst_switch_case_clause {-> stmt} =
+  {cst_case_clause} cst_switch_case colon cst_stmt_list {-> New stmt.empty()};
+
+cst_switch_case {-> stmt} =
+  {cst_case}   case cst_exp_list {-> New stmt.empty()} |
+  {cst_switch} default {-> New stmt.empty()}; 
+
+cst_for_condition {-> exp} =
+  {cst_exp}      cst_exp {-> cst_exp.exp} |
+  {cst_clause}   [l]:cst_simple_stmt? [sl]:semicolon cst_exp? [sr]:semicolon [r]:cst_simple_stmt? {-> New exp.for_cond(l.stmt, cst_exp.exp, r.stmt)};
+
+cst_assign_stmt {-> stmt} =
+  {cst_assign_stmt} lvalue op_equals cst_exp {-> New stmt.assign_op(lvalue.exp,op_equals,cst_exp.exp)} |
+  {cst_assign_op_stmt} cst_assign_op_stmt {-> cst_assign_op_stmt.stmt};
+
+cst_assign_op_stmt {-> stmt} =
+  {lvalue_assign} lvalue equals cst_exp {-> New stmt.assign(lvalue.exp, cst_exp.exp)} |
+  {lvalue_assign_list} lvalue [l]:comma cst_assign_op_stmt [r]:comma cst_exp {-> New stmt.assign_list(lvalue.exp, cst_assign_op_stmt.stmt, cst_exp.exp)};
+
+cst_short_decl_stmt {-> stmt} =
+  {cst_short_decl} id colon_equals cst_exp {-> New stmt.short_decl(id, cst_exp.exp)};
+  //{cst_short_decl_list} cst_id_comma cst_short_decl_stmt [r]:comma cst_exp {-> New stmt.short_decl_list(cst_id_comma.id, cst_short_decl_stmt.stmt, cst_exp.exp)};
+
+cst_id_comma {-> id} =
+  {cst_id_comman} id comma {-> id};
+
+cst_exp_list {-> exp} =
+  {cst_exp}      cst_exp     {-> cst_exp.exp} |
+  {cst_exp_list} cst_exp_list comma cst_exp {-> New exp.list(cst_exp_list.exp, cst_exp.exp)};
+    
 cst_exp {-> exp} =
   {cst_plus}   cst_exp plus factor  {-> New exp.plus(cst_exp.exp,factor.exp)} |
   {cst_minus}  cst_exp minus factor {-> New exp.minus(cst_exp.exp,factor.exp)} | 
@@ -182,12 +239,23 @@ factor {-> exp} =
 
 term {-> exp} =
   {cst_id}        id     {-> New exp.id(id)} |
-  {cst_float}     float  {-> New exp.float(float)} |
+  {cst_float64}     float64_literal  {-> New exp.float64_literal(float64_literal)} |
   {cst_int}       int    {-> New exp.int(int)} |
   {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
   {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
   {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
   {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
+
+lvalue {-> exp} =
+  {cst_id}      id     {-> New exp.id(id)} |
+  {array_index} lvalue cst_index {-> New exp.array_index(lvalue.exp, cst_index.exp)} |
+  {struct_selector}  lvalue cst_selector  {-> New exp.struct_selector(lvalue.exp, cst_selector.exp)};
+
+cst_index {-> exp} =
+  {cst_index} l_brack cst_exp r_brack {-> cst_exp.exp};
+
+cst_selector {-> exp} =
+  {cst_selector} dot cst_exp {-> cst_exp.exp};
 
 Abstract Syntax Tree
 
@@ -217,12 +285,25 @@ var_type =
   ;
 
 stmt =
-  {read}      id |
-  {print}     exp |
-  {assign}    id exp |
-  {while}     exp stmt* |
-  {if}        exp [stmt]:stmt* [end]:stmt |
-  {else}      stmt* |
+  {read}            id |
+  {print}           exp? |
+  {println}         exp? |
+  {return}          exp |
+  {increment}       exp |
+  {decrement}       exp |
+  {assign}          [l]:exp [r]:exp |
+  {assign_op}       [l]:exp op_equals [r]:exp |
+  {assign_list}     [l]:exp stmt [r]:exp |
+  {short_decl}      id exp |
+  {short_decl_list} id stmt exp |
+  {block}           stmt* |
+  {while}           exp stmt* |
+  {if}              exp [block]:stmt [end]:stmt?  |
+  {elseif}          stmt |
+  {else}            stmt |
+  {for}             [condition]:exp [block]:stmt |
+  {break}    |
+  {continue} | 
   {empty};
 
 exp =
@@ -231,7 +312,7 @@ exp =
   {mult}   [l]:exp [r]:exp |
   {divide} [l]:exp [r]:exp |
   {id} id |
-  {float} float |
+  {float64_literal} float64_literal |
   {int} int |
   {unary_plus} exp |
   {unary_minus} exp |
@@ -239,4 +320,8 @@ exp =
   {unary_exclamation} exp |
   {rune_literal} rune_literal |
   {raw_string_lit} raw_string_lit |
-  {interpreted_string_literal} interpreted_string_literal;
+  {interpreted_string_literal} interpreted_string_literal
+  {array_index}      [lvalue]:exp [index]:exp |
+  {struct_selector}  [l]:exp [r]:exp |
+  {list}      [list]:exp [value]:exp |
+  {for_cond}  [first]:stmt? [second]:exp? [third]:stmt?;
