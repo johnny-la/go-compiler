@@ -204,7 +204,7 @@ var_id_and_exp_maybe_type {-> var_decl} =
 cst_type {-> var_type} = 
   {cst_base_type} type {-> New var_type.base_type(type)}|
   {cst_slices} l_brack r_brack cst_type {-> New var_type.slice(cst_type.var_type)} | 
-  {cst_arrays} l_brack int r_brack cst_type {-> New var_type.array(cst_type.var_type)}|
+  {cst_arrays} l_brack int r_brack cst_type {-> New var_type.array(int, cst_type.var_type)}|
   {cst_structs} id {-> New var_type.struct(id)}
   ;
 
@@ -401,7 +401,7 @@ var_decl =
 var_type = 
   {base_type} type |
   {slice} var_type |
-  {array} var_type |
+  {array} int var_type |
   {struct} id
   ;
 

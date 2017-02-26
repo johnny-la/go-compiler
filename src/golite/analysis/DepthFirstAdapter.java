@@ -630,6 +630,10 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAArrayVarType(AArrayVarType node)
     {
         inAArrayVarType(node);
+        if(node.getInt() != null)
+        {
+            node.getInt().apply(this);
+        }
         if(node.getVarType() != null)
         {
             node.getVarType().apply(this);
@@ -782,6 +786,27 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getExp().apply(this);
         }
         outADecrementStmt(node);
+    }
+
+    public void inADeclStmt(ADeclStmt node)
+    {
+        defaultIn(node);
+    }
+
+    public void outADeclStmt(ADeclStmt node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseADeclStmt(ADeclStmt node)
+    {
+        inADeclStmt(node);
+        if(node.getDecl() != null)
+        {
+            node.getDecl().apply(this);
+        }
+        outADeclStmt(node);
     }
 
     public void inAAssignStmt(AAssignStmt node)
@@ -1101,6 +1126,40 @@ public class DepthFirstAdapter extends AnalysisAdapter
     {
         inAContinueStmt(node);
         outAContinueStmt(node);
+    }
+
+    public void inASemicolonStmt(ASemicolonStmt node)
+    {
+        defaultIn(node);
+    }
+
+    public void outASemicolonStmt(ASemicolonStmt node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseASemicolonStmt(ASemicolonStmt node)
+    {
+        inASemicolonStmt(node);
+        outASemicolonStmt(node);
+    }
+
+    public void inAEofStmt(AEofStmt node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAEofStmt(AEofStmt node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAEofStmt(AEofStmt node)
+    {
+        inAEofStmt(node);
+        outAEofStmt(node);
     }
 
     public void inAEmptyStmt(AEmptyStmt node)

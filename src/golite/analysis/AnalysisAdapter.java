@@ -261,6 +261,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseADeclStmt(ADeclStmt node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAAssignStmt(AAssignStmt node)
     {
         defaultCase(node);
@@ -334,6 +340,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAContinueStmt(AContinueStmt node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseASemicolonStmt(ASemicolonStmt node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAEofStmt(AEofStmt node)
     {
         defaultCase(node);
     }
@@ -573,6 +591,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTReturn(TReturn node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTCase(TCase node)
     {
         defaultCase(node);
@@ -670,12 +694,6 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTRange(TRange node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseTReturn(TReturn node)
     {
         defaultCase(node);
     }
@@ -1024,6 +1042,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTId(TId node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTEndOfFile(TEndOfFile node)
     {
         defaultCase(node);
     }

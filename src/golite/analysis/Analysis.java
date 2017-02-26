@@ -43,6 +43,7 @@ public interface Analysis extends Switch
     void caseAReturnStmt(AReturnStmt node);
     void caseAIncrementStmt(AIncrementStmt node);
     void caseADecrementStmt(ADecrementStmt node);
+    void caseADeclStmt(ADeclStmt node);
     void caseAAssignStmt(AAssignStmt node);
     void caseAAssignOpStmt(AAssignOpStmt node);
     void caseAAssignListStmt(AAssignListStmt node);
@@ -56,6 +57,8 @@ public interface Analysis extends Switch
     void caseAForStmt(AForStmt node);
     void caseABreakStmt(ABreakStmt node);
     void caseAContinueStmt(AContinueStmt node);
+    void caseASemicolonStmt(ASemicolonStmt node);
+    void caseAEofStmt(AEofStmt node);
     void caseAEmptyStmt(AEmptyStmt node);
     void caseAPlusExp(APlusExp node);
     void caseAMinusExp(AMinusExp node);
@@ -96,6 +99,7 @@ public interface Analysis extends Switch
     void caseTIf(TIf node);
     void caseTElse(TElse node);
     void caseTBreak(TBreak node);
+    void caseTReturn(TReturn node);
     void caseTCase(TCase node);
     void caseTChan(TChan node);
     void caseTConst(TConst node);
@@ -113,7 +117,6 @@ public interface Analysis extends Switch
     void caseTMap(TMap node);
     void caseTPackage(TPackage node);
     void caseTRange(TRange node);
-    void caseTReturn(TReturn node);
     void caseTSelect(TSelect node);
     void caseTStruct(TStruct node);
     void caseTSwitch(TSwitch node);
@@ -172,6 +175,7 @@ public interface Analysis extends Switch
     void caseTRawStringLit(TRawStringLit node);
     void caseTInterpretedStringLiteral(TInterpretedStringLiteral node);
     void caseTId(TId node);
+    void caseTEndOfFile(TEndOfFile node);
     void caseTEol(TEol node);
     void caseTBlank(TBlank node);
     void caseEOF(EOF node);
