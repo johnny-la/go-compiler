@@ -283,12 +283,13 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAMultipleTypesSignature(AMultipleTypesSignature node)
     {
         inAMultipleTypesSignature(node);
+        if(node.getRoot() != null)
         {
-            List<PSignature> copy = new ArrayList<PSignature>(node.getSignature());
-            for(PSignature e : copy)
-            {
-                e.apply(this);
-            }
+            node.getRoot().apply(this);
+        }
+        if(node.getLeaf() != null)
+        {
+            node.getLeaf().apply(this);
         }
         outAMultipleTypesSignature(node);
     }

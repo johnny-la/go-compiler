@@ -1,9 +1,14 @@
-compile: clean sablecc
-	javac `find golite/ -name *.java`
+main: clean sablecc compile
 sablecc: golite.sablecc
 	sablecc golite.sablecc
+compile: 
+	javac `find golite/ -name *.java`
 pp:
 	vim golite/PrettyPrinter.java
+lexer:
+	vim golite/GoliteLexer.java
+Main:
+	vim golite/Main.java
 edit:
 	vim golite.sablecc
 clean:

@@ -29,6 +29,7 @@ Tokens
   if = 'if';
   else = 'else';
   break = 'break';
+  return = 'return';
   case = 'case';
   chan = 'chan';
   const = 'const';
@@ -46,7 +47,6 @@ Tokens
   map = 'map';
   package = 'package';
   range = 'range';
-  return = 'return';
   select = 'select';
   struct = 'struct';
   switch = 'switch';
@@ -105,6 +105,7 @@ Tokens
   raw_string_lit = back_quote [all_chars - back_quote]* back_quote ;
   interpreted_string_literal = double_quote ([not_end_of_line - [double_quote + '\']] | escape_double_quote| escape_sequences)* double_quote ;
   id = (letter | '_')(letter | digit | '_')*;
+  end_of_file = 26;
   eol = line_feed | carriage_return | carriage_return line_feed;
   blank = tab | space;
 
@@ -143,7 +144,8 @@ cst_func_decl{-> func_decl} =
   ;
 
 multi_sig {-> signature} = 
-  signature+ {-> New signature.multiple_types([signature.signature])}
+  {recurse} signature comma multi_sig {-> New signature.multiple_types(signature.signature, multi_sig.signature)} |
+  {base} signature {-> signature.signature}
   ;
 
 signature {-> signature} = 
@@ -197,8 +199,7 @@ var_id_and_type {-> var_decl} =
 var_id_and_exp_maybe_type {-> var_decl} = 
   {miae_recurse} id [l]:comma var_id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(id, var_id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
   {miae_end} id equals cst_exp {-> New var_decl.var_with_only_exp(id, cst_exp.exp)} |
-  {mtae_end} id cst_type equals cst_exp {-> New var_decl.var_with_type_and_exp(id, cst_type.var_type, cst_exp.exp)}
-  ;
+  {mtae_end} id cst_type equals cst_exp {-> New var_decl.var_with_type_and_exp(id, cst_type.var_type, cst_exp.exp)};
 
 //general type production for all declarations
 cst_type {-> var_type} = 
@@ -212,7 +213,7 @@ cst_stmt {-> stmt} =
   {cst_simple}     cst_simple_stmt     {-> cst_simple_stmt.stmt} |
   {cst_print}      print l_paren cst_exp_list? r_paren {-> New stmt.print(cst_exp_list.exp)} |
   {cst_println}    println l_paren cst_exp_list? r_paren {-> New stmt.println(cst_exp_list.exp)} |
-  {cst_return}     return cst_exp  {-> New stmt.return(cst_exp.exp)} |
+  {cst_return}     return cst_exp?  {-> New stmt.return(cst_exp.exp)} |
   {cst_if}         cst_if_stmt     {-> cst_if_stmt.stmt} |
   {cst_switch}     cst_switch_stmt {-> cst_switch_stmt.stmt} |
   {cst_for}        for cst_for_condition cst_block {-> New stmt.for(cst_for_condition.exp, cst_block.stmt)} |
@@ -221,10 +222,15 @@ cst_stmt {-> stmt} =
 
 cst_simple_stmt {-> stmt} =
   //{cst_empty}      /*empty*/           {-> New stmt.empty()} |
+  //{cst_decl}       cst_top_decl        {-> New stmt.decl(cst_top_decl.decl)} |
   {cst_increment}  lvalue plus_plus    {-> New stmt.increment(lvalue.exp)} |
   {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)} |
   {cst_assign}     cst_assign_stmt     {-> cst_assign_stmt.stmt} |
   {cst_short_decl} cst_short_decl_stmt {-> cst_short_decl_stmt.stmt};
+
+cst_return_stmt {-> } =
+  {cst_empty}  {-> } |
+  {cst_exp}   cst_exp {-> };
 
 cst_if_stmt {-> stmt} = 
   {cst_if} if cst_exp cst_block cst_end_if? {-> New stmt.if(cst_exp.exp, cst_block.stmt, cst_end_if.stmt)};
@@ -287,16 +293,20 @@ cst_end_if {-> stmt} =
   {cst_else}    else cst_block   {-> New stmt.else(cst_block.stmt)};
 
 cst_block {-> stmt} =
-  {cst_block} l_brace cst_stmt_list r_brace {-> New stmt.block([cst_stmt_list.stmt])};
+  {cst_block} l_brace semicolon cst_stmt_list r_brace {-> New stmt.block([cst_stmt_list.stmt])};
 
 cst_stmt_list {-> stmt*} =
   {cst_stmt_list} cst_stmt_eos* {-> [cst_stmt_eos.stmt]};
 
 cst_stmt_eos {-> stmt} =    
-  {cst_stmt_eos}  cst_stmt {-> cst_stmt.stmt}; // Add eos
+  {cst_stmt_eos}  cst_stmt cst_eos {-> cst_stmt.stmt}; // Add eos
+
+cst_eos {-> stmt} =
+  {cst_semicolon} semicolon    {-> New stmt.semicolon()} |
+  {cst_eof}       end_of_file  {-> New stmt.eof()};
 
 cst_switch_stmt {-> stmt} =
-  {cst_switch} switch cst_simple_stmt_eol? cst_exp? l_brace cst_switch_case_clause* r_brace {-> New stmt.empty()};
+  {cst_switch} switch cst_simple_stmt_eol? cst_exp? l_brace semicolon cst_switch_case_clause* r_brace {-> New stmt.empty()};
 
 cst_simple_stmt_eol {-> stmt} =
   {cst_simple_eol} cst_simple_stmt semicolon {-> cst_simple_stmt.stmt};
@@ -322,7 +332,7 @@ cst_assign_op_stmt {-> stmt} =
 
 cst_short_decl_stmt {-> stmt} =
   {cst_short_decl} id colon_equals cst_exp {-> New stmt.short_decl(id, cst_exp.exp)};
-  //{cst_short_decl_list} cst_id_comma cst_short_decl_stmt [r]:comma cst_exp {-> New stmt.short_decl_list(cst_id_comma.id, cst_short_decl_stmt.stmt, cst_exp.exp)};
+  //{cst_short_decl_list} id [l]:comma cst_short_decl_stmt [r]:comma cst_exp {-> New stmt.short_decl_list(id, cst_short_decl_stmt.stmt, cst_exp.exp)};
 
 cst_id_comma {-> id} =
   {cst_id_comman} id comma {-> id};
@@ -369,7 +379,7 @@ func_decl =
 signature = 
   {single_id_to_type} id var_type |
   {many_id_to_type} id signature |
-  {multiple_types} signature* 
+  {multiple_types} [root]:signature [leaf]:signature
   ;
 
 type_decl = 
@@ -400,9 +410,10 @@ stmt =
   {read}            id |
   {print}           exp? |
   {println}         exp? |
-  {return}          exp |
-  {increment}       exp |
-  {decrement}       exp |
+  {return}          exp? |
+  {increment}       exp  |
+  {decrement}       exp  |
+  {decl}            decl |
   {assign}          [l]:exp [r]:exp |
   {assign_op}       [l]:exp op_equals [r]:exp |
   {assign_list}     [l]:exp stmt [r]:exp |
@@ -414,8 +425,10 @@ stmt =
   {elseif}          stmt |
   {else}            stmt |
   {for}             [condition]:exp [block]:stmt |
-  {break}    |
-  {continue} | 
+  {break}     |
+  {continue}  | 
+  {semicolon} |
+  {eof}       |
   {empty};
 
 exp =
