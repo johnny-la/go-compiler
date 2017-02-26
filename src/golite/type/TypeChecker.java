@@ -235,11 +235,11 @@ public class TypeChecker extends DepthFirstAdapter
     public Type getIdType(String id)
     {
         // Retrieves the declaration node that created this variable
-        AVarDecl declNode = (AVarDecl)symbolTable.get(id);
-        // Gets the type of the identifier
-        Type type = stringToType(declNode.getType().getText());
+        // AVarDecl declNode = (AVarDecl)symbolTable.get(id);
+        // // Gets the type of the identifier
+        // Type type = stringToType(declNode.getType().getText());
 
-        return type;
+        return null;
     }
 
     public void outAIntExp(AIntExp node)

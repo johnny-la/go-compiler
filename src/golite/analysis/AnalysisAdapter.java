@@ -81,7 +81,73 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseAVarDecl(AVarDecl node)
+    public void caseAVarDeclAstDecl(AVarDeclAstDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseATypeDecl(ATypeDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAMultilineListVarDecl(AMultilineListVarDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseABaseTypeVarType(ABaseTypeVarType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseASliceVarType(ASliceVarType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAArrayVarType(AArrayVarType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAStructVarType(AStructVarType node)
     {
         defaultCase(node);
     }
@@ -249,6 +315,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTVar(TVar node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTImport(TImport node)
     {
         defaultCase(node);
@@ -304,6 +376,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTType(TType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTTypeKeyword(TTypeKeyword node)
     {
         defaultCase(node);
     }
@@ -682,12 +760,6 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTId(TId node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseTVar(TVar node)
     {
         defaultCase(node);
     }

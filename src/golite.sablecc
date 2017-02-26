@@ -38,6 +38,7 @@ Tokens
   func = 'func';
   go = 'go';
   goto = 'goto';
+  var = 'var';
   import = 'import';
   interface = 'interface';
   map = 'map';
@@ -47,7 +48,8 @@ Tokens
   select = 'select';
   struct = 'struct';
   switch = 'switch';
-  type = 'type';
+  type = 'float64'|'rune'|'int'|'bool'|'string';
+  type_keyword = 'type';
   plus = '+';
   minus = '-';
   star = '*';
@@ -111,7 +113,6 @@ Tokens
   raw_string_lit = back_quote [all_chars - back_quote]* back_quote ;
   interpreted_string_literal = double_quote ([not_end_of_line - [double_quote + '\']] | escape_double_quote| escape_sequences)* double_quote ;
   id = (letter | '_')(letter | digit | '_')*;
-  var = 'var';
   if = 'if';
   else = 'else';
   eol = line_feed | carriage_return | carriage_return line_feed;
@@ -122,10 +123,41 @@ Ignored Tokens
 
 Productions
 cst_prog {-> program} =
-  {prog}    cst_decl* cst_stmt*   {-> New program([cst_decl.decl], [cst_stmt.stmt])}; 
+  {prog}    cst_top_decl* cst_stmt*   {-> New program([cst_top_decl.decl], [cst_stmt.stmt])}; 
 
-cst_decl {-> decl} =
-  {decl_var}   var id colon type semicolon {-> New decl.var(id,type)};
+
+cst_top_decl {-> decl} =
+  {var_decl} cst_var_decl {-> New decl.var_decl_ast(cst_var_decl.var_decl)} 
+  ;
+
+cst_var_decl {-> var_decl} =
+  {cst_single_line_decl} var top_var_decl {-> top_var_decl.var_decl} |
+  {cst_multi_line_decl} var l_paren top_var_decl* r_paren semicolon {-> New var_decl.multiline_list([top_var_decl.var_decl])}
+  ;
+
+top_var_decl {-> var_decl} = 
+  {cst_miat} id_and_type semicolon {-> id_and_type.var_decl} |
+  {cst_miae} id_and_exp_maybe_type semicolon {-> id_and_exp_maybe_type.var_decl}
+  ;
+
+id_and_type {-> var_decl} = 
+  {miat_recurse} id comma id_and_type {-> New var_decl.inline_list_no_exp(id, id_and_type.var_decl)} |
+  {miat_end} id cst_type {-> New var_decl.var_with_type(id, cst_type.var_type)}
+  ;
+
+id_and_exp_maybe_type {-> var_decl} = 
+  {miae_recurse} id [l]:comma id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(id, id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
+  {miae_end} id equals cst_exp {-> New var_decl.var_with_only_exp(id, cst_exp.exp)} |
+  {mtae_end} id cst_type equals cst_exp {-> New var_decl.var_with_type_and_exp(id, cst_type.var_type, cst_exp.exp)}
+  ;
+
+//structs is just an id when declaring since no inline constructions
+cst_type {-> var_type} = 
+  {cst_base_type} type {-> New var_type.base_type(type)}|
+  {cst_slices} l_brack r_brack cst_type {-> New var_type.slice(cst_type.var_type)} | 
+  {cst_arrays} l_brack int r_brack cst_type {-> New var_type.array(cst_type.var_type)}|
+  {cst_structs} id {-> New var_type.struct(id)}
+  ;
 
 cst_stmt {-> stmt} =
   {cst_print}  print cst_exp semicolon {-> New stmt.print(cst_exp.exp)} |
@@ -134,28 +166,55 @@ cst_stmt {-> stmt} =
 cst_exp {-> exp} =
   {cst_plus}   cst_exp plus factor  {-> New exp.plus(cst_exp.exp,factor.exp)} |
   {cst_minus}  cst_exp minus factor {-> New exp.minus(cst_exp.exp,factor.exp)} | 
-  {factor}     factor {-> factor.exp};
+  {factor}     factor {-> factor.exp} |
+  {unary_op}   unary_op {-> unary_op.exp};
+
+unary_op {-> exp} = 
+  {positive_expression} plus factor { -> New exp.unary_plus(factor.exp)} |
+  {negative_expression} minus factor {-> New exp.unary_minus(factor.exp)} |
+  {caret_expression} caret factor {-> New exp.unary_xor(factor.exp)} |
+  {exclamation_exoression} exclamation factor {-> New exp.unary_exclamation(factor.exp)};
 
 factor {-> exp} = 
-  {cst_times}      factor star uterm  {-> New exp.mult(factor.exp,uterm.exp)} |
-  {cst_divide}     factor slash uterm {-> New exp.divide(factor.exp,uterm.exp)} |
-  {uterm}          uterm              {-> uterm.exp};
-
-uterm {-> exp} =
-  {cst_uminus}  minus uterm   {-> New exp.uminus(uterm.exp)} |
-  {term}        term          {-> term.exp};
+  {cst_times}      factor star term  {-> New exp.mult(factor.exp,term.exp)} |
+  {cst_divide}     factor slash term {-> New exp.divide(factor.exp,term.exp)} |
+  {term}           term              {-> term.exp};
 
 term {-> exp} =
   {cst_id}        id     {-> New exp.id(id)} |
   {cst_float}     float  {-> New exp.float(float)} |
   {cst_int}       int    {-> New exp.int(int)} |
+  {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
+  {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
+  {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
   {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
 
 Abstract Syntax Tree
+
 program = decl* stmt*;
 
-decl =
-  {var}       id type;
+decl = 
+  {var_decl_ast} var_decl
+  ;
+
+type_decl = 
+  ;
+
+var_decl = 
+  {var_with_type} id var_type |
+  {var_with_only_exp} id exp |
+  {var_with_type_and_exp} id var_type exp |
+  {inline_list_no_exp} id var_decl |
+  {inline_list_with_exp} id var_decl exp |
+  {multiline_list} var_decl*
+  ;
+
+var_type = 
+  {base_type} type |
+  {slice} var_type |
+  {array} var_type |
+  {struct} id
+  ;
 
 stmt =
   {read}      id |
@@ -171,8 +230,13 @@ exp =
   {minus}  [l]:exp [r]:exp |
   {mult}   [l]:exp [r]:exp |
   {divide} [l]:exp [r]:exp |
-  {uminus} exp |
   {id} id |
   {float} float |
-  {int} int;
-
+  {int} int |
+  {unary_plus} exp |
+  {unary_minus} exp |
+  {unary_xor} exp |
+  {unary_exclamation} exp |
+  {rune_literal} rune_literal |
+  {raw_string_lit} raw_string_lit |
+  {interpreted_string_literal} interpreted_string_literal;
