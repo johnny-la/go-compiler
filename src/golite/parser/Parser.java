@@ -219,19 +219,19 @@ public class Parser
                 push(goTo(1), list);
             }
             break;
-            case 5: /* reduce ACstSingleLineDeclCstVarDeclTop */
+            case 5: /* reduce ACstSingleLineDeclCstVarDecl */
             {
                 ArrayList<Object> list = new5();
                 push(goTo(2), list);
             }
             break;
-            case 6: /* reduce AAcstmultilinedeclcstvardecltop1CstVarDeclTop */
+            case 6: /* reduce AAcstmultilinedeclcstvardecl1CstVarDecl */
             {
                 ArrayList<Object> list = new6();
                 push(goTo(2), list);
             }
             break;
-            case 7: /* reduce AAcstmultilinedeclcstvardecltop2CstVarDeclTop */
+            case 7: /* reduce AAcstmultilinedeclcstvardecl2CstVarDecl */
             {
                 ArrayList<Object> list = new7();
                 push(goTo(2), list);
@@ -577,7 +577,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new5() /* reduce ACstSingleLineDeclCstVarDeclTop */
+    ArrayList<Object> new5() /* reduce ACstSingleLineDeclCstVarDecl */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -592,7 +592,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new6() /* reduce AAcstmultilinedeclcstvardecltop1CstVarDeclTop */
+    ArrayList<Object> new6() /* reduce AAcstmultilinedeclcstvardecl1CstVarDecl */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -617,7 +617,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new7() /* reduce AAcstmultilinedeclcstvardecltop2CstVarDeclTop */
+    ArrayList<Object> new7() /* reduce AAcstmultilinedeclcstvardecl2CstVarDecl */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -653,6 +653,7 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
         PVarDecl pvardeclNode1;
         pvardeclNode1 = (PVarDecl)nodeArrayList1.get(0);
@@ -667,6 +668,7 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
         PVarDecl pvardeclNode1;
         pvardeclNode1 = (PVarDecl)nodeArrayList1.get(0);
@@ -705,7 +707,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
         PVarDecl pvardeclNode1;
@@ -757,7 +758,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList4 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
@@ -782,7 +782,6 @@ public class Parser
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList5 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList4 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
@@ -1340,77 +1339,76 @@ public class Parser
 			{{-1, ERROR, 10}, {62, SHIFT, 28}, {84, SHIFT, 11}, },
 			{{-1, ERROR, 11}, {22, SHIFT, 31}, {54, SHIFT, 32}, {63, SHIFT, 33}, {67, SHIFT, 34}, {84, SHIFT, 35}, },
 			{{-1, REDUCE, 5}, },
-			{{-1, REDUCE, 8}, },
-			{{-1, REDUCE, 9}, },
+			{{-1, ERROR, 13}, {68, SHIFT, 37}, },
+			{{-1, ERROR, 14}, {68, SHIFT, 38}, },
 			{{-1, ERROR, 15}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
 			{{-1, ERROR, 16}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
 			{{-1, REDUCE, 31}, },
 			{{-1, REDUCE, 30}, },
 			{{-1, REDUCE, 29}, },
-			{{-1, ERROR, 20}, {24, SHIFT, 39}, {25, SHIFT, 40}, {68, SHIFT, 41}, },
-			{{-1, REDUCE, 23}, {26, SHIFT, 42}, {27, SHIFT, 43}, },
+			{{-1, ERROR, 20}, {24, SHIFT, 41}, {25, SHIFT, 42}, {68, SHIFT, 43}, },
+			{{-1, REDUCE, 23}, {26, SHIFT, 44}, {27, SHIFT, 45}, },
 			{{-1, REDUCE, 26}, },
 			{{-1, REDUCE, 28}, },
 			{{-1, ERROR, 24}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
 			{{-1, REDUCE, 34}, },
 			{{-1, REDUCE, 3}, {71, SHIFT, 2}, {84, SHIFT, 3}, },
 			{{-1, REDUCE, 36}, },
-			{{-1, ERROR, 28}, {68, SHIFT, 45}, },
+			{{-1, ERROR, 28}, {68, SHIFT, 47}, },
 			{{-1, REDUCE, 37}, },
-			{{-1, ERROR, 30}, {62, SHIFT, 46}, {84, SHIFT, 11}, },
+			{{-1, ERROR, 30}, {62, SHIFT, 48}, {84, SHIFT, 11}, },
 			{{-1, REDUCE, 15}, },
 			{{-1, ERROR, 32}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
-			{{-1, ERROR, 33}, {64, SHIFT, 49}, {74, SHIFT, 50}, },
+			{{-1, ERROR, 33}, {64, SHIFT, 51}, {74, SHIFT, 52}, },
 			{{-1, ERROR, 34}, {84, SHIFT, 11}, },
 			{{-1, REDUCE, 18}, },
-			{{-1, ERROR, 36}, {54, SHIFT, 53}, {68, SHIFT, 54}, },
+			{{-1, REDUCE, 11}, {54, SHIFT, 55}, },
+			{{-1, REDUCE, 8}, },
+			{{-1, REDUCE, 9}, },
 			{{-1, REDUCE, 27}, },
-			{{-1, ERROR, 38}, {24, SHIFT, 39}, {25, SHIFT, 40}, {62, SHIFT, 55}, },
-			{{-1, ERROR, 39}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
-			{{-1, ERROR, 40}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
-			{{-1, REDUCE, 19}, },
+			{{-1, ERROR, 40}, {24, SHIFT, 41}, {25, SHIFT, 42}, {62, SHIFT, 56}, },
+			{{-1, ERROR, 41}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
 			{{-1, ERROR, 42}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
-			{{-1, ERROR, 43}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
-			{{-1, ERROR, 44}, {24, SHIFT, 39}, {25, SHIFT, 40}, {68, SHIFT, 60}, },
+			{{-1, REDUCE, 19}, },
+			{{-1, ERROR, 44}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
+			{{-1, ERROR, 45}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
+			{{-1, ERROR, 46}, {24, SHIFT, 41}, {25, SHIFT, 42}, {68, SHIFT, 61}, },
 			{{-1, REDUCE, 6}, },
-			{{-1, ERROR, 46}, {68, SHIFT, 61}, },
+			{{-1, ERROR, 48}, {68, SHIFT, 62}, },
 			{{-1, REDUCE, 38}, },
-			{{-1, ERROR, 48}, {24, SHIFT, 39}, {25, SHIFT, 40}, {68, SHIFT, 62}, },
-			{{-1, ERROR, 49}, {22, SHIFT, 31}, {63, SHIFT, 33}, {84, SHIFT, 35}, },
-			{{-1, ERROR, 50}, {64, SHIFT, 64}, },
+			{{-1, REDUCE, 13}, {24, SHIFT, 41}, {25, SHIFT, 42}, },
+			{{-1, ERROR, 51}, {22, SHIFT, 31}, {63, SHIFT, 33}, {84, SHIFT, 35}, },
+			{{-1, ERROR, 52}, {64, SHIFT, 64}, },
 			{{-1, REDUCE, 10}, },
-			{{-1, ERROR, 52}, {67, SHIFT, 65}, },
-			{{-1, ERROR, 53}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
-			{{-1, REDUCE, 11}, },
+			{{-1, ERROR, 54}, {67, SHIFT, 65}, },
+			{{-1, ERROR, 55}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
 			{{-1, REDUCE, 32}, },
-			{{-1, REDUCE, 21}, {26, SHIFT, 42}, {27, SHIFT, 43}, },
-			{{-1, REDUCE, 22}, {26, SHIFT, 42}, {27, SHIFT, 43}, },
+			{{-1, REDUCE, 21}, {26, SHIFT, 44}, {27, SHIFT, 45}, },
+			{{-1, REDUCE, 22}, {26, SHIFT, 44}, {27, SHIFT, 45}, },
 			{{-1, REDUCE, 24}, },
 			{{-1, REDUCE, 25}, },
 			{{-1, REDUCE, 20}, },
 			{{-1, REDUCE, 7}, },
-			{{-1, REDUCE, 13}, },
 			{{-1, REDUCE, 16}, },
 			{{-1, ERROR, 64}, {22, SHIFT, 31}, {63, SHIFT, 33}, {84, SHIFT, 35}, },
 			{{-1, ERROR, 65}, {25, SHIFT, 15}, {61, SHIFT, 16}, {74, SHIFT, 17}, {77, SHIFT, 18}, {84, SHIFT, 19}, },
-			{{-1, ERROR, 66}, {24, SHIFT, 39}, {25, SHIFT, 40}, {68, SHIFT, 69}, },
+			{{-1, REDUCE, 14}, {24, SHIFT, 41}, {25, SHIFT, 42}, },
 			{{-1, REDUCE, 17}, },
-			{{-1, REDUCE, 12}, {24, SHIFT, 39}, {25, SHIFT, 40}, },
-			{{-1, REDUCE, 14}, },
+			{{-1, REDUCE, 12}, {24, SHIFT, 41}, {25, SHIFT, 42}, },
         };*/
     private static int[][][] gotoTable;
 /*      {
 			{{-1, 4}, },
 			{{-1, 5}, {8, 25}, },
 			{{-1, 6}, },
-			{{-1, 12}, {10, 29}, {30, 47}, },
-			{{-1, 13}, {34, 51}, },
-			{{-1, 14}, {34, 52}, },
-			{{-1, 36}, {49, 63}, {64, 67}, },
+			{{-1, 12}, {10, 29}, {30, 49}, },
+			{{-1, 13}, {34, 53}, },
+			{{-1, 14}, {34, 54}, },
+			{{-1, 36}, {51, 63}, {64, 67}, },
 			{{-1, 7}, {9, 27}, {26, 27}, },
-			{{-1, 20}, {16, 38}, {24, 44}, {32, 48}, {53, 66}, {65, 68}, },
-			{{-1, 21}, {39, 56}, {40, 57}, },
-			{{-1, 22}, {15, 37}, {42, 58}, {43, 59}, },
+			{{-1, 20}, {16, 40}, {24, 46}, {32, 50}, {55, 66}, {65, 68}, },
+			{{-1, 21}, {41, 57}, {42, 58}, },
+			{{-1, 22}, {15, 39}, {44, 59}, {45, 60}, },
 			{{-1, 23}, },
 			{{-1, 8}, },
 			{{-1, 9}, {8, 26}, },
@@ -1426,23 +1424,22 @@ public class Parser
 			"expecting: 'print', id, EOF",
 			"expecting: ')', id",
 			"expecting: type, '=', '[', ',', id",
-			"expecting: 'var', ')', 'print', id, EOF",
-			"expecting: 'var', '+', '-', '*', '/', ')', ',', ';', 'print', id, EOF",
-			"expecting: '+', '-', ';'",
 			"expecting: ';'",
+			"expecting: '+', '-', '*', '/', ')', ',', ';'",
+			"expecting: '+', '-', ';'",
 			"expecting: '=', ';'",
 			"expecting: ']', int",
 			"expecting: id",
+			"expecting: 'var', ')', 'print', id, EOF",
 			"expecting: '+', '-', ')'",
+			"expecting: '+', '-', ',', ';'",
 			"expecting: type, '[', id",
 			"expecting: ']'",
 			"expecting: ','",
-			"expecting: 'var', ')', ',', 'print', id, EOF",
-			"expecting: 'var', '+', '-', ')', ',', 'print', id, EOF",
         };*/
     private static int[] errors;
 /*      {
-			0, 1, 2, 3, 4, 0, 0, 5, 0, 5, 6, 7, 0, 8, 8, 2, 2, 9, 9, 9, 10, 9, 9, 9, 2, 0, 5, 5, 11, 6, 6, 12, 2, 13, 14, 12, 12, 9, 15, 2, 2, 5, 2, 2, 10, 0, 11, 6, 10, 16, 17, 8, 18, 2, 8, 9, 9, 9, 9, 9, 5, 0, 19, 12, 16, 2, 10, 12, 20, 19, 
+			0, 1, 2, 3, 4, 0, 0, 5, 0, 5, 6, 7, 0, 8, 8, 2, 2, 9, 9, 9, 10, 9, 9, 9, 2, 0, 5, 5, 8, 6, 6, 11, 2, 12, 13, 11, 11, 14, 14, 9, 15, 2, 2, 5, 2, 2, 10, 0, 8, 6, 16, 17, 18, 8, 19, 2, 9, 9, 9, 9, 9, 5, 0, 11, 17, 2, 16, 11, 16, 
         };*/
 
     static 
