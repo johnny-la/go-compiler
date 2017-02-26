@@ -152,12 +152,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getSignature().apply(this);
         }
+        if(node.getBlock() != null)
         {
-            List<PStmt> copy = new ArrayList<PStmt>(node.getStmt());
-            for(PStmt e : copy)
-            {
-                e.apply(this);
-            }
+            node.getBlock().apply(this);
         }
         outANoReturnFuncDecl(node);
     }
@@ -188,12 +185,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getVarType().apply(this);
         }
+        if(node.getBlock() != null)
         {
-            List<PStmt> copy = new ArrayList<PStmt>(node.getStmt());
-            for(PStmt e : copy)
-            {
-                e.apply(this);
-            }
+            node.getBlock().apply(this);
         }
         outASingleReturnFuncDecl(node);
     }

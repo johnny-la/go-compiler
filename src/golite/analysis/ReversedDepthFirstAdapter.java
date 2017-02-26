@@ -146,13 +146,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseANoReturnFuncDecl(ANoReturnFuncDecl node)
     {
         inANoReturnFuncDecl(node);
+        if(node.getBlock() != null)
         {
-            List<PStmt> copy = new ArrayList<PStmt>(node.getStmt());
-            Collections.reverse(copy);
-            for(PStmt e : copy)
-            {
-                e.apply(this);
-            }
+            node.getBlock().apply(this);
         }
         if(node.getSignature() != null)
         {
@@ -179,13 +175,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node)
     {
         inASingleReturnFuncDecl(node);
+        if(node.getBlock() != null)
         {
-            List<PStmt> copy = new ArrayList<PStmt>(node.getStmt());
-            Collections.reverse(copy);
-            for(PStmt e : copy)
-            {
-                e.apply(this);
-            }
+            node.getBlock().apply(this);
         }
         if(node.getVarType() != null)
         {

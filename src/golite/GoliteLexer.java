@@ -28,7 +28,7 @@ public class GoliteLexer extends Lexer
     {
         if (token instanceof TEol)
         {
-            System.out.println(lineNumber++ + ": " + lastToken);
+            //System.out.println(lineNumber++ + ": " + lastToken);
         }
         return token instanceof TEol &&
                (lastToken instanceof TId ||
