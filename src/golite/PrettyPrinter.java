@@ -377,6 +377,18 @@ public class PrettyPrinter extends DepthFirstAdapter
     // // }
    
     /** EXPRESSIONS */
+
+    public void caseAFunctionCallExp(AFunctionCallExp node)
+    {
+        print("(");
+        node.getId().apply(this);
+        print(")");
+        print("(");
+        node.getExp().apply(this);
+        print(", ");
+        print(")");
+    }
+
     public void caseAPlusExp(APlusExp node)
     {
         print("(");
@@ -412,14 +424,97 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getR().apply(this);
         print(")");
     }
- 
-    public void caseAUnaryMinusExp(AUnaryMinusExp node)
+
+    public void caseALogicalOrExp(ALogicalOrExp node)
     {
-        print("(-");
-        node.getExp().apply(this);
+        print("(");
+        node.getL().apply(this);
+        print("||");
+        node.getR().apply(this);
         print(")");
     }
- 
+
+    public void caseALogicalAndExp(ALogicalAndExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("&&");
+        node.getR().apply(this);
+        print(")");
+    }
+
+    public void caseAPipeExp(APipeExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("|");
+        node.getR().apply(this);
+        print(")");
+    }
+
+    public void caseACaretExp(ACaretExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("^");
+        node.getR().apply(this);
+        print(")");
+    }
+
+    public void caseAEqualsEqualsExp(AEqualsEqualsExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("==");
+        node.getR().apply(this);
+        print(")");
+    }
+
+    public void caseANotEqualExp(ANotEqualExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("!=");
+        node.getR().apply(this);
+        print(")");
+    }
+
+    public void caseALessExp(ALessExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("<");
+        node.getR().apply(this);
+        print(")");
+    }
+
+    public void caseAGreaterExp(AGreaterExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print(">");
+        node.getR().apply(this);
+        print(")");
+    }
+
+    public void caseALessEqualsExp(ALessEqualsExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print("<=");
+        node.getR().apply(this);
+        print(")");
+    }
+
+    public void caseAGreaterEqualsExp(AGreaterEqualsExp node)
+    {
+        print("(");
+        node.getL().apply(this);
+        print(">=");
+        node.getR().apply(this);
+        print(")");
+    }
+
     public void caseAIdExp(AIdExp node)
     {
         print(node.getId().getText());
@@ -427,11 +522,40 @@ public class PrettyPrinter extends DepthFirstAdapter
 
     public void caseAFloat64LiteralExp(AFloat64Literal node)
     {
-        print(node.getFloat().getText());
+        print(node.getFloat64Literal().getText());
     }
 
     public void caseAIntExp(AIntExp node)
     {
         print(node.getInt().getText());
     }
+
+    public void caseAUnaryExclamationExp(AUnaryExclamationExp node)
+    {
+        print("(!");
+        node.getExp().apply(this);
+        print(")");
+    }
+
+    public void caseAUnaryMinusExp(AUnaryMinusExp node)
+    {
+        print("(-");
+        node.getExp().apply(this);
+        print(")");
+    }
+ 
+    public void caseAUnaryPlusExp(AUnaryPlusExp node)
+    {
+        print("(+");
+        node.getExp().apply(this);
+        print(")");
+    }
+
+    public void caseAUnaryXorExp(AUnaryXorExp node)
+    {
+        print("(^");
+        node.getExp().apply(this);
+        print(")");
+    }
+
 }

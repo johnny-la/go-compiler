@@ -273,11 +273,8 @@ unary_op {-> exp} =
   {exclamation_exoression} exclamation factor {-> New exp.unary_exclamation(factor.exp)};
 
 function_call {-> exp} =
-  {empty_args} id l_paren r_paren {-> New exp.function_call(id)} |
-  {one_or_more_args} id l_paren cst_exp input_arg_list* r_paren {-> New exp.function_call(id)};
-
-input_arg_list =
-  {multiple_args} comma cst_exp;
+  {empty_args} id l_paren r_paren {-> New exp.function_call(id, New exp.empty())} |
+  {one_or_more_args} id l_paren cst_exp_list r_paren {-> New exp.function_call(id, cst_exp_list.exp)};
   
 append_expr {-> exp} =
   append l_paren cst_exp comma other_exp r_paren { -> New exp.appended_expr(cst_exp.exp, other_exp.exp)};
@@ -479,7 +476,7 @@ exp =
   {rune_literal} rune_literal |
   {raw_string_lit} raw_string_lit |
   {interpreted_string_literal} interpreted_string_literal |
-  {function_call} id|
+  {function_call} id exp |
   {appended_expr} [l]:exp [r]:exp |
   {array_index}      [lvalue]:exp [index]:exp |
   {struct_selector}  [l]:exp [r]:exp |
