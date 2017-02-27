@@ -65,8 +65,8 @@ public class PrettyPrinter extends DepthFirstAdapter
             if (!(decl instanceof AFuncDeclAstDecl)) println(";");
         }
 
-        println("");
-        printNodes(node.getStmt());
+        //println("");
+        //printNodes(node.getStmt());
     }
 
     /** DECLARATIONS */

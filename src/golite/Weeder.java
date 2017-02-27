@@ -35,6 +35,11 @@ public class Weeder extends DepthFirstAdapter
         {
             throwContinueError();
         }
+
+        if (hasBreak(((ABlockStmt)node.getBlock()).getStmt()))
+        {
+            throwBreakError();
+        }
     }
 
     public void inASingleReturnFuncDecl(ASingleReturnFuncDecl node)
@@ -42,6 +47,11 @@ public class Weeder extends DepthFirstAdapter
         if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
         {
             throwContinueError();
+        }
+
+        if (hasBreak(((ABlockStmt)node.getBlock()).getStmt()))
+        {
+            throwBreakError();
         }
     }
 
@@ -51,6 +61,11 @@ public class Weeder extends DepthFirstAdapter
         {
             throwContinueError();
         }
+
+        if (hasBreak(((ABlockStmt)node.getBlock()).getStmt()))
+        {
+            throwBreakError();
+        }
     }
 
     public void inAElseStmt(AElseStmt node)
@@ -58,6 +73,11 @@ public class Weeder extends DepthFirstAdapter
         if (hasContinue(((ABlockStmt)node.getStmt()).getStmt()))
         {
             throwContinueError();
+        }
+
+        if (hasBreak(((ABlockStmt)node.getStmt()).getStmt()))
+        {
+            throwBreakError();
         }
     }
 
@@ -82,10 +102,30 @@ public class Weeder extends DepthFirstAdapter
         }
 
         return false;
+    }
+
+    public boolean hasBreak(List<PStmt> nodes)
+    {
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            PStmt node = nodes.get(i);
+
+            if (node instanceof ABreakStmt)
+            {
+                return true;
+            }
+        }
+
+        return false;
     } 
 
     public void throwContinueError()
     {
         throw new RuntimeException("Continue must be inside a loop");
+    }
+
+    public void throwBreakError()
+    {
+        throw new RuntimeException("Break must be inside a loop or a switch statement");
     }
 }
