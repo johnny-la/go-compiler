@@ -114,8 +114,8 @@ Ignored Tokens
 
 Productions
 cst_prog {-> program} =
-  {prog} cst_package_decl top_level_declarations* cst_block* {-> New program(cst_package_decl.package_decl, 
-  [top_level_declarations.decl], [cst_block.stmt])}
+  {prog} cst_package_decl top_level_declarations* {-> New program(cst_package_decl.package_decl, 
+  [top_level_declarations.decl])}
   ; 
 
 top_level_declarations{-> decl} = 
@@ -231,6 +231,7 @@ cst_id {-> id_type} =
 
 cst_stmt {-> stmt} =
   {cst_empty}      /*empty*/           {-> New stmt.empty()} |
+  {cst_func_call}  function_call       {-> New stmt.exp(function_call.exp)} |
   {cst_decl}       declarations        {-> New stmt.decl(declarations.decl)} |
   {cst_simple}     cst_simple_stmt     {-> cst_simple_stmt.stmt} |
   {cst_print}      print l_paren cst_exp_list? r_paren {-> New stmt.print(cst_exp_list.exp)} |
@@ -403,7 +404,7 @@ cst_selector {-> exp} =
 
 Abstract Syntax Tree
 
-program = package_decl decl* stmt*;
+program = package_decl decl*;
 
 decl = 
   {pack_decl_ast} package_decl |
@@ -459,6 +460,7 @@ stmt =
   {read}            id |
   {print}           exp? |
   {println}         exp? |
+  {exp}             exp  |
   {return}          exp? |
   {increment}       exp  |
   {decrement}       exp  |
