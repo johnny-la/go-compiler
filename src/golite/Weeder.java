@@ -7,6 +7,70 @@ import java.util.*;
 
 public class Weeder extends DepthFirstAdapter
 {
+    public void inAAssignListStmt(AAssignListStmt node)
+    {
+        boolean allIds = false;
+        if (node.getL() instanceof ALvalueListExp)
+        {
+            allIds = onlyIds((ALvalueListExp)node.getL());
+        }
+        else
+        {
+            allIds = isId(node.getL());
+        }
+        
+        if (!allIds && node.getOp() instanceof AColonEqualsExp)
+        {
+            throw new RuntimeException("Short assignment (:=) can only "+
+                   "be used with ids"); 
+        }
+
+        int lsize = getSize(node.getL());
+        int rsize = getSize(node.getR());
+
+        if (lsize != rsize)
+        {
+            throw new RuntimeException("Number of ids and expressions do not match in assignment statement");
+        }
+    }
+
+    public int getSize(PExp node)
+    {
+        if (node instanceof AListExp)
+        {
+            return getSize(((AListExp)node).getList())+1;
+        }
+        if (node instanceof ALvalueListExp)
+        {
+            return getSize(((ALvalueListExp)node).getList())+1;
+        }
+
+        return 1;
+    }
+
+    public boolean onlyIds(ALvalueListExp node)
+    {
+        if (node.getLvalue() instanceof AIdExp)
+        {
+            if (node.getList() instanceof ALvalueListExp)
+                return onlyIds((ALvalueListExp)node.getList());
+            else 
+                return isId(node.getList());
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    public boolean isId(PExp node)
+    {
+        if (node instanceof AIdExp) return true;
+
+        return false;
+    }
+
     public void inASwitchStmt(ASwitchStmt node)
     {
         // Check for multiple default statements
@@ -27,28 +91,6 @@ public class Weeder extends DepthFirstAdapter
                 hasDefaultStatement = true;
             }
         }
-        int lsize = getSize(node.getL());
-        int rsize = getSize(node.getR());
-
-        if (lsize != rsize)
-        {
-            throw new RuntimeException("Number of ids and expressions do not matc
-h in assignment statement");
-        }
-    }
-
-    public int getSize(PExp node)
-    {
-        if (node instanceof AListExp)
-        {
-            return getSize(((AListExp)node).getList())+1;
-        }
-        if (node instanceof ALvalueListExp)
-        {
-            return getSize(((ALvalueListExp)node).getList())+1;
-        }
-
-        return 1;
     }
 
     public void inANoReturnFuncDecl(ANoReturnFuncDecl node)
