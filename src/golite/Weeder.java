@@ -9,16 +9,13 @@ public class Weeder extends DepthFirstAdapter
 {
     public void inAAssignListStmt(AAssignListStmt node)
     {
-        System.out.println("Asssign statme");
         boolean allIds = false;
         if (node.getL() instanceof ALvalueListExp)
         {
-            System.out.println("Only ids (LIST)? " + onlyIds((ALvalueListExp)node.getL()));
             allIds = onlyIds((ALvalueListExp)node.getL());
         }
         else
         {
-            System.out.println("Only id (ID)? " + node.getL().getClass() + " " + isId(node.getL()));
             allIds = isId(node.getL());
         }
         
@@ -27,6 +24,28 @@ public class Weeder extends DepthFirstAdapter
             throw new RuntimeException("Short assignment (:=) can only "+
                    "be used with ids"); 
         }
+
+        int lsize = getSize(node.getL());
+        int rsize = getSize(node.getR());
+
+        if (lsize != rsize)
+        {
+            throw new RuntimeException("Number of ids and expressions do not match in assignment statement");
+        }
+    }
+
+    public int getSize(PExp node)
+    {
+        if (node instanceof AListExp)
+        {
+            return getSize(((AListExp)node).getList())+1;
+        }
+        if (node instanceof ALvalueListExp)
+        {
+            return getSize(((ALvalueListExp)node).getList())+1;
+        }
+
+        return 1;
     }
 
     public boolean onlyIds(ALvalueListExp node)
