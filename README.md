@@ -4,7 +4,7 @@ Compiler built in SableCC for a subset of the Go language
 
 Below is a list of each team member's contribution to the project:
 
-### Ralph
+### Ralph 260503614
 - Scanner
 - Expressions
 
@@ -16,7 +16,7 @@ Below is a list of each team member's contribution to the project:
 - Type declaration
 - Function declaration
 
-### Jonathan
+### Jonathan 260632816
 - Comments
 - Statements
 
