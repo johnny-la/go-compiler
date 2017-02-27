@@ -51,14 +51,6 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     {
         inAProgram(node);
         {
-            List<PStmt> copy = new ArrayList<PStmt>(node.getStmt());
-            Collections.reverse(copy);
-            for(PStmt e : copy)
-            {
-                e.apply(this);
-            }
-        }
-        {
             List<PDecl> copy = new ArrayList<PDecl>(node.getDecl());
             Collections.reverse(copy);
             for(PDecl e : copy)
@@ -785,6 +777,27 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getExp().apply(this);
         }
         outAPrintlnStmt(node);
+    }
+
+    public void inAExpStmt(AExpStmt node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAExpStmt(AExpStmt node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAExpStmt(AExpStmt node)
+    {
+        inAExpStmt(node);
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        outAExpStmt(node);
     }
 
     public void inAReturnStmt(AReturnStmt node)

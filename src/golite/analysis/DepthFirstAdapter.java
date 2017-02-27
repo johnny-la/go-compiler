@@ -61,13 +61,6 @@ public class DepthFirstAdapter extends AnalysisAdapter
                 e.apply(this);
             }
         }
-        {
-            List<PStmt> copy = new ArrayList<PStmt>(node.getStmt());
-            for(PStmt e : copy)
-            {
-                e.apply(this);
-            }
-        }
         outAProgram(node);
     }
 
@@ -780,6 +773,27 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getExp().apply(this);
         }
         outAPrintlnStmt(node);
+    }
+
+    public void inAExpStmt(AExpStmt node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAExpStmt(AExpStmt node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAExpStmt(AExpStmt node)
+    {
+        inAExpStmt(node);
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        outAExpStmt(node);
     }
 
     public void inAReturnStmt(AReturnStmt node)

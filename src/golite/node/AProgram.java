@@ -10,7 +10,6 @@ public final class AProgram extends PProgram
 {
     private PPackageDecl _packageDecl_;
     private final LinkedList<PDecl> _decl_ = new LinkedList<PDecl>();
-    private final LinkedList<PStmt> _stmt_ = new LinkedList<PStmt>();
 
     public AProgram()
     {
@@ -19,15 +18,12 @@ public final class AProgram extends PProgram
 
     public AProgram(
         @SuppressWarnings("hiding") PPackageDecl _packageDecl_,
-        @SuppressWarnings("hiding") List<?> _decl_,
-        @SuppressWarnings("hiding") List<?> _stmt_)
+        @SuppressWarnings("hiding") List<?> _decl_)
     {
         // Constructor
         setPackageDecl(_packageDecl_);
 
         setDecl(_decl_);
-
-        setStmt(_stmt_);
 
     }
 
@@ -36,8 +32,7 @@ public final class AProgram extends PProgram
     {
         return new AProgram(
             cloneNode(this._packageDecl_),
-            cloneList(this._decl_),
-            cloneList(this._stmt_));
+            cloneList(this._decl_));
     }
 
     @Override
@@ -97,39 +92,12 @@ public final class AProgram extends PProgram
         }
     }
 
-    public LinkedList<PStmt> getStmt()
-    {
-        return this._stmt_;
-    }
-
-    public void setStmt(List<?> list)
-    {
-        for(PStmt e : this._stmt_)
-        {
-            e.parent(null);
-        }
-        this._stmt_.clear();
-
-        for(Object obj_e : list)
-        {
-            PStmt e = (PStmt) obj_e;
-            if(e.parent() != null)
-            {
-                e.parent().removeChild(e);
-            }
-
-            e.parent(this);
-            this._stmt_.add(e);
-        }
-    }
-
     @Override
     public String toString()
     {
         return ""
             + toString(this._packageDecl_)
-            + toString(this._decl_)
-            + toString(this._stmt_);
+            + toString(this._decl_);
     }
 
     @Override
@@ -143,11 +111,6 @@ public final class AProgram extends PProgram
         }
 
         if(this._decl_.remove(child))
-        {
-            return;
-        }
-
-        if(this._stmt_.remove(child))
         {
             return;
         }
@@ -172,24 +135,6 @@ public final class AProgram extends PProgram
                 if(newChild != null)
                 {
                     i.set((PDecl) newChild);
-                    newChild.parent(this);
-                    oldChild.parent(null);
-                    return;
-                }
-
-                i.remove();
-                oldChild.parent(null);
-                return;
-            }
-        }
-
-        for(ListIterator<PStmt> i = this._stmt_.listIterator(); i.hasNext();)
-        {
-            if(i.next() == oldChild)
-            {
-                if(newChild != null)
-                {
-                    i.set((PStmt) newChild);
                     newChild.parent(this);
                     oldChild.parent(null);
                     return;

@@ -43,6 +43,7 @@ public interface Analysis extends Switch
     void caseAReadStmt(AReadStmt node);
     void caseAPrintStmt(APrintStmt node);
     void caseAPrintlnStmt(APrintlnStmt node);
+    void caseAExpStmt(AExpStmt node);
     void caseAReturnStmt(AReturnStmt node);
     void caseAIncrementStmt(AIncrementStmt node);
     void caseADecrementStmt(ADecrementStmt node);

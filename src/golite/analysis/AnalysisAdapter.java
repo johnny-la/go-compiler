@@ -261,6 +261,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAExpStmt(AExpStmt node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAReturnStmt(AReturnStmt node)
     {
         defaultCase(node);
