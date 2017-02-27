@@ -43,6 +43,7 @@ public class GoliteLexer extends Lexer
                 lastToken instanceof TRParen ||
                 lastToken instanceof TRBrace ||
                 lastToken instanceof TLBrace ||
+                lastToken instanceof TRBrack ||
                 lastToken instanceof TReturn ||
                 lastToken instanceof TPlusPlus ||
                 lastToken instanceof TMinusMinus ||
