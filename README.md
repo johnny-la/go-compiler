@@ -29,6 +29,7 @@ Prior to starting the first milestone, each team member was assigned to explore 
 2) CST generation was very simple
 3) It would be useful to understand the tool as it would appear later on in the midterm/final
 
+
 Declaration Design Decisions:
 
 Declarations were interesting in that there were 4 clear high level declarations: variable, type, function, and package. However as variable and type functions could be nested within the function declarations, it was decided that a two tier system was necessary. Variable and type functions were grouped by a production called declarations and subcategoried under top_level_declarations, which included the grouped declarations as well as func_decl and package_decl. Another thing to note was that the base types did not actually represent reserved keywords, therefore they could be used as general identifiers. A production was created then to encapsulate these two types of identifiers (base types and general identifiers). Likewise, due to the fact that types could be structs, slices, arrays, or a struct/base type, it was necessary to create a general type production that encapsulated a type that could contain multiple combinations of these types (i.e [5][] name_of_struct). 
@@ -36,3 +37,8 @@ Declarations were interesting in that there were 4 clear high level declarations
 Weeding:
 
 We decided that ultimately it would be too difficult to implement the weeding conditions through the grammar rules and decided to implement a java class instead to do the weeding. The reason is it is too difficult simply due to the way we have encapsulated the break/continue/default keywords to fit within the general statement production. To write specific cases for each of these keywords would add too much overhead and it was ultimately decided to be easier to simply do another pass to catch errors surrounding those keywords. The class Weeder.java reads through the generates AST and ensures that any break or continue statements found outside the context of a loop (and switch for break) throw an exception. It also catches when multiple default statements are found within the context of a switch statement. 
+
+Expressions:
+
+To simplify expressions as they can get really complicated, a lot of time was put in the pretty printer section where parentheses have been added to alleviate any ambiguity. For instance, a function call say: getSum(a,b) was pretty printed as follows: (getSum)(a,b) for legibility. There was some ambiguity about whether to include the following as an expression (x+5)(x+2);
+Intuitively, it is not possible for an expression to "call" another expression and this syntax was reserved for function calls or type casting, so this was disregarded as a design choice at this point of the project.
