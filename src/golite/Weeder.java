@@ -27,6 +27,28 @@ public class Weeder extends DepthFirstAdapter
                 hasDefaultStatement = true;
             }
         }
+        int lsize = getSize(node.getL());
+        int rsize = getSize(node.getR());
+
+        if (lsize != rsize)
+        {
+            throw new RuntimeException("Number of ids and expressions do not matc
+h in assignment statement");
+        }
+    }
+
+    public int getSize(PExp node)
+    {
+        if (node instanceof AListExp)
+        {
+            return getSize(((AListExp)node).getList())+1;
+        }
+        if (node instanceof ALvalueListExp)
+        {
+            return getSize(((ALvalueListExp)node).getList())+1;
+        }
+
+        return 1;
     }
 
     public void inANoReturnFuncDecl(ANoReturnFuncDecl node)
