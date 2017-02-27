@@ -36,3 +36,5 @@ Declarations were interesting in that there were 4 clear high level declarations
 Weeding:
 
 We decided that ultimately it would be too difficult to implement the weeding conditions through the grammar rules and decided to implement a java class instead to do the weeding. The reason is it is too difficult simply due to the way we have encapsulated the break/continue/default keywords to fit within the general statement production. To write specific cases for each of these keywords would add too much overhead and it was ultimately decided to be easier to simply do another pass to catch errors surrounding those keywords. The class Weeder.java reads through the generates AST and ensures that any break or continue statements found outside the context of a loop (and switch for break) throw an exception. It also catches when multiple default statements are found within the context of a switch statement. 
+
+We also implemented weeding for short assignments. This ensured that the lvalue list consisted only of identifiers. Doing this in the grammar proved difficult, hence our use of weeding.
