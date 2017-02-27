@@ -1,6 +1,11 @@
 # StableCCGoLite
 Compiler built in SableCC for a subset of the Go language
 
+We enforced that a break and continue statement 
+could only appear within a loop by implementing a weeding pass on the generated AST.
+
+Below is a list of each team member's contribution to the project:
+
 ### Ralph
 - Scanner
 - Expressions
@@ -16,7 +21,4 @@ Compiler built in SableCC for a subset of the Go language
 ### Jonathan
 - Comments
 - Statements
-
-*Notes:* Our scanner and parser could not enforce that a break and continue statement 
-could only appear within a loop. This constraint will be handled using a weeding pass 
-in the next milestone.
+- Weeding 
