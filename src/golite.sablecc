@@ -279,8 +279,16 @@ rel_op {-> exp} =
 unary_op {-> exp} = 
   {positive_expression} plus factor { -> New exp.unary_plus(factor.exp)} |
   {negative_expression} minus factor {-> New exp.unary_minus(factor.exp)} |
-  {caret_expression} caret factor {-> New exp.unary_xor(factor.exp)} |
-  {exclamation_exoression} exclamation factor {-> New exp.unary_exclamation(factor.exp)};
+  {caret_expression} caret careted_factors {-> New exp.careted_factors(careted_factors.exp)} |
+  {exclamation_exoression} exclamation exclamated_factors {-> New exp.exclamated_factors(exclamated_factors.exp)};
+
+careted_factors {-> exp} = 
+  {factor} factor {-> factor.exp} |
+  {careted_factors} caret careted_factors { -> New exp.careted_factors(careted_factors.exp)};
+
+exclamated_factors {-> exp} = 
+  {factor} factor {-> factor.exp} |
+  {exclamated_factors} exclamation exclamated_factors {-> New exp.exclamated_factors(exclamated_factors.exp)};
 
 function_call {-> exp} =
   {empty_args} id l_paren r_paren {-> New exp.function_call(id, New exp.empty())} |
@@ -300,7 +308,18 @@ factor {-> exp} =
   {cst_shift_right} factor shift_right term {-> New exp.shift_right(factor.exp, term.exp)} |
   {cst_ampersand}   factor ampersand term {-> New exp.ampersand(factor.exp, term.exp)} |
   {cst_ampersand_caret} factor ampersand_caret term {-> New exp.ampersand_caret(factor.exp, term.exp)} |
-  {term}            term              {-> term.exp};
+  {term}            term              {-> term.exp};      
+
+term {-> exp} =
+  {cst_id}        id     {-> New exp.id(id)} |
+  {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
+  {cst_int}       int    {-> New exp.int(int)} |
+  {cst_oct}       oct    {-> New exp.oct(oct)} |
+  {cst_hex}       hex    {-> New exp.hex(hex)} |
+  {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
+  {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
+  {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
+  {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
 
 cst_end_if {-> stmt} =
   {cst_else_if} else cst_if_stmt {-> New stmt.else_if(cst_if_stmt.stmt)} |
@@ -359,17 +378,6 @@ cst_exp_list {-> exp} =
 cst_id_list {-> exp} =
   {cst_id}       id                   {-> New exp.id(id)} |
   {cst_id_list}  cst_id_list comma id {-> New exp.id_list(cst_id_list.exp, id)};
-
-term {-> exp} =
-  {cst_id}        id     {-> New exp.id(id)} |
-  {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
-  {cst_int}       int    {-> New exp.int(int)} |
-  {cst_oct}       oct    {-> New exp.oct(oct)} |
-  {cst_hex}       hex    {-> New exp.hex(hex)} |
-  {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
-  {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
-  {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
-  {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
 
 lvalue {-> exp} =
   {cst_id}      id     {-> New exp.id(id)} |
@@ -508,4 +516,6 @@ exp =
   {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
   {case}      [exp_list]:exp |
   {default} |
+  {careted_factors} exp |
+  {exclamated_factors} exp |
   {empty};
