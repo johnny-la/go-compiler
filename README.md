@@ -11,7 +11,6 @@ Below is a list of each team member's contribution to the project:
 ### Martin 260520930
 #### Declarations:
 - Package declaration
-- Top-level declarations
 - Variable declaration
 - Type declaration
 - Function declaration
