@@ -27,5 +27,5 @@ type (
 )
 
 func int(a int) {
-	return 
+	return;
 }

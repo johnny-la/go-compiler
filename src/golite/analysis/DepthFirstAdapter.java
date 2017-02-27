@@ -2017,9 +2017,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAFunctionCallExp(AFunctionCallExp node)
     {
         inAFunctionCallExp(node);
-        if(node.getId() != null)
+        if(node.getIdType() != null)
         {
-            node.getId().apply(this);
+            node.getIdType().apply(this);
         }
         if(node.getExp() != null)
         {

@@ -1,3 +1,0 @@
-var x: string;
-
-x = "Hello" * 3.5;

@@ -110,6 +110,7 @@ public class PrettyPrinter extends DepthFirstAdapter
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node) {
         print("var ");
         node.getVarDecl().apply(this);
+        //println("");
 
     }
 
@@ -156,7 +157,7 @@ public class PrettyPrinter extends DepthFirstAdapter
             println("");
         }
         indentLevel--;
-        print(")");
+        printi(")");
     }
 
     //type declarations
@@ -191,7 +192,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         }
         
         indentLevel--;
-        print("}");
+        printi("}");
     }
 
     public void caseAMultilineListTypeDecl(AMultilineListTypeDecl node) {
@@ -203,7 +204,7 @@ public class PrettyPrinter extends DepthFirstAdapter
             println("");
         }
         indentLevel--;
-        print(" )");
+        printi(" )");
     }
 
     //function declarations
@@ -474,7 +475,7 @@ public class PrettyPrinter extends DepthFirstAdapter
 
     public void caseAFunctionCallExp(AFunctionCallExp node)
     {
-        print(node.getId().getText());
+        node.getIdType().apply(this);
         print("(");
         node.getExp().apply(this);
         print(")");
