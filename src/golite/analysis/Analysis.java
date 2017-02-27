@@ -13,9 +13,11 @@ public interface Analysis extends Switch
 
     void caseStart(Start node);
     void caseAProgram(AProgram node);
+    void caseAPackDeclAstDecl(APackDeclAstDecl node);
     void caseAFuncDeclAstDecl(AFuncDeclAstDecl node);
     void caseAVarDeclAstDecl(AVarDeclAstDecl node);
     void caseATypeDeclAstDecl(ATypeDeclAstDecl node);
+    void caseAPackageDecl(APackageDecl node);
     void caseANoReturnFuncDecl(ANoReturnFuncDecl node);
     void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node);
     void caseAFuncDecl(AFuncDecl node);
@@ -101,6 +103,8 @@ public interface Analysis extends Switch
     void caseAForCondExp(AForCondExp node);
     void caseACaseExp(ACaseExp node);
     void caseADefaultExp(ADefaultExp node);
+    void caseACaretedFactorsExp(ACaretedFactorsExp node);
+    void caseAExclamatedFactorsExp(AExclamatedFactorsExp node);
     void caseAEmptyExp(AEmptyExp node);
 
     void caseTIf(TIf node);

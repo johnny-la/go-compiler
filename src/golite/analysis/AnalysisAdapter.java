@@ -81,6 +81,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAPackDeclAstDecl(APackDeclAstDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node)
     {
         defaultCase(node);
@@ -94,6 +100,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseATypeDeclAstDecl(ATypeDeclAstDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAPackageDecl(APackageDecl node)
     {
         defaultCase(node);
     }
@@ -604,6 +616,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseADefaultExp(ADefaultExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseACaretedFactorsExp(ACaretedFactorsExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAExclamatedFactorsExp(AExclamatedFactorsExp node)
     {
         defaultCase(node);
     }

@@ -50,6 +50,10 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAProgram(AProgram node)
     {
         inAProgram(node);
+        if(node.getPackageDecl() != null)
+        {
+            node.getPackageDecl().apply(this);
+        }
         {
             List<PDecl> copy = new ArrayList<PDecl>(node.getDecl());
             for(PDecl e : copy)
@@ -65,6 +69,27 @@ public class DepthFirstAdapter extends AnalysisAdapter
             }
         }
         outAProgram(node);
+    }
+
+    public void inAPackDeclAstDecl(APackDeclAstDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAPackDeclAstDecl(APackDeclAstDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAPackDeclAstDecl(APackDeclAstDecl node)
+    {
+        inAPackDeclAstDecl(node);
+        if(node.getPackageDecl() != null)
+        {
+            node.getPackageDecl().apply(this);
+        }
+        outAPackDeclAstDecl(node);
     }
 
     public void inAFuncDeclAstDecl(AFuncDeclAstDecl node)
@@ -128,6 +153,27 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getTypeDecl().apply(this);
         }
         outATypeDeclAstDecl(node);
+    }
+
+    public void inAPackageDecl(APackageDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAPackageDecl(APackageDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAPackageDecl(APackageDecl node)
+    {
+        inAPackageDecl(node);
+        if(node.getIdType() != null)
+        {
+            node.getIdType().apply(this);
+        }
+        outAPackageDecl(node);
     }
 
     public void inANoReturnFuncDecl(ANoReturnFuncDecl node)
@@ -2158,6 +2204,48 @@ public class DepthFirstAdapter extends AnalysisAdapter
     {
         inADefaultExp(node);
         outADefaultExp(node);
+    }
+
+    public void inACaretedFactorsExp(ACaretedFactorsExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outACaretedFactorsExp(ACaretedFactorsExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseACaretedFactorsExp(ACaretedFactorsExp node)
+    {
+        inACaretedFactorsExp(node);
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        outACaretedFactorsExp(node);
+    }
+
+    public void inAExclamatedFactorsExp(AExclamatedFactorsExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAExclamatedFactorsExp(AExclamatedFactorsExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAExclamatedFactorsExp(AExclamatedFactorsExp node)
+    {
+        inAExclamatedFactorsExp(node);
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        outAExclamatedFactorsExp(node);
     }
 
     public void inAEmptyExp(AEmptyExp node)
