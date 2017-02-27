@@ -7,6 +7,51 @@ import java.util.*;
 
 public class Weeder extends DepthFirstAdapter
 {
+    public void inAAssignListStmt(AAssignListStmt node)
+    {
+        System.out.println("Asssign statme");
+        boolean allIds = false;
+        if (node.getL() instanceof ALvalueListExp)
+        {
+            System.out.println("Only ids (LIST)? " + onlyIds((ALvalueListExp)node.getL()));
+            allIds = onlyIds((ALvalueListExp)node.getL());
+        }
+        else
+        {
+            System.out.println("Only id (ID)? " + node.getL().getClass() + " " + isId(node.getL()));
+            allIds = isId(node.getL());
+        }
+        
+        if (!allIds && node.getOp() instanceof AColonEqualsExp)
+        {
+            throw new RuntimeException("Short assignment (:=) can only "+
+                   "be used with ids"); 
+        }
+    }
+
+    public boolean onlyIds(ALvalueListExp node)
+    {
+        if (node.getLvalue() instanceof AIdExp)
+        {
+            if (node.getList() instanceof ALvalueListExp)
+                return onlyIds((ALvalueListExp)node.getList());
+            else 
+                return isId(node.getList());
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    public boolean isId(PExp node)
+    {
+        if (node instanceof AIdExp) return true;
+
+        return false;
+    }
+
     public void inASwitchStmt(ASwitchStmt node)
     {
         // Check for multiple default statements

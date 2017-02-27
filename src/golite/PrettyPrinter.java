@@ -344,21 +344,36 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getR().apply(this);
     }
 
+    public void caseALvalueListExp(ALvalueListExp node)
+    {
+        node.getList().apply(this);
+        print(",");
+        node.getLvalue().apply(this);
+    }
+
     public void caseAAssignListStmt(AAssignListStmt node)
     {
         node.getL().apply(this);
-        print(",");
-        node.getStmt().apply(this);
-        print(",");
+        node.getOp().apply(this);
         node.getR().apply(this); 
     } 
 
     public void caseAAssignOpStmt(AAssignOpStmt node)
     {
         node.getL().apply(this);
-        print(" " + node.getOpEquals().getText() + " ");
+        node.getOp().apply(this);
         node.getR().apply(this);
+    }
+
+    public void caseAEqualsExp(AEqualsExp node)
+    {
+        print("=");
     } 
+
+    public void caseAColonEqualsExp(AColonEqualsExp node)
+    {
+        print(":=");
+    }
 
     public void caseAArrayIndexExp(AArrayIndexExp node)
     {
@@ -368,7 +383,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("]");
     }
 
-    public void caseAStructSelecttorExp(AStructSelectorExp node)
+    public void caseAStructSelectorExp(AStructSelectorExp node)
     {
         node.getL().apply(this);
         print(".");
