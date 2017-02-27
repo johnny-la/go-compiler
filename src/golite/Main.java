@@ -16,7 +16,7 @@ public class Main
                                 CODE_GENERATOR_SUFFIX = ".c";    
 
     // If true, print to file. Else, print to STDOUT
-    private static final boolean PRINT_TO_FILE = false;
+    private static final boolean PRINT_TO_FILE = true;
 
     // Pretty prints the given AST
     private static void prettyPrint(Start tree, String filename)
@@ -146,7 +146,7 @@ public class Main
         catch (Exception e)
         {
             System.out.print("INVALID: " + e);
-            e.printStackTrace();
+            //e.printStackTrace();
             System.exit(1);
         }
     }
