@@ -1,4 +1,5 @@
 main: clean sablecc compile
+	
 sablecc: golite.sablecc
 	sablecc golite.sablecc
 compile: 
