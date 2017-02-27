@@ -314,7 +314,7 @@ factor {-> exp} =
   {cst_shift_right} factor shift_right term {-> New exp.shift_right(factor.exp, term.exp)} |
   {cst_ampersand}   factor ampersand term {-> New exp.ampersand(factor.exp, term.exp)} |
   {cst_ampersand_caret} factor ampersand_caret term {-> New exp.ampersand_caret(factor.exp, term.exp)} |
-  {term}            term              {-> term.exp};      
+  {term}            term              {-> term.exp};
 
 term {-> exp} =
   {cst_id}        id     {-> New exp.id(id)} |
