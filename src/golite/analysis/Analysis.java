@@ -103,6 +103,8 @@ public interface Analysis extends Switch
     void caseAForCondExp(AForCondExp node);
     void caseACaseExp(ACaseExp node);
     void caseADefaultExp(ADefaultExp node);
+    void caseACaretedFactorsExp(ACaretedFactorsExp node);
+    void caseAExclamatedFactorsExp(AExclamatedFactorsExp node);
     void caseAEmptyExp(AEmptyExp node);
 
     void caseTIf(TIf node);

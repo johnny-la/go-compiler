@@ -2206,6 +2206,48 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outADefaultExp(node);
     }
 
+    public void inACaretedFactorsExp(ACaretedFactorsExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outACaretedFactorsExp(ACaretedFactorsExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseACaretedFactorsExp(ACaretedFactorsExp node)
+    {
+        inACaretedFactorsExp(node);
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        outACaretedFactorsExp(node);
+    }
+
+    public void inAExclamatedFactorsExp(AExclamatedFactorsExp node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAExclamatedFactorsExp(AExclamatedFactorsExp node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAExclamatedFactorsExp(AExclamatedFactorsExp node)
+    {
+        inAExclamatedFactorsExp(node);
+        if(node.getExp() != null)
+        {
+            node.getExp().apply(this);
+        }
+        outAExclamatedFactorsExp(node);
+    }
+
     public void inAEmptyExp(AEmptyExp node)
     {
         defaultIn(node);

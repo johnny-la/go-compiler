@@ -621,6 +621,18 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseACaretedFactorsExp(ACaretedFactorsExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAExclamatedFactorsExp(AExclamatedFactorsExp node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAEmptyExp(AEmptyExp node)
     {
         defaultCase(node);

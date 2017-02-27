@@ -178,8 +178,13 @@ type_aliasing {-> type_decl} =
   ;
   
 type_struct_declaration {-> type_decl} = 
-  cst_id struct l_brace type_with_one_or_more_ids* r_brace {-> New type_decl.struct_with_id(cst_id.id_type, 
-  [type_with_one_or_more_ids.type_decl])}
+  cst_id struct l_brace struct_or_list* r_brace {-> New type_decl.struct_with_id(cst_id.id_type, 
+  [struct_or_list.type_decl])}
+  ;
+
+struct_or_list {-> type_decl} =
+  {struct} type_struct_declaration {-> type_struct_declaration.type_decl} |
+  {list} type_with_one_or_more_ids {-> type_with_one_or_more_ids.type_decl}
   ;
 
 type_with_one_or_more_ids {-> type_decl} = 
