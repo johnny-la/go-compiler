@@ -1,6 +1,11 @@
 # StableCCGoLite
 Compiler built in SableCC for a subset of the Go language
 
+We enforced that a break and continue statement 
+could only appear within a loop by implementing a weeding pass on the generated AST.
+
+Below is a list of each team member's contribution to the project:
+
 ### Ralph
 - Scanner
 - Expressions
@@ -17,10 +22,6 @@ Compiler built in SableCC for a subset of the Go language
 - Comments
 - Statements
 
-*Notes:* Our scanner and parser could not enforce that a break and continue statement 
-could only appear within a loop. This constraint will be handled using a weeding pass 
-in the next milestone.
-
 Design Decisions:
 
 Choice of Tool:
@@ -31,3 +32,8 @@ Prior to starting the first milestone, each team member was assigned to explore 
 
 Declaration Design Decisions:
 Declarations were interesting in that there were 4 clear high level declarations: variable, type, function, and package. However as variable and type functions could be nested within the function declarations, it was decided that a two tier system was necessary. Variable and type functions were grouped by a production called declarations and subcategoried under top_level_declarations, which included the grouped declarations as well as func_decl and package_decl. Another thing to note was that the base types did not actually represent reserved keywords, therefore they could be used as general identifiers. A production was created then to encapsulate these two types of identifiers (base types and general identifiers). Likewise, due to the fact that types could be structs, slices, arrays, or a struct/base type, it was necessary to create a general type production that encapsulated a type that could contain multiple combinations of these types (i.e [5][] name_of_struct). 
+
+Weeding:
+*Notes:* Our scanner and parser could not enforce that a break and continue statement 
+could only appear within a loop. This constraint will be handled using a weeding pass 
+in the next milestone.
