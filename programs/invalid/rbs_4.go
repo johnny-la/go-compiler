@@ -1,5 +1,7 @@
 // function call with semicolon separating args
 
+package main
+
 var x int = 2;
 var sum int;
 
