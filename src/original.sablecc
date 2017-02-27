@@ -1,3 +1,12 @@
+
+
+
+
+
+
+
+
+
 top_level_declarations{-> decl} = 
   {func_decl} cst_func_decl semicolon {-> New decl.func_decl_ast(cst_func_decl.func_decl)} |
   {declarations} declarations {-> declarations.decl}
@@ -10,13 +19,13 @@ declarations {-> decl} =
 
 //function declarations here
 cst_func_decl{-> func_decl} = 
-  {no_return} func cst_id l_paren multi_sig? r_paren cst_block 
-  {-> New func_decl.no_return(cst_id.id_type, 
+  {no_return} func id l_paren multi_sig? r_paren cst_block 
+  {-> New func_decl.no_return(id, 
                            multi_sig.signature,
                            cst_block.stmt
         )} |
-  {single_return} func [name]:cst_id l_paren multi_sig? r_paren cst_type cst_block 
-  {-> New func_decl.single_return(name.id_type, 
+  {single_return} func [name]:id l_paren multi_sig? r_paren cst_type cst_block 
+  {-> New func_decl.single_return(name, 
                            multi_sig.signature,
                            cst_type.var_type,
                            cst_block.stmt
@@ -29,8 +38,8 @@ multi_sig {-> signature} =
   ;
 
 signature {-> signature} = 
-  {recurse} cst_id comma signature {-> New signature.many_id_to_type(cst_id.id_type, signature.signature)} |
-  {base} cst_id cst_type{-> New signature.single_id_to_type(cst_id.id_type, cst_type.var_type)}
+  {recurse} id comma signature {-> New signature.many_id_to_type(id, signature.signature)} |
+  {base} id cst_type{-> New signature.single_id_to_type(id, cst_type.var_type)}
   ;
 
 
@@ -46,17 +55,18 @@ type_top_level {-> type_decl} =
   ;
 
 type_aliasing {-> type_decl} = 
-  {id_alias} cst_id cst_type {-> New type_decl.type_alias(cst_id.id_type, cst_type.var_type)}
+  {id_alias} id cst_type {-> New type_decl.type_alias(id, cst_type.var_type)} |
+  {type_alias} type cst_type {-> New type_decl.type_alias_base(type, cst_type.var_type)}
   ;
   
 type_struct_declaration {-> type_decl} = 
-  cst_id struct l_brace type_with_one_or_more_ids* r_brace {-> New type_decl.struct_with_id(cst_id.id_type, 
+  id struct l_brace type_with_one_or_more_ids* r_brace {-> New type_decl.struct_with_id(id, 
   [type_with_one_or_more_ids.type_decl])}
   ;
 
 type_with_one_or_more_ids {-> type_decl} = 
-  {recurse} cst_id comma type_with_one_or_more_ids {-> New type_decl.type_with_many_ids(cst_id.id_type, type_with_one_or_more_ids.type_decl)} |
-  {base} cst_id cst_type semicolon {-> New type_decl.type_alias(cst_id.id_type, cst_type.var_type)}
+  {recurse} id comma type_with_one_or_more_ids {-> New type_decl.type_with_many_ids(id, type_with_one_or_more_ids.type_decl)} |
+  {base} id cst_type semicolon {-> New type_decl.type_alias(id, cst_type.var_type)}
   ;
 
 //variable declaration and necessary subproductions here
@@ -71,14 +81,14 @@ top_var_decl {-> var_decl} =
   ;
 
 var_id_and_type {-> var_decl} = 
-  {miat_recurse} cst_id comma var_id_and_type {-> New var_decl.inline_list_no_exp(cst_id.id_type, var_id_and_type.var_decl)} |
-  {miat_end} cst_id cst_type {-> New var_decl.var_with_type(cst_id.id_type, cst_type.var_type)}
+  {miat_recurse} id comma var_id_and_type {-> New var_decl.inline_list_no_exp(id, var_id_and_type.var_decl)} |
+  {miat_end} id cst_type {-> New var_decl.var_with_type(id, cst_type.var_type)}
   ;
 
 var_id_and_exp_maybe_type {-> var_decl} = 
-  {miae_recurse} cst_id [l]:comma var_id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(cst_id.id_type, var_id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
-  {miae_end} cst_id equals cst_exp {-> New var_decl.var_with_only_exp(cst_id.id_type, cst_exp.exp)} |
-  {mtae_end} cst_id cst_type equals cst_exp {-> New var_decl.var_with_type_and_exp(cst_id.id_type, cst_type.var_type, cst_exp.exp)};
+  {miae_recurse} id [l]:comma var_id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(id, var_id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
+  {miae_end} id equals cst_exp {-> New var_decl.var_with_only_exp(id, cst_exp.exp)} |
+  {mtae_end} id cst_type equals cst_exp {-> New var_decl.var_with_type_and_exp(id, cst_type.var_type, cst_exp.exp)};
 
 //general type production for all declarations
 cst_type {-> var_type} = 
@@ -94,6 +104,10 @@ cst_id  {-> id_type} =
   ;
 
 
+
+
+
+
 decl = 
   {func_decl_ast} func_decl |
   {var_decl_ast} var_decl |
@@ -101,29 +115,30 @@ decl =
   ;
 
 func_decl = 
-  {no_return} id_type signature? [block]:stmt |
-  {single_return} id_type signature? var_type [block]:stmt  |
+  {no_return} id signature? [block]:stmt |
+  {single_return} id signature? var_type [block]:stmt  |
   ;
 
 signature = 
-  {single_id_to_type} id_type var_type |
-  {many_id_to_type} id_type signature |
+  {single_id_to_type} id var_type |
+  {many_id_to_type} id signature |
   {multiple_types} [root]:signature [leaf]:signature
   ;
 
 type_decl = 
-  {type_alias} id_type var_type |
-  {type_with_many_ids} id_type type_decl |
-  {struct_with_id} id_type type_decl* |
+  {type_alias} id var_type |
+  {type_alias_base} type var_type |
+  {type_with_many_ids} id type_decl |
+  {struct_with_id} id type_decl* |
   {multiline_list} type_decl*
   ;
 
 var_decl = 
-  {var_with_type} id_type var_type |
-  {var_with_only_exp} id_type exp |
-  {var_with_type_and_exp} id_type var_type exp |
-  {inline_list_no_exp} id_type var_decl |
-  {inline_list_with_exp} id_type var_decl exp |
+  {var_with_type} id var_type |
+  {var_with_only_exp} id exp |
+  {var_with_type_and_exp} id var_type exp |
+  {inline_list_no_exp} id var_decl |
+  {inline_list_with_exp} id var_decl exp |
   {multiline_list} var_decl*
   ;
 
@@ -138,4 +153,5 @@ id_type =
   {id} id |
   {type} type
   ;
+
 

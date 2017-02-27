@@ -8,6 +8,7 @@ import golite.analysis.*;
 @SuppressWarnings("nls")
 public final class AProgram extends PProgram
 {
+    private PPackageDecl _packageDecl_;
     private final LinkedList<PDecl> _decl_ = new LinkedList<PDecl>();
     private final LinkedList<PStmt> _stmt_ = new LinkedList<PStmt>();
 
@@ -17,10 +18,13 @@ public final class AProgram extends PProgram
     }
 
     public AProgram(
+        @SuppressWarnings("hiding") PPackageDecl _packageDecl_,
         @SuppressWarnings("hiding") List<?> _decl_,
         @SuppressWarnings("hiding") List<?> _stmt_)
     {
         // Constructor
+        setPackageDecl(_packageDecl_);
+
         setDecl(_decl_);
 
         setStmt(_stmt_);
@@ -31,6 +35,7 @@ public final class AProgram extends PProgram
     public Object clone()
     {
         return new AProgram(
+            cloneNode(this._packageDecl_),
             cloneList(this._decl_),
             cloneList(this._stmt_));
     }
@@ -39,6 +44,31 @@ public final class AProgram extends PProgram
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAProgram(this);
+    }
+
+    public PPackageDecl getPackageDecl()
+    {
+        return this._packageDecl_;
+    }
+
+    public void setPackageDecl(PPackageDecl node)
+    {
+        if(this._packageDecl_ != null)
+        {
+            this._packageDecl_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._packageDecl_ = node;
     }
 
     public LinkedList<PDecl> getDecl()
@@ -97,6 +127,7 @@ public final class AProgram extends PProgram
     public String toString()
     {
         return ""
+            + toString(this._packageDecl_)
             + toString(this._decl_)
             + toString(this._stmt_);
     }
@@ -105,6 +136,12 @@ public final class AProgram extends PProgram
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
+        if(this._packageDecl_ == child)
+        {
+            this._packageDecl_ = null;
+            return;
+        }
+
         if(this._decl_.remove(child))
         {
             return;
@@ -122,6 +159,12 @@ public final class AProgram extends PProgram
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
+        if(this._packageDecl_ == oldChild)
+        {
+            setPackageDecl((PPackageDecl) newChild);
+            return;
+        }
+
         for(ListIterator<PDecl> i = this._decl_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)

@@ -55,6 +55,8 @@ public class PrettyPrinter extends DepthFirstAdapter
     public void caseAProgram(AProgram node)
     {
         // Print declarations
+        node.getPackageDecl().apply(this);
+        
         for (int i = 0; i < node.getDecl().size(); i++)
         {
             Node decl = node.getDecl().get(i);
@@ -98,6 +100,12 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(node.getType().getText());
     }
 
+    //package declarations
+    public void caseAPackageDecl(APackageDecl node) {
+        print("package ");
+        node.getIdType().apply(this);
+        print("; \n");
+    }
     //var declarations
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node) {
         print("var ");
@@ -203,13 +211,13 @@ public class PrettyPrinter extends DepthFirstAdapter
     public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node) {
         print("func ");
         node.getFuncDecl().apply(this);
-        println("");
+        println("\n");
     }
     
     public void caseANoReturnFuncDecl(ANoReturnFuncDecl node) {
         node.getIdType().apply(this);
         print(" (");
-        node.getSignature().apply(this);
+        if (node.getSignature() != null) node.getSignature().apply(this);
         print(") ");
         node.getBlock().apply(this);
     }
@@ -217,7 +225,7 @@ public class PrettyPrinter extends DepthFirstAdapter
     public void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node) {
         node.getIdType().apply(this);
         print(" (");
-        node.getSignature().apply(this);
+        if (node.getSignature() != null) node.getSignature().apply(this);
         print(") ");
         node.getVarType().apply(this);
         print(" ");
@@ -351,29 +359,6 @@ public class PrettyPrinter extends DepthFirstAdapter
         printi("}");
     }
 
-    /*public void caseAAssignStmt(AAssignStmt node)
-    {
-        node.getL().apply(this);
-        printi(" = ");
-        node.getR().apply(this);
-        println(";");
-    }
-
-    public void caseAWhileStmt(AWhileStmt node)
-    {
-        printi("while ");
-        node.getExp().apply(this);
-        println(" do");
-
-        // Print the statements in the while-loop
-        indentLevel++;
-        printNodes(node.getStmt());       
->>>>>>> 779998dfc0e07d9c2134bb7b784c1f8ce99bee09
- 
-        indentLevel--;
-        printi("done");
-        println("");
-    }*/
 
     public void caseAIfStmt(AIfStmt node)
     {

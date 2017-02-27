@@ -114,12 +114,18 @@ Ignored Tokens
 
 Productions
 cst_prog {-> program} =
-  {prog} top_level_declarations* cst_block* {-> New program([top_level_declarations.decl], [cst_block.stmt])}
+  {prog} cst_package_decl top_level_declarations* cst_block* {-> New program(cst_package_decl.package_decl, 
+  [top_level_declarations.decl], [cst_block.stmt])}
   ; 
 
 top_level_declarations{-> decl} = 
+  {package_decl} cst_package_decl semicolon {-> New decl.pack_decl_ast(cst_package_decl.package_decl)} |
   {func_decl} cst_func_decl semicolon {-> New decl.func_decl_ast(cst_func_decl.func_decl)} |
   {declarations} declarations semicolon {-> declarations.decl}
+  ;
+
+cst_package_decl{-> package_decl} = 
+  package cst_id semicolon {-> New package_decl(cst_id.id_type)}
   ;
 
 declarations {-> decl} =
@@ -168,7 +174,7 @@ type_top_level {-> type_decl} =
   ;
 
 type_aliasing {-> type_decl} = 
-  {id_alias} cst_id cst_type {-> New type_decl.type_alias(cst_id.id_type, cst_type.var_type)}
+  cst_id cst_type {-> New type_decl.type_alias(cst_id.id_type, cst_type.var_type)}
   ;
   
 type_struct_declaration {-> type_decl} = 
@@ -384,12 +390,17 @@ cst_selector {-> exp} =
 
 Abstract Syntax Tree
 
-program = decl* stmt*;
+program = package_decl decl* stmt*;
 
 decl = 
+  {pack_decl_ast} package_decl |
   {func_decl_ast} func_decl |
   {var_decl_ast} var_decl |
   {type_decl_ast} type_decl
+  ;
+
+package_decl = 
+  id_type
   ;
 
 func_decl = 
@@ -430,7 +441,7 @@ id_type =
   {id} id |
   {type} type
   ;
-  
+
 stmt =
   {read}            id |
   {print}           exp? |
