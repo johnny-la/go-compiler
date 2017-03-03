@@ -29,7 +29,7 @@ public class CodeGenerator extends DepthFirstAdapter
     // The string buffer used for concatenating strings
     private String stringBuffer = "buffer";
 
-    private static final String fileHeader = String.join("\n",
+    /*private static final String fileHeader = String.join("\n",
         "#include <stdlib.h>",
         "#include <stdio.h>",
         "#include <string.h>",
@@ -62,7 +62,7 @@ public class CodeGenerator extends DepthFirstAdapter
         "    }",
         "",
         "    return newString;",
-        "}");
+        "}");*/
 
     public CodeGenerator(Node root, TypeChecker typeChecker)
     {
