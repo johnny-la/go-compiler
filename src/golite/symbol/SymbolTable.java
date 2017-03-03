@@ -2,6 +2,7 @@ package golite.symbol;
 
 import java.util.*;
 import golite.node.*;
+import golite.symbol.Symbol;
 
 public class SymbolTable
 {

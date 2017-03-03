@@ -1,4 +1,21 @@
+package golite.symbol;
+
 import golite.node.*;
 
-import java.util.*;
+/**
+ * Represents a symbol stored in the symbol table 
+ */
+public class Symbol
+{
+    public enum SymbolKind
+    {
+        FIELD,  // Top-level variable
+        METHOD,
+        FORMAL, // Function argument
+        LOCAL   // Variable declared in function
+    }
 
+    public String name; 
+    public Node value;
+    public SymbolKind kind;
+}
