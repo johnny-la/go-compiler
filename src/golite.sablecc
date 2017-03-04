@@ -467,7 +467,6 @@ id_type =
   ;
 
 stmt =
-  {read}            id |
   {print}           exp? |
   {println}         exp? |
   {exp}             exp  |
