@@ -18,4 +18,13 @@ public class Symbol
     public String name; 
     public Node value;
     public SymbolKind kind;
+
+    public Symbol() {}
+
+    public Symbol(String name, Node value, SymbolKind kind)
+    {
+        this.name = name;
+        this.value = value;
+        this.kind = kind;
+    }
 }
