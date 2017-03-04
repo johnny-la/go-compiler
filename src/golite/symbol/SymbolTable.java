@@ -7,12 +7,34 @@ import golite.symbol.Symbol;
 public class SymbolTable
 {
     private HashMap<String, Node> table;
+    private SymbolTable next;   // Pointer to outer scope
 
     public SymbolTable()
     {
         table = new HashMap<String, Node>();
     }
 
+    /**
+     * Creates and returns a new SymbolTable and return it.
+     * (Equivalent to pushing a new symbol table on the stack)
+     * Call this function when entering a new scope
+     */
+    public SymbolTable scope()
+    {
+        SymbolTable newTable = new SymbolTable();
+        newTable.next = this;
+        return newTable; 
+    }
+
+    /**
+     * Returns the symbol table at the next outer scope.
+     * (Equivalent to popping the symbol table stack)
+     * Call this function when leaving a block
+     */
+    public SymbolTable unscope()
+    {
+        return next;
+    }
     /** 
      * Inserts a symbol in the table
      */
@@ -24,13 +46,27 @@ public class SymbolTable
         }
     }
 
+    /**
+     * Returns the symbol at the closest scope
+     */
     public Node get(String name)
     {
-        return table.get(name);
+        SymbolTable current = this;
+
+        while (current != null)
+        {
+            if (current.table.containsKey(name))
+                return current.table.get(name);
+
+            current = current.next;
+        }
+        
+        // Symbol not found
+        return null;
     }
 
     /**
-     * Returns true if the symbol table contains the given symbol
+     * Returns true if the symbol table in the current scope contains the given symbol
      */
     public boolean contains(String name)
     {

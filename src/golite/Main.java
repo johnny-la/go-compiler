@@ -114,7 +114,7 @@ public class Main
                 String filename = args[0].split(".go")[0];
                 prettyPrint(tree, filename);
 
-                /*SymbolTable symbolTable = new SymbolTable();
+                SymbolTable symbolTable = new SymbolTable();
                 SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable);
                 printDebug("Semantic Analyzer:");
                 tree.apply(semanticAnalyzer);
@@ -122,7 +122,7 @@ public class Main
                 printDebug(symbolTable.toString());
                 printToFile(filename + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
                 
-                printDebug("\nType Checker:");
+                /*printDebug("\nType Checker:");
                 TypeChecker typeChecker = new TypeChecker(symbolTable);
                 tree.apply(typeChecker);
                 printDebug(typeChecker.toString());
