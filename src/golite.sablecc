@@ -364,9 +364,6 @@ cst_for_condition {-> exp} =
 
 cst_assign_stmt {-> stmt} =
   {cst_assign_stmt}   lvalue_list list_equals cst_exp_list {-> New stmt.assign_list(lvalue_list.exp, list_equals.exp, cst_exp_list.exp)};
-  //{cst_assign_stmt} lvalue list_equals cst_exp {-> New stmt.assign_op(lvalue.exp,list_equals.exp,cst_exp.exp)} |
-  //{cst_assign_list} lvalue [l]:comma cst_assign_stmt [r]:comma cst_exp {-> New stmt.assign_list(lvalue.exp, cst_assign_stmt.stmt, cst_exp.exp)};
-
 lvalue_list {-> exp} =
   {cst_lvalue}      lvalue     {-> lvalue.exp} |
   {cst_lvalue_list} lvalue_list comma lvalue {-> New exp.lvalue_list(lvalue_list.exp,lvalue.exp)};
@@ -375,14 +372,6 @@ lvalue_list {-> exp} =
 list_equals {-> exp} =
   {cst_equals}    equals     {-> New exp.equals()} |
   {cst_op_equals} colon_equals  {-> New exp.colon_equals()};
-
-//cst_assign_op_stmt {-> stmt} =
-  //{lvalue_assign} lvalue equals cst_exp {-> New stmt.assign(lvalue.exp, cst_exp.exp)} |
-  //{lvalue_assign_list} lvalue [l]:comma cst_assign_op_stmt [r]:comma cst_exp {-> New stmt.assign_list(lvalue.exp, cst_assign_op_stmt.stmt, cst_exp.exp)};
-
-//cst_short_decl_stmt {-> stmt} =
-  //{cst_short_decl} {-> New stmt.empty()};//id colon_equals cst_exp {-> New stmt.short_decl(id, cst_exp.exp)};
-  //{cst_short_decl_list} id [l]:comma cst_short_decl_stmt [r]:comma cst_exp {-> New stmt.short_decl_list(id, cst_short_decl_stmt.stmt, cst_exp.exp)};
 
 cst_id_comma {-> id} =
   {cst_id_comman} id comma {-> id};
