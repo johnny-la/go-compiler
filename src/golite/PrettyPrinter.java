@@ -535,13 +535,6 @@ public class PrettyPrinter extends DepthFirstAdapter
    
     /** EXPRESSIONS */
 
-    public void caseAListExp(AListExp node)
-    {
-        node.getList().apply(this);
-        print(",");
-        node.getValue().apply(this);
-    }
-
     public void caseAFunctionCallExp(AFunctionCallExp node)
     {
         node.getIdType().apply(this);

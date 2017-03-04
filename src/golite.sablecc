@@ -516,14 +516,14 @@ exp =
   {appended_expr} [l]:exp [r]:exp |
   {array_index}      [lvalue]:exp [index]:exp |
   {struct_selector}  [l]:exp [r]:exp |
-  {list}      [list]:exp [value]:exp |
+  //{list}      [list]:exp [value]:exp |
   {id_list}   [list]:exp [value]:id  |
   {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
   {case}      [exp_list]:exp* |
   {default} |
   {careted_factors} exp |
   {exclamated_factors} exp |
-  {lvalue_list} exp+ |
+  //{lvalue_list} exp+ |
   {equals} |
   {colon_equals} |
   {empty};
