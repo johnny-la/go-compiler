@@ -3,6 +3,7 @@ package golite.symbol;
 import golite.*;
 import golite.node.*;
 import golite.analysis.*;
+import golite.symbol.Symbol;
 
 import java.util.*;
 

@@ -22,17 +22,17 @@ public class TypeChecker extends DepthFirstAdapter
         nodeTypes = new HashMap<Node, Type>();
     }
 
-    public void outAWhileStmt(AWhileStmt node)
-    {
-        Type expType = getType(node.getExp());
+    // public void outAWhileStmt(AWhileStmt node)
+    // {
+    //     Type expType = getType(node.getExp());
         
-        if (expType != Type.INT)
-        {
-            ErrorManager.printError("While-loop expression type: " 
-                    + expType + " (" + node.getExp().toString().trim() +
-                    "). Expected an integer.");
-        }
-    }
+    //     if (expType != Type.INT)
+    //     {
+    //         ErrorManager.printError("While-loop expression type: " 
+    //                 + expType + " (" + node.getExp().toString().trim() +
+    //                 "). Expected an integer.");
+    //     }
+    // }
 
     public void outAIfStmt(AIfStmt node)
     {

@@ -234,8 +234,8 @@ cst_stmt {-> stmt} =
   {cst_func_call}  function_call       {-> New stmt.exp(function_call.exp)} |
   {cst_decl}       declarations        {-> New stmt.decl(declarations.decl)} |
   {cst_simple}     cst_simple_stmt     {-> cst_simple_stmt.stmt} |
-  {cst_print}      print l_paren cst_exp_list? r_paren {-> New stmt.print(cst_exp_list.exp)} |
-  {cst_println}    println l_paren cst_exp_list? r_paren {-> New stmt.println(cst_exp_list.exp)} |
+  {cst_print}      print l_paren cst_exp_list? r_paren {-> New stmt.print([cst_exp_list.exp])} |
+  {cst_println}    println l_paren cst_exp_list? r_paren {-> New stmt.println([cst_exp_list.exp])} |
   {cst_return}     return cst_exp?  {-> New stmt.return(cst_exp.exp)} |
   {cst_if}         cst_if_stmt     {-> cst_if_stmt.stmt} |
   {cst_switch}     cst_switch_stmt {-> cst_switch_stmt.stmt} |
@@ -248,8 +248,8 @@ cst_simple_stmt {-> stmt} =
   //{cst_decl}       cst_top_decl        {-> New stmt.decl(cst_top_decl.decl)} |
   {cst_increment}  lvalue plus_plus    {-> New stmt.increment(lvalue.exp)} |
   {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)} |
-  {cst_assign}     cst_assign_stmt     {-> cst_assign_stmt.stmt} |
-  {cst_short_decl} cst_short_decl_stmt {-> cst_short_decl_stmt.stmt};
+  {cst_assign}     cst_assign_stmt     {-> cst_assign_stmt.stmt};
+  //{cst_short_decl} cst_short_decl_stmt {-> cst_short_decl_stmt.stmt};
 
 cst_return_stmt {-> } =
   {cst_empty}  {-> } |
@@ -297,8 +297,8 @@ exclamated_factors {-> exp} =
   {exclamated_factors} exclamation exclamated_factors {-> New exp.exclamated_factors(exclamated_factors.exp)};
 
 function_call {-> exp} =
-  {empty_args} cst_id l_paren r_paren {-> New exp.function_call(cst_id.id_type, New exp.empty())} |
-  {one_or_more_args} cst_id l_paren cst_exp_list r_paren {-> New exp.function_call(cst_id.id_type, cst_exp_list.exp)};
+  {empty_args} cst_id l_paren r_paren {-> New exp.function_call(cst_id.id_type, [New exp.empty()])} |
+  {one_or_more_args} cst_id l_paren cst_exp_list r_paren {-> New exp.function_call(cst_id.id_type, [cst_exp_list.exp])};
   
 append_expr {-> exp} =
   append l_paren cst_exp comma other_exp r_paren { -> New exp.appended_expr(cst_exp.exp, other_exp.exp)};
@@ -314,10 +314,10 @@ factor {-> exp} =
   {cst_shift_right} factor shift_right term {-> New exp.shift_right(factor.exp, term.exp)} |
   {cst_ampersand}   factor ampersand term {-> New exp.ampersand(factor.exp, term.exp)} |
   {cst_ampersand_caret} factor ampersand_caret term {-> New exp.ampersand_caret(factor.exp, term.exp)} |
-  {term}            term              {-> term.exp};      
+  {term}            term              {-> term.exp};
 
 term {-> exp} =
-  {cst_id}        id     {-> New exp.id(id)} |
+  {cst_id}        id {-> New exp.id(id)} |
   {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
   {cst_int}       int    {-> New exp.int(int)} |
   {cst_oct}       oct    {-> New exp.oct(oct)} |
@@ -354,7 +354,7 @@ cst_switch_case_clause {-> stmt} =
   {cst_case_clause} cst_switch_case colon cst_stmt_list {-> New stmt.case(cst_switch_case.exp, [cst_stmt_list.stmt])};
 
 cst_switch_case {-> exp} =
-  {cst_case}   case cst_exp_list {-> New exp.case(cst_exp_list.exp)} |
+  {cst_case}   case cst_exp_list {-> New exp.case([cst_exp_list.exp])} |
   {cst_switch} default {-> New exp.default()}; 
 
 cst_for_condition {-> exp} =
@@ -363,23 +363,23 @@ cst_for_condition {-> exp} =
   {cst_clause}   [l]:cst_simple_stmt? [sl]:semicolon cst_exp? [sr]:semicolon [r]:cst_simple_stmt? {-> New exp.for_cond(l.stmt, cst_exp.exp, r.stmt)};
 
 cst_assign_stmt {-> stmt} =
-  {cst_assign_stmt} lvalue op_equals cst_exp {-> New stmt.assign_op(lvalue.exp,op_equals,cst_exp.exp)} |
-  {cst_assign_op_stmt} cst_assign_op_stmt {-> cst_assign_op_stmt.stmt};
+  {cst_assign_stmt}   lvalue_list list_equals cst_exp_list {-> New stmt.assign_list([lvalue_list.exp], list_equals.exp, [cst_exp_list.exp])};
 
-cst_assign_op_stmt {-> stmt} =
-  {lvalue_assign} lvalue equals cst_exp {-> New stmt.assign(lvalue.exp, cst_exp.exp)} |
-  {lvalue_assign_list} lvalue [l]:comma cst_assign_op_stmt [r]:comma cst_exp {-> New stmt.assign_list(lvalue.exp, cst_assign_op_stmt.stmt, cst_exp.exp)};
+lvalue_list {-> exp+} =
+  {cst_lvalue}      lvalue     {-> [lvalue.exp]} |
+  {cst_lvalue_list} lvalue_list comma lvalue {-> [lvalue_list.exp,lvalue.exp]};
 
-cst_short_decl_stmt {-> stmt} =
-  {cst_short_decl} id colon_equals cst_exp {-> New stmt.short_decl(id, cst_exp.exp)};
-  //{cst_short_decl_list} id [l]:comma cst_short_decl_stmt [r]:comma cst_exp {-> New stmt.short_decl_list(id, cst_short_decl_stmt.stmt, cst_exp.exp)};
+
+list_equals {-> exp} =
+  {cst_equals}    equals     {-> New exp.equals()} |
+  {cst_op_equals} colon_equals  {-> New exp.colon_equals()};
 
 cst_id_comma {-> id} =
   {cst_id_comman} id comma {-> id};
 
-cst_exp_list {-> exp} =
-  {cst_exp}      cst_exp     {-> cst_exp.exp} |
-  {cst_exp_list} cst_exp_list comma cst_exp {-> New exp.list(cst_exp_list.exp, cst_exp.exp)};
+cst_exp_list {-> exp*} =
+  {cst_exp}      cst_exp     {-> [cst_exp.exp]} |
+  {cst_exp_list} cst_exp_list comma cst_exp {-> [cst_exp_list.exp, cst_exp.exp]};
 
 cst_id_list {-> exp} =
   {cst_id}       id                   {-> New exp.id(id)} |
@@ -457,27 +457,25 @@ id_type =
   ;
 
 stmt =
-  {read}            id |
-  {print}           exp? |
-  {println}         exp? |
+  {print}           exp* |
+  {println}         exp* |
   {exp}             exp  |
   {return}          exp? |
   {increment}       exp  |
   {decrement}       exp  |
   {decl}            decl |
   {assign}          [l]:exp [r]:exp |
-  {assign_op}       [l]:exp op_equals [r]:exp |
-  {assign_list}     [l]:exp stmt [r]:exp |
+  {assign_op}       [l]:exp [op]:exp [r]:exp |
+  {assign_list}     [l]:exp+ [op]:exp [r]:exp+ |
   {short_decl}      id exp |
   {short_decl_list} id stmt exp |
   {block}           stmt* |
-  {while}           exp stmt* |
   {if}              exp [block]:stmt [end]:stmt?  |
   {else_if}          stmt |
   {else}            stmt |
   {for}             [condition]:exp [block]:stmt |
   {switch}          [simple_stmt]:stmt? exp? [case_stmts]:stmt* |
-  {case}            [case_exp]:exp  [stmt_list]:stmt* |
+  {case}            [case_exp]:exp  [stmt_list]:stmt+ |
   {break}     |
   {continue}  | 
   {empty};
@@ -514,15 +512,18 @@ exp =
   {rune_literal} rune_literal |
   {raw_string_lit} raw_string_lit |
   {interpreted_string_literal} interpreted_string_literal |
-  {function_call} id_type exp |
+  {function_call} id_type [exp_list]:exp* |
   {appended_expr} [l]:exp [r]:exp |
   {array_index}      [lvalue]:exp [index]:exp |
   {struct_selector}  [l]:exp [r]:exp |
-  {list}      [list]:exp [value]:exp |
+  //{list}      [list]:exp [value]:exp |
   {id_list}   [list]:exp [value]:id  |
   {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
-  {case}      [exp_list]:exp |
+  {case}      [exp_list]:exp* |
   {default} |
   {careted_factors} exp |
   {exclamated_factors} exp |
+  //{lvalue_list} exp+ |
+  {equals} |
+  {colon_equals} |
   {empty};

@@ -16,7 +16,7 @@ public class Main
                                 CODE_GENERATOR_SUFFIX = ".c";    
 
     // If true, print to file. Else, print to STDOUT
-    private static final boolean PRINT_TO_FILE = false;
+    private static final boolean PRINT_TO_FILE = true;
 
     // Pretty prints the given AST
     private static void prettyPrint(Start tree, String filename)
@@ -114,7 +114,7 @@ public class Main
                 String filename = args[0].split(".go")[0];
                 prettyPrint(tree, filename);
 
-                /*SymbolTable symbolTable = new SymbolTable();
+                SymbolTable symbolTable = new SymbolTable();
                 SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable);
                 printDebug("Semantic Analyzer:");
                 tree.apply(semanticAnalyzer);
@@ -122,7 +122,7 @@ public class Main
                 printDebug(symbolTable.toString());
                 printToFile(filename + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
                 
-                printDebug("\nType Checker:");
+                /*printDebug("\nType Checker:");
                 TypeChecker typeChecker = new TypeChecker(symbolTable);
                 tree.apply(typeChecker);
                 printDebug(typeChecker.toString());
@@ -146,7 +146,7 @@ public class Main
         catch (Exception e)
         {
             System.out.print("INVALID: " + e);
-            e.printStackTrace();
+            //e.printStackTrace();
             System.exit(1);
         }
     }
