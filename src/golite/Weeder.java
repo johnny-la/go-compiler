@@ -30,39 +30,13 @@ public class Weeder extends DepthFirstAdapter
         }
 
         int lsize = node.getL().size();
-        int rsize = getSize(node.getR());
+        int rsize = node.getR().size();
 
         if (lsize != rsize)
         {
             throw new RuntimeException("Number of ids and expressions do not match in assignment statement");
         }
     }
-
-    public int getSize(PExp node)
-    {
-        if (node instanceof AListExp)
-        {
-            return getSize(((AListExp)node).getList())+1;
-        }
-
-        return 1;
-    }
-
-    /*public boolean onlyIds(ALvalueListExp node)
-    {
-        if (node.getLvalue() instanceof AIdExp)
-        {
-            if (node.getList() instanceof ALvalueListExp)
-                return onlyIds((ALvalueListExp)node.getList());
-            else 
-                return isId(node.getList());
-        }
-        else
-        {
-            return false;
-        }
-
-    }*/
 
     public boolean isId(PExp node)
     {
