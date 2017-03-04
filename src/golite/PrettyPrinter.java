@@ -51,6 +51,16 @@ public class PrettyPrinter extends DepthFirstAdapter
         for (Node node : nodes) { node.apply(this); }
     }
 
+    // Pretty prints the list of nodes, separating each element by a comma
+    private void printNodesWithComma(LinkedList<? extends Node> nodes)
+    {
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            nodes.get(i).apply(this);
+            if (i != nodes.size()-1) { print(","); }
+        }
+    }
+
     /** PROGRAM */
     public void caseAProgram(AProgram node)
     {
@@ -345,16 +355,19 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getR().apply(this);
     }
 
-    public void caseALvalueListExp(ALvalueListExp node)
+    /*public void caseALvalueListExp(ALvalueListExp node)
     {
-        node.getList().apply(this);
-        print(",");
-        node.getLvalue().apply(this);
-    }
+        for (int i = 0; i < node.getExp().size(); i++)
+        {
+            node.getExp().get(i).apply(this);
+            if (i != node.getExp().size()-1) { print(","); }
+        }
+        
+    }*/
 
     public void caseAAssignListStmt(AAssignListStmt node)
     {
-        node.getL().apply(this);
+        printNodesWithComma(node.getL());
         node.getOp().apply(this);
         node.getR().apply(this); 
     } 

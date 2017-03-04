@@ -363,10 +363,11 @@ cst_for_condition {-> exp} =
   {cst_clause}   [l]:cst_simple_stmt? [sl]:semicolon cst_exp? [sr]:semicolon [r]:cst_simple_stmt? {-> New exp.for_cond(l.stmt, cst_exp.exp, r.stmt)};
 
 cst_assign_stmt {-> stmt} =
-  {cst_assign_stmt}   lvalue_list list_equals cst_exp_list {-> New stmt.assign_list(lvalue_list.exp, list_equals.exp, cst_exp_list.exp)};
-lvalue_list {-> exp} =
-  {cst_lvalue}      lvalue     {-> lvalue.exp} |
-  {cst_lvalue_list} lvalue_list comma lvalue {-> New exp.lvalue_list(lvalue_list.exp,lvalue.exp)};
+  {cst_assign_stmt}   lvalue_list list_equals cst_exp_list {-> New stmt.assign_list([lvalue_list.exp], list_equals.exp, cst_exp_list.exp)};
+
+lvalue_list {-> exp+} =
+  {cst_lvalue}      lvalue     {-> [lvalue.exp]} |
+  {cst_lvalue_list} lvalue_list comma lvalue {-> [lvalue_list.exp,lvalue.exp]};
 
 
 list_equals {-> exp} =
@@ -465,7 +466,7 @@ stmt =
   {decl}            decl |
   {assign}          [l]:exp [r]:exp |
   {assign_op}       [l]:exp [op]:exp [r]:exp |
-  {assign_list}     [l]:exp [op]:exp [r]:exp |
+  {assign_list}     [l]:exp+ [op]:exp [r]:exp |
   {short_decl}      id exp |
   {short_decl_list} id stmt exp |
   {block}           stmt* |
@@ -522,7 +523,7 @@ exp =
   {default} |
   {careted_factors} exp |
   {exclamated_factors} exp |
-  {lvalue_list} [list]:exp [lvalue]:exp |
+  {lvalue_list} exp+ |
   {equals} |
   {colon_equals} |
   {empty};

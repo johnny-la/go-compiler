@@ -9,23 +9,27 @@ public class Weeder extends DepthFirstAdapter
 {
     public void inAAssignListStmt(AAssignListStmt node)
     {
-        boolean allIds = false;
-        if (node.getL() instanceof ALvalueListExp)
+        // Stores true if all the lvalues are identifiers
+        boolean allIds = true;
+
+        // Checks if all lvalues are identifiers
+        List<PExp> lvalues = (List<PExp>)node.getL();
+        for (int i = 0; i < lvalues.size(); i++)
         {
-            allIds = onlyIds((ALvalueListExp)node.getL());
+            if (!(lvalues.get(i) instanceof AIdExp))
+            {
+                allIds = false;
+            }
         }
-        else
-        {
-            allIds = isId(node.getL());
-        }
-        
+
+        // Throw an exception if non-identifiers are used with ":="        
         if (!allIds && node.getOp() instanceof AColonEqualsExp)
         {
             throw new RuntimeException("Short assignment (:=) can only "+
                    "be used with ids"); 
         }
 
-        int lsize = getSize(node.getL());
+        int lsize = node.getL().size();
         int rsize = getSize(node.getR());
 
         if (lsize != rsize)
@@ -40,15 +44,11 @@ public class Weeder extends DepthFirstAdapter
         {
             return getSize(((AListExp)node).getList())+1;
         }
-        if (node instanceof ALvalueListExp)
-        {
-            return getSize(((ALvalueListExp)node).getList())+1;
-        }
 
         return 1;
     }
 
-    public boolean onlyIds(ALvalueListExp node)
+    /*public boolean onlyIds(ALvalueListExp node)
     {
         if (node.getLvalue() instanceof AIdExp)
         {
@@ -62,7 +62,7 @@ public class Weeder extends DepthFirstAdapter
             return false;
         }
 
-    }
+    }*/
 
     public boolean isId(PExp node)
     {
