@@ -8,6 +8,8 @@ import golite.symbol.Symbol.SymbolKind;
 
 import java.util.*;
 
+// TODO: type_decl.multiline_list, var_decl.multiline_list???
+
 public class SemanticAnalyzer extends DepthFirstAdapter
 {
     private SymbolTable symbolTable;
@@ -20,6 +22,16 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     public SemanticAnalyzer(SymbolTable symbolTable)
     {
         this.symbolTable = symbolTable;
+    }
+
+    public void inANoReturnFuncDecl(ANoReturnFuncDecl node)
+    {
+        declareVariable(node.getIdType(), null, node);
+    }
+
+    public void inASingleReturnFuncDecl(ASingleReturnFuncDecl node)
+    {
+        declareVariable(node.getIdType(), null, node);
     }
 
     public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
@@ -47,6 +59,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         declareVariable(node.getIdType(), null, node);
     }
 
+    public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node)
+    {
+        declareVariable(node.getIdType(), node.getVarType(), node);
+    }
+
+    public void inATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
+    {
+        declareVariable(node.getIdType(), null, node);
+    }
+
+    public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
+    {
+        declareVariable(node.getIdType(), null, node);
+    }
+
     /** 
      * Inserts the given ID in the the symbol table,
      * and throws an error if it's already declared in
@@ -63,7 +90,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         // Throw an exception if the identifier was already declared
         if (symbolTable.contains(idName))
         {
-            ErrorManager.printError("\"" + id + "\" is already declared.");
+            ErrorManager.printError("\"" + id + "\" is already declared in this block.");
             return;
         }    
 
