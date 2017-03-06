@@ -26,12 +26,41 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     public void inANoReturnFuncDecl(ANoReturnFuncDecl node)
     {
-        declareVariable(node.getIdType(), null, node);
+        declareFunction(node.getIdType(), null, node);
     }
 
     public void inASingleReturnFuncDecl(ASingleReturnFuncDecl node)
     {
-        declareVariable(node.getIdType(), null, node);
+        declareFunction(node.getIdType(), null, node);
+    }
+
+    public void outANoReturnFuncDecl(ANoReturnFuncDecl node)
+    {
+        outAFuncDecl(node);
+    }
+
+    public void outASingleReturnFuncDecl(ASingleReturnFuncDecl node)
+    {
+        outAFuncDecl(node);
+    }
+
+    /** 
+     * Called when we leave a function declaration.
+     */
+    public void outAFuncDecl(PFuncDecl node)
+    {   
+        // Move to the outer scope
+        symbolTable = symbolTable.unscope();
+    }
+
+    /** 
+     * Inserts the given function ID in the the symbol table,
+     * Creates a new scope for the contents of the function
+     */
+    public void declareFunction(PIdType id, PVarType varType, Node node)
+    {
+        declareVariable(id, varType, node);
+        symbolTable = symbolTable.scope();
     }
 
     public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
