@@ -14,14 +14,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 {
     private SymbolTable symbolTable;
 
+    // If true, the top-most frame of the symbol table is dumped when a scope is left.
+    private boolean dumpSymbolTable;
+
+    // True if we are traversing inside a function block
+    private boolean justEnterredFunction;
+
     public SemanticAnalyzer()
     {
         symbolTable = new SymbolTable();
     }
 
-    public SemanticAnalyzer(SymbolTable symbolTable)
+    public SemanticAnalyzer(SymbolTable symbolTable, boolean dumpSymbolTable)
     {
         this.symbolTable = symbolTable;
+        this.dumpSymbolTable = dumpSymbolTable;
     }
 
     public void inANoReturnFuncDecl(ANoReturnFuncDecl node)
@@ -49,8 +56,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter
      */
     public void outAFuncDecl(PFuncDecl node)
     {   
+        // NOT NEEDED: outABlockStmt() will unscope for us
         // Move to the outer scope
-        symbolTable = symbolTable.unscope();
+        // symbolTable = symbolTable.unscope();
     }
 
     /** 
@@ -60,7 +68,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     public void declareFunction(PIdType id, PVarType varType, Node node)
     {
         declareVariable(id, varType, node);
-        symbolTable = symbolTable.scope();
+        scope();
+
+        // Tells inABlockStmt() to not create a new scope 
+        justEnterredFunction = true;
     }
 
     public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
@@ -143,6 +154,48 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
 
         return false;
+    }
+
+    public void inABlockStmt(ABlockStmt node)
+    {
+        // If we just enterred a function, we already started a new scope for
+        // the formal parameters
+        if (!justEnterredFunction)
+            // Start a new scope at each block
+            scope();
+
+        // This boolean has fulfilled its purpose
+        justEnterredFunction = false;
+    }
+
+    public void outABlockStmt(ABlockStmt node)
+    {
+        // Pop the current scope
+        unscope();
+    }
+
+    /**
+     * Scopes the symbol table
+     */
+    private void scope()
+    {
+        if (dumpSymbolTable)
+            System.out.println(symbolTable + "\n----------------------");
+
+        // Creates a new scope after enterring a block
+        symbolTable = symbolTable.scope();
+    }
+
+    /**
+     * Unscopes the symbol table
+     */
+    private void unscope()
+    {
+        if (dumpSymbolTable)
+            System.out.println(symbolTable + "\n----------------------");
+
+        // Pop the inner-most scope after leaving a block
+        symbolTable = symbolTable.unscope();
     }
    
     /*public void inAVarDecl(AVarDecl node)

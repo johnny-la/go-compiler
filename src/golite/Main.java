@@ -11,21 +11,25 @@ import java.io.*;
 
 public class Main
 {
-    private static final String PRETTY_PRINT_SUFFIX = ".pretty.min",
+    private static final String PRETTY_PRINT_SUFFIX = ".pretty.go",
+                                PRETTY_PRINT_TYPE_SUFFIX = ".pptype.go",
                                 SYMBOL_TABLE_SUFFIX = ".symbol.txt",
-                                CODE_GENERATOR_SUFFIX = ".c";    
+                                CODE_GENERATOR_SUFFIX = ".c";   
+                            
+    private static final String DUMP_SYMBOL_TABLE_ARG = "-dumpsymtab",
+                                PRETTY_PRINT_TYPE_ARG = "-pptype";
 
     // If true, print to file. Else, print to STDOUT
     private static final boolean PRINT_TO_FILE = true;
 
     // Pretty prints the given AST
-    private static void prettyPrint(Start tree, String filename)
+    private static void prettyPrint(Start tree, String inputFilename)
     {
         PrettyPrinter prettyPrinter = new PrettyPrinter();
         String prettyPrint = prettyPrinter.prettyPrint(tree);
 
         printDebug(prettyPrint);
-        printToFile(filename + PRETTY_PRINT_SUFFIX, prettyPrint);
+        printToFile(inputFilename + PRETTY_PRINT_SUFFIX, prettyPrint);
     }
 
     /**
@@ -43,25 +47,25 @@ public class Main
      * Generates C code from the given AST
      */
     private static void generateCode(Start tree, TypeChecker typeChecker,
-            String filename)
+            String inputFilename)
     {
         printDebug("Code Generator:");
         CodeGenerator codeGenerator = new CodeGenerator(tree, typeChecker);
         String code = codeGenerator.generateCode();
 
         printDebug(code);
-        printToFile(filename + CODE_GENERATOR_SUFFIX, code);
+        printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
     }
 
     /**
      * Prints the given string to the specified file
      */
-    private static void printToFile(String filename, String output)
+    private static void printToFile(String inputFilename, String output)
     {
         try
         {
             // Writers used to output to a file
-            FileWriter fileWriter = new FileWriter(filename, false);
+            FileWriter fileWriter = new FileWriter(inputFilename, false);
             PrintWriter printWriter = new PrintWriter(fileWriter);
 
             printWriter.printf("%s", output);
@@ -77,6 +81,25 @@ public class Main
 
     public static void main(String[] args)
     {
+        // Caches command-line arguments
+        String inputFilename = null;
+        boolean dumpSymbolTable = false;
+        boolean prettyPrintType = false;
+
+        // Parse the command-line arguments
+        if (args.length >= 1)
+        {
+            inputFilename = args[args.length-1];
+            
+            for (int i = 0; i < args.length; i++)
+            {
+                if (args[i].equals(DUMP_SYMBOL_TABLE_ARG))
+                    dumpSymbolTable = true;
+                if (args[i].equals(PRETTY_PRINT_TYPE_ARG))
+                    prettyPrintType = true;
+            }
+        }
+
         try 
         {
             Parser parser = null;
@@ -89,14 +112,14 @@ public class Main
                                 new PushbackReader(
                                     new InputStreamReader(System.in), 1024)));
             }
-            else if (args.length == 1)
+            else if (args.length >= 1)
             {
                 // Read from a file
                 parser = new Parser(
                             new GoliteLexer(
                                 new PushbackReader(
                                     new BufferedReader(
-                                        new FileReader(args[0])), 1024)));
+                                        new FileReader(inputFilename)), 1024)));
             }
             else 
             {
@@ -111,16 +134,16 @@ public class Main
 
             if (args[0] != null)
             {
-                String filename = args[0].split(".go")[0];
-                prettyPrint(tree, filename);
+                String filenamePrefix = inputFilename.split(".go")[0];
+                prettyPrint(tree, filenamePrefix);
 
                 SymbolTable symbolTable = new SymbolTable();
-                SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable);
+                SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
                 printDebug("Semantic Analyzer:");
                 tree.apply(semanticAnalyzer);
                 printDebug("\nSymbol table:");
                 printDebug(symbolTable.toString());
-                printToFile(filename + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
+                printToFile(filenamePrefix + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
                 
                 /*printDebug("\nType Checker:");
                 TypeChecker typeChecker = new TypeChecker(symbolTable);
@@ -130,7 +153,7 @@ public class Main
                 // Generate C code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)
                 {
-                    generateCode(tree, typeChecker, filename);
+                    generateCode(tree, typeChecker, inputFilename);
                 }
                 else
                 {
