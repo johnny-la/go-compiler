@@ -5,6 +5,7 @@ src/golite/lexer/
 src/golite/node/ 
 src/golite/analysis/ 
 grading/
+grading.sh
 *.pretty.min 
 *.symbol.txt 
 *.c
