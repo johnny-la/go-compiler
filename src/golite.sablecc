@@ -93,7 +93,7 @@ Tokens
   println = 'println';
   append = 'append';
   comment = '//' all_chars_but_linefeed*;
-  block_comment = '/*' (all_chars_but_star_slash | '/*' | star_without_slash)* '*/';
+  block_comment = '/*' (all_chars_but_star_slash | '/*' | '/' | star_without_slash)* '*/';
   int = integer;
   oct = '0' oct_digit+ ;
   hex = '0' ['x' + 'X'] hex_digit+;
