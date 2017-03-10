@@ -20,6 +20,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     // True if we are traversing inside a function block
     private boolean justEnterredFunction;
+    // True if we are inside a function declaration
+    private boolean inAFunction;
 
     public SemanticAnalyzer()
     {
@@ -60,6 +62,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         // NOT NEEDED: outABlockStmt() will unscope for us
         // Move to the outer scope
         // symbolTable = symbolTable.unscope();
+
+        // Used to determine the kind of a variable declaration (FIELD vs. LOCAL)
+        inAFunction = false;
     }
 
     /** 
@@ -68,71 +73,67 @@ public class SemanticAnalyzer extends DepthFirstAdapter
      */
     public void declareFunction(PIdType id, PVarType varType, Node node)
     {
-        declareVariable(id, varType, node);
+        declareVariable(id, varType, SymbolKind.FUNCTION, node);
         scope();
 
         // Tells inABlockStmt() to not create a new scope 
         justEnterredFunction = true;
+        // Determines the kind of a variable declaration (FIELD vs. LOCAL)
+        inAFunction = true;
     }
 
     public void inAMultipleTypesSignature(AMultipleTypesSignature node)
     {
         // Declare all the variables in the signature
-        declareVariableList(node.getIdList(), node.getVarType(), node);
+        declareVariableList(node.getIdList(), node.getVarType(), SymbolKind.FORMAL, node);
     }
 
     public void inASingleTypeSignature(ASingleTypeSignature node)
     {
         // Declare all the variables in the signature
-        declareVariableList(node.getIdList(), node.getVarType(), node);
+        declareVariableList(node.getIdList(), node.getVarType(), SymbolKind.FORMAL, node);
     }
 
     public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
     {
-        declareVariable(node.getIdType(), node.getVarType(), node);
+        declareVariable(node.getIdType(), node.getVarType(), SymbolKind.LOCAL, node);
     }
 
     public void inAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node)
     {
-        declareVariable(node.getIdType(), null, node);
+        declareVariable(node.getIdType(), null, SymbolKind.LOCAL, node);
     }
 
     public void inAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node)
     {
-        declareVariable(node.getIdType(), node.getVarType(), node);
+        declareVariable(node.getIdType(), node.getVarType(), SymbolKind.LOCAL, node);
     }
 
     public void inAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node)
     {
         ABaseTypeVarType type = getVariableType(node);
-        if (type != null)
-            System.out.println("Type of " + node.getIdType() + ": " + type.getType().getText());
-        
-        declareVariable(node.getIdType(), type, node);
+        declareVariable(node.getIdType(), type, SymbolKind.LOCAL, node);
     }
 
     public void inAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node)
     {
         ABaseTypeVarType type = getVariableType(node);
-        if (type != null)
-            System.out.println("Type of " + node.getIdType() + ": " + type.getType().getText());
-
-        declareVariable(node.getIdType(), type, node);
+        declareVariable(node.getIdType(), type, SymbolKind.LOCAL, node);
     }
 
     public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node)
     {
-        declareVariable(node.getIdType(), node.getVarType(), node);
+        declareVariable(node.getIdType(), node.getVarType(), SymbolKind.TYPE, node);
     }
 
     public void inATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
     {
-        declareVariable(node.getIdType(), null, node);
+        declareVariable(node.getIdType(), null, SymbolKind.TYPE, node);
     }
 
     public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
     {
-        declareVariable(node.getIdType(), null, node);
+        declareVariable(node.getIdType(), null, SymbolKind.STRUCT, node);
     }
         
     /**
@@ -169,14 +170,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     /**
      * Declares all the identifiers in the list, giving them all the same type
      */
-    public void declareVariableList(LinkedList<? extends PIdType> list, PVarType type,
-        Node originatingNode)
+    public void declareVariableList(LinkedList<? extends PIdType> list, PVarType varType,
+        SymbolKind kind, Node originatingNode)
     {
         for (int i = 0; i < list.size(); i++)
         {
             PIdType node = list.get(i);
             
-            declareVariable(node, type, originatingNode);
+            declareVariable(node, varType, kind, originatingNode);
         }
     }
 
@@ -185,7 +186,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
      * and throws an error if it's already declared in
      * the current scope
      */
-    public void declareVariable(PIdType id, PVarType varType, Node node)
+    public void declareVariable(PIdType id, PVarType varType, SymbolKind kind, Node node)
     {
         //System.out.println("Symbol table at var decl:\n" + symbolTable);
         String idName = null;
@@ -200,12 +201,16 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             return;
         }    
 
-        // Find the kind of the variable
-        SymbolKind kind = SymbolKind.FIELD;
+        Type type = Type.INVALID;
+        
+        if (varType instanceof ABaseTypeVarType)
+            type = Type.stringToType(((ABaseTypeVarType)varType).getType().getText());
+
+        //System.out.println("Type of " + idName + ": " + type);
 
         // Insert the symbol in the symbol table
-        Symbol symbol = new Symbol(idName, node, Type.INVALID, kind);
-        symbolTable.put(idName, node);
+        Symbol symbol = new Symbol(idName, node, type, kind);
+        symbolTable.put(idName, symbol);
     }
 
     /**

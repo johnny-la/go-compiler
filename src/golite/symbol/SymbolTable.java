@@ -6,12 +6,12 @@ import golite.symbol.Symbol;
 
 public class SymbolTable
 {
-    private HashMap<String, Node> table;
+    private HashMap<String, Symbol> table;
     private SymbolTable next;   // Pointer to outer scope
 
     public SymbolTable()
     {
-        table = new HashMap<String, Node>();
+        table = new HashMap<String, Symbol>();
     }
 
     /**
@@ -38,18 +38,18 @@ public class SymbolTable
     /** 
      * Inserts a symbol in the table
      */
-    public void put(String name, Node value)
+    public void put(String name, Symbol symbol)
     {
         if (!table.containsKey(name))
         {
-            table.put(name, value);
+            table.put(name, symbol);
         }
     }
 
     /**
      * Returns the symbol at the closest scope
      */
-    public Node get(String name)
+    public Symbol get(String name)
     {
         SymbolTable current = this;
 
@@ -79,12 +79,12 @@ public class SymbolTable
 
         output.append("ID\t\tNODE\n");
 
-        for (Map.Entry<String, Node> entry : table.entrySet())
+        for (Map.Entry<String, Symbol> entry : table.entrySet())
         {
             String key = entry.getKey();
-            Node value = entry.getValue();
+            Symbol value = entry.getValue();
 
-            output.append(key + "\t\t" + value.getClass() + ": \""+value + "\"\n");
+            output.append(key + "\t\t\""+value + "\"\n");
         }
 
         return output.toString();
