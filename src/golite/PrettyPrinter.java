@@ -183,12 +183,12 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getVarType().apply(this);
     } 
 
-    public void caseATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node) {
-        node.getIdType().apply(this);
-        print(", ");
-        node.getTypeDecl().apply(this);
+    public void caseAStructVarDeclTypeDecl(AStructVarDeclTypeDecl node)
+    {
+        printNodesWithComma(node.getIdList());
+        print(" ");
+        node.getVarType().apply(this);
     }
-
     public void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node) {
         node.getIdType().apply(this);
         print(" struct {");

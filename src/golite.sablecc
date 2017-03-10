@@ -183,8 +183,9 @@ struct_or_list {-> type_decl} =
   ;
 
 type_with_one_or_more_ids {-> type_decl} = 
-  {recurse} cst_id comma type_with_one_or_more_ids {-> New type_decl.type_with_many_ids(cst_id.id_type, type_with_one_or_more_ids.type_decl)} |
-  {base} cst_id cst_type semicolon {-> New type_decl.type_alias(cst_id.id_type, cst_type.var_type)}
+  {list} cst_id_list cst_type semicolon {-> New type_decl.struct_var_decl([cst_id_list.id_type],cst_type.var_type)}
+  //{recurse} cst_id comma type_with_one_or_more_ids {-> New type_decl.type_with_many_ids(cst_id.id_type, type_with_one_or_more_ids.type_decl)} |
+  //{base} cst_id cst_type semicolon {-> New type_decl.type_alias(cst_id.id_type, cst_type.var_type)}
   ;
 
 //variable declaration and necessary subproductions here
@@ -428,9 +429,10 @@ signature =
 
 type_decl = 
   {type_alias} id_type var_type |
-  {type_with_many_ids} id_type type_decl |
+  //{type_with_many_ids} id_type type_decl |
   {struct_with_id} id_type type_decl* |
-  {multiline_list} type_decl*
+  {multiline_list} type_decl* |
+  {struct_var_decl} [id_list]:id_type* var_type
   ;
 
 var_decl = 
@@ -439,7 +441,7 @@ var_decl =
   {var_with_type_and_exp} id_type var_type exp |
   {inline_list_no_exp} id_type var_decl |
   {inline_list_with_exp} id_type var_decl exp |
-  {multiline_list} var_decl*
+  {multiline_list} var_decl* 
   ;
 
 var_type = 

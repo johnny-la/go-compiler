@@ -126,9 +126,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         declareVariable(node.getIdType(), node.getVarType(), SymbolKind.TYPE, node);
     }
 
-    public void inATypeWithManyIdsTypeDecl(ATypeWithManyIdsTypeDecl node)
+    public void inAStructVarDeclTypeDecl(AStructVarDeclTypeDecl node)
     {
-        declareVariable(node.getIdType(), null, SymbolKind.TYPE, node);
+        for (int i = 0; i < node.getIdList().size(); i++)
+        {
+            PIdType id = node.getIdList().get(i);
+            declareVariable(id, node.getVarType(), SymbolKind.STRUCT, node);
+        }
     }
 
     public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
