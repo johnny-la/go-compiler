@@ -86,20 +86,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         declareVariableList(node.getIdList(), node.getVarType(), node);
     }
 
-    /**
-     * Declares all the identifiers in the list, giving them all the same type
-     */
-    public void declareVariableList(LinkedList<? extends PIdType> list, PVarType type,
-        Node originatingNode)
-    {
-        for (int i = 0; i < list.size(); i++)
-        {
-            PIdType node = list.get(i);
-            
-            declareVariable(node, type, originatingNode);
-        }
-    }
-
     public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
     {
         declareVariable(node.getIdType(), node.getVarType(), node);
@@ -117,12 +103,20 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     public void inAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node)
     {
-        declareVariable(node.getIdType(), null, node);
+        ABaseTypeVarType type = getVariableType(node);
+        if (type != null)
+            System.out.println("Type of " + node.getIdType() + ": " + type.getType().getText());
+        
+        declareVariable(node.getIdType(), type, node);
     }
 
     public void inAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node)
     {
-        declareVariable(node.getIdType(), null, node);
+        ABaseTypeVarType type = getVariableType(node);
+        if (type != null)
+            System.out.println("Type of " + node.getIdType() + ": " + type.getType().getText());
+
+        declareVariable(node.getIdType(), type, node);
     }
 
     public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node)
@@ -138,6 +132,51 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
     {
         declareVariable(node.getIdType(), null, node);
+    }
+        
+    /**
+     * Returns the type of a variable declaration
+     */
+    public ABaseTypeVarType getVariableType(PVarDecl node)
+    {
+        // Get to the end of the variable list to retrieve the variable type 
+        PVarDecl current = node;
+        while (current instanceof AInlineListNoExpVarDecl)
+        {
+            current = ((AInlineListNoExpVarDecl)current).getVarDecl();
+        }
+        while (current instanceof AInlineListWithExpVarDecl)
+        {
+            current = ((AInlineListWithExpVarDecl)current).getVarDecl();
+        }
+
+        // Get the type of the variable
+        ABaseTypeVarType type = null;
+
+        if (current instanceof AVarWithTypeVarDecl)
+        {
+            type = (ABaseTypeVarType)((AVarWithTypeVarDecl)current).getVarType();
+        }
+        else if (current instanceof AVarWithTypeAndExpVarDecl)
+        {
+            type = (ABaseTypeVarType)((AVarWithTypeAndExpVarDecl)current).getVarType();
+        }
+
+        return type;
+    }
+
+    /**
+     * Declares all the identifiers in the list, giving them all the same type
+     */
+    public void declareVariableList(LinkedList<? extends PIdType> list, PVarType type,
+        Node originatingNode)
+    {
+        for (int i = 0; i < list.size(); i++)
+        {
+            PIdType node = list.get(i);
+            
+            declareVariable(node, type, originatingNode);
+        }
     }
 
     /** 

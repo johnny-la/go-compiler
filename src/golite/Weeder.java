@@ -52,6 +52,11 @@ public class Weeder extends DepthFirstAdapter
         return false;
     }
 
+    public void inADecrementStmt(ADecrementStmt node)
+    {
+        //if (isBlankId())
+    }
+
     public void inASwitchStmt(ASwitchStmt node)
     {
         // Check for multiple default statements
