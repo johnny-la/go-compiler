@@ -34,6 +34,8 @@ public class GoliteLexer extends Lexer
         return token instanceof TEol &&
                (lastToken instanceof TId ||
                 lastToken instanceof TInt ||
+                lastToken instanceof TOct ||
+                lastToken instanceof THex ||
                 lastToken instanceof TFloat64Literal ||
                 lastToken instanceof TRuneLiteral ||
                 //lastToken instanceof TBoolLiteral ||
