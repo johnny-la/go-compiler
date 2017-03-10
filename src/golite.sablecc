@@ -50,7 +50,7 @@ Tokens
   select = 'select';
   struct = 'struct';
   switch = 'switch';
-  op_equals = ('+' | '&' | '&^' | '-' | '|' | '<' | '*' | '^' | '/' | '<<' | '%' | '>>') '=';
+  op_equals = ('+' | '&' | '&^' | '-' | '|' | '*' | '^' | '/' | '<<' | '%' | '>>') '=';
   type = 'float64'|'rune'|'int'|'bool'|'string';
   type_keyword = 'type';
   plus = '+';
