@@ -4,6 +4,7 @@ src/golite/parser/
 src/golite/lexer/
 src/golite/node/ 
 src/golite/analysis/ 
+grading/
 *.pretty.min 
 *.symbol.txt 
 *.c
