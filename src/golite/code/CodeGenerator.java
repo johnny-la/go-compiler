@@ -127,7 +127,7 @@ public class CodeGenerator extends DepthFirstAdapter
         {
             case INT:
                 return "%d";
-            case FLOAT:
+            case FLOAT64:
                 return "%f";
             case STRING:
                 return "%s";

@@ -65,24 +65,6 @@ public class TypeChecker extends DepthFirstAdapter
     //     }
     // }
 
-    /** 
-     * Converts the given string into its corresponding type
-     */
-    public static Type stringToType(String string)
-    {
-        switch (string)
-        {
-            case "int":
-                return Type.INT;
-            case "float":
-                return Type.FLOAT;
-            case "string":
-                return Type.STRING;
-            default:
-                return Type.INVALID;
-        }
-    }
-
     public void outAMinusExp(AMinusExp node)
     {
         Type leftType = getType(node.getL());
@@ -176,10 +158,10 @@ public class TypeChecker extends DepthFirstAdapter
         {
             return leftType;
         }
-        else if ((leftType == Type.FLOAT && rightType == Type.INT) ||
-                 (leftType == Type.INT && rightType == Type.FLOAT))
+        else if ((leftType == Type.FLOAT64 && rightType == Type.INT) ||
+                 (leftType == Type.INT && rightType == Type.FLOAT64))
         {
-            return Type.FLOAT;
+            return Type.FLOAT64;
         }
 
         boolean stringAndInt = (leftType == Type.STRING && rightType == Type.INT)

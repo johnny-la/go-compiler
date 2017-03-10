@@ -2,6 +2,7 @@ package golite.symbol;
 
 import golite.*;
 import golite.node.*;
+import golite.type.*;
 import golite.analysis.*;
 import golite.symbol.Symbol;
 import golite.symbol.Symbol.SymbolKind;
@@ -203,7 +204,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         SymbolKind kind = SymbolKind.FIELD;
 
         // Insert the symbol in the symbol table
-        Symbol symbol = new Symbol(idName, node, kind);
+        Symbol symbol = new Symbol(idName, node, Type.INVALID, kind);
         symbolTable.put(idName, node);
     }
 
