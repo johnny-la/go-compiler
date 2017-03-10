@@ -243,22 +243,20 @@ public class PrettyPrinter extends DepthFirstAdapter
     }
 
     //signature declarations
-    public void caseASingleIdToTypeSignature(ASingleIdToTypeSignature node) {
-        node.getIdType().apply(this);
+    public void caseAMultipleTypesSignature(AMultipleTypesSignature node)
+    {
+        printNodesWithComma(node.getIdList());
         print(" ");
         node.getVarType().apply(this);
-    }
-
-    public void caseAManyIdToTypeSignature(AManyIdToTypeSignature node) {
-        node.getIdType().apply(this);
         print(", ");
         node.getSignature().apply(this);
     }
 
-    public void caseAMultipleTypesSignature(AMultipleTypesSignature node) {
-        node.getRoot().apply(this);
-        print(", ");
-        node.getLeaf().apply(this);
+    public void caseASingleTypeSignature(ASingleTypeSignature node)
+    {
+        printNodesWithComma(node.getIdList());
+        print(" ");
+        node.getVarType().apply(this);
     }
 
     // /** STATEMENTS */

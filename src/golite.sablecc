@@ -149,13 +149,8 @@ cst_func_decl{-> func_decl} =
   ;
 
 multi_sig {-> signature} = 
-  {recurse} signature comma multi_sig {-> New signature.multiple_types(signature.signature, multi_sig.signature)} |
-  {base} signature {-> signature.signature}
-  ;
-
-signature {-> signature} = 
-  {recurse} cst_id comma signature {-> New signature.many_id_to_type(cst_id.id_type, signature.signature)} |
-  {base} cst_id cst_type{-> New signature.single_id_to_type(cst_id.id_type, cst_type.var_type)}
+  {recurse} cst_id_list cst_type comma multi_sig {-> New signature.multiple_types([cst_id_list.id_type], cst_type.var_type, multi_sig.signature)} |//signature.signature, multi_sig.signature)} |
+  {base} cst_id_list cst_type {-> New signature.single_type([cst_id_list.id_type], cst_type.var_type)}
   ;
 
 
@@ -224,6 +219,11 @@ cst_type {-> var_type} =
   {cst_structs} id {-> New var_type.struct(id)}
   ;
   
+cst_id_list {-> id_type*} =
+  {id}   cst_id                   {-> [cst_id.id_type]} |
+  {list} cst_id comma cst_id_list {-> [cst_id.id_type, cst_id_list.id_type]} 
+  ;
+
 cst_id {-> id_type} = 
   {id} id {-> New id_type.id(id)} |
   {type} type {-> New id_type.type(type)}
@@ -381,9 +381,9 @@ cst_exp_list {-> exp*} =
   {cst_exp}      cst_exp     {-> [cst_exp.exp]} |
   {cst_exp_list} cst_exp_list comma cst_exp {-> [cst_exp_list.exp, cst_exp.exp]};
 
-cst_id_list {-> exp} =
-  {cst_id}       id                   {-> New exp.id(id)} |
-  {cst_id_list}  cst_id_list comma id {-> New exp.id_list(cst_id_list.exp, id)};
+//cst_id_list {-> exp} =
+//  {cst_id}       id                   {-> New exp.id(id)} |
+//  {cst_id_list}  cst_id_list comma id {-> New exp.id_list(cst_id_list.exp, id)};
 
 lvalue {-> exp} =
   {cst_id}      id     {-> New exp.id(id)} |
@@ -423,9 +423,8 @@ func_decl =
   ;
 
 signature = 
-  {single_id_to_type} id_type var_type |
-  {many_id_to_type} id_type signature |
-  {multiple_types} [root]:signature [leaf]:signature
+  {multiple_types} [id_list]:id_type* var_type signature |
+  {single_type}    [id_list]:id_type* var_type |
   ;
 
 type_decl = 
@@ -471,7 +470,7 @@ stmt =
   {short_decl_list} id stmt exp |
   {block}           stmt* |
   {if}              exp [block]:stmt [end]:stmt?  |
-  {else_if}          stmt |
+  {else_if}         stmt |
   {else}            stmt |
   {for}             [condition]:exp [block]:stmt |
   {switch}          [simple_stmt]:stmt? exp? [case_stmts]:stmt* |
