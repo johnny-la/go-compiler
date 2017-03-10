@@ -74,6 +74,32 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         justEnterredFunction = true;
     }
 
+    public void inAMultipleTypesSignature(AMultipleTypesSignature node)
+    {
+        // Declare all the variables in the signature
+        declareVariableList(node.getIdList(), node.getVarType(), node);
+    }
+
+    public void inASingleTypeSignature(ASingleTypeSignature node)
+    {
+        // Declare all the variables in the signature
+        declareVariableList(node.getIdList(), node.getVarType(), node);
+    }
+
+    /**
+     * Declares all the identifiers in the list, giving them all the same type
+     */
+    public void declareVariableList(LinkedList<? extends PIdType> list, PVarType type,
+        Node originatingNode)
+    {
+        for (int i = 0; i < list.size(); i++)
+        {
+            PIdType node = list.get(i);
+            
+            declareVariable(node, type, originatingNode);
+        }
+    }
+
     public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
     {
         declareVariable(node.getIdType(), node.getVarType(), node);

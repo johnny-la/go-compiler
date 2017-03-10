@@ -381,10 +381,6 @@ cst_exp_list {-> exp*} =
   {cst_exp}      cst_exp     {-> [cst_exp.exp]} |
   {cst_exp_list} cst_exp_list comma cst_exp {-> [cst_exp_list.exp, cst_exp.exp]};
 
-//cst_id_list {-> exp} =
-//  {cst_id}       id                   {-> New exp.id(id)} |
-//  {cst_id_list}  cst_id_list comma id {-> New exp.id_list(cst_id_list.exp, id)};
-
 lvalue {-> exp} =
   {cst_id}      id     {-> New exp.id(id)} |
   {array_index} lvalue cst_index {-> New exp.array_index(lvalue.exp, cst_index.exp)} |
@@ -515,8 +511,6 @@ exp =
   {appended_expr} [l]:exp [r]:exp |
   {array_index}      [lvalue]:exp [index]:exp |
   {struct_selector}  [l]:exp [r]:exp |
-  //{list}      [list]:exp [value]:exp |
-  {id_list}   [list]:exp [value]:id  |
   {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
   {case}      [exp_list]:exp* |
   {default} |
