@@ -241,7 +241,9 @@ cst_stmt {-> stmt} =
   {cst_switch}     cst_switch_stmt {-> cst_switch_stmt.stmt} |
   {cst_for}        for cst_for_condition cst_block {-> New stmt.for(cst_for_condition.exp, cst_block.stmt)} |
   {cst_break}      break           {-> New stmt.break()} |
-  {cst_continue}   continue        {-> New stmt.continue()};
+  {cst_continue}   continue        {-> New stmt.continue()} |
+  {cst_block}      cst_block       {-> cst_block.stmt}
+  ;
 
 cst_simple_stmt {-> stmt} =
   //{cst_empty}      /*empty*/           {-> New stmt.empty()} |
