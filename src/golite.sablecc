@@ -371,8 +371,9 @@ lvalue_list {-> exp+} =
 
 
 list_equals {-> exp} =
-  {cst_equals}    equals     {-> New exp.equals()} |
-  {cst_op_equals} colon_equals  {-> New exp.colon_equals()};
+  {cst_equals}       equals        {-> New exp.equals()} |
+  {cst_colon_equals} colon_equals  {-> New exp.colon_equals()} |
+  {cst_op_equals}    op_equals     {-> New exp.op_equals()};
 
 cst_id_comma {-> id} =
   {cst_id_comman} id comma {-> id};
@@ -519,4 +520,5 @@ exp =
   //{lvalue_list} exp+ |
   {equals} |
   {colon_equals} |
+  {op_equals} |
   {empty};

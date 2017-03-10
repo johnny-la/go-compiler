@@ -29,6 +29,13 @@ public class Weeder extends DepthFirstAdapter
                    "be used with ids"); 
         }
 
+        // Op-equals assignments (+=,-=,etc) can only be performed on one identifier
+        if (node.getOp() instanceof AOpEqualsExp && lvalues.size() > 1)
+        {
+            throw new RuntimeException("Operation assignment (+=,-=,etc) can only " +
+                "be used with one identifier");
+        }
+
         int lsize = node.getL().size();
         int rsize = node.getR().size();
 
