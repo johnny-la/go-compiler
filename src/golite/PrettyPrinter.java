@@ -189,6 +189,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(" ");
         node.getVarType().apply(this);
     }
+    
     public void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node) {
         node.getIdType().apply(this);
         print(" struct {");
