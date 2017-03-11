@@ -266,7 +266,14 @@ cst_exp {-> exp} =
   {unary_op}   unary_op {-> unary_op.exp} |
   {binary_op}  binary_op {-> binary_op.exp} |
   {function_call} function_call {-> function_call.exp} |
+  {array_indexing} array_indexing {-> array_indexing.exp} |
   {append_expr} append_expr {-> append_expr.exp};
+
+array_indexing {-> exp} = 
+  {arra_indexing} array_indexing_repeated {-> New exp.empty()};
+
+array_indexing_repeated {-> exp} =
+  {array_indexing_list} l_brack cst_exp r_brack {-> New exp.empty()};
 
 binary_op {-> exp} =
   {cst_plus}   cst_exp plus factor  {-> New exp.plus(cst_exp.exp,factor.exp)} |
@@ -300,12 +307,8 @@ exclamated_factors {-> exp} =
   {exclamated_factors} exclamation exclamated_factors {-> New exp.exclamated_factors(exclamated_factors.exp)};
 
 function_call {-> exp} =
-  {empty_args} function_name l_paren r_paren {-> New exp.function_call_secondary(function_name.exp, [New exp.empty()])} |
-  {one_or_more_args} function_name l_paren cst_exp_list r_paren {-> New exp.function_call_secondary(function_name.exp, [cst_exp_list.exp])};
-
-
-function_name {-> exp} =
-  {parenthesized} l_paren cst_exp r_paren {-> New exp.empty()};
+  {empty_args}  term l_paren r_paren {-> New exp.function_call_secondary(term.exp, [New exp.empty()])} |
+  {one_or_more_args} term l_paren cst_exp_list r_paren {-> New exp.function_call_secondary(term.exp, [cst_exp_list.exp])};
   
 append_expr {-> exp} =
   append l_paren cst_exp comma other_exp r_paren { -> New exp.appended_expr(cst_exp.exp, other_exp.exp)};
@@ -375,7 +378,6 @@ cst_assign_stmt {-> stmt} =
 lvalue_list {-> exp+} =
   {cst_lvalue}      lvalue     {-> [lvalue.exp]} |
   {cst_lvalue_list} lvalue_list comma lvalue {-> [lvalue_list.exp,lvalue.exp]};
-
 
 list_equals {-> exp} =
   {cst_equals}       equals        {-> New exp.equals()} |
@@ -518,6 +520,7 @@ exp =
   {interpreted_string_literal} interpreted_string_literal |
   {function_call} id_type [exp_list]:exp* |
   {function_call_secondary} exp [exp_list]:exp* |
+  {array_indexing} exp [exp_list]:exp* |
   {function_name} exp |
   {appended_expr} [l]:exp [r]:exp |
   {array_index}      [lvalue]:exp [index]:exp |
