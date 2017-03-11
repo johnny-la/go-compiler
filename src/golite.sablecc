@@ -392,19 +392,19 @@ cst_exp_list {-> exp*} =
 lvalue {-> exp} =
   {cst_id}      id     {-> New exp.id(id)} |
   {array_index} lvalue cst_index {-> New exp.array_index(lvalue.exp, cst_index.exp)} |
-  {struct_selector}  lvalue cst_selector  {-> New exp.struct_selector(lvalue.exp, cst_selector.exp)};
+  {struct_selector}  lvalue  dot id {-> New exp.struct_selector(lvalue.exp, id)};
 
-lvalue_no_id {-> exp} =
-  {cst_index}      id cst_index     {-> New exp.array_index(New exp.id(id), cst_index.exp)} |
-  {cst_selector}   id cst_selector  {-> New exp.struct_selector(New exp.id(id), cst_selector.exp)} |
-  {cst_lvalue_index}    lvalue_no_id cst_index    {-> New exp.array_index(lvalue_no_id.exp, cst_index.exp)} |
-  {cst_lvalue_selector} lvalue_no_id cst_selector {-> New exp.struct_selector(lvalue_no_id.exp, cst_selector.exp)};
+//lvalue_no_id {-> exp} =
+//  {cst_index}      id cst_index     {-> New exp.array_index(New exp.id(id), cst_index.exp)} |
+//  {cst_selector}   id cst_selector  {-> New exp.struct_selector(New exp.id(id), cst_selector.exp)} |
+//  {cst_lvalue_index}    lvalue_no_id cst_index    {-> New exp.array_index(lvalue_no_id.exp, cst_index.exp)} |
+//  {cst_lvalue_selector} lvalue_no_id dot id {-> New exp.struct_selector(lvalue_no_id.exp, New exp.id(id))};
 
 cst_index {-> exp} =
   {cst_index} l_brack cst_exp r_brack {-> cst_exp.exp};
 
-cst_selector {-> exp} =
-  {cst_selector} dot cst_exp {-> cst_exp.exp};
+//cst_selector {-> exp} =
+//  {cst_selector} dot cst_exp {-> cst_exp.exp};
 
 Abstract Syntax Tree
 
@@ -521,7 +521,7 @@ exp =
   {function_name} exp |
   {appended_expr} [l]:exp [r]:exp |
   {array_index}      [lvalue]:exp [index]:exp |
-  {struct_selector}  [l]:exp [r]:exp |
+  {struct_selector}  [l]:exp [r]:id |
   {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
   {case}      [exp_list]:exp* |
   {default} |

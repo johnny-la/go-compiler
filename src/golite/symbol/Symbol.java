@@ -26,6 +26,17 @@ public class Symbol
 
     public Symbol() {}
 
+    // Deep copy of the given symbol
+    public Symbol(Symbol other)
+    {
+        if (other == null) { return; }
+
+        name = other.name;
+        node = other.node;
+        typeClass = new TypeClass(other.typeClass);
+        kind = other.kind;
+    }
+
     public Symbol(String name, Node node, TypeClass typeClass, SymbolKind kind)
     {
         this.name = name;
