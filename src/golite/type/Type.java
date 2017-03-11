@@ -1,5 +1,7 @@
 package golite.type;
 
+import golite.node.*;
+
 public enum Type
 {
     INT, 
@@ -7,6 +9,7 @@ public enum Type
     BOOL,
     RUNE,
     STRING, 
+    STRUCT,
     INVALID;
 
     public static Type stringToType(String s)
