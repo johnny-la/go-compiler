@@ -13,7 +13,20 @@ import java.util.*;
 
 public class SemanticAnalyzer extends DepthFirstAdapter
 {
+    // Symbol table used to check that variables are not 
+    // redeclared and that they are declared before use
     private SymbolTable symbolTable;
+
+    // Mapping between nodes and symbols, used later for type checking
+    private HashMap<Node,Symbol> symbolMap;
+    // Maps every struct declaration node to a symbol table which contains
+    // the struct's fields 
+    private HashMap<Node,SymbolTable> structHierarchy;
+    // If a struct selector expression is encountered, this variable stores
+    // the symbol table belonging to the struct definition. This allows us
+    // to determine if the struct selector is valid 
+    // (e.g., "x.y". We must ensure that "y" is declared in x's struct declaration)
+    private SymbolTable currentStructScope;
 
     // If true, the top-most frame of the symbol table is dumped when a scope is left.
     private boolean dumpSymbolTable;
@@ -26,10 +39,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     public SemanticAnalyzer()
     {
         symbolTable = new SymbolTable();
+        symbolMap = new HashMap<Node, Symbol>();
+        structHierarchy = new HashMap<Node, SymbolTable>();
     }
 
     public SemanticAnalyzer(SymbolTable symbolTable, boolean dumpSymbolTable)
     {
+        this();
+
         this.symbolTable = symbolTable;
         this.dumpSymbolTable = dumpSymbolTable;
     }
@@ -94,6 +111,24 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         declareVariableList(node.getIdList(), node.getVarType(), SymbolKind.FORMAL, node);
     }
 
+    public void inABlockStmt(ABlockStmt node)
+    {
+        // If we just enterred a function, we already started a new scope for
+        // the formal parameters
+        if (!justEnterredFunction)
+            // Start a new scope at each block
+            scope();
+
+        // This boolean has fulfilled its purpose
+        justEnterredFunction = false;
+    }
+
+    public void outABlockStmt(ABlockStmt node)
+    {
+        // Pop the current scope
+        unscope();
+    }
+
     public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
     {
         declareVariable(node.getIdType(), node.getVarType(), SymbolKind.LOCAL, node);
@@ -111,13 +146,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     public void inAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node)
     {
-        ABaseTypeVarType type = getVariableType(node);
+        PVarType type = getVariableType(node);
         declareVariable(node.getIdType(), type, SymbolKind.LOCAL, node);
     }
 
     public void inAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node)
     {
-        ABaseTypeVarType type = getVariableType(node);
+        PVarType type = getVariableType(node);
         declareVariable(node.getIdType(), type, SymbolKind.LOCAL, node);
     }
 
@@ -126,24 +161,36 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         declareVariable(node.getIdType(), node.getVarType(), SymbolKind.TYPE, node);
     }
 
+    // Struct declaration 
+    // "type point struct { ... }"
+    public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
+    {
+        declareVariable(node.getIdType(), null, SymbolKind.STRUCT, node);
+        
+        // Create a new scope which will contain the struct fields
+        scope();
+        // Add a mapping between the struct and its internal symbol table
+        structHierarchy.put(node, symbolTable);
+    }
+
+    public void outAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
+    {
+        unscope();
+    }
+
     public void inAStructVarDeclTypeDecl(AStructVarDeclTypeDecl node)
     {
         for (int i = 0; i < node.getIdList().size(); i++)
         {
             PIdType id = node.getIdList().get(i);
-            declareVariable(id, node.getVarType(), SymbolKind.STRUCT, node);
+            declareVariable(id, node.getVarType(), SymbolKind.STRUCT_FIELD, node);
         }
-    }
-
-    public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node)
-    {
-        declareVariable(node.getIdType(), null, SymbolKind.STRUCT, node);
     }
         
     /**
      * Returns the type of a variable declaration
      */
-    public ABaseTypeVarType getVariableType(PVarDecl node)
+    public PVarType getVariableType(PVarDecl node)
     {
         // Get to the end of the variable list to retrieve the variable type 
         PVarDecl current = node;
@@ -157,15 +204,15 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
 
         // Get the type of the variable
-        ABaseTypeVarType type = null;
+        PVarType type = null;
 
         if (current instanceof AVarWithTypeVarDecl)
         {
-            type = (ABaseTypeVarType)((AVarWithTypeVarDecl)current).getVarType();
+            type = ((AVarWithTypeVarDecl)current).getVarType();
         }
         else if (current instanceof AVarWithTypeAndExpVarDecl)
         {
-            type = (ABaseTypeVarType)((AVarWithTypeAndExpVarDecl)current).getVarType();
+            type = ((AVarWithTypeAndExpVarDecl)current).getVarType();
         }
 
         return type;
@@ -209,46 +256,185 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         
         if (varType instanceof ABaseTypeVarType)
             type = Type.stringToType(((ABaseTypeVarType)varType).getType().getText());
+        //else 
+        //    type = getType(varType);
+
+        TypeClass typeClass = getTypeClass(varType);
+
+        // Struct declaration
+        if (node instanceof AStructWithIdTypeDecl)
+            typeClass.structNode = node;
 
         //System.out.println("Type of " + idName + ": " + type);
 
         // Insert the symbol in the symbol table
-        Symbol symbol = new Symbol(idName, node, type, kind);
+        Symbol symbol = new Symbol(idName, node, typeClass, kind);
         symbolTable.put(idName, symbol);
     }
+
+    private TypeClass getTypeClass(PVarType varType)
+    {
+        TypeClass typeClass = new TypeClass();
+
+        typeClass.varTypeNode = varType;
+        //typeClass.baseType = getBaseType(varType);
+
+        if (varType == null)
+            return typeClass;
+
+        PVarType current = varType;
+        int nodeDepth = 0;  // The number of nodes traversed
+        while (!(current instanceof ABaseTypeVarType))
+        {
+            if (current instanceof ASliceVarType)
+            {
+                current = ((ASliceVarType)current).getVarType();
+                typeClass.arrayDimension++;
+            }
+            else if (current instanceof AArrayVarType)
+            {
+                current = ((AArrayVarType)current).getVarType();
+                typeClass.arrayDimension++;
+            }
+            else if (current instanceof AStructVarType)
+            {
+                // Get the name of the type alias
+                String typeAlias = ((AStructVarType)current).getId().getText();
+                
+                Symbol typeAliasSymbol = symbolTable.get(typeAlias);
+
+                if (typeAliasSymbol == null)
+                {
+                    ErrorManager.printError("Type alias was never declared: \"" + typeAlias + "\"");
+                    break;
+                }
+
+                typeClass.baseType = typeAliasSymbol.typeClass.baseType;
+                typeClass.structNode = typeAliasSymbol.typeClass.structNode;
+
+                break;
+            }
+            else 
+            {
+                System.out.println("Traversing node: " + current);
+            }
+
+            nodeDepth++;
+        }
+
+        // Determine the base type of the variable
+        if (current instanceof ABaseTypeVarType)
+        {
+            typeClass.baseType = Type.stringToType(((ABaseTypeVarType)current).getType().getText());
+        }
+
+        return typeClass;
+    }
+
+    /**
+     * Removes any aliasing from the varType and returns the 
+     * most specific type of the variable (either a primitive or struct type)
+     */
+    /*private Type getBaseType(PVarType varType)
+    {
+        PVarType current = varType;
+
+        while (!(current instanceof ABaseTypeVarType))
+        {
+            if (current instanceof ASliceVarType)
+            {
+                current = ((ASliceVarType)current).getVarType();
+            }
+            else if (current instanceof AArrayVarType)
+            {
+                current = ((AArrayVarType)current).getVarType();
+            }
+            else
+            {
+                // Get the name of the type alias
+                String typeAlias = ((AStructVarType)current).getId().getText();
+                
+                Symbol typeAliasSymbol = symbolTable.get(typeAlias);
+                if (typeAliasSymbol.type == Type.TYPE)
+                {
+
+                }
+            }
+        }
+
+        return Type.INVALID;
+    }*/
+
+    public void outAIdExp(AIdExp node)
+    {
+        String id = node.getId().getText();
+        Symbol symbol = checkVariableDeclared(id);
+
+        if (symbol != null)
+        {
+            // Add a node->symbol mapping for future type checking
+            symbolMap.put(node, symbol);
+
+            System.out.println("Inserting (" + node + "," + symbol + ") into symbolMap");
+        }
+    }
+
+    public void outAStructSelectorExp(AStructSelectorExp node)
+    {
+        // Get the symbol for the RHS of the struct selector
+        Symbol symbol = symbolMap.get(node.getL());
+
+        if (symbol == null || symbol.typeClass.structNode == null)
+        {
+            ErrorManager.printError("Using the . operator on a non-struct type: " + node.getL()
+                + ", symbol = " + symbol);
+        }
+        else
+        {
+            
+        }
+        //String structId = node.getL().getText();
+        //Symbol symbol = checkVariableDeclared(structId);
+
+        //if (symbol != null)
+        //{
+            // Retrieve the symbol table containing the fields defined in the struct
+            //Node structDeclarationNode = symbol.node;
+            //SymbolTable structSymbolTable = structHierarchy.get(structDeclarationNode);
+            
+            //String rightId = getId(node.getR());
+            //structSymbolTable.contains() 
+        //}
+    }
+
+    /**
+     * Returns the name of the left-most identifier in the given lvalue node
+     */
+    /*private String getLvalueId(PExp node)
+    {
+        if (node instanceof AIdExp) 
+            return ((AIdExp)node).getId().getText();
+        else if (node instanceof AStructSelectorExp)
+            return ((AStructSelectorExp)node).getL().getText();
+        else if (node instanceof AArrayIndex)
+            retu
+    }*/
 
     /**
      * Throws an exception if the variable was not declared
      */
-    private boolean checkVariableDeclared(String id)
+    private Symbol checkVariableDeclared(String id)
     {
-        if (symbolTable.contains(id) == false)
+        Symbol symbol = symbolTable.get(id);
+        if (symbol == null)
         {
             ErrorManager.printError("\"" + id + "\" is not declared");
-            return true;
+            return null;
         }
 
-        return false;
+        return symbol;
     }
-
-    public void inABlockStmt(ABlockStmt node)
-    {
-        // If we just enterred a function, we already started a new scope for
-        // the formal parameters
-        if (!justEnterredFunction)
-            // Start a new scope at each block
-            scope();
-
-        // This boolean has fulfilled its purpose
-        justEnterredFunction = false;
-    }
-
-    public void outABlockStmt(ABlockStmt node)
-    {
-        // Pop the current scope
-        unscope();
-    }
-
+   
     /**
      * Scopes the symbol table
      */
@@ -272,7 +458,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         // Pop the inner-most scope after leaving a block
         symbolTable = symbolTable.unscope();
     }
-   
+
     /*public void inAVarDecl(AVarDecl node)
     {
         String id = node.getId().getText();
