@@ -266,14 +266,36 @@ cst_exp {-> exp} =
   {unary_op}   unary_op {-> unary_op.exp} |
   {binary_op}  binary_op {-> binary_op.exp} |
   {function_call} function_call {-> function_call.exp} |
-  {array_indexing} array_indexing {-> array_indexing.exp} |
+  {array_indexing} array_indexing {-> New exp.empty()} |
   {append_expr} append_expr {-> append_expr.exp};
 
 array_indexing {-> exp} = 
-  {arra_indexing} array_indexing_repeated {-> New exp.empty()};
+  {array_indexing} cst_exp cst_index {-> New exp.empty()};
 
-array_indexing_repeated {-> exp} =
-  {array_indexing_list} l_brack cst_exp r_brack {-> New exp.empty()};
+cst_index {-> exp} =
+  {end_recurse} l_brack cst_exp r_brack semicolon {-> cst_exp.exp} |
+  {cst_index} l_brack cst_exp r_brack cst_index {-> New exp.empty()};
+
+factor {-> exp} = 
+  {cst_times}       factor star term  {-> New exp.mult(factor.exp,term.exp)} |
+  {cst_divide}      factor slash term {-> New exp.divide(factor.exp,term.exp)} |
+  {cst_modulo}      factor modulo term {-> New exp.modulo(factor.exp, term.exp)} |
+  {cst_shift_left}  factor shift_left term {-> New exp.shift_left(factor.exp, term.exp)} |
+  {cst_shift_right} factor shift_right term {-> New exp.shift_right(factor.exp, term.exp)} |
+  {cst_ampersand}   factor ampersand term {-> New exp.ampersand(factor.exp, term.exp)} |
+  {cst_ampersand_caret} factor ampersand_caret term {-> New exp.ampersand_caret(factor.exp, term.exp)} |
+  {term}            term              {-> term.exp};
+
+term {-> exp} =
+  {cst_id}        id {-> New exp.id(id)} |
+  {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
+  {cst_int}       int    {-> New exp.int(int)} |
+  {cst_oct}       oct    {-> New exp.oct(oct)} |
+  {cst_hex}       hex    {-> New exp.hex(hex)} |
+  {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
+  {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
+  {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
+  {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
 
 binary_op {-> exp} =
   {cst_plus}   cst_exp plus factor  {-> New exp.plus(cst_exp.exp,factor.exp)} |
@@ -315,27 +337,6 @@ append_expr {-> exp} =
 
 other_exp {-> exp} =
   cst_exp { -> cst_exp.exp};
-
-factor {-> exp} = 
-  {cst_times}       factor star term  {-> New exp.mult(factor.exp,term.exp)} |
-  {cst_divide}      factor slash term {-> New exp.divide(factor.exp,term.exp)} |
-  {cst_modulo}      factor modulo term {-> New exp.modulo(factor.exp, term.exp)} |
-  {cst_shift_left}  factor shift_left term {-> New exp.shift_left(factor.exp, term.exp)} |
-  {cst_shift_right} factor shift_right term {-> New exp.shift_right(factor.exp, term.exp)} |
-  {cst_ampersand}   factor ampersand term {-> New exp.ampersand(factor.exp, term.exp)} |
-  {cst_ampersand_caret} factor ampersand_caret term {-> New exp.ampersand_caret(factor.exp, term.exp)} |
-  {term}            term              {-> term.exp};
-
-term {-> exp} =
-  {cst_id}        id {-> New exp.id(id)} |
-  {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
-  {cst_int}       int    {-> New exp.int(int)} |
-  {cst_oct}       oct    {-> New exp.oct(oct)} |
-  {cst_hex}       hex    {-> New exp.hex(hex)} |
-  {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
-  {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
-  {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
-  {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
 
 cst_end_if {-> stmt} =
   {cst_else_if} else cst_if_stmt {-> New stmt.else_if(cst_if_stmt.stmt)} |
@@ -392,8 +393,7 @@ cst_exp_list {-> exp*} =
   {cst_exp_list} cst_exp_list comma cst_exp {-> [cst_exp_list.exp, cst_exp.exp]};
 
 lvalue {-> exp} =
-  {cst_id}      id     {-> New exp.id(id)} |
-  {array_index} lvalue cst_index {-> New exp.array_index(lvalue.exp, cst_index.exp)} |
+  {array_index} array_indexing {-> New exp.empty()} |
   {struct_selector}  lvalue cst_selector  {-> New exp.struct_selector(lvalue.exp, cst_selector.exp)};
 
 lvalue_no_id {-> exp} =
@@ -401,9 +401,6 @@ lvalue_no_id {-> exp} =
   {cst_selector}   id cst_selector  {-> New exp.struct_selector(New exp.id(id), cst_selector.exp)} |
   {cst_lvalue_index}    lvalue_no_id cst_index    {-> New exp.array_index(lvalue_no_id.exp, cst_index.exp)} |
   {cst_lvalue_selector} lvalue_no_id cst_selector {-> New exp.struct_selector(lvalue_no_id.exp, cst_selector.exp)};
-
-cst_index {-> exp} =
-  {cst_index} l_brack cst_exp r_brack {-> cst_exp.exp};
 
 cst_selector {-> exp} =
   {cst_selector} dot cst_exp {-> cst_exp.exp};
