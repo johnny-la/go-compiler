@@ -1,6 +1,7 @@
 package golite.type;
 
 import golite.node.*;
+import java.util.*;
 
 public class TypeClass
 {
@@ -8,8 +9,10 @@ public class TypeClass
     public Type baseType;   // The base type of the variable (INT, FLOAT64, etc.)
     public Node structNode; // If this is a struct-type, this stores the struct declaration node
     public int totalArrayDimension; // The dimension of the base type
-    public Node typeAliasNode;      // If this variable is a custom type, this stores the type alias declaration node 
-    public int aliasArrayDimension; // The array dimension of the outer-most type alias
+    //public Node typeAliasNode;      // If this variable is a custom type, this stores the type alias declaration node 
+    //public int aliasArrayDimension; // The array dimension of the outer-most type alias
+
+    public ArrayList<TypeAlias> typeAliases = new ArrayList<TypeAlias>(); 
 
     public TypeClass() {}
 
@@ -22,22 +25,50 @@ public class TypeClass
         baseType = other.baseType;
         structNode = other.structNode;
         totalArrayDimension = other.totalArrayDimension;
-        typeAliasNode = other.typeAliasNode;
-        aliasArrayDimension = other.aliasArrayDimension;
+        //typeAliasNode = other.typeAliasNode;
+        //aliasArrayDimension = other.aliasArrayDimension;
+
+        for (int i = 0; i < other.typeAliases.size(); i++)
+        {
+            typeAliases.add(new TypeAlias(other.typeAliases.get(i)));
+        }
+    }
+
+    /**
+     * Decrements the dimension of this type
+     */
+    public void decrementDimension()
+    {
+        totalArrayDimension--;
+
+        for (int i = typeAliases.size()-1; i >= 0; i--)
+        {
+            TypeAlias typeAlias = typeAliases.get(i);
+
+            // Get rid of the type aliases that are not arrays
+            if (typeAlias.arrayDimension <= 0)
+            {
+                typeAliases.remove(i);
+            }
+            else
+            {
+                typeAlias.arrayDimension--;
+                
+                //if (typeAlias.arrayDimension <= 0)
+                    //typeAliases.remove(i);
+
+                break;
+            }
+        }
     }
 
     public String toString()
     {
         String output = "";
 
-        if (typeAliasNode != null)
+        for (int i = typeAliases.size()-1; i >= 0; i--)
         {
-            for (int i = 0; i < aliasArrayDimension; i++)
-            {
-                output += "[]";
-            }
-            
-            output += "(" + typeAliasNode.toString().trim() + ") ";
+            output += typeAliases.get(i) + " ";
         }
         
         for (int i = 0; i < totalArrayDimension; i++)
