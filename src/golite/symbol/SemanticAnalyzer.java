@@ -174,12 +174,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             }
 
             // Add the parameter type "n" times, for each identifier in the signature list
-            System.out.println("Traversing parameter type: " + parameterType);
+            //System.out.println("Traversing parameter type: " + parameterType);
             for (int i = 0; i < idList.size(); i++)
             {
                 TypeClass newType = new TypeClass(parameterType);
                 parameterTypes.add(newType);
-                System.out.println("Adding parameter type: " + newType);
+                //System.out.println("Adding parameter type: " + newType);
             }
 
             if (signature instanceof AMultipleTypesSignature)
