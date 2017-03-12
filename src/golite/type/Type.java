@@ -10,6 +10,7 @@ public enum Type
     RUNE,
     STRING, 
     STRUCT,
+    VOID,   // For function return types only
     INVALID;
 
     public static Type stringToType(String s)

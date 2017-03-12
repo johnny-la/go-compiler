@@ -3,6 +3,7 @@ package golite.symbol;
 import golite.*;
 import golite.node.*;
 import golite.type.*;
+import golite.type.FunctionSignature;
 import golite.analysis.*;
 import golite.symbol.Symbol;
 import golite.symbol.Symbol.SymbolKind;
@@ -88,15 +89,76 @@ public class SemanticAnalyzer extends DepthFirstAdapter
      * Inserts the given function ID in the the symbol table,
      * Creates a new scope for the contents of the function
      */
-    public void declareFunction(PIdType id, PVarType varType, Node node)
+    public void declareFunction(PIdType id, PVarType varType, PFuncDecl node)
     {
         declareVariable(id, varType, SymbolKind.FUNCTION, node);
         scope();
+
+        // Get the half-populated type class defined in declareVariable()
+        Symbol functionSymbol = symbolTable.get(getIdName(id));
+        TypeClass typeClass = functionSymbol.typeClass;
+        typeClass.functionSignature = new FunctionSignature();
+
+        // Get the return type of the function
+        TypeClass returnType = getReturnType(node);
+        typeClass.functionSignature.returnType = returnType;
+
+        // Get the parameter types of the function
+        ArrayList<TypeClass> parameterTypes = getParameterTypes(node);
+        typeClass.functionSignature.parameterTypes = parameterTypes;
+
+        System.out.println("Declared function: " + functionSymbol);
 
         // Tells inABlockStmt() to not create a new scope 
         justEnterredFunction = true;
         // Determines the kind of a variable declaration (FIELD vs. LOCAL)
         inAFunction = true;
+    }
+
+    /**
+     * Returns the return type of the given function 
+     */
+    private TypeClass getReturnType(PFuncDecl node)
+    {
+        // Find the return type of the function
+        TypeClass returnType = new TypeClass();
+
+        if (node instanceof ANoReturnFuncDecl)
+        {
+            returnType.baseType = Type.VOID;
+        }
+        else if (node instanceof ASingleReturnFuncDecl)
+        {
+            ASingleReturnFuncDecl funcDecl = (ASingleReturnFuncDecl)node;
+            returnType = getTypeClass(funcDecl.getVarType());
+        }
+
+        return returnType;
+    }
+
+    /**
+     * Returns a list of the parameter types in the function's signature
+     */
+    private ArrayList<TypeClass> getParameterTypes(PFuncDecl node)
+    {
+        ArrayList<TypeClass> parameterTypes = new ArrayList<TypeClass>();
+
+        PSignature signature = null;
+        if (node instanceof ANoReturnFuncDecl)
+        {
+            signature = ((ANoReturnFuncDecl)node).getSignature();
+        }
+        else if (node instanceof ASingleReturnFuncDecl)
+        {
+            ASingleReturnFuncDecl funcDecl = (ASingleReturnFuncDecl)node;
+            signature = funcDecl.getSignature();
+        }
+
+        // There are no parameters. Return an empty list
+        if (signature == null) { return parameterTypes; }
+        
+        //while (signature )
+        return parameterTypes;
     }
 
     public void inAMultipleTypesSignature(AMultipleTypesSignature node)
@@ -109,6 +171,86 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     {
         // Declare all the variables in the signature
         declareVariableList(node.getIdList(), node.getVarType(), SymbolKind.FORMAL, node);
+    }
+
+    public void inAIfStmt(AIfStmt node)
+    {
+        // New scope for the init statement
+        scope();
+    }
+
+    public void outAIfStmt(AIfStmt node)
+    {
+        unscope();
+    }
+
+    public void inAForStmt(AForStmt node)
+    {
+        // New scope for the init statement
+        scope();
+    }
+
+    public void outAForStmt(AForStmt node)
+    {
+        unscope();
+    }
+
+    public void inASwitchStmt(ASwitchStmt node)
+    {
+        // Open a new scope for the init statement
+        scope();
+    }
+
+    public void outASwitchStmt(ASwitchStmt node)
+    {
+        unscope();
+    }
+
+    // case e1,e2,..,en:
+    //    statements
+    // OR 
+    // default: 
+    //    statements
+    public void inACaseStmt(ACaseStmt node)
+    {
+        // Open a new scope for each case statement (case 1,2,..,3: statements)
+        scope();
+    }
+
+    public void outACaseStmt(ACaseStmt node)
+    {
+        unscope();
+    }
+
+    public void inAAssignListStmt(AAssignListStmt node)
+    {
+        // True if the assignment is a short declaration (x,y,..,z := 1,2,..,3)
+        boolean isShortDeclaration = (node.getOp() instanceof AColonEqualsExp);
+
+        // Declare any new variables
+        if (isShortDeclaration)
+        {
+            boolean idDeclared = false;
+
+            for (int i = 0; i < node.getL().size(); i++)
+            {
+                // Determine the name of the ID
+                AIdExp idNode = (AIdExp)node.getL().get(i);
+                String idName = getIdName(idNode.getIdType());
+
+                // If the id was not declared yet, declare it
+                if (!symbolTable.contains(idName))
+                {
+                    declareVariable(idNode.getIdType(), null, SymbolKind.LOCAL, node);
+                    idDeclared = true;
+                }
+            }
+
+            if (!idDeclared)
+            {
+                ErrorManager.printError("No new variables on the left side of := \"" + node + "\"");
+            }
+        }        
     }
 
     public void inABlockStmt(ABlockStmt node)
@@ -323,7 +465,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 }
 
                 ArrayList<TypeAlias> typeAliasesToInherit = typeAliasSymbol.typeClass.typeAliases;
-                System.out.println("Inheriting " + typeAliasesToInherit.size() + " from type: " + typeAliasSymbol);
+                //System.out.println("Inheriting " + typeAliasesToInherit.size() + " from type: " + typeAliasSymbol);
                 for (int i = 0; i < typeAliasesToInherit.size(); i++)
                 {
                     TypeAlias typeAlias = new TypeAlias(typeAliasesToInherit.get(i));

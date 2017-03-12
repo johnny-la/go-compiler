@@ -9,6 +9,7 @@ public class TypeClass
     public Type baseType;   // The base type of the variable (INT, FLOAT64, etc.)
     public Node structNode; // If this is a struct-type, this stores the struct declaration node
     public int totalArrayDimension; // The dimension of the base type
+    public FunctionSignature functionSignature; // Only populated if baseType == FUNCTION
     //public Node typeAliasNode;      // If this variable is a custom type, this stores the type alias declaration node 
     //public int aliasArrayDimension; // The array dimension of the outer-most type alias
 
@@ -25,6 +26,7 @@ public class TypeClass
         baseType = other.baseType;
         structNode = other.structNode;
         totalArrayDimension = other.totalArrayDimension;
+        functionSignature = new FunctionSignature(other.functionSignature);
         //typeAliasNode = other.typeAliasNode;
         //aliasArrayDimension = other.aliasArrayDimension;
 
@@ -76,8 +78,15 @@ public class TypeClass
             output += "[]";
         }
 
-        output += (baseType != null)? baseType:"Struct: " + structNode;
-    
+        if (functionSignature == null)
+        {
+            output += (baseType != null)? baseType:"Struct: " + structNode;
+        }
+        else
+        {
+            output += " " + functionSignature;
+        }
+
         return output;
     }
 }
