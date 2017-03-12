@@ -13,13 +13,13 @@ public class TypeChecker extends DepthFirstAdapter
 
     private HashMap<Node, Symbol> symbolTable;
 
-    private HashMap<Node, Type> nodeTypes;
+    private HashMap<Node, TypeClass> nodeTypes;
 
     public TypeChecker(HashMap<Node, Symbol> symbolTable)
     {
         this.symbolTable = symbolTable;
 
-        nodeTypes = new HashMap<Node, Type>();
+        nodeTypes = new HashMap<Node, TypeClass>();
     }
 
     // public void outAWhileStmt(AWhileStmt node)
@@ -36,9 +36,9 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAIfStmt(AIfStmt node)
     {
-        Type expType = getType(node.getExp());
+        TypeClass expType = getType(node.getExp());
 
-        if (expType != Type.INT)
+        if (expType.baseType != Type.BOOL)
         {
             ErrorManager.printError("If-statement expression type: "
                     + expType + " (" + node.getExp().toString().trim() + 
@@ -67,14 +67,14 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAMinusExp(AMinusExp node)
     {
-        Type leftType = getType(node.getL());
-        Type rightType = getType(node.getR());
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
 
-        Type resultType = operationType(leftType, rightType, Operator.MINUS);
+        Type resultType = operationType(leftType.baseType, rightType.baseType, Operator.MINUS);
 
         if (resultType != Type.INVALID)
         {
-            nodeTypes.put(node, resultType);
+            //nodeTypes.put(node, resultType);
         }
         else
         {   
@@ -86,14 +86,14 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAPlusExp(APlusExp node)
     {
-        Type leftType = getType(node.getL());
-        Type rightType = getType(node.getR());
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
 
-        Type resultType = operationType(leftType, rightType, Operator.PLUS);
+        Type resultType = operationType(leftType.baseType, rightType.baseType, Operator.PLUS);
         
         if (resultType != Type.INVALID)
         {
-            nodeTypes.put(node, resultType);
+            //nodeTypes.put(node, resultType);
         }
         else
         {
@@ -106,15 +106,15 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAMultExp(AMultExp node)
     {
-        Type leftType = getType(node.getL());
-        Type rightType = getType(node.getR());
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
         
 
-        Type resultType = operationType(leftType, rightType, Operator.MULTIPLY);
+        Type resultType = operationType(leftType.baseType, rightType.baseType, Operator.MULTIPLY);
 
         if (resultType != Type.INVALID)
         {
-            nodeTypes.put(node, resultType);
+            //nodeTypes.put(node, resultType);
         }
         else
         {
@@ -126,14 +126,14 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outADivideExp(ADivideExp node)
     {
-        Type leftType = getType(node.getL());
-        Type rightType = getType(node.getR());
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
 
         Type resultType = operationType(leftType, rightType, Operator.DIVIDE);
 
         if (resultType != Type.INVALID)
         {
-            nodeTypes.put(node, resultType);
+            //nodeTypes.put(node, resultType);
         }
         else 
         {
@@ -273,7 +273,7 @@ public class TypeChecker extends DepthFirstAdapter
     /** 
      * Returns the type of the given node
      */
-    public Type getType(Node node)
+    public TypeClass getType(Node node)
     {
         return nodeTypes.get(node);
     }
