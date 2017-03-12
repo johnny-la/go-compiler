@@ -435,6 +435,8 @@ public class PrettyPrinter extends DepthFirstAdapter
     public void caseAIfStmt(AIfStmt node)
     {
         print("if ");
+        node.getSimpleStmt().apply(this);
+        print("; ");
         node.getExp().apply(this);
     
         node.getBlock().apply(this);
