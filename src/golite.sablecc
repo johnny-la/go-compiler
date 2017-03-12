@@ -232,7 +232,7 @@ cst_id {-> id_type} =
 
 cst_stmt {-> stmt} =
   {cst_empty}      /*empty*/           {-> New stmt.empty()} |
-  {cst_func_call}  function_call       {-> New stmt.exp(function_call.exp)} |
+  //{cst_func_call}  function_call       {-> New stmt.exp(function_call.exp)} |
   {cst_decl}       declarations        {-> New stmt.decl(declarations.decl)} |
   {cst_simple}     cst_simple_stmt     {-> cst_simple_stmt.stmt} |
   {cst_print}      print l_paren cst_exp_list? r_paren {-> New stmt.print([cst_exp_list.exp])} |
@@ -249,6 +249,7 @@ cst_stmt {-> stmt} =
 cst_simple_stmt {-> stmt} =
   //{cst_empty}      /*empty*/           {-> New stmt.empty()} |
   //{cst_decl}       cst_top_decl        {-> New stmt.decl(cst_top_decl.decl)} |
+  {cst_func_call}  function_call       {-> New stmt.exp(function_call.exp)} |
   {cst_increment}  lvalue plus_plus    {-> New stmt.increment(lvalue.exp)} |
   {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)} |
   {cst_assigassn}     cst_assign_stmt     {-> cst_assign_stmt.stmt};
@@ -259,7 +260,16 @@ cst_return_stmt {-> } =
   {cst_exp}   cst_exp {-> };
 
 cst_if_stmt {-> stmt} = 
-  {cst_if} if cst_exp cst_block cst_end_if? {-> New stmt.if(cst_exp.exp, cst_block.stmt, cst_end_if.stmt)};
+  {cst_if} if cst_simple_stmt_if? cst_exp cst_block cst_end_if? {-> New stmt.if(cst_simple_stmt_if.stmt, cst_exp.exp, cst_block.stmt, cst_end_if.stmt)};
+
+cst_simple_stmt_if {-> stmt} =
+  {cst_empty} semicolon {-> New stmt.empty()} |
+  {cst_simple_stmt} cst_simple_stmt_eol {-> cst_simple_stmt_eol.stmt}
+  ; 
+
+cst_end_if {-> stmt} =
+  {cst_else_if} else cst_if_stmt {-> New stmt.else_if(cst_if_stmt.stmt)} |
+  {cst_else}    else cst_block   {-> New stmt.else(cst_block.stmt)};
 
 cst_exp {-> exp} = 
   {term}     term {-> term.exp} |
@@ -363,10 +373,6 @@ append_expr {-> exp} =
 
 other_exp {-> exp} =
   cst_exp { -> cst_exp.exp};
-
-cst_end_if {-> stmt} =
-  {cst_else_if} else cst_if_stmt {-> New stmt.else_if(cst_if_stmt.stmt)} |
-  {cst_else}    else cst_block   {-> New stmt.else(cst_block.stmt)};
 
 cst_block {-> stmt} =
   {cst_block} l_brace semicolon cst_stmt_list r_brace {-> New stmt.block([cst_stmt_list.stmt])};
@@ -507,7 +513,7 @@ stmt =
   {short_decl}      id exp |
   {short_decl_list} id stmt exp |
   {block}           stmt* |
-  {if}              exp [block]:stmt [end]:stmt?  |
+  {if}              [simple_stmt]:stmt? exp [block]:stmt [end]:stmt?  |
   {else_if}         stmt |
   {else}            stmt |
   {for}             [condition]:exp [block]:stmt |
