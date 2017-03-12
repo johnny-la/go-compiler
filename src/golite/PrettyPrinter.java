@@ -353,13 +353,6 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getDecl().apply(this);
     }
 
-    public void caseAAssignStmt(AAssignStmt node)
-    {
-        node.getL().apply(this);
-        print(" = ");
-        node.getR().apply(this);
-    }
-
     /*public void caseALvalueListExp(ALvalueListExp node)
     {
         for (int i = 0; i < node.getExp().size(); i++)
@@ -376,13 +369,6 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getOp().apply(this);
         printNodesWithComma(node.getR()); 
     } 
-
-    public void caseAAssignOpStmt(AAssignOpStmt node)
-    {
-        node.getL().apply(this);
-        node.getOp().apply(this);
-        node.getR().apply(this);
-    }
 
     public void caseAEqualsExp(AEqualsExp node)
     {

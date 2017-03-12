@@ -249,6 +249,7 @@ public class TypeChecker extends DepthFirstAdapter
         return errorType;
     }
 
+    // Resolve the type of an expression after a unary operator 
     public TypeClass unaryOperationType(Operator op, TypeClass exprType){
         if(exprType == null){
             return invalidType();
@@ -358,10 +359,78 @@ public class TypeChecker extends DepthFirstAdapter
     // ----------------------------------------
     // Base Literals End
 
-    // public void outAFloatExp(AFloatExp node)
-    // {
-    //     nodeTypes.put(node, Type.FLOAT);
-    // }
+    // ----------------------------------------
+    // Statements Start
+
+    public void outAPrintStmt(APrintStmt node){
+        LinkedList<PExp> expList = node.getExp();
+        if(expList != null){
+            int size = expList.size();
+            int i = 0;
+            while(i<size){
+                System.out.println(expList.get(i));
+                TypeClass typeClass = getType(expList.get(i));
+                if (typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
+                    typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
+                    typeClass.baseType == Type.RUNE){
+                    i++;
+                    continue;
+                }
+                else{
+                    ErrorManager.printError("Argument to print at index " + i + " is not well-type. Must be int, float64, bool, string, or rune.");
+                    return;
+                }
+            }
+        }
+            // Iterate over all the list of the expressions
+            // if none of them are invalid, then the expression is correct
+    }
+
+    public void outAPrintlnStmt(APrintlnStmt node){
+        LinkedList<PExp> expList = node.getExp();
+        if(expList != null){
+            int size = expList.size();
+            int i = 0;
+            while(i<size){
+                System.out.println(expList.get(i));
+                TypeClass typeClass = getType(expList.get(i));
+                if (typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
+                    typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
+                    typeClass.baseType == Type.RUNE){
+                    i++;
+                    continue;
+                }
+                else{
+                    ErrorManager.printError("Argument to print at index " + i + " is not well-type. Must be int, float64, bool, string, or rune.");
+                    return;
+                }
+            }
+        }
+    }
+
+    public void outAForStmt(AForStmt node){
+        LinkedList<PExp> expList = node.getCondition();
+        LinkedList<PStmt> stmtBlocks = node.getBlock();
+
+        if(expList != null){
+            if(expList.size() == 1){
+               if(getType(expList.get(0)) != Type.BOOL){
+                    ErrorManager.printError("The expression of a for loop has to be of type bool");
+                    return;
+                }
+            }
+            if(expList.size() == 3){
+                if(getType(expList.get(1)) != Type.BOOL){
+                    ErrorManager.printError("The expression of a for loop has to be of type bool");
+                    return;
+                }
+            }
+        }
+    }
+
+    // Statements End
+    // ----------------------------------------
+
 
     /** 
      * Returns the type of the given node

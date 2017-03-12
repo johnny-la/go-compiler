@@ -522,11 +522,7 @@ stmt =
   {increment}       exp  |
   {decrement}       exp  |
   {decl}            decl |
-  {assign}          [l]:exp [r]:exp |
-  {assign_op}       [l]:exp [op]:exp [r]:exp |
   {assign_list}     [l]:exp+ [op]:exp [r]:exp+ |
-  {short_decl}      id exp |
-  {short_decl_list} id stmt exp |
   {block}           stmt* |
   {if}              [simple_stmt]:stmt? exp [block]:stmt [end]:stmt?  |
   {else_if}         stmt |
