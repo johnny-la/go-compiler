@@ -192,12 +192,17 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAIdExp(AIdExp node)
     {
-        Type type = getIdType(node.getIdType());
+        Type type = symbolTable.get(node);
 
         if (type == Type.INVALID)
         {
             ErrorManager.printError("Identifier \"" + node.getIdType() + "\"has"
                    + " invalid type");
+            return;
+        }
+
+        if(getIdName(getIdType(node)).equals("true") || getIdName(getIdType(node)).equals("false")){
+            nodeTypes.put(node, Type.BOOL);
         }
 
         nodeTypes.put(node, type);        
@@ -239,8 +244,26 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAIntExp(AIntExp node)
     {
-        nodeTypes.put(node, Type.INT);
+        addType(node, Type.INT);
     }
+
+    public void outAFloat64LiteralExp(AFloat64LiteralExp node){
+        addType(node, Type.FLOAT64);
+    }
+
+    public void outARuneLiteralExp(ARuneLiteralExp node){
+        addType(node, Type.RUNE);
+    }
+
+    public void outARawStringLitExp(ARawStringLitExp node){
+        addType(node, Type.STRING);
+    }
+
+    public void outAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node){
+        addType(node, Type.STRING);
+    }
+
+
 
     // public void outAFloatExp(AFloatExp node)
     // {
@@ -253,6 +276,10 @@ public class TypeChecker extends DepthFirstAdapter
     public Type getType(Node node)
     {
         return nodeTypes.get(node);
+    }
+
+    public void addType(Node node, Type type){
+        nodeTypes.put(node, type);
     }
 
     public String toString()
