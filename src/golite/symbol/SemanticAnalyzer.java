@@ -289,12 +289,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             if (current instanceof ASliceVarType)
             {
                 current = ((ASliceVarType)current).getVarType();
-                typeClass.arrayDimension++;
+                typeClass.totalArrayDimension++;
+                typeClass.aliasArrayDimension++;
             }
             else if (current instanceof AArrayVarType)
             {
                 current = ((AArrayVarType)current).getVarType();
-                typeClass.arrayDimension++;
+                typeClass.totalArrayDimension++;
+                typeClass.aliasArrayDimension++;
             }
             else if (current instanceof AStructVarType)
             {
@@ -309,8 +311,15 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                     break;
                 }
 
+                // Store the type alias
+                if (typeAliasSymbol.node instanceof ATypeAliasTypeDecl)
+                {
+                    typeClass.typeAliasNode = typeAliasSymbol.node;
+                }
+
                 typeClass.baseType = typeAliasSymbol.typeClass.baseType;
                 typeClass.structNode = typeAliasSymbol.typeClass.structNode;
+                typeClass.totalArrayDimension += typeAliasSymbol.typeClass.totalArrayDimension;
 
                 break;
             }
@@ -373,14 +382,32 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         if (symbol != null)
         {
             // Add a node->symbol mapping for future type checking
-            symbolMap.put(node, symbol);
+            symbolMap.put(node, new Symbol(symbol));
 
             System.out.println("Inserting (" + node + "," + symbol + ") into symbolMap");
         }
     }
 
-    public void outAStructSelectorExp(AStructSelectorExp node)
+    public void outAArrayIndexExp(AArrayIndexExp node)
     {
+        Symbol lvalueSymbol = symbolMap.get(node.getLvalue());
+        
+        if (lvalueSymbol == null || lvalueSymbol.typeClass.totalArrayDimension == 0)
+        {
+            ErrorManager.printError("Indexing a non-array type: " + lvalueSymbol);
+            return;
+        }
+
+        Symbol newSymbol = new Symbol(lvalueSymbol);
+        newSymbol.typeClass.totalArrayDimension--;
+
+        symbolMap.put(node, newSymbol);
+        System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
+    }
+
+    public void caseAStructSelectorExp(AStructSelectorExp node)
+    {
+        node.getL().apply(this);
         // Get the symbol for the RHS of the struct selector
         Symbol symbol = symbolMap.get(node.getL());
 
@@ -388,11 +415,35 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         {
             ErrorManager.printError("Using the . operator on a non-struct type: " + node.getL()
                 + ", symbol = " + symbol);
+            return;
         }
-        else
+
+        if (symbol.typeClass.totalArrayDimension != 0)
         {
-            
+            ErrorManager.printError("Using the . operator on an array: " + symbol);
         }
+
+        Node structNode = symbol.typeClass.structNode;
+
+        System.out.println("Stepping into struct: " + structNode);
+        currentStructScope = structHierarchy.get(structNode);
+        System.out.println("Struct's symbol table: \n" + currentStructScope);
+
+        String rightId = node.getR().getText();
+        Symbol rightSymbol = currentStructScope.get(rightId);
+        if (symbol == null)
+        {
+            ErrorManager.printError("\"" + rightId + "\" is not declared");
+            return;
+        }
+        //node.getR().apply(this);
+
+        currentStructScope = null;
+
+        Symbol newSymbol = new Symbol(rightSymbol);
+        symbolMap.put(node, newSymbol);
+
+        System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
         //String structId = node.getL().getText();
         //Symbol symbol = checkVariableDeclared(structId);
 

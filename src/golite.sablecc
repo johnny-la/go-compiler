@@ -251,7 +251,7 @@ cst_simple_stmt {-> stmt} =
   //{cst_decl}       cst_top_decl        {-> New stmt.decl(cst_top_decl.decl)} |
   {cst_increment}  lvalue plus_plus    {-> New stmt.increment(lvalue.exp)} |
   {cst_decrement}  lvalue minus_minus  {-> New stmt.decrement(lvalue.exp)} |
-  {cst_assign}     cst_assign_stmt     {-> cst_assign_stmt.stmt};
+  {cst_assigassn}     cst_assign_stmt     {-> cst_assign_stmt.stmt};
   //{cst_short_decl} cst_short_decl_stmt {-> cst_short_decl_stmt.stmt};
 
 cst_return_stmt {-> } =
@@ -270,11 +270,14 @@ cst_exp {-> exp} =
   {append_expr} append_expr {-> append_expr.exp};
 
 array_indexing {-> exp} = 
-  {array_indexing} cst_exp cst_index {-> New exp.empty()};
+  {array_indexing} cst_index_list {-> New exp.empty()};
+
+cst_index_list {-> exp} = 
+  {single} cst_index {-> New exp.empty()}|
+  {multiple} cst_index cst_index_list {-> New exp.empty()};
 
 cst_index {-> exp} =
-  {end_recurse} l_brack cst_exp r_brack semicolon {-> cst_exp.exp} |
-  {cst_index} l_brack cst_exp r_brack cst_index {-> New exp.empty()};
+  {end_recurse} l_brack cst_exp r_brack  {-> cst_exp.exp};
 
 factor {-> exp} = 
   {cst_times}       factor star term  {-> New exp.mult(factor.exp,term.exp)} |
@@ -393,17 +396,20 @@ cst_exp_list {-> exp*} =
   {cst_exp_list} cst_exp_list comma cst_exp {-> [cst_exp_list.exp, cst_exp.exp]};
 
 lvalue {-> exp} =
-  {array_index} array_indexing {-> New exp.empty()} |
+  {id} cst_exp {-> New exp.empty()} | 
   {struct_selector}  lvalue cst_selector  {-> New exp.struct_selector(lvalue.exp, cst_selector.exp)};
 
-lvalue_no_id {-> exp} =
-  {cst_index}      id cst_index     {-> New exp.array_index(New exp.id(id), cst_index.exp)} |
-  {cst_selector}   id cst_selector  {-> New exp.struct_selector(New exp.id(id), cst_selector.exp)} |
-  {cst_lvalue_index}    lvalue_no_id cst_index    {-> New exp.array_index(lvalue_no_id.exp, cst_index.exp)} |
-  {cst_lvalue_selector} lvalue_no_id cst_selector {-> New exp.struct_selector(lvalue_no_id.exp, cst_selector.exp)};
+//lvalue_no_id {-> exp} =
+//  {cst_index}      id cst_index     {-> New exp.array_index(New exp.id(id), cst_index.exp)} |
+//  {cst_selector}   id cst_selector  {-> New exp.struct_selector(New exp.id(id), cst_selector.exp)} |
+//  {cst_lvalue_index}    lvalue_no_id cst_index    {-> New exp.array_index(lvalue_no_id.exp, cst_index.exp)} |
+//  {cst_lvalue_selector} lvalue_no_id dot id {-> New exp.struct_selector(lvalue_no_id.exp, New exp.id(id))};
 
 cst_selector {-> exp} =
   {cst_selector} dot cst_exp {-> cst_exp.exp};
+
+//cst_selector {-> exp} =
+//  {cst_selector} dot cst_exp {-> cst_exp.exp};
 
 Abstract Syntax Tree
 
