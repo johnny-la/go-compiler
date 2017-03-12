@@ -129,7 +129,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        Type resultType = operationType(leftType, rightType, Operator.DIVIDE);
+        Type resultType = operationType(leftType.baseType, rightType.baseType, Operator.DIVIDE);
 
         if (resultType != Type.INVALID)
         {
@@ -280,14 +280,20 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     public void addType(Node node, Type type){
-        nodeTypes.put(node, type);
+        TypeClass typeClass = new TypeClass();
+        typeClass.baseType = type;
+        nodeTypes.put(node, typeClass);
+    }
+
+    public void addType(Node node, TypeClass typeClass){
+        nodeTypes.put(node, typeClass);
     }
 
     public String toString()
     {
         StringBuilder output = new StringBuilder();
 
-        for (Map.Entry<Node, Type> entries : nodeTypes.entrySet())
+        for (Map.Entry<Node, TypeClass> entries : nodeTypes.entrySet())
         {
             output.append(entries.getKey()  + ": " + entries.getValue() + "\n");    
         }
