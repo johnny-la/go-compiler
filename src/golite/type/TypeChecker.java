@@ -391,7 +391,7 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAFunctionCallSecondaryExp(AFunctionCallSecondaryExp node) {
         int numberOfArgs = node.getExpList().size();
-        TypeClass lhs = nodeTypes.get(functionNode);
+        TypeClass lhs = nodeTypes.get(node.getExp());
         //check if lhs is a name of a function
     }
 
