@@ -481,7 +481,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         if (node.getSimpleStmt() != null) 
         { 
             node.getSimpleStmt().apply(this);
-
+            print("; ");
         }
         if (node.getExp() != null)
         {
