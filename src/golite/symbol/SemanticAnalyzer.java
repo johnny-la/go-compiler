@@ -158,7 +158,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node)
     {
-        declareVariable(node.getIdType(), node.getVarType(), SymbolKind.TYPE, node);
+        Symbol symbol = declareVariable(node.getIdType(), node.getVarType(), SymbolKind.TYPE, node);
+        System.out.println("Declared type alias: " + symbol);
     }
 
     // Struct declaration 
@@ -237,7 +238,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
      * and throws an error if it's already declared in
      * the current scope
      */
-    public void declareVariable(PIdType id, PVarType varType, SymbolKind kind, Node node)
+    public Symbol declareVariable(PIdType id, PVarType varType, SymbolKind kind, Node node)
     {
         //System.out.println("Symbol table at var decl:\n" + symbolTable);
         String idName = null;
@@ -249,7 +250,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         if (symbolTable.contains(idName))
         {
             ErrorManager.printError("\"" + id + "\" is already declared in this block.");
-            return;
+            return null;
         }    
 
         Type type = Type.INVALID;
@@ -270,6 +271,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         // Insert the symbol in the symbol table
         Symbol symbol = new Symbol(idName, node, typeClass, kind);
         symbolTable.put(idName, symbol);
+
+        return symbol;
     }
 
     private TypeClass getTypeClass(PVarType varType)
@@ -290,31 +293,40 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             {
                 current = ((ASliceVarType)current).getVarType();
                 typeClass.totalArrayDimension++;
-                typeClass.aliasArrayDimension++;
             }
             else if (current instanceof AArrayVarType)
             {
                 current = ((AArrayVarType)current).getVarType();
                 typeClass.totalArrayDimension++;
-                typeClass.aliasArrayDimension++;
             }
             else if (current instanceof AStructVarType)
             {
                 // Get the name of the type alias
-                String typeAlias = ((AStructVarType)current).getId().getText();
+                String typeAliasName = ((AStructVarType)current).getId().getText();
                 
-                Symbol typeAliasSymbol = symbolTable.get(typeAlias);
+                Symbol typeAliasSymbol = symbolTable.get(typeAliasName);
 
                 if (typeAliasSymbol == null)
                 {
-                    ErrorManager.printError("Type alias was never declared: \"" + typeAlias + "\"");
+                    ErrorManager.printError("Type alias was never declared: \"" + typeAliasName + "\"");
                     break;
+                }
+
+                ArrayList<TypeAlias> typeAliasesToInherit = typeAliasSymbol.typeClass.typeAliases;
+                System.out.println("Inheriting " + typeAliasesToInherit.size() + " from type: " + typeAliasSymbol);
+                for (int i = 0; i < typeAliasesToInherit.size(); i++)
+                {
+                    TypeAlias typeAlias = new TypeAlias(typeAliasesToInherit.get(i));
+                    typeClass.typeAliases.add(typeAlias);
                 }
 
                 // Store the type alias
                 if (typeAliasSymbol.node instanceof ATypeAliasTypeDecl)
                 {
-                    typeClass.typeAliasNode = typeAliasSymbol.node;
+                    TypeAlias typeAlias = new TypeAlias();
+                    typeAlias.node = typeAliasSymbol.node;
+                    typeAlias.arrayDimension = typeClass.totalArrayDimension;
+                    typeClass.typeAliases.add(typeAlias);
                 }
 
                 typeClass.baseType = typeAliasSymbol.typeClass.baseType;
@@ -399,7 +411,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
 
         Symbol newSymbol = new Symbol(lvalueSymbol);
-        newSymbol.typeClass.totalArrayDimension--;
+        newSymbol.typeClass.decrementDimension();
 
         symbolMap.put(node, newSymbol);
         System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
