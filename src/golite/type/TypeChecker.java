@@ -19,7 +19,7 @@ public class TypeChecker extends DepthFirstAdapter
     {
         this.symbolTable = symbolTable;
 
-        nodeTypes = new HashMap<Node, Type>();
+        nodeTypes = new HashMap<Node, TypeClass>();
     }
 
     // public void outAWhileStmt(AWhileStmt node)
@@ -36,34 +36,15 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAIfStmt(AIfStmt node)
     {
-        Type expType = getType(node.getExp());
+        TypeClass expType = getType(node.getExp());
 
-        if (expType != Type.INT)
+        if (expType.baseType != Type.BOOL)
         {
             ErrorManager.printError("If-statement expression type: "
                     + expType + " (" + node.getExp().toString().trim() + 
                     "). Expected an integer.");
         }
     }
-
-    // public void outAAssignStmt(AAssignStmt node)
-    // {
-    //     Type idType = getIdType(node.getId());   
-    //     Type expType = getType(node.getExp());
-        
-    //     boolean compatibleTypes = false;
-
-    //     if (idType == expType || (idType == Type.FLOAT && expType == Type.INT))
-    //     {
-    //         compatibleTypes = true;
-    //     }
-        
-    //     if (!compatibleTypes)
-    //     {
-    //         ErrorManager.printError("\"" + node.getId().getText().trim() + 
-    //                 "\" assigned type " + expType + ". Expecting type: " + idType);
-    //     }
-    // }
 
     public boolean isBool(Type isBool) {
         if (Type == BOOL) {
@@ -398,10 +379,11 @@ public class TypeChecker extends DepthFirstAdapter
         }
 
         if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
-            nodeTypes.put(node, Type.BOOL);
+            addType(node, Type.BOOL);
+            return;
         }
 
-        nodeTypes.put(node, type);        
+        addType(node, type.baseType);        
     }
 
     /**
@@ -469,20 +451,26 @@ public class TypeChecker extends DepthFirstAdapter
     /** 
      * Returns the type of the given node
      */
-    public Type getType(Node node)
+    public TypeClass getType(Node node)
     {
         return nodeTypes.get(node);
     }
 
     public void addType(Node node, Type type){
-        nodeTypes.put(node, type);
+        TypeClass typeClass = new TypeClass();
+        typeClass.baseType = type;
+        nodeTypes.put(node, typeClass);
+    }
+
+    public void addType(Node node, TypeClass typeClass){
+        nodeTypes.put(node, typeClass);
     }
 
     public String toString()
     {
         StringBuilder output = new StringBuilder();
 
-        for (Map.Entry<Node, Type> entries : nodeTypes.entrySet())
+        for (Map.Entry<Node, TypeClass> entries : nodeTypes.entrySet())
         {
             output.append(entries.getKey()  + ": " + entries.getValue() + "\n");    
         }
