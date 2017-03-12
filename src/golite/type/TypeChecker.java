@@ -9,7 +9,9 @@ import java.util.*;
 
 public class TypeChecker extends DepthFirstAdapter
 {
+
     public enum BinaryOps { BOOL, COMPARABLE, ORDERED, NUMERIC, NUMORSTRING, INTEGER }
+    public enum Operator { PLUS, MINUS, MULTIPLY, DIVIDE, CARET, EXCLAMATION_MARK}
 
     private HashMap<Node, Symbol> symbolTable;
 
@@ -446,6 +448,98 @@ public class TypeChecker extends DepthFirstAdapter
     //     return null;
     // }
 
+    public TypeClass invalidType(){
+        TypeClass errorType = new TypeClass();
+        errorType.baseType = Type.INVALID;
+        return errorType;
+    }
+
+    // Resolve the type of an expression after a unary operator 
+    public TypeClass unaryOperationType(Operator op, TypeClass exprType){
+        if(exprType == null){
+            return invalidType();
+        }
+
+        if(exprType.baseType != Type.RUNE && exprType.baseType != Type.FLOAT64 && exprType.baseType != Type.INT){
+            return invalidType();
+        }
+
+        if(op == Operator.PLUS || op == Operator.MINUS){
+            if(exprType.baseType == Type.INT || exprType.baseType == Type.FLOAT64 || exprType.baseType == Type.RUNE){
+                return exprType;
+            }
+            else{
+                return invalidType();
+            }
+        }
+
+        if(op == Operator.CARET){
+            if(exprType.baseType == Type.INT || exprType.baseType == Type.RUNE){
+
+                return exprType;
+            }
+            else{
+                return invalidType();
+            }
+        }
+
+        if(op == Operator.EXCLAMATION_MARK){
+            if(exprType.baseType == Type.BOOL){
+                return exprType;
+            }
+            else{
+                return invalidType();
+            }
+        }
+        return exprType;
+    }
+
+    // Unary Expressions Start
+    // ----------------------------------------
+
+    public void outAUnaryPlusExp(AUnaryPlusExp node){
+        TypeClass typeClass = unaryOperationType(Operator.PLUS, getType(node.getExp()));
+        if(typeClass.baseType == Type.INVALID){
+            ErrorManager.printError("A + unary operation can only be used with an int, float64, or rune literal");
+            return;
+        }
+        addType(node, typeClass.baseType);
+    }
+
+    public void outAUnaryMinusExp(AUnaryPlusExp node){
+        TypeClass typeClass = unaryOperationType(Operator.MINUS, getType(node.getExp()));
+        if(typeClass.baseType == Type.INVALID){
+            ErrorManager.printError("A - unary operation can only be used with an int, float64, or rune literal");
+            return;
+        }
+        addType(node, typeClass.baseType);
+    }
+
+    public void outACaretedFactorsExp(ACaretedFactorsExp node){
+        TypeClass typeClass = unaryOperationType(Operator.CARET, getType(node.getExp()));
+        if(typeClass.baseType == Type.INVALID){
+            ErrorManager.printError("A ^ unary operation can only be used with an int or a rune literal");
+            return;
+        }
+        addType(node, typeClass.baseType);
+    }
+
+    public void outAExclamatedFactorsExp(AExclamatedFactorsExp node){
+        TypeClass typeClass = unaryOperationType(Operator.EXCLAMATION_MARK, getType(node.getExp()));
+        if(typeClass.baseType == Type.INVALID){
+            ErrorManager.printError("A ! unary operation can only be used with a bool literal");
+            return;
+        }
+        addType(node, typeClass.baseType);
+    }    
+
+    // ----------------------------------------
+    // Unary Expressions End
+  
+
+    // Base Literals Start
+    // ----------------------------------------
+
     public void outAIntExp(AIntExp node)
     {
         addType(node, Type.INT);
@@ -467,12 +561,81 @@ public class TypeChecker extends DepthFirstAdapter
         addType(node, Type.STRING);
     }
 
+    // ----------------------------------------
+    // Base Literals End
 
+    // ----------------------------------------
+    // Statements Start
 
-    // public void outAFloatExp(AFloatExp node)
-    // {
-    //     nodeTypes.put(node, Type.FLOAT);
-    // }
+    public void outAPrintStmt(APrintStmt node){
+        LinkedList<PExp> expList = node.getExp();
+        if(expList != null){
+            int size = expList.size();
+            int i = 0;
+            while(i<size){
+                System.out.println(expList.get(i));
+                TypeClass typeClass = getType(expList.get(i));
+                if (typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
+                    typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
+                    typeClass.baseType == Type.RUNE){
+                    i++;
+                    continue;
+                }
+                else{
+                    ErrorManager.printError("Argument to print at index " + i + " is not well-type. Must be int, float64, bool, string, or rune.");
+                    return;
+                }
+            }
+        }
+            // Iterate over all the list of the expressions
+            // if none of them are invalid, then the expression is correct
+    }
+
+    public void outAPrintlnStmt(APrintlnStmt node){
+        LinkedList<PExp> expList = node.getExp();
+        if(expList != null){
+            int size = expList.size();
+            int i = 0;
+            while(i<size){
+                System.out.println(expList.get(i));
+                TypeClass typeClass = getType(expList.get(i));
+                if (typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
+                    typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
+                    typeClass.baseType == Type.RUNE){
+                    i++;
+                    continue;
+                }
+                else{
+                    ErrorManager.printError("Argument to print at index " + i + " is not well-type. Must be int, float64, bool, string, or rune.");
+                    return;
+                }
+            }
+        }
+    }
+
+    public void outAForStmt(AForStmt node){
+        LinkedList<PExp> expList = node.getCondition();
+        LinkedList<PStmt> stmtBlocks = node.getBlock();
+
+        if(expList != null){
+            if(expList.size() == 1){
+               if(getType(expList.get(0)) != Type.BOOL){
+                    ErrorManager.printError("The expression of a for loop has to be of type bool");
+                    return;
+                }
+            }
+            if(expList.size() == 3){
+                if(getType(expList.get(1)) != Type.BOOL){
+                    ErrorManager.printError("The expression of a for loop has to be of type bool");
+                    return;
+                }
+            }
+        }
+    }
+
+    // Statements End
+    // ----------------------------------------
+
 
     /** 
      * Returns the type of the given node

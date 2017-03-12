@@ -353,13 +353,6 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getDecl().apply(this);
     }
 
-    public void caseAAssignStmt(AAssignStmt node)
-    {
-        node.getL().apply(this);
-        print(" = ");
-        node.getR().apply(this);
-    }
-
     /*public void caseALvalueListExp(ALvalueListExp node)
     {
         for (int i = 0; i < node.getExp().size(); i++)
@@ -376,13 +369,6 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getOp().apply(this);
         printNodesWithComma(node.getR()); 
     } 
-
-    public void caseAAssignOpStmt(AAssignOpStmt node)
-    {
-        node.getL().apply(this);
-        node.getOp().apply(this);
-        node.getR().apply(this);
-    }
 
     public void caseAEqualsExp(AEqualsExp node)
     {
@@ -716,13 +702,6 @@ public class PrettyPrinter extends DepthFirstAdapter
        print(node.getOct().getText()); 
     }
 
-    public void caseAUnaryExclamationExp(AUnaryExclamationExp node)
-    {
-        print("(!");
-        node.getExp().apply(this);
-        print(")");
-    }
-
     public void caseAUnaryMinusExp(AUnaryMinusExp node)
     {
         print("(-");
@@ -733,13 +712,6 @@ public class PrettyPrinter extends DepthFirstAdapter
     public void caseAUnaryPlusExp(AUnaryPlusExp node)
     {
         print("(+");
-        node.getExp().apply(this);
-        print(")");
-    }
-
-    public void caseAUnaryXorExp(AUnaryXorExp node)
-    {
-        print("(^");
         node.getExp().apply(this);
         print(")");
     }
