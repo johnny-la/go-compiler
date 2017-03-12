@@ -26,7 +26,8 @@ public class TypeClass
         baseType = other.baseType;
         structNode = other.structNode;
         totalArrayDimension = other.totalArrayDimension;
-        functionSignature = new FunctionSignature(other.functionSignature);
+        functionSignature = (other.functionSignature != null)? 
+                                new FunctionSignature(other.functionSignature) : null;
         //typeAliasNode = other.typeAliasNode;
         //aliasArrayDimension = other.aliasArrayDimension;
 

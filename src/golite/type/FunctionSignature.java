@@ -34,7 +34,9 @@ public class FunctionSignature
         for (int i = 0; i < parameterTypes.size(); i++)
         {
             output.append(parameterTypes.get(i).toString());
-            output.append(", ");
+            
+            if (i != parameterTypes.size()-1) 
+                output.append(", ");
         }
         output.append("):");
 

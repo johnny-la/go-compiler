@@ -154,9 +154,46 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             signature = funcDecl.getSignature();
         }
 
-        // There are no parameters. Return an empty list
-        if (signature == null) { return parameterTypes; }
-        
+        // Iterate through each set of signatures
+        while (signature != null)
+        {
+            TypeClass parameterType = null;
+            LinkedList<? extends Node> idList = null;
+            if (signature instanceof AMultipleTypesSignature)
+            {
+                AMultipleTypesSignature multiTypeSig = (AMultipleTypesSignature)signature;
+                parameterType = getTypeClass(multiTypeSig.getVarType());
+                idList = multiTypeSig.getIdList(); 
+                
+            }
+            else if (signature instanceof ASingleTypeSignature)
+            {
+                ASingleTypeSignature singleTypeSig = (ASingleTypeSignature)signature;
+                parameterType = getTypeClass(singleTypeSig.getVarType());
+                idList = singleTypeSig.getIdList();
+            }
+
+            // Add the parameter type "n" times, for each identifier in the signature list
+            System.out.println("Traversing parameter type: " + parameterType);
+            for (int i = 0; i < idList.size(); i++)
+            {
+                TypeClass newType = new TypeClass(parameterType);
+                parameterTypes.add(newType);
+                System.out.println("Adding parameter type: " + newType);
+            }
+
+            if (signature instanceof AMultipleTypesSignature)
+            {
+                // Move to the next signature
+                signature = ((AMultipleTypesSignature)signature).getSignature();
+            }
+            else if (signature instanceof ASingleTypeSignature)
+            {
+                // End the iteration
+                signature = null;
+            }
+        }
+
         //while (signature )
         return parameterTypes;
     }
