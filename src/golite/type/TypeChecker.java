@@ -202,10 +202,11 @@ public class TypeChecker extends DepthFirstAdapter
         }
 
         if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
-            nodeTypes.put(node, Type.BOOL);
+            addType(node, Type.BOOL);
+            return;
         }
 
-        nodeTypes.put(node, type);        
+        addType(node, type.baseType);        
     }
 
     /**
