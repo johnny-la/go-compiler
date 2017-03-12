@@ -16,4 +16,6 @@ edit:
 	vim golite.sablecc
 clean:
 	rm -rf `find . -name *.class` golite/parser golite/lexer \
-	golite/node golite/analysis *.pretty.min *.symbol.txt *.c
+	golite/node golite/analysis *.pretty.min *.symbol.txt *.c \
+	../programs/valid/*.pretty.go ../programs/valid/*.pretty.symbol.txt \
+	../programs/valid/*.symbol.txt

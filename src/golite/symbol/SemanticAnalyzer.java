@@ -400,22 +400,23 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
     }
 
-    public void outAArrayIndexExp(AArrayIndexExp node)
-    {
-        Symbol lvalueSymbol = symbolMap.get(node.getLvalue());
+// TO BE FIXED BY RALPH
+    // public void outAArrayIndexExp(AArrayIndexingExp node)
+    // {
+    //     Symbol lvalueSymbol = symbolMap.get(node.getLvalue());
         
-        if (lvalueSymbol == null || lvalueSymbol.typeClass.totalArrayDimension == 0)
-        {
-            ErrorManager.printError("Indexing a non-array type: " + lvalueSymbol);
-            return;
-        }
+    //     if (lvalueSymbol == null || lvalueSymbol.typeClass.totalArrayDimension == 0)
+    //     {
+    //         ErrorManager.printError("Indexing a non-array type: " + lvalueSymbol);
+    //         return;
+    //     }
 
-        Symbol newSymbol = new Symbol(lvalueSymbol);
-        newSymbol.typeClass.decrementDimension();
+    //     Symbol newSymbol = new Symbol(lvalueSymbol);
+    //     newSymbol.typeClass.decrementDimension();
 
-        symbolMap.put(node, newSymbol);
-        System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
-    }
+    //     symbolMap.put(node, newSymbol);
+    //     System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
+    // }
 
     public void caseAStructSelectorExp(AStructSelectorExp node)
     {

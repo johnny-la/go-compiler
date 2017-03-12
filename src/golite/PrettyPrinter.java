@@ -394,12 +394,20 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(":=");
     }
 
-    public void caseAArrayIndexExp(AArrayIndexExp node)
+    private void printIndices(LinkedList<? extends Node> nodes){
+        for( int i = 0; i<nodes.size(); i++){
+            if (i != nodes.size()) { 
+                print("["); 
+                nodes.get(i).apply(this);
+                print("]");
+            }
+        }
+    }
+
+    public void caseAArrayIndexingExp(AArrayIndexingExp node)
     {
-        node.getLvalue().apply(this);
-        print("[");
-        node.getIndex().apply(this);
-        print("]");
+        node.getExp().apply(this);
+        printIndices(node.getExpList());
     }
 
     public void caseAStructSelectorExp(AStructSelectorExp node)

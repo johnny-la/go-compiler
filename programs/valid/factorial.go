@@ -41,7 +41,6 @@ func fib_helper(n int, memo []int) {
 
     for i <= n {
         memo = append(memo, memo[i-1] + memo[i-2])
-        i++;
 
         continue
     }
