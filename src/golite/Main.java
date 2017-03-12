@@ -145,20 +145,20 @@ public class Main
                 printDebug(symbolTable.toString());
                 printToFile(filenamePrefix + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
                 
-                // printDebug("\nType Checker:");
-                // TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
-                // tree.apply(typeChecker);
-                // printDebug(typeChecker.toString());
+                printDebug("\nType Checker:");
+                TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
+                tree.apply(typeChecker);
+                printDebug(typeChecker.toString());
 
                 // Generate C code if no type errors occurred
-                /*if (ErrorManager.errorCount <= 0)
+                if (ErrorManager.errorCount <= 0)
                 {
                     generateCode(tree, typeChecker, inputFilename);
                 }
                 else
                 {
                     System.exit(1);
-                }*/
+                }
                 
             }
 
@@ -169,7 +169,7 @@ public class Main
         catch (Exception e)
         {
             System.out.print("INVALID: " + e);
-            //e.printStackTrace();
+            e.printStackTrace();
             System.exit(1);
         }
     }

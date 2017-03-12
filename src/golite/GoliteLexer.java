@@ -31,7 +31,7 @@ public class GoliteLexer extends Lexer
         {
             //System.out.println(lineNumber++ + ": " + lastToken);
         }
-        return token instanceof TEol &&
+        return (token instanceof TEol || token instanceof TEndOfFile) &&
                (lastToken instanceof TId ||
                 lastToken instanceof TInt ||
                 lastToken instanceof TOct ||

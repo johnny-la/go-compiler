@@ -139,6 +139,21 @@ public class Weeder extends DepthFirstAdapter
         }
     }
 
+    // public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node) {
+    //     PVarType current = node.getVarType();
+    //     while (current instanceof ASliceVarType || current instanceOf AArrayVarType) {
+    //         current = current.getVarType();
+    //     }
+
+    //     if (current instanceof AStructType) {
+    //         if (((AStructVarType) current).getId().getText().equals("struct")) {
+    //             return;
+    //         }
+    //     }
+
+    //     throwStructError();
+    // }
+
     public boolean hasContinue(List<PStmt> nodes)
     {
         for (int i = 0; i < nodes.size(); i++)
@@ -168,6 +183,10 @@ public class Weeder extends DepthFirstAdapter
 
         return false;
     } 
+
+    public void throwStructError() {
+        throw new RuntimeException("struct not declared properly");
+    }
 
     public void throwContinueError()
     {

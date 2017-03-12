@@ -34,56 +34,57 @@ public class TypeChecker extends DepthFirstAdapter
     //     }
     // }
 
-    public void outAIfStmt(AIfStmt node)
-    {
-        TypeClass expType = getType(node.getExp());
+    // public void outAIfStmt(AIfStmt node)
+    // {
+    //     TypeClass expType = getType(node.getExp());
 
-        if (expType.baseType != Type.BOOL)
-        {
-            ErrorManager.printError("If-statement expression type: "
-                    + expType + " (" + node.getExp().toString().trim() + 
-                    "). Expected an integer.");
-        }
-    }
+    //     if (expType.baseType != Type.BOOL)
+    //     {
+    //         ErrorManager.printError("If-statement expression type: "
+    //                 + expType + " (" + node.getExp().toString().trim() + 
+    //                 "). Expected an integer.");
+    //     }
+    // }
 
     public boolean isBool(Type isBool) {
-        if (Type == BOOL) {
+        if (isBool == Type.BOOL) {
             return true;
         }
         return false;
     }
 
     public boolean isComparable(Type isComparable) {
-        if (isComparable != VOID && isComparable != INVALID) {
+        if (isComparable != Type.VOID && isComparable != Type.INVALID) {
             return true;
         }
         return false;
     }
 
     public boolean isOrdered(Type isOrdered) {
-        if (isOrdered == INT || isOrdered == STRING || isOrdered == FLOAT64) {
+        if (isOrdered == Type.INT || isOrdered == Type.STRING || isOrdered == Type.FLOAT64 
+            || isOrdered == Type.RUNE) {
             return true;
         }
         return false;
     }
 
     public boolean isNumericOrString(Type isNumericOrString) {
-        if (isNumericOrString == INT || isNumericOrString == STRING 
-            || isNumericOrString == FLOAT64 || isNumericOrString == RUNE) {
+        if (isNumericOrString == Type.INT || isNumericOrString == Type.STRING 
+            || isNumericOrString == Type.FLOAT64 || isNumericOrString == Type.RUNE) {
             return true;
         }
         return false;
     }
 
     public boolean isNumeric(Type isNumeric) {
-        if (isNumered == INT || isNumbered == FLOAT64 || isNumbered == RUNE) {
+        if (isNumeric == Type.INT || isNumeric == Type.FLOAT64 || isNumeric == Type.RUNE) {
             return true;
         }
         return false;
     }
 
     public boolean isInteger(Type isInteger) {
-        if (isInteger == INT) {
+        if (isInteger == Type.INT) {
             return true;
         }
         return false;
@@ -91,28 +92,28 @@ public class TypeChecker extends DepthFirstAdapter
 
     public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
         switch (op) {
-            case: BOOL
+            case BOOL:
                 return (isBool(left.baseType) && isBool(right.baseType));
 
-            case: COMPARABLE
-                if (left.baseType == struct && right.baseType == struct 
+            case COMPARABLE:
+                if (left.baseType == Type.STRUCT && right.baseType == Type.STRUCT 
                         && left.structNode == right.structNode) return true;
                 return (isComparable(left.baseType) && isComparable(right.baseType) 
                         && left.baseType == right.baseType);
 
-            case: ORDERED
+            case ORDERED:
                 return (isOrdered(left.baseType) && isOrdered(right.baseType) 
                     && (left.baseType == right.baseType));
 
-            case: NUMBERIC
+            case NUMERIC:
                 return (isNumeric(left.baseType) && isNumeric(right.baseType) 
                     && (left.baseType == right.baseType));
 
-            case: NUMORSTRING
+            case NUMORSTRING:
                 return (isNumericOrString(left.baseType) && isNumericOrString(right.baseType) 
                     && (left.baseType == right.baseType));
 
-            case: INTEGER
+            case INTEGER:
                 return (isInteger(left.baseType) && isInteger(right.baseType));
 
             default: 
@@ -124,7 +125,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, BOOL)) {
+        if (isComparable(leftType, rightType, BinaryOps.BOOL)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
@@ -137,7 +138,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, BOOL)) {
+        if (isComparable(leftType, rightType, BinaryOps.BOOL)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
@@ -150,7 +151,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, COMPARABLE)) {
+        if (isComparable(leftType, rightType, BinaryOps.COMPARABLE)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
@@ -159,11 +160,11 @@ public class TypeChecker extends DepthFirstAdapter
         }
     }
 
-    public void outANotEqualsExp(ANotEqualsExp node) {
+    public void outANotEqualExp(ANotEqualExp node) {
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, COMPARABLE)) {
+        if (isComparable(leftType, rightType, BinaryOps.COMPARABLE)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
@@ -176,7 +177,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, ORDERED)) {
+        if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
@@ -189,7 +190,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, ORDERED)) {
+        if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
@@ -202,7 +203,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, ORDERED)) {
+        if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
@@ -215,7 +216,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, ORDERED)) {
+        if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
@@ -228,7 +229,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, NUMERIC)) {
+        if (isComparable(leftType, rightType, BinaryOps.NUMERIC)) {
             nodeTypes.put(node, leftType);
         } else {   
             ErrorManager.printError("Subtraction of incompatible types: " +
@@ -241,7 +242,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, NUMORSTRING)) {
+        if (isComparable(leftType, rightType, BinaryOps.NUMORSTRING)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Addition of incorrect types: " + leftType
@@ -254,7 +255,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, NUMERIC)) {
+        if (isComparable(leftType, rightType, BinaryOps.NUMERIC)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Multiplication of incompatible types: " +
@@ -267,7 +268,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, NUMERIC)) {
+        if (isComparable(leftType, rightType, BinaryOps.NUMERIC)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Division of incompatible types: " +
@@ -280,7 +281,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, INTEGER)) {
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Modulo of incompatible type: " +
@@ -293,7 +294,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, INTEGER)) {
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Bitwise operation of incompatible types: " +
@@ -306,7 +307,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, INTEGER)) {
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Bitwise operation of incompatible types: " +
@@ -319,7 +320,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, INTEGER)) {
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Bitwise operation of incompatible types: " +
@@ -332,7 +333,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, INTEGER)) {
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Bitwise operation of incompatible types: " +
@@ -345,7 +346,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, INTEGER)) {
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Bitwise operation of incompatible types: " +
@@ -358,7 +359,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        if (isComparable(leftType, rightType, INTEGER)) {
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
             nodeTypes.put(node, leftType);
         } else {
             ErrorManager.printError("Bitwise operation of incompatible types: " +
@@ -402,23 +403,23 @@ public class TypeChecker extends DepthFirstAdapter
     /**
      * Returns the type (int, float, string) of an identifier token
      */
-    public Type getIdType(PIdType idTypeNode)
-    {
-        return getIdType(getIdName(idTypeNode));
-    }
+    // public Type getIdType(PIdType idTypeNode)
+    // {
+    //     return getIdType(getIdName(idTypeNode));
+    // }
 
-    /**
-     * Returns the type of the given identifier
-     */
-    public Type getIdType(String id)
-    {
-        // Retrieves the declaration node that created this variable
-        // AVarDecl declNode = (AVarDecl)symbolTable.get(id);
-        // // Gets the type of the identifier
-        // Type type = stringToType(declNode.getType().getText());
+    // // /**
+    // //  * Returns the type of the given identifier
+    // //  *
+    // public Type getIdType(String id)
+    // {
+    //     // Retrieves the declaration node that created this variable
+    //     // AVarDecl declNode = (AVarDecl)symbolTable.get(id);
+    //     // // Gets the type of the identifier
+    //     // Type type = stringToType(declNode.getType().getText());
 
-        return null;
-    }
+    //     return null;
+    // }
 
     public void outAIntExp(AIntExp node)
     {
