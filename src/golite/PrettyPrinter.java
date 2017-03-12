@@ -713,13 +713,6 @@ public class PrettyPrinter extends DepthFirstAdapter
        print(node.getOct().getText()); 
     }
 
-    public void caseAUnaryExclamationExp(AUnaryExclamationExp node)
-    {
-        print("(!");
-        node.getExp().apply(this);
-        print(")");
-    }
-
     public void caseAUnaryMinusExp(AUnaryMinusExp node)
     {
         print("(-");
@@ -730,13 +723,6 @@ public class PrettyPrinter extends DepthFirstAdapter
     public void caseAUnaryPlusExp(AUnaryPlusExp node)
     {
         print("(+");
-        node.getExp().apply(this);
-        print(")");
-    }
-
-    public void caseAUnaryXorExp(AUnaryXorExp node)
-    {
-        print("(^");
         node.getExp().apply(this);
         print(")");
     }

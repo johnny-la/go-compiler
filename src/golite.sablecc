@@ -101,7 +101,7 @@ Tokens
   //float64 = 'float64';
   //bool = 'bool';
   //rune = 'rune';
-  rune_literal = single_quote ([not_end_of_line - [single_quote + '\']] | escape_single_quote | escape_sequences) single_quote ;
+  rune_literal = single_quote ([not_end_of_line - [single_quote + '\']] | escape_single_quote | escape_sequences)* single_quote ;
   raw_string_lit = back_quote [all_chars - back_quote]* back_quote ;
   interpreted_string_literal = double_quote ([not_end_of_line - [double_quote + '\']] | escape_double_quote| escape_sequences)* double_quote ;
   id = (letter | '_')(letter | digit | '_')*;
