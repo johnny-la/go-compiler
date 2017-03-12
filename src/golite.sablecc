@@ -270,11 +270,7 @@ cst_exp {-> exp} =
   {append_expr} append_expr {-> append_expr.exp};
 
 array_indexing {-> exp} = 
-  {array_indexing} cst_index_list {-> New exp.empty()};
-
-cst_index_list {-> exp} = 
-  {single} cst_index {-> New exp.empty()}|
-  {multiple} cst_index cst_index_list {-> New exp.empty()};
+  {array_indexing} term cst_index+ {-> New exp.empty()};
 
 cst_index {-> exp} =
   {end_recurse} l_brack cst_exp r_brack  {-> cst_exp.exp};

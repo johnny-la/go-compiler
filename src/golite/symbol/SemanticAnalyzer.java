@@ -441,21 +441,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         currentStructScope = structHierarchy.get(structNode);
         System.out.println("Struct's symbol table: \n" + currentStructScope);
 
-        String rightId = node.getR().getText();
-        Symbol rightSymbol = currentStructScope.get(rightId);
-        if (symbol == null)
-        {
-            ErrorManager.printError("\"" + rightId + "\" is not declared");
-            return;
-        }
-        //node.getR().apply(this);
+        // String rightId = node.getR().getText();
+        // Symbol rightSymbol = currentStructScope.get(rightId);
+        // if (symbol == null)
+        // {
+        //     ErrorManager.printError("\"" + rightId + "\" is not declared");
+        //     return;
+        // }
+        // //node.getR().apply(this);
 
-        currentStructScope = null;
+        // currentStructScope = null;
 
-        Symbol newSymbol = new Symbol(rightSymbol);
-        symbolMap.put(node, newSymbol);
+        // Symbol newSymbol = new Symbol(rightSymbol);
+        // symbolMap.put(node, newSymbol);
 
-        System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
+        // System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
         //String structId = node.getL().getText();
         //Symbol symbol = checkVariableDeclared(structId);
 
