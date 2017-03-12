@@ -192,11 +192,11 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAIdExp(AIdExp node)
     {
-        Type type = getIdType(node.getId());
+        Type type = getIdType(node.getIdType());
 
         if (type == Type.INVALID)
         {
-            ErrorManager.printError("Identifier \"" + node.getId() + "\"has"
+            ErrorManager.printError("Identifier \"" + node.getIdType() + "\"has"
                    + " invalid type");
         }
 
@@ -204,11 +204,24 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     /**
+     * Returns the name of the id_type node
+     */
+    private String getIdName(PIdType node)
+    {
+        String idName = null;
+
+        if (node instanceof AIdIdType) { idName = ((AIdIdType)node).getId().getText(); }
+        else if (node instanceof ATypeIdType) { idName = ((ATypeIdType)node).getType().getText(); }
+    
+        return idName;
+    }
+
+    /**
      * Returns the type (int, float, string) of an identifier token
      */
-    public Type getIdType(TId id)
+    public Type getIdType(PIdType idTypeNode)
     {
-        return getIdType(id.getText());
+        return getIdType(getIdName(idTypeNode));
     }
 
     /**

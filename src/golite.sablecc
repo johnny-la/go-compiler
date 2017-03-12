@@ -430,6 +430,15 @@ lvalue {-> exp} =
 //cst_selector {-> exp} =
 //  {cst_selector} dot cst_exp {-> cst_exp.exp};
 
+lvalue_id {-> exp} =
+  {cst_id}      cst_id     {-> New exp.id(cst_id.id_type)} |
+  {array_index} lvalue_id cst_index {-> New exp.array_index(lvalue_id.exp, cst_index.exp)} |
+  {struct_selector}  lvalue_id dot cst_id {-> New exp.struct_selector(lvalue_id.exp, New exp.id(cst_id.id_type))};
+
+lvalue_id_list {-> exp+} =
+  {cst_lvalue}      lvalue_id     {-> [lvalue_id.exp]} |
+  {cst_lvalue_list} lvalue_id_list comma lvalue_id {-> [lvalue_id_list.exp,lvalue_id.exp]};
+
 Abstract Syntax Tree
 
 program = package_decl decl*;
@@ -528,7 +537,7 @@ exp =
   {greater} [l]:exp [r]:exp |
   {pipe} [l]:exp [r]:exp |
   {caret} [l]:exp [r]:exp |
-  {id} id_type|
+  {id} id_type |
   {float64_literal} float64_literal |
   {int} int |
   {oct} oct |
@@ -546,6 +555,7 @@ exp =
   {function_name} exp |
   {appended_expr} [l]:exp [r]:exp |
   {struct_selector}  [l]:exp [r]:exp |
+  {array_index} [lvalue]:exp [index]:exp | 
   {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
   {case}      [exp_list]:exp* |
   {default} |

@@ -688,7 +688,7 @@ public class PrettyPrinter extends DepthFirstAdapter
 
     public void caseAIdExp(AIdExp node)
     {
-        print(node.getId().getText());
+        node.getIdType().apply(this);
     }
 
     public void caseAFloat64LiteralExp(AFloat64LiteralExp node)

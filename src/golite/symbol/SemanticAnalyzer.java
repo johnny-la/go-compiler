@@ -241,10 +241,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     public Symbol declareVariable(PIdType id, PVarType varType, SymbolKind kind, Node node)
     {
         //System.out.println("Symbol table at var decl:\n" + symbolTable);
-        String idName = null;
-        
-        if (id instanceof AIdIdType) { idName = ((AIdIdType)id).getId().getText(); }
-        else if (id instanceof ATypeIdType) { idName = ((ATypeIdType)id).getType().getText(); }
+        String idName = getIdName(id);
 
         // Throw an exception if the identifier was already declared
         if (symbolTable.contains(idName))
@@ -273,6 +270,19 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         symbolTable.put(idName, symbol);
 
         return symbol;
+    }
+
+    /**
+     * Returns the name of the id_type node
+     */
+    private String getIdName(PIdType node)
+    {
+        String idName = null;
+
+        if (node instanceof AIdIdType) { idName = ((AIdIdType)node).getId().getText(); }
+        else if (node instanceof ATypeIdType) { idName = ((ATypeIdType)node).getType().getText(); }
+    
+        return idName;
     }
 
     private TypeClass getTypeClass(PVarType varType)
@@ -388,7 +398,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     public void outAIdExp(AIdExp node)
     {
-        String id = node.getId().getText();
+        String id = getIdName(node.getIdType());
         Symbol symbol = checkVariableDeclared(id);
 
         if (symbol != null)
