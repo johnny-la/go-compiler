@@ -192,16 +192,16 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAIdExp(AIdExp node)
     {
-        Type type = symbolTable.get(node);
+        TypeClass type = symbolTable.get(node).typeClass;
 
-        if (type == Type.INVALID)
+        if (type.baseType == Type.INVALID)
         {
             ErrorManager.printError("Identifier \"" + node.getIdType() + "\"has"
                    + " invalid type");
             return;
         }
 
-        if(getIdName(getIdType(node)).equals("true") || getIdName(getIdType(node)).equals("false")){
+        if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
             nodeTypes.put(node, Type.BOOL);
         }
 
