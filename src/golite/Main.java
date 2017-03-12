@@ -145,13 +145,13 @@ public class Main
                 printDebug(symbolTable.toString());
                 printToFile(filenamePrefix + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
                 
-                /*printDebug("\nType Checker:");
-                TypeChecker typeChecker = new TypeChecker(symbolTable);
+                printDebug("\nType Checker:");
+                TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
                 tree.apply(typeChecker);
                 printDebug(typeChecker.toString());
 
                 // Generate C code if no type errors occurred
-                if (ErrorManager.errorCount <= 0)
+                /*if (ErrorManager.errorCount <= 0)
                 {
                     generateCode(tree, typeChecker, inputFilename);
                 }

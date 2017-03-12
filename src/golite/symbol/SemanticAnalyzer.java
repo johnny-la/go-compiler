@@ -19,7 +19,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     private SymbolTable symbolTable;
 
     // Mapping between nodes and symbols, used later for type checking
-    private HashMap<Node,Symbol> symbolMap;
+    public HashMap<Node,Symbol> symbolMap;
     // Maps every struct declaration node to a symbol table which contains
     // the struct's fields 
     private HashMap<Node,SymbolTable> structHierarchy;

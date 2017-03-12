@@ -11,11 +11,11 @@ public class TypeChecker extends DepthFirstAdapter
 {
     public enum Operator { PLUS, MINUS, MULTIPLY, DIVIDE };
 
-    private SymbolTable symbolTable;
+    private HashMap<Node, Symbol> symbolTable;
 
     private HashMap<Node, Type> nodeTypes;
 
-    public TypeChecker(SymbolTable symbolTable)
+    public TypeChecker(HashMap<Node, Symbol> symbolTable)
     {
         this.symbolTable = symbolTable;
 
