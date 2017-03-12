@@ -570,10 +570,8 @@ exp =
   {rune_literal} rune_literal |
   {raw_string_lit} raw_string_lit |
   {interpreted_string_literal} interpreted_string_literal |
-  {function_call} id_type [exp_list]:exp* |
   {function_call_secondary} exp [exp_list]:exp* |
   {array_indexing} exp [exp_list]:exp* |
-  {function_name} exp |
   {appended_expr} [l]:exp [r]:exp |
   {struct_selector}  [l]:exp [r]:exp |
   {array_index} [lvalue]:exp [index]:exp | 

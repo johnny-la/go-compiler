@@ -91,6 +91,25 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
+
+        if (left.totalArrayDimension > 0 || right.totalArrayDimension > 0) {
+            ErrorManager.printError("Unable to perform binary operations on array type");
+            return false;
+        }
+
+        List<TypeAlias> leftAliases = left.typeAliases, rightAliases = right.typeAliases;
+        int leftSize = leftAliases.size(), rightSize = rightAliases.size();
+
+        if (leftSize > 0 && rightSize > 0) {
+            if (leftAliases.get(leftSize - 1).node != rightAliases.get(rightSize - 1).node) {
+                ErrorManager.printError("Aliases aren't compatible with each other");
+                return false;
+            }
+        } else if (leftSize > 0 || rightSize > 0) {
+            ErrorManager.printError("Aliases aren't compatible with base types");
+            return false;
+        }
+
         switch (op) {
             case BOOL:
                 return (isBool(left.baseType) && isBool(right.baseType));
@@ -366,6 +385,12 @@ public class TypeChecker extends DepthFirstAdapter
                     leftType + ", " + rightType + ". (" + node.getL() + " / " +
                     node.getR() + ")");
         }
+    }
+
+    public void outAFunctionCallSecondaryExp(AFunctionCallSecondaryExp node) {
+        int numberOfArgs = node.getExpList().size();
+        TypeClass lhs = nodeTypes.get(functionNode);
+        //check if lhs is a name of a function
     }
 
     public void outAIdExp(AIdExp node)
