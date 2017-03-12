@@ -267,7 +267,14 @@ cst_exp {-> exp} =
   {binary_op}  binary_op {-> binary_op.exp} |
   {function_call} function_call {-> function_call.exp} |
   {array_indexing} array_indexing {-> New exp.empty()} |
+  {cst_selection} cst_selection {-> New exp.empty()} |
   {append_expr} append_expr {-> append_expr.exp};
+
+cst_selection {-> exp} = 
+  {cst_selection} term cst_selector+ {-> New exp.empty()};
+
+cst_selector {-> exp} =
+  {cst_selector} dot term {-> term.exp};
 
 array_indexing {-> exp} = 
   {array_indexing} term cst_index+ {-> New exp.empty()};
@@ -392,17 +399,13 @@ cst_exp_list {-> exp*} =
   {cst_exp_list} cst_exp_list comma cst_exp {-> [cst_exp_list.exp, cst_exp.exp]};
 
 lvalue {-> exp} =
-  {id} cst_exp {-> New exp.empty()} | 
-  {struct_selector}  lvalue cst_selector  {-> New exp.struct_selector(lvalue.exp, cst_selector.exp)};
+  {id} cst_exp {-> New exp.empty()};
 
 //lvalue_no_id {-> exp} =
 //  {cst_index}      id cst_index     {-> New exp.array_index(New exp.id(id), cst_index.exp)} |
 //  {cst_selector}   id cst_selector  {-> New exp.struct_selector(New exp.id(id), cst_selector.exp)} |
 //  {cst_lvalue_index}    lvalue_no_id cst_index    {-> New exp.array_index(lvalue_no_id.exp, cst_index.exp)} |
 //  {cst_lvalue_selector} lvalue_no_id dot id {-> New exp.struct_selector(lvalue_no_id.exp, New exp.id(id))};
-
-cst_selector {-> exp} =
-  {cst_selector} dot cst_exp {-> cst_exp.exp};
 
 //cst_selector {-> exp} =
 //  {cst_selector} dot cst_exp {-> cst_exp.exp};
