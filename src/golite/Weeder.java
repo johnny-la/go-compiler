@@ -139,6 +139,16 @@ public class Weeder extends DepthFirstAdapter
         }
     }
 
+    public void inAIdExp(AIdExp node) {
+        PIdType id = node.getIdType();
+        if (id instanceof AIdIdType) {
+            AIdIdType temp = (AIdIdType) id;
+            if (temp.getId().getText().equals("_")) {
+                throwBlankIdError();
+            }
+        }
+    }
+
     // public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node) {
     //     PVarType current = node.getVarType();
     //     while (current instanceof ASliceVarType || current instanceOf AArrayVarType) {
@@ -184,17 +194,17 @@ public class Weeder extends DepthFirstAdapter
         return false;
     } 
 
-    public void throwStructError() {
-        throw new RuntimeException("struct not declared properly");
+    public void throwBlankIdError() {
+        ErrorManager.printError("Trying to evaluate an expression with a blank identifier \n");
     }
 
     public void throwContinueError()
     {
-        throw new RuntimeException("Continue must be inside a loop");
+        ErrorManager.printError("Continue must be inside a loop");
     }
 
     public void throwBreakError()
     {
-        throw new RuntimeException("Break must be inside a loop or a switch statement");
+        ErrorManager.printError("Break must be inside a loop or a switch statement");
     }
 }

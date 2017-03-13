@@ -521,7 +521,6 @@ public class TypeChecker extends DepthFirstAdapter
                         Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
                         System.out.println("Setting dynamic type of " + lhsSymbol + " to: " + copy);
                         lhsSymbol.setType(copy);
-                        //TODO: update symbol table
                     } else if (right.baseType != left.baseType) {
                         ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
                         return;
@@ -570,7 +569,7 @@ public class TypeChecker extends DepthFirstAdapter
         }
 
         TypeClass type = symbolTable.get(node).typeClass;
-
+        
         if (type.baseType == Type.INVALID)
         {
             ErrorManager.printError("Identifier \"" + node.getIdType() + "\"has"

@@ -5,6 +5,7 @@ func temp () {
 	var a int;
 	var b string;
 	var c rune;
+	var _ bool;
 	var d bool;
 	var e float64;
 	var x [7]int1;
@@ -15,7 +16,7 @@ func temp () {
 
 	var z = append(x, int1(bool(3)))
 
-	if (d || d) {
+	if (_ || d) {
 	}
 
 	if (d && e) {
