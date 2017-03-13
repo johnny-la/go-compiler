@@ -4,11 +4,7 @@ Compiler built in SableCC for a subset of the Go language
 
 Below is a list of each team member's contribution to the project:
 
-Authors:
-
-#### Ralph 260503614
-#### Martin 260520930
-#### Jonathan 2606328
+Authors: Ralph Bou Samra 260503614, Martin Zhang 260520930, Jonathan Lucuix-André 260632816
 
 # To build:
 
