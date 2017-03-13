@@ -58,7 +58,7 @@ public class Symbol
         {
             Symbol symbolToInherit = symbolsToInheritType.get(i);
             TypeClass newType = new TypeClass(typeClass);
-            System.out.println("Setting dynamic type of " + symbolToInherit + " to: " + newType);
+            //System.out.println("Setting dynamic type of " + symbolToInherit + " to: " + newType);
             symbolToInherit.typeClass = newType;
         } 
     }

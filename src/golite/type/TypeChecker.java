@@ -69,7 +69,7 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     public boolean isAliasedCorrectly(TypeClass left, TypeClass right) {
-        System.out.println("Checking aliases: " + left + " R:" + right);
+        //System.out.println("Checking aliases: " + left + " R:" + right);
         List<TypeAlias> leftAliases = left.typeAliases, rightAliases = right.typeAliases;
         int leftSize = leftAliases.size(), rightSize = rightAliases.size();
 
@@ -469,8 +469,8 @@ public class TypeChecker extends DepthFirstAdapter
             return;
         TypeClass idType = symbolTable.get(node).typeClass;
         TypeClass expType = getType(node.getExp());
-        System.out.println("" + idType);
-        System.out.println("" + expType);
+        //System.out.println("" + idType);
+        //System.out.println("" + expType);
         if (!isAliasedCorrectly(idType, expType)) {
             return;
         }
@@ -562,7 +562,7 @@ public class TypeChecker extends DepthFirstAdapter
                     if (left.isNull()) {
                         TypeClass copy = new TypeClass(right);
                         Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
-                        System.out.println("Setting dynamic type of " + lhsSymbol + " to: " + copy);
+                        //System.out.println("Setting dynamic type of " + lhsSymbol + " to: " + copy);
                         lhsSymbol.setType(copy);
                     } else if (right.baseType != left.baseType) {
                         ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
@@ -793,7 +793,7 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     public void outAFloat64LiteralExp(AFloat64LiteralExp node){
-        System.out.println("float: " + node);
+        //System.out.println("float: " + node);
         addType(node, Type.FLOAT64);
     }
 
