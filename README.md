@@ -2,7 +2,7 @@
 Compiler built in SableCC for a subset of the Go language
 
 
-Authors: Ralph Bou Samra 260503614, Martin Zhang 260520930, Jonathan Lucuix-André 260632816
+Authors: Ralph Bou Samra 260503614, Jonathan Lucuix-André 260632816, Yan Qing Zhang 260520930
 
 # To build:
 

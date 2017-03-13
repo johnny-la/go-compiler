@@ -1,0 +1,152 @@
+grading/valid/parser//2-package.go: VALID
+[pass]
+grading/valid/parser//4-vardecs.go: declaring shit
+declaring shit
+declaring shit
+declaring shit
+FLOAT64
+FLOAT64
+Checking aliases: FLOAT64 R:FLOAT64
+INVALID: java.lang.NullPointerExceptionjava.lang.NullPointerException
+	at golite.type.TypeChecker.outAVarWithOnlyExpVarDecl(TypeChecker.java:453)
+	at golite.analysis.DepthFirstAdapter.caseAVarWithOnlyExpVarDecl(DepthFirstAdapter.java:480)
+	at golite.node.AVarWithOnlyExpVarDecl.apply(AVarWithOnlyExpVarDecl.java:40)
+	at golite.analysis.DepthFirstAdapter.caseAVarDeclAstDecl(DepthFirstAdapter.java:125)
+	at golite.node.AVarDeclAstDecl.apply(AVarDeclAstDecl.java:35)
+	at golite.analysis.DepthFirstAdapter.caseAProgram(DepthFirstAdapter.java:61)
+	at golite.node.AProgram.apply(AProgram.java:41)
+	at golite.analysis.DepthFirstAdapter.caseStart(DepthFirstAdapter.java:34)
+	at golite.node.Start.apply(Start.java:37)
+	at golite.Main.main(Main.java:162)
+[fail]
+grading/valid/parser//5-typedecs.go: INVALID: golite.parser.ParserException: [36,11] expecting: type, '[', idgolite.parser.ParserException: [36,11] expecting: type, '[', id
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[fail]
+grading/valid/parser//6-funcdecs.go: Declared function: f1, FUNCTION,  ():VOID
+Declared function: f2, FUNCTION,  ():INT
+Declared function: f3, FUNCTION,  (INT):VOID
+Declared function: f4, FUNCTION,  (INT, INT):VOID
+Declared function: f5, FUNCTION,  (INT, INT):VOID
+Declared function: f6, FUNCTION,  (INT, INT, BOOL, BOOL):VOID
+VALID
+[pass]
+grading/valid/parser//7-1-basic.go: Declared function: main, FUNCTION,  ():VOID
+VALID
+[pass]
+grading/valid/parser//7-2-slices.go: Declared function: main, FUNCTION,  ():VOID
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (y1 ,y1, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (y2 ,y2, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (y3 ,y3, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (y4 ,y4, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (m ,m, LOCAL, INT) into symbolMap
+Inserting (y5 ,y5, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (m ,m, LOCAL, INT) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (m ,m, LOCAL, INT) into symbolMap
+Inserting (n ,n, LOCAL, INT) into symbolMap
+Inserting (b1 ,b1, LOCAL, FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (b2 ,b2, LOCAL, FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (b3 ,b3, LOCAL, FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (m ,m, LOCAL, INT) into symbolMap
+Inserting (n ,n, LOCAL, INT) into symbolMap
+Checking aliases: []INT R:INT
+Checking aliases: []INT R:[]INT
+Checking aliases: []INT R:INT
+Checking aliases: []INT R:[]INT
+Checking aliases: []INT R:INT
+Checking aliases: []INT R:[]INT
+Checking aliases: INT R:null
+INVALID: java.lang.NullPointerExceptionjava.lang.NullPointerException
+	at golite.type.TypeChecker.isAliasedCorrectly(TypeChecker.java:73)
+	at golite.type.TypeChecker.outAAssignListStmt(TypeChecker.java:525)
+	at golite.analysis.DepthFirstAdapter.caseAAssignListStmt(DepthFirstAdapter.java:905)
+	at golite.node.AAssignListStmt.apply(AAssignListStmt.java:46)
+	at golite.analysis.DepthFirstAdapter.caseABlockStmt(DepthFirstAdapter.java:926)
+	at golite.node.ABlockStmt.apply(ABlockStmt.java:36)
+	at golite.analysis.DepthFirstAdapter.caseANoReturnFuncDecl(DepthFirstAdapter.java:196)
+	at golite.node.ANoReturnFuncDecl.apply(ANoReturnFuncDecl.java:45)
+	at golite.analysis.DepthFirstAdapter.caseAFuncDeclAstDecl(DepthFirstAdapter.java:104)
+	at golite.node.AFuncDeclAstDecl.apply(AFuncDeclAstDecl.java:35)
+	at golite.analysis.DepthFirstAdapter.caseAProgram(DepthFirstAdapter.java:61)
+	at golite.node.AProgram.apply(AProgram.java:41)
+	at golite.analysis.DepthFirstAdapter.caseStart(DepthFirstAdapter.java:34)
+	at golite.node.Start.apply(Start.java:37)
+	at golite.Main.main(Main.java:162)
+[fail]
+grading/valid/parser//7-3-arrays.go: Declared function: main, FUNCTION,  ():VOID
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (m ,m, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (m ,m, LOCAL, INT) into symbolMap
+Inserting (y1 ,y1, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (y2 ,y2, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (y3 ,y3, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (y4 ,y4, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (m ,m, LOCAL, INT) into symbolMap
+Inserting (y5 ,y5, LOCAL, INT) into symbolMap
+Inserting (x ,x, LOCAL, []INT) into symbolMap
+Inserting (m ,m, LOCAL, INT) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (m ,m, LOCAL, INT) into symbolMap
+Inserting (n ,n, LOCAL, INT) into symbolMap
+Inserting (b1 ,b1, LOCAL, FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (b2 ,b2, LOCAL, FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (b3 ,b3, LOCAL, FLOAT64) into symbolMap
+Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
+Inserting (m ,m, LOCAL, INT) into symbolMap
+Inserting (n ,n, LOCAL, INT) into symbolMap
+Checking aliases: null R:INT
+INVALID: java.lang.NullPointerExceptionjava.lang.NullPointerException
+	at golite.type.TypeChecker.isAliasedCorrectly(TypeChecker.java:73)
+	at golite.type.TypeChecker.outAAssignListStmt(TypeChecker.java:525)
+	at golite.analysis.DepthFirstAdapter.caseAAssignListStmt(DepthFirstAdapter.java:905)
+	at golite.node.AAssignListStmt.apply(AAssignListStmt.java:46)
+	at golite.analysis.DepthFirstAdapter.caseABlockStmt(DepthFirstAdapter.java:926)
+	at golite.node.ABlockStmt.apply(ABlockStmt.java:36)
+	at golite.analysis.DepthFirstAdapter.caseANoReturnFuncDecl(DepthFirstAdapter.java:196)
+	at golite.node.ANoReturnFuncDecl.apply(ANoReturnFuncDecl.java:45)
+	at golite.analysis.DepthFirstAdapter.caseAFuncDeclAstDecl(DepthFirstAdapter.java:104)
+	at golite.node.AFuncDeclAstDecl.apply(AFuncDeclAstDecl.java:35)
+	at golite.analysis.DepthFirstAdapter.caseAProgram(DepthFirstAdapter.java:61)
+	at golite.node.AProgram.apply(AProgram.java:41)
+	at golite.analysis.DepthFirstAdapter.caseStart(DepthFirstAdapter.java:34)
+	at golite.node.Start.apply(Start.java:37)
+	at golite.Main.main(Main.java:162)
+[fail]
+grading/valid/parser//7-4-structs.go: INVALID: golite.parser.ParserException: [5,8] expecting: type, '=', '[', ',', idgolite.parser.ParserException: [5,8] expecting: type, '=', '[', ',', id
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[fail]
+grading/valid/parser//8-0-blockstmts.go: Declared function: block_stmts, FUNCTION,  ():VOID
+VALID
