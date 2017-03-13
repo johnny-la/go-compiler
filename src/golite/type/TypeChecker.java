@@ -475,8 +475,11 @@ public class TypeChecker extends DepthFirstAdapter
                     if (!isAliasedCorrectly(left, right)) {
                         return;
                     }
-                    if (left == null) {
+                    if (left.isNull()) {
                         TypeClass copy = new TypeClass(right);
+                        Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
+                        System.out.println("Setting dynamic type of " + lhsSymbol + " to: " + copy);
+                        lhsSymbol.setType(copy);
                         //TODO: update symbol table
                     } else if (right.baseType != left.baseType) {
                         ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);

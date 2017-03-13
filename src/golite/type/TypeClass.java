@@ -65,6 +65,11 @@ public class TypeClass
         }
     }
 
+    public boolean isNull()
+    {
+        return (baseType == null && structNode == null);
+    }
+
     public String toString()
     {
         String output = "";
