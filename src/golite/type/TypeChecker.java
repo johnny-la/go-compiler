@@ -416,7 +416,7 @@ public class TypeChecker extends DepthFirstAdapter
             //cases for bool casting
             if (isBaseType(getType(inputs.get(0)).baseType)) {
                 nodeTypes.put(node, new TypeClass(lhs));
-                ErrorManager.printError("" + lhs);
+                //ErrorManager.printError("" + lhs);
                 return;
             }
         }

@@ -576,6 +576,38 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         return Type.INVALID;
     }*/
 
+    public void inAFunctionCallSecondaryExp(AFunctionCallSecondaryExp node)
+    {
+        PExp lhs = node.getExp();
+
+        if (lhs instanceof AIdExp)
+        {
+            PIdType lhsIdTypeNode = ((AIdExp)lhs).getIdType();
+            String lhsIdName = getIdName(lhsIdTypeNode);
+            Type lhsIdType = Type.stringToType(lhsIdName);
+            
+            // If the LHS is a valid type-casting primitive type 
+            if (lhsIdType == Type.INT || lhsIdType == Type.FLOAT64 || lhsIdType == Type.RUNE
+                || lhsIdType == Type.BOOL)
+            {
+                // If the id is not in the symbol table, define it as a type cast
+                if (symbolTable.get(lhsIdName) == null)
+                {
+                    Symbol symbol = new Symbol();
+                    symbol.name = lhsIdName;
+                    symbol.node = lhs;
+                    symbol.kind = SymbolKind.LOCAL;
+                    symbol.typeClass = new TypeClass();
+                    symbol.typeClass.baseType = lhsIdType;
+
+                    symbolMap.put(lhs, symbol);
+
+                    System.out.println("LHS of function call is primitive type: " + lhs + ". Symbol = " + symbol);
+                }
+            }
+        }
+    }
+
     public void outAIdExp(AIdExp node)
     {
         String id = getIdName(node.getIdType());
@@ -583,6 +615,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         // Leave true/false to type checking
         if (id.equals("true") || id.equals("false"))
             return;
+        
+        // Don't redefine the symbols for nodes that already have a symbol
+        if (symbolMap.get(node) != null)
+        {
+            System.out.println("Node: " + node + " already has a symbol. Not redefining it.");
+            return;
+        }
 
         Symbol symbol = checkVariableDeclared(id);
 
@@ -595,6 +634,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 alias.node = symbol.node;
                 alias.arrayDimension = 0;
                 newSymbol.typeClass.typeAliases.add(alias);
+            }
+            // If this is a symbol for a dynamically-typed variable
+            else if (symbol.kind == SymbolKind.LOCAL && 
+                        symbol.typeClass.baseType == null && symbol.typeClass.structNode == null)
+            {
+                System.out.println(id + " references a dynamically-typed variable: " + symbol);
+                symbol.symbolsToInheritType.add(newSymbol);
             }
             // Add a node->symbol mapping for future type checking
             symbolMap.put(node, new Symbol(newSymbol));
