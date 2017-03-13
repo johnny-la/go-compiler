@@ -4,14 +4,17 @@ import golite.parser.*;
 import golite.lexer.*;
 import golite.node.*;
 import golite.analysis.*;
-
+import golite.type.*;
 import java.util.*;
 
 public class PrettyPrinter extends DepthFirstAdapter
 {
     private static int indentLevel;
     private static StringBuffer output; 
-
+    public static HashMap<Node, TypeClass> nodeTypes;
+    public static boolean printType;
+    private String leftBlock = "/*";
+    private String rightBlock = "*/";
     public static String prettyPrint(Node node)
     {
         // Reset the indentation level before printing the tree
@@ -74,6 +77,7 @@ public class PrettyPrinter extends DepthFirstAdapter
             // Don't print newlines/semicolons for function declarations
             if (!(decl instanceof AFuncDeclAstDecl)) println(";");
         }
+
 
         //println("");
         //printNodes(node.getStmt());
@@ -547,6 +551,15 @@ public class PrettyPrinter extends DepthFirstAdapter
     }
     //TODO: add function call secondary
 
+    public void printWithType(Node node) {
+            if (printType) {
+                if (nodeTypes.containsKey(node)) {
+                    print(leftBlock);
+                    print("" + nodeTypes.get(node));
+                    print(rightBlock);
+            }
+        }
+    }
 
     public void caseAPlusExp(APlusExp node)
     {
@@ -555,6 +568,8 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("+");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
+
     }
 
     public void caseAMinusExp(AMinusExp node)
@@ -564,6 +579,8 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("-");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
+
     }
 
     public void caseAMultExp(AMultExp node)
@@ -573,6 +590,8 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("*");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
+
     }
 
     public void caseADivideExp(ADivideExp node)
@@ -582,6 +601,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("/");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseAModuloExp(AModuloExp node)
@@ -591,6 +611,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("%");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseALogicalOrExp(ALogicalOrExp node)
@@ -600,6 +621,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("||");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseALogicalAndExp(ALogicalAndExp node)
@@ -609,6 +631,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("&&");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseAPipeExp(APipeExp node)
@@ -618,6 +641,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("|");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseACaretExp(ACaretExp node)
@@ -627,6 +651,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("^");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
 
@@ -637,6 +662,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("==");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseANotEqualExp(ANotEqualExp node)
@@ -646,6 +672,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("!=");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseALessExp(ALessExp node)
@@ -655,6 +682,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("<");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseAGreaterExp(AGreaterExp node)
@@ -664,6 +692,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(">");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseALessEqualsExp(ALessEqualsExp node)
@@ -673,6 +702,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("<=");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseAGreaterEqualsExp(AGreaterEqualsExp node)
@@ -682,31 +712,37 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(">=");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseAIdExp(AIdExp node)
     {
         node.getIdType().apply(this);
+        printWithType(node);
     }
 
     public void caseAFloat64LiteralExp(AFloat64LiteralExp node)
     {
         print(node.getFloat64Literal().getText());
+        printWithType(node);
     }
 
     public void caseAIntExp(AIntExp node)
     {
         print(node.getInt().getText());
+        printWithType(node);
     }
 
     public void caseAHexExp(AHexExp node)
     {
         print(node.getHex().getText());
+        printWithType(node);
     }
 
     public void caseAOctExp(AOctExp node)
     {
        print(node.getOct().getText()); 
+       printWithType(node);
     }
 
     public void caseAUnaryMinusExp(AUnaryMinusExp node)
@@ -714,6 +750,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("(-");
         node.getExp().apply(this);
         print(")");
+        printWithType(node);
     }
  
     public void caseAUnaryPlusExp(AUnaryPlusExp node)
@@ -721,6 +758,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("(+");
         node.getExp().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseACaretedFactorsExp(ACaretedFactorsExp node)
@@ -729,6 +767,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("(");
         node.getExp().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseAExclamatedFactorsExp(AExclamatedFactorsExp node)
@@ -737,6 +776,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("(");
         node.getExp().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseAAmpersandCaretExp(AAmpersandCaretExp node)
@@ -746,6 +786,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("&^");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseAAmpersandExp(AAmpersandExp node)
@@ -755,6 +796,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("&");
         node.getR().apply(this);
         print(")"); 
+        printWithType(node);
     }
 
     public void caseAShiftLeftExp(AShiftLeftExp node)
@@ -764,6 +806,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("<<");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseAShiftRightExp(AShiftLeftExp node)
@@ -773,6 +816,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(">>");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseAAppendedExprExp(AAppendedExprExp node)
@@ -782,21 +826,25 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(", ");
         node.getR().apply(this);
         print(")");
+        printWithType(node);
     }
 
     public void caseARuneLiteralExp(ARuneLiteralExp node)
     {
        print(node.getRuneLiteral().getText()); 
+       printWithType(node);
     }
 
     public void caseARawStringLitExp(ARawStringLitExp node)
     {
        print(node.getRawStringLit().getText()); 
+       printWithType(node);
     }
 
     public void caseAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node)
     {
        print(node.getInterpretedStringLiteral().getText()); 
+       printWithType(node);
     }
 
 }

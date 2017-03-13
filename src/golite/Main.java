@@ -6,6 +6,7 @@ import golite.node.*;
 import golite.symbol.*;
 import golite.type.*;
 import golite.code.*;
+import java.util.*;
 
 import java.io.*;
 
@@ -27,9 +28,20 @@ public class Main
     {
         PrettyPrinter prettyPrinter = new PrettyPrinter();
         String prettyPrint = prettyPrinter.prettyPrint(tree);
-
         printDebug(prettyPrint);
         printToFile(inputFilename + PRETTY_PRINT_SUFFIX, prettyPrint);
+    }
+
+    private static void prettyPrint(Start tree, String inputFilename, 
+        HashMap<Node, TypeClass> nodeTypes, boolean flag)
+    {
+        PrettyPrinter prettyPrinter = new PrettyPrinter();
+        prettyPrinter.nodeTypes = nodeTypes;
+        prettyPrinter.printType = flag;
+        String prettyPrint = prettyPrinter.prettyPrint(tree);
+
+        printDebug(prettyPrint);
+        printToFile(inputFilename + PRETTY_PRINT_TYPE_SUFFIX, prettyPrint);
     }
 
     /**
@@ -149,6 +161,10 @@ public class Main
                 TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
                 tree.apply(typeChecker);
                 printDebug(typeChecker.toString());
+
+                if (prettyPrintType) {
+                    prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
+                }
 
                 // Generate C code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)

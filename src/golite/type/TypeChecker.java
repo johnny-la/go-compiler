@@ -14,7 +14,7 @@ public class TypeChecker extends DepthFirstAdapter
     public enum Operator { PLUS, MINUS, MULTIPLY, DIVIDE, CARET, EXCLAMATION_MARK}
 
     private HashMap<Node, Symbol> symbolTable;
-    private HashMap<Node, TypeClass> nodeTypes;
+    public HashMap<Node, TypeClass> nodeTypes;
     public TypeClass global_return_type, global_case_exp_type;
 
     public TypeChecker(HashMap<Node, Symbol> symbolTable)
@@ -69,17 +69,18 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     public boolean isAliasedCorrectly(TypeClass left, TypeClass right) {
+        System.out.println("Checking aliases: " + left + " R:" + right);
         List<TypeAlias> leftAliases = left.typeAliases, rightAliases = right.typeAliases;
         int leftSize = leftAliases.size(), rightSize = rightAliases.size();
 
         if (leftSize > 0 && rightSize > 0) {
             if (leftAliases.get(leftSize - 1).node != rightAliases.get(rightSize - 1).node) {
-                ErrorManager.printError("Aliases aren't compatible with each other");
+                ErrorManager.printError("Aliases aren't compatible with each other: " + left + " " + right);
                 return false;
             }
         } else if (leftSize > 0 || rightSize > 0) {
 
-            ErrorManager.printError("Aliases aren't compatible with base types" + leftSize + " " + rightSize);
+            ErrorManager.printError("Aliases aren't compatible with each other: " + left + " " + right);
             return false;
         }
         return true;
@@ -443,6 +444,37 @@ public class TypeChecker extends DepthFirstAdapter
                     node.getR() + ")");
     }
 
+    public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
+        Node left = node.getIdType();
+        Node right = node.getExp();
+
+        TypeClass temp = new TypeClass(getType(right));
+        Symbol lhsSymbol = symbolTable.get(left);
+        lhsSymbol.setType(temp);
+    }
+
+    public String getIdFromIdType(PIdType node) {
+        if (node instanceof AIdIdType) {
+            return ((AIdIdType) node).getId().getText();
+        } else {
+            return ((ATypeIdType) node).getType().getText();
+        }
+    }
+
+    public void outAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
+        TypeClass idType = symbolTable.get(node).typeClass;
+        TypeClass expType = getType(node.getExp());
+        System.out.println("" + idType);
+        System.out.println("" + expType);
+        if (!isAliasedCorrectly(idType, expType)) {
+            return;
+        }
+
+        if (idType.baseType != expType.baseType) {
+            ErrorManager.printError("Assignment of incompatible types: " + idType + ", " + expType);
+        }
+    }
+
     public void outAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
         List<PIdType> leftArgs = new ArrayList<PIdType>();
         LinkedList<PExp> rightArgs = new LinkedList<PExp>();
@@ -464,7 +496,7 @@ public class TypeChecker extends DepthFirstAdapter
             }
         } else if (current instanceof AVarWithTypeAndExpVarDecl) {
             for (int i = 0; i < leftArgs.size(); i++) {
-                TypeClass left = getType(leftArgs.get(i));
+                TypeClass left = symbolTable.get(current).typeClass;
                 TypeClass right = getType(rightArgs.get(i));
                 if (!isAliasedCorrectly(left, right)) {
                     return;
@@ -490,10 +522,6 @@ public class TypeChecker extends DepthFirstAdapter
                 for (int i = 0; i < leftArgs.size(); i++) {
                     TypeClass left = getType(leftArgs.get(i));
                     TypeClass right = getType(rightArgs.get(i));
-                    if (left == null) {
-
-                    }
-
                     if (!isAliasedCorrectly(left, right)) {
                         return;
                     }
@@ -521,7 +549,6 @@ public class TypeChecker extends DepthFirstAdapter
                         Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
                         System.out.println("Setting dynamic type of " + lhsSymbol + " to: " + copy);
                         lhsSymbol.setType(copy);
-                        //TODO: update symbol table
                     } else if (right.baseType != left.baseType) {
                         ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
                         return;
@@ -535,6 +562,15 @@ public class TypeChecker extends DepthFirstAdapter
                 TypeClass right = getType(rightArgs.get(0));
                 AOpEqualsExp op = (AOpEqualsExp) operator;
                 
+                if (op.getOpEquals().getText().equals("+=")) {
+                    if (!isComparable(left, right, BinaryOps.NUMORSTRING)) {
+                        ErrorManager.printError("Operation of incompatible types: " +
+                        left + ", " + right);
+                        return;
+                    }
+                    return;
+                }
+
                 if (op.getOpEquals().getText().equals("-=") || op.getOpEquals().getText().equals("*=") 
                     || op.getOpEquals().getText().equals("/=")) {
                     if (!isComparable(left, right, BinaryOps.NUMERIC)) {
@@ -556,6 +592,7 @@ public class TypeChecker extends DepthFirstAdapter
                     }
                     return;
                 }
+
             }
             ErrorManager.printError("Only single arguments allowed for operations");
             return;
@@ -721,6 +758,16 @@ public class TypeChecker extends DepthFirstAdapter
     // ----------------------------------------
 
     public void outAIntExp(AIntExp node)
+    {
+        addType(node, Type.INT);
+    }
+
+    public void outAOctExp(AOctExp node)
+    {
+        addType(node, Type.INT);
+    }
+
+    public void outAHexExp(AHexExp node)
     {
         addType(node, Type.INT);
     }
