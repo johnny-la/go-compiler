@@ -675,9 +675,9 @@ public class TypeChecker extends DepthFirstAdapter
             FunctionSignature fs = tc.functionSignature;
             tc = fs.returnType;
             global_return_type = tc;
-            }
         }
     }
+    
 
     public void outASingleReturnFuncDecl(ASingleReturnFuncDecl node){
         global_return_type = null;
@@ -686,7 +686,7 @@ public class TypeChecker extends DepthFirstAdapter
     public void outAReturnStmt(AReturnStmt node){
         TypeClass return_type = getType(node.getExp());
         if(return_type != null){
-            if(return_type != global_return_type){
+            if(!(return_type.toString().equals(global_return_type.toString()))){
                 ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
                 return;
             }
