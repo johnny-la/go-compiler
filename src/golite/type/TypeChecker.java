@@ -69,17 +69,18 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     public boolean isAliasedCorrectly(TypeClass left, TypeClass right) {
+        System.out.println("Checking aliases: " + left + " R:" + right);
         List<TypeAlias> leftAliases = left.typeAliases, rightAliases = right.typeAliases;
         int leftSize = leftAliases.size(), rightSize = rightAliases.size();
 
         if (leftSize > 0 && rightSize > 0) {
             if (leftAliases.get(leftSize - 1).node != rightAliases.get(rightSize - 1).node) {
-                ErrorManager.printError("Aliases aren't compatible with each other");
+                ErrorManager.printError("Aliases aren't compatible with each other: " + left + " " + right);
                 return false;
             }
         } else if (leftSize > 0 || rightSize > 0) {
 
-            ErrorManager.printError("Aliases aren't compatible with base types" + leftSize + " " + rightSize);
+            ErrorManager.printError("Aliases aren't compatible with each other: " + left + " " + right);
             return false;
         }
         return true;
