@@ -381,6 +381,7 @@ public class TypeChecker extends DepthFirstAdapter
         }
         return false;
     }
+
     public void outAFunctionCallSecondaryExp(AFunctionCallSecondaryExp node) {
         List<PExp> inputs = node.getExpList();
         int numberOfArgs = inputs.size();
@@ -442,6 +443,81 @@ public class TypeChecker extends DepthFirstAdapter
         ErrorManager.printError("Append of incompatible types: " +
                     leftType + ", " + rightType + ". (" + node.getL() + " / " +
                     node.getR() + ")");
+    }
+
+    public void outAAssignListStmt(AAssignListStmt node) {
+        List<PExp> leftArgs = node.getL();
+        List<PExp> rightArgs = node.getR();
+        PExp operator = node.getOp();
+
+        if (operator instanceof AEqualsExp) {
+            if (leftArgs.size() == rightArgs.size()) {
+                for (int i = 0; i < leftArgs.size(); i++) {
+                    TypeClass left = getType(leftArgs.get(i));
+                    TypeClass right = getType(rightArgs.get(i));
+                    if (!isAliasedCorrectly(left, right)) {
+                        return;
+                    }
+                    if (right.baseType != left.baseType) {
+                        ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
+                        return;
+                    }
+                }
+                return;
+            } else {
+                 ErrorManager.printError("Assignment of incorrectlenghts: " 
+                    + leftArgs.size() + ", " + rightArgs.size());
+                 return;
+            }
+        } else if (operator instanceof AColonEqualsExp) {
+            if (leftArgs.size() == rightArgs.size()) {
+                for (int i = 0; i < leftArgs.size(); i++) {
+                    TypeClass left = getType(leftArgs.get(i));
+                    TypeClass right = getType(rightArgs.get(i));
+                    if (!isAliasedCorrectly(left, right)) {
+                        return;
+                    }
+                    if (left == null) {
+                        TypeClass copy = new TypeClass(right);
+                        //TODO: update symbol table
+                    } else if (right.baseType != left.baseType) {
+                        ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
+                        return;
+                    }
+                }
+                return;
+            }
+        } else {
+            if (leftArgs.size() == 1 && rightArgs.size() == 1) {
+                TypeClass left = getType(leftArgs.get(0));
+                TypeClass right = getType(rightArgs.get(0));
+                AOpEqualsExp op = (AOpEqualsExp) operator;
+                
+                if (op.getOpEquals().getText().equals("-=") || op.getOpEquals().getText().equals("*=") 
+                    || op.getOpEquals().getText().equals("/=")) {
+                    if (!isComparable(left, right, BinaryOps.NUMERIC)) {
+                        ErrorManager.printError("Operation of incompatible types: " +
+                        left + ", " + right);
+                        return;
+                    }
+                    return;
+                }
+
+                if (op.getOpEquals().getText().equals("&=") || op.getOpEquals().getText().equals("&^=") 
+                    || op.getOpEquals().getText().equals("|=") || op.getOpEquals().getText().equals("<<=")
+                    || op.getOpEquals().getText().equals(">>=") || op.getOpEquals().getText().equals("%=")
+                    || op.getOpEquals().getText().equals("^=")) {
+                    if (!isComparable(left, right, BinaryOps.INTEGER)) {
+                        ErrorManager.printError("Operation of incompatible types: " +
+                        left + ", " + right);
+                        return;
+                    }
+                    return;
+                }
+            }
+            ErrorManager.printError("Only single arguments allowed for operations");
+            return;
+        }
     }
 
     public void outAIdExp(AIdExp node)
