@@ -91,7 +91,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
      */
     public void declareFunction(PIdType id, PVarType varType, PFuncDecl node)
     {
-        declareVariable(id, varType, SymbolKind.FUNCTION, node);
+        Symbol symbol = declareVariable(id, varType, SymbolKind.FUNCTION, node);
+        symbolMap.put(node, symbol);
         scope();
 
         // Get the half-populated type class defined in declareVariable()
