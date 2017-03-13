@@ -1,7 +1,12 @@
-package test
+package hello
 
-func test() {
-    switch {
-    case i &^= 4: return 0;    
-    }
+//binary ops on incompatible types
+func arb (a int, b int, c int) int {
+       var y = 3
+       y = y + 3.0
+       y = y - 3.0
+       y = y / 3.0
+       y = y * 3.0
+
+       return y
 }
