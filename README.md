@@ -15,3 +15,7 @@ Authors: Ralph Bou Samra 260503614, Jonathan Lucuix-André 260632816, Yan Qing Z
 # To run pptype:
 
 `java golite.Main -pptype <filename>`
+
+## Important note:
+
+Due to time constraints, this submission does not support array indexing and struct selecting. However, we have implemented the type checking for those despite the grammar not fully supporting their corresponding rules.
