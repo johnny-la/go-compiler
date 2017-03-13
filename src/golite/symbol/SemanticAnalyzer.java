@@ -309,8 +309,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         unscope();
     }
 
+
     public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
-    {
+    {   
         declareVariable(node.getIdType(), node.getVarType(), SymbolKind.LOCAL, node);
     }
 
@@ -320,7 +321,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     }
 
     public void inAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node)
-    {
+    {   
+        System.out.println("declaring shit");
         declareVariable(node.getIdType(), node.getVarType(), SymbolKind.LOCAL, node);
     }
 
@@ -422,7 +424,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     {
         //System.out.println("Symbol table at var decl:\n" + symbolTable);
         String idName = getIdName(id);
-
         // Throw an exception if the identifier was already declared
         if (symbolTable.contains(idName))
         {
@@ -448,6 +449,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         // Insert the symbol in the symbol table
         Symbol symbol = new Symbol(idName, node, typeClass, kind);
         symbolTable.put(idName, symbol);
+        symbolMap.put(node, symbol);
 
         return symbol;
     }

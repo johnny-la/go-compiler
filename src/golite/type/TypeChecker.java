@@ -452,10 +452,19 @@ public class TypeChecker extends DepthFirstAdapter
         lhsSymbol.setType(temp);
     }
 
-    public void outAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
-        TypeClass idType = getType(node.getIdType());
-        TypeClass expType = getType(node.getExp());
+    public String getIdFromIdType(PIdType node) {
+        if (node instanceof AIdIdType) {
+            return ((AIdIdType) node).getId().getText();
+        } else {
+            return ((ATypeIdType) node).getType().getText();
+        }
+    }
 
+    public void outAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
+        TypeClass idType = symbolTable.get(node).typeClass;
+        TypeClass expType = getType(node.getExp());
+        System.out.println("" + idType);
+        System.out.println("" + expType);
         if (!isAliasedCorrectly(idType, expType)) {
             return;
         }
@@ -486,7 +495,7 @@ public class TypeChecker extends DepthFirstAdapter
             }
         } else if (current instanceof AVarWithTypeAndExpVarDecl) {
             for (int i = 0; i < leftArgs.size(); i++) {
-                TypeClass left = getType(leftArgs.get(i));
+                TypeClass left = symbolTable.get(current).typeClass;
                 TypeClass right = getType(rightArgs.get(i));
                 if (!isAliasedCorrectly(left, right)) {
                     return;
