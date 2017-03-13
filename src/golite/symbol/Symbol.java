@@ -2,6 +2,7 @@ package golite.symbol;
 
 import golite.node.*;
 import golite.type.*;
+import java.util.*;
 
 /**
  * Represents a symbol stored in the symbol table 
@@ -24,6 +25,8 @@ public class Symbol
     public TypeClass typeClass;
     public SymbolKind kind;
 
+    public ArrayList<Symbol> symbolsToInheritType = new ArrayList<Symbol>();
+
     public Symbol() {}
 
     // Deep copy of the given symbol
@@ -43,6 +46,19 @@ public class Symbol
         this.node = node;
         this.typeClass = typeClass;
         this.kind = kind;
+    }
+
+    // Sets the type of the symbol, along with all other symbols that
+    // reference this symbol
+    public void setType(TypeClass typeClass)
+    {
+        this.typeClass = typeClass;
+
+        for (int i = 0; i < symbolsToInheritType.size(); i++)
+        {
+            Symbol symbolToInherit = symbolsToInheritType.get(i);
+            symbolToInherit.typeClass = new TypeClass(typeClass);
+        } 
     }
 
     public String toString()
