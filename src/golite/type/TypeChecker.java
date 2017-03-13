@@ -17,6 +17,8 @@ public class TypeChecker extends DepthFirstAdapter
 
     private HashMap<Node, TypeClass> nodeTypes;
 
+    public TypeClass global_return_type;
+
     public TypeChecker(HashMap<Node, Symbol> symbolTable)
     {
         this.symbolTable = symbolTable;
@@ -467,6 +469,11 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAIdExp(AIdExp node)
     {
+        if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
+            addType(node, Type.BOOL);
+            return;
+        }
+
         TypeClass type = symbolTable.get(node).typeClass;
 
         if (type.baseType == Type.INVALID)
@@ -732,11 +739,58 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass expType = getType(node.getExp());
         if(expType != null){
             if (expType.baseType != Type.BOOL){
-                ErrorManager.printError("If-statement expression type: " + expType + " (" + node.getExp().toString().trim() + "). Expected an integer.");
+                ErrorManager.printError("If-statement expression type: " + expType + " (" + node.getExp().toString().trim() + "). Expected a boolean.");
                 return;
             }
         }
     }
+
+    // Return statement with no expression
+    public void inASingleReturnFuncDecl(ASingleReturnFuncDecl node){
+        Symbol signature_return_type_symbol = symbolTable.get(node);
+        if(signature_return_type_symbol != null){
+            TypeClass tc = signature_return_type_symbol.typeClass;
+            FunctionSignature fs = tc.functionSignature;
+            tc = fs.returnType;
+            global_return_type = tc;
+        }
+    }
+    
+
+    public void outASingleReturnFuncDecl(ASingleReturnFuncDecl node){
+        global_return_type = null;
+    }
+
+    public void outAReturnStmt(AReturnStmt node){
+        TypeClass return_type = getType(node.getExp());
+        if(return_type != null){
+            // meaning function signature and actual return type do not match
+            if(global_return_type == null){
+                if(!(return_type.toString().equals(global_return_type))) {
+                    ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
+                    return;
+                }
+            }
+
+            else{
+                if(!(return_type.toString().equals(global_return_type.toString()))){
+                    ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
+                    return;
+                } 
+            }
+        }
+        // return_type == null
+        else{
+            // their values being null
+            if(global_return_type != return_type){
+                ErrorManager.printError("Function does not return a type. "+ " Expecting: " + global_return_type  + ".");
+                return;
+            }
+        }
+    }
+
+
+
 
     // Statements End
     // ----------------------------------------

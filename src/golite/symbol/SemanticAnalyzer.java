@@ -91,7 +91,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
      */
     public void declareFunction(PIdType id, PVarType varType, PFuncDecl node)
     {
-        declareVariable(id, varType, SymbolKind.FUNCTION, node);
+        Symbol symbol = declareVariable(id, varType, SymbolKind.FUNCTION, node);
+        symbolMap.put(node, symbol);
         scope();
 
         // Get the half-populated type class defined in declareVariable()
@@ -578,14 +579,27 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     public void outAIdExp(AIdExp node)
     {
         String id = getIdName(node.getIdType());
+
+        // Leave true/false to type checking
+        if (id.equals("true") || id.equals("false"))
+            return;
+
         Symbol symbol = checkVariableDeclared(id);
 
         if (symbol != null)
         {
+            Symbol newSymbol = new Symbol(symbol);
+            if (symbol.kind == SymbolKind.TYPE)
+            {
+                TypeAlias alias = new TypeAlias();
+                alias.node = symbol.node;
+                alias.arrayDimension = 0;
+                newSymbol.typeClass.typeAliases.add(alias);
+            }
             // Add a node->symbol mapping for future type checking
-            symbolMap.put(node, new Symbol(symbol));
+            symbolMap.put(node, new Symbol(newSymbol));
 
-            System.out.println("Inserting (" + node + "," + symbol + ") into symbolMap");
+            System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
         }
     }
 
