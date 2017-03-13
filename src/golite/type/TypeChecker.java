@@ -447,7 +447,7 @@ public class TypeChecker extends DepthFirstAdapter
     public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
         Node left = node.getIdType();
         Node right = node.getExp();
-        if (getIdFromIdType(node.getIdType()).equals("_")) {
+        if (isBlankId(node.getIdType())) {
             return;
         }
         TypeClass temp = new TypeClass(getType(right));
@@ -464,6 +464,9 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     public void outAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
+        // Skip blank ids
+        if (isBlankId(node.getIdType()))
+            return;
         TypeClass idType = symbolTable.get(node).typeClass;
         TypeClass expType = getType(node.getExp());
         System.out.println("" + idType);
@@ -473,7 +476,7 @@ public class TypeChecker extends DepthFirstAdapter
         }
 
         if (idType.baseType != expType.baseType) {
-            ErrorManager.printError("Assignment of incompatible types: " + idType + ", " + expType);
+        ErrorManager.printError("Assignment of incompatible types: " + idType + ", " + expType);
         }
     }
 
@@ -492,12 +495,18 @@ public class TypeChecker extends DepthFirstAdapter
         //finished recursion
         if (current instanceof AVarWithOnlyExpVarDecl) {
             for (int i = 0; i < leftArgs.size(); i++) {
+                // Skip blank ids
+                if (isBlankId(leftArgs.get(i)))
+                    continue;
                 TypeClass temp = new TypeClass(getType(rightArgs.get(i)));
                 Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
                 lhsSymbol.setType(temp);
             }
         } else if (current instanceof AVarWithTypeAndExpVarDecl) {
             for (int i = 0; i < leftArgs.size(); i++) {
+                // Skip blank ids
+                if (isBlankId(leftArgs.get(i)))
+                    continue;
                 TypeClass left = symbolTable.get(current).typeClass;
                 TypeClass right = getType(rightArgs.get(i));
                 if (!isAliasedCorrectly(left, right)) {
@@ -512,7 +521,11 @@ public class TypeChecker extends DepthFirstAdapter
  
     }
 
-
+    // Returns true if the node is a blank identifier
+    private boolean isBlankId(PIdType node)
+    {
+        return getIdFromIdType(node).trim().equals("_");
+    }
 
     public void outAAssignListStmt(AAssignListStmt node) {
         List<PExp> leftArgs = node.getL();
@@ -564,6 +577,11 @@ public class TypeChecker extends DepthFirstAdapter
                 TypeClass right = getType(rightArgs.get(0));
                 AOpEqualsExp op = (AOpEqualsExp) operator;
                 
+                if (leftArgs.get(0) instanceof AIdExp && isBlankId( ((AIdExp)leftArgs.get(0)).getIdType() ))
+                {
+                    ErrorManager.printError("Expression on left-hand-side is not an lvalue: " + leftArgs.get(0));
+                }
+
                 if (op.getOpEquals().getText().equals("+=")) {
                     if (!isComparable(left, right, BinaryOps.NUMORSTRING)) {
                         ErrorManager.printError("Operation of incompatible types: " +
