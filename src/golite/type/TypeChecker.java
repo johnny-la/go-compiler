@@ -26,27 +26,6 @@ public class TypeChecker extends DepthFirstAdapter
         nodeTypes = new HashMap<Node, TypeClass>();
     }
 
-    // public void outAWhileStmt(AWhileStmt node)
-    // {
-    //     Type expType = getType(node.getExp());
-        
-    //     if (expType != Type.INT)
-    //     {
-    //         ErrorManager.printError("While-loop expression type: " 
-    //                 + expType + " (" + node.getExp().toString().trim() +
-    //                 "). Expected an integer.");
-    //     }
-    // }
-    // {
-    //     TypeClass expType = getType(node.getExp());
-    //     if (expType.baseType != Type.BOOL)
-    //     {
-    //         ErrorManager.printError("If-statement expression type: "
-    //                 + expType + " (" + node.getExp().toString().trim() + 
-    //                 "). Expected an integer.");
-    //     }
-    // }
-
     public boolean isBool(Type isBool) {
         if (isBool == Type.BOOL) {
             return true;
@@ -787,12 +766,8 @@ public class TypeChecker extends DepthFirstAdapter
         }
     }
 
-
-
-
     // Statements End
     // ----------------------------------------
-
 
     /** 
      * Returns the type of the given node

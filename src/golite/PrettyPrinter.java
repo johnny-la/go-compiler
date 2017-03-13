@@ -380,6 +380,11 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(":=");
     }
 
+    public void caseAOpEqualsExp(AOpEqualsExp node)
+    {
+        print(node.getOpEquals().getText());
+    }
+
     private void printIndices(LinkedList<? extends Node> nodes){
         for( int i = 0; i<nodes.size(); i++){
             if (i != nodes.size()) { 
@@ -533,13 +538,13 @@ public class PrettyPrinter extends DepthFirstAdapter
    
     /** EXPRESSIONS */
 
-    // public void caseAFunctionCallExp(AFunctionCallExp node)
-    // {
-    //     node.getIdType().apply(this);
-    //     print("(");
-    //     printNodesWithComma(node.getExpList());
-    //     print(")");
-    // }
+    public void caseAFunctionCallSecondaryExp(AFunctionCallSecondaryExp node)
+    {
+        node.getExp().apply(this);
+        print("(");
+        printNodesWithComma(node.getExpList());
+        print(")");
+    }
     //TODO: add function call secondary
 
 
