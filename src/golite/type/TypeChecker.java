@@ -14,10 +14,8 @@ public class TypeChecker extends DepthFirstAdapter
     public enum Operator { PLUS, MINUS, MULTIPLY, DIVIDE, CARET, EXCLAMATION_MARK}
 
     private HashMap<Node, Symbol> symbolTable;
-
     private HashMap<Node, TypeClass> nodeTypes;
-
-    public TypeClass global_return_type;
+    public TypeClass global_return_type, global_case_exp_type;
 
     public TypeChecker(HashMap<Node, Symbol> symbolTable)
     {
@@ -381,6 +379,7 @@ public class TypeChecker extends DepthFirstAdapter
         }
         return false;
     }
+
     public void outAFunctionCallSecondaryExp(AFunctionCallSecondaryExp node) {
         List<PExp> inputs = node.getExpList();
         int numberOfArgs = inputs.size();
@@ -416,7 +415,6 @@ public class TypeChecker extends DepthFirstAdapter
             //cases for bool casting
             if (isBaseType(getType(inputs.get(0)).baseType)) {
                 nodeTypes.put(node, new TypeClass(lhs));
-                //ErrorManager.printError("" + lhs);
                 return;
             }
         }
@@ -433,7 +431,6 @@ public class TypeChecker extends DepthFirstAdapter
             return;
         }
 
-        ErrorManager.printError("" + leftType.totalArrayDimension);
         if (leftType.totalArrayDimension > 0) {
             if (rightType.baseType == leftType.baseType) {
                 nodeTypes.put(node, leftType);
@@ -444,6 +441,81 @@ public class TypeChecker extends DepthFirstAdapter
         ErrorManager.printError("Append of incompatible types: " +
                     leftType + ", " + rightType + ". (" + node.getL() + " / " +
                     node.getR() + ")");
+    }
+
+    public void outAAssignListStmt(AAssignListStmt node) {
+        List<PExp> leftArgs = node.getL();
+        List<PExp> rightArgs = node.getR();
+        PExp operator = node.getOp();
+
+        if (operator instanceof AEqualsExp) {
+            if (leftArgs.size() == rightArgs.size()) {
+                for (int i = 0; i < leftArgs.size(); i++) {
+                    TypeClass left = getType(leftArgs.get(i));
+                    TypeClass right = getType(rightArgs.get(i));
+                    if (!isAliasedCorrectly(left, right)) {
+                        return;
+                    }
+                    if (right.baseType != left.baseType) {
+                        ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
+                        return;
+                    }
+                }
+                return;
+            } else {
+                 ErrorManager.printError("Assignment of incorrectlenghts: " 
+                    + leftArgs.size() + ", " + rightArgs.size());
+                 return;
+            }
+        } else if (operator instanceof AColonEqualsExp) {
+            if (leftArgs.size() == rightArgs.size()) {
+                for (int i = 0; i < leftArgs.size(); i++) {
+                    TypeClass left = getType(leftArgs.get(i));
+                    TypeClass right = getType(rightArgs.get(i));
+                    if (!isAliasedCorrectly(left, right)) {
+                        return;
+                    }
+                    if (left == null) {
+                        TypeClass copy = new TypeClass(right);
+                        //TODO: update symbol table
+                    } else if (right.baseType != left.baseType) {
+                        ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
+                        return;
+                    }
+                }
+                return;
+            }
+        } else {
+            if (leftArgs.size() == 1 && rightArgs.size() == 1) {
+                TypeClass left = getType(leftArgs.get(0));
+                TypeClass right = getType(rightArgs.get(0));
+                AOpEqualsExp op = (AOpEqualsExp) operator;
+                
+                if (op.getOpEquals().getText().equals("-=") || op.getOpEquals().getText().equals("*=") 
+                    || op.getOpEquals().getText().equals("/=")) {
+                    if (!isComparable(left, right, BinaryOps.NUMERIC)) {
+                        ErrorManager.printError("Operation of incompatible types: " +
+                        left + ", " + right);
+                        return;
+                    }
+                    return;
+                }
+
+                if (op.getOpEquals().getText().equals("&=") || op.getOpEquals().getText().equals("&^=") 
+                    || op.getOpEquals().getText().equals("|=") || op.getOpEquals().getText().equals("<<=")
+                    || op.getOpEquals().getText().equals(">>=") || op.getOpEquals().getText().equals("%=")
+                    || op.getOpEquals().getText().equals("^=")) {
+                    if (!isComparable(left, right, BinaryOps.INTEGER)) {
+                        ErrorManager.printError("Operation of incompatible types: " +
+                        left + ", " + right);
+                        return;
+                    }
+                    return;
+                }
+            }
+            ErrorManager.printError("Only single arguments allowed for operations");
+            return;
+        }
     }
 
     public void outAIdExp(AIdExp node)
@@ -763,6 +835,43 @@ public class TypeChecker extends DepthFirstAdapter
             // their values being null
             if(global_return_type != return_type){
                 ErrorManager.printError("Function does not return a type. "+ " Expecting: " + global_return_type  + ".");
+                return;
+            }
+        }
+    }
+
+    public void outACaseExp(ACaseExp node){
+        LinkedList<PExp> expList = node.getExpList();
+        if(expList != null){
+            int size = expList.size();
+            int i = 0;
+            TypeClass temp_case_exp_type = getType(expList.get(0));
+            while(i<size && size>=2){
+                PExp singleExp = expList.get(i);
+                if(getType(singleExp).baseType.toString() != temp_case_exp_type.baseType.toString()){
+                    if(temp_case_exp_type != null) {
+                        ErrorManager.printError("The expressions in the case statement are not all of the same type");
+                        return;
+                    }
+                }
+                i++;
+            }
+            global_case_exp_type = temp_case_exp_type;
+        }
+    }
+
+    public void outASwitchStmt(ASwitchStmt node){
+        TypeClass typeClass = getType(node.getExp());
+        // empty switch statement, assume it is of boolean type
+        if (typeClass == null){
+            if(global_case_exp_type.baseType.toString() != "BOOL"){
+                ErrorManager.printError("Expecting BOOL in case statements, provided with: " + global_case_exp_type.baseType.toString());
+                return;
+            }
+        }
+        if(typeClass != null && global_case_exp_type != null){
+            if(!(typeClass.baseType.toString().equals(global_case_exp_type.baseType.toString()))) {
+                ErrorManager.printError("The expression type " + typeClass.baseType.toString().trim() + " does not match the case expression type " + global_case_exp_type.baseType.toString());
                 return;
             }
         }
