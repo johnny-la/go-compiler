@@ -476,7 +476,7 @@ public class TypeChecker extends DepthFirstAdapter
         }
 
         if (idType.baseType != expType.baseType) {
-            ErrorManager.printError("Assignment of incompatible types: " + idType + ", " + expType);
+        ErrorManager.printError("Assignment of incompatible types: " + idType + ", " + expType);
         }
     }
 
