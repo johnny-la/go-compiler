@@ -99,7 +99,8 @@ public class TypeChecker extends DepthFirstAdapter
                 return false;
             }
         } else if (leftSize > 0 || rightSize > 0) {
-            ErrorManager.printError("Aliases aren't compatible with base types");
+
+            ErrorManager.printError("Aliases aren't compatible with base types" + leftSize + " " + rightSize);
             return false;
         }
         return true;
@@ -177,7 +178,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.COMPARABLE)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -190,7 +191,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.COMPARABLE)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -203,7 +204,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -216,7 +217,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -229,7 +230,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -242,7 +243,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -431,9 +432,10 @@ public class TypeChecker extends DepthFirstAdapter
                 ErrorManager.printError("Not a correct function call: " + lhsSymbol.name);
                 return;
             }
-
-            if (getType(inputs.get(0)).baseType == lhs.baseType) {
-                nodeTypes.put(node, lhs);
+            //cases for bool casting
+            if (isBaseType(getType(inputs.get(0)).baseType)) {
+                nodeTypes.put(node, new TypeClass(lhs));
+                ErrorManager.printError("" + lhs);
                 return;
             }
         }
@@ -450,6 +452,7 @@ public class TypeChecker extends DepthFirstAdapter
             return;
         }
 
+        ErrorManager.printError("" + leftType.totalArrayDimension);
         if (leftType.totalArrayDimension > 0) {
             if (rightType.baseType == leftType.baseType) {
                 nodeTypes.put(node, leftType);
@@ -478,7 +481,7 @@ public class TypeChecker extends DepthFirstAdapter
             return;
         }
 
-        addType(node, type.baseType);        
+        addType(node, new TypeClass(type));        
     }
 
     /**

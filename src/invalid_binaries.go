@@ -1,16 +1,21 @@
 package main
 
 func temp () {
+	type int1 int;
 	var a int;
 	var b string;
 	var c rune;
 	var d bool;
 	var e float64;
+	var x [7]int1;
 	type here struct {
 		x int
 	}
 	var f here;
-	if (a || a) {
+
+	var z = append(x, int1(1))
+
+	if (d || d) {
 	}
 
 	if (d && e) {
