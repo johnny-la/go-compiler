@@ -579,6 +579,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     public void outAIdExp(AIdExp node)
     {
         String id = getIdName(node.getIdType());
+
+        // Leave true/false to type checking
+        if (id.equals("true") || id.equals("false"))
+            return;
+
         Symbol symbol = checkVariableDeclared(id);
 
         if (symbol != null)
