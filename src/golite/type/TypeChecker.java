@@ -443,6 +443,33 @@ public class TypeChecker extends DepthFirstAdapter
                     node.getR() + ")");
     }
 
+    public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
+        TypeClass idType = getType(node.getIdType());
+        TypeClass expType = getType(node.getExp());
+
+        if (!isAliasedCorrectly(idType, expType)) {
+            return;
+        }
+
+        if (idType.baseType != expType.baseType) {
+            ErrorManager.printError("Assignment of incompatible types: " + idType + ", " + expType);
+        }
+
+    }
+
+    public void outAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
+        TypeClass idType = getType(node.getIdType());
+        TypeClass expType = getType(node.getExp());
+
+        if (!isAliasedCorrectly(idType, expType)) {
+            return;
+        }
+
+        if (idType.baseType != expType.baseType) {
+            ErrorManager.printError("Assignment of incompatible types: " + idType + ", " + expType);
+        }
+    }
+
     public void outAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
         List<PIdType> leftArgs = new ArrayList<PIdType>();
         LinkedList<PExp> rightArgs = new LinkedList<PExp>();
@@ -530,6 +557,15 @@ public class TypeChecker extends DepthFirstAdapter
                 TypeClass right = getType(rightArgs.get(0));
                 AOpEqualsExp op = (AOpEqualsExp) operator;
                 
+                if (op.getOpEquals().getText().equals("+=")) {
+                    if (!isComparable(left, right, BinaryOps.NUMORSTRING)) {
+                        ErrorManager.printError("Operation of incompatible types: " +
+                        left + ", " + right);
+                        return;
+                    }
+                    return;
+                }
+
                 if (op.getOpEquals().getText().equals("-=") || op.getOpEquals().getText().equals("*=") 
                     || op.getOpEquals().getText().equals("/=")) {
                     if (!isComparable(left, right, BinaryOps.NUMERIC)) {
@@ -551,6 +587,7 @@ public class TypeChecker extends DepthFirstAdapter
                     }
                     return;
                 }
+
             }
             ErrorManager.printError("Only single arguments allowed for operations");
             return;
