@@ -424,7 +424,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     {
         //System.out.println("Symbol table at var decl:\n" + symbolTable);
         String idName = getIdName(id);
-        if (idName.equals("_")) { 
+        if (idName.trim().equals("_")) { 
             return null;
         }
         // Throw an exception if the identifier was already declared

@@ -447,7 +447,7 @@ public class TypeChecker extends DepthFirstAdapter
     public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
         Node left = node.getIdType();
         Node right = node.getExp();
-        if (getIdFromIdType(node.getIdType()).equals("_")) {
+        if (isBlankId(node.getIdType())) {
             return;
         }
         TypeClass temp = new TypeClass(getType(right));
@@ -464,6 +464,9 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     public void outAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
+        // Skip blank ids
+        if (isBlankId(node.getIdType()))
+            return;
         TypeClass idType = symbolTable.get(node).typeClass;
         TypeClass expType = getType(node.getExp());
         System.out.println("" + idType);
@@ -492,12 +495,18 @@ public class TypeChecker extends DepthFirstAdapter
         //finished recursion
         if (current instanceof AVarWithOnlyExpVarDecl) {
             for (int i = 0; i < leftArgs.size(); i++) {
+                // Skip blank ids
+                if (isBlankId(leftArgs.get(i)))
+                    continue;
                 TypeClass temp = new TypeClass(getType(rightArgs.get(i)));
                 Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
                 lhsSymbol.setType(temp);
             }
         } else if (current instanceof AVarWithTypeAndExpVarDecl) {
             for (int i = 0; i < leftArgs.size(); i++) {
+                // Skip blank ids
+                if (isBlankId(leftArgs.get(i)))
+                    continue;
                 TypeClass left = symbolTable.get(current).typeClass;
                 TypeClass right = getType(rightArgs.get(i));
                 if (!isAliasedCorrectly(left, right)) {
@@ -512,7 +521,11 @@ public class TypeChecker extends DepthFirstAdapter
  
     }
 
-
+    // Returns true if the node is a blank identifier
+    private boolean isBlankId(PIdType node)
+    {
+        return getIdFromIdType(node).trim().equals("_");
+    }
 
     public void outAAssignListStmt(AAssignListStmt node) {
         List<PExp> leftArgs = node.getL();
