@@ -659,7 +659,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass expType = getType(node.getExp());
         if(expType != null){
             if (expType.baseType != Type.BOOL){
-                ErrorManager.printError("If-statement expression type: " + expType + " (" + node.getExp().toString().trim() + "). Expected an integer.");
+                ErrorManager.printError("If-statement expression type: " + expType + " (" + node.getExp().toString().trim() + "). Expected a boolean.");
                 return;
             }
         }
