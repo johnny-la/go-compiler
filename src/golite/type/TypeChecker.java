@@ -91,13 +91,7 @@ public class TypeChecker extends DepthFirstAdapter
         return false;
     }
 
-    public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
-
-        if (left.totalArrayDimension > 0 || right.totalArrayDimension > 0) {
-            ErrorManager.printError("Unable to perform binary operations on array type");
-            return false;
-        }
-
+    public boolean isAliasedCorrectly(TypeClass left, TypeClass right) {
         List<TypeAlias> leftAliases = left.typeAliases, rightAliases = right.typeAliases;
         int leftSize = leftAliases.size(), rightSize = rightAliases.size();
 
@@ -107,7 +101,21 @@ public class TypeChecker extends DepthFirstAdapter
                 return false;
             }
         } else if (leftSize > 0 || rightSize > 0) {
-            ErrorManager.printError("Aliases aren't compatible with base types");
+
+            ErrorManager.printError("Aliases aren't compatible with base types" + leftSize + " " + rightSize);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
+
+        if (left.totalArrayDimension > 0 || right.totalArrayDimension > 0) {
+            ErrorManager.printError("Unable to perform binary operations on array type");
+            return false;
+        }
+
+        if (!isAliasedCorrectly(left, right)) {
             return false;
         }
 
@@ -172,7 +180,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.COMPARABLE)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -185,7 +193,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.COMPARABLE)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -198,7 +206,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -211,7 +219,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -224,7 +232,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -237,7 +245,7 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass rightType = getType(node.getR());
 
         if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
-            nodeTypes.put(node, leftType);
+            addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
                     leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
@@ -388,10 +396,75 @@ public class TypeChecker extends DepthFirstAdapter
         }
     }
 
+    public boolean isBaseType(Type check) {
+        if (check == Type.INT || check == Type.BOOL || check == Type.RUNE || check == Type.FLOAT64) {
+            return true;
+        }
+        return false;
+    }
     public void outAFunctionCallSecondaryExp(AFunctionCallSecondaryExp node) {
-        int numberOfArgs = node.getExpList().size();
+        List<PExp> inputs = node.getExpList();
+        int numberOfArgs = inputs.size();
+        Symbol lhsSymbol = symbolTable.get(node.getExp());
         TypeClass lhs = nodeTypes.get(node.getExp());
-        //check if lhs is a name of a function
+        if (lhsSymbol == null) {
+            ErrorManager.printError("Function doesn't exist");
+            return;
+        }
+
+        //if function call
+        if (lhsSymbol.kind == Symbol.SymbolKind.FUNCTION) {
+            List<TypeClass> params = lhs.functionSignature.parameterTypes;
+            if (numberOfArgs == params.size()) {
+                for (int i = 0; i < params.size(); i++) {
+                    if (params.get(i).baseType != nodeTypes.get(inputs.get(i)).baseType) {
+                        ErrorManager.printError("Argument types don't match for function: " + lhsSymbol.name);
+                        return;
+                    }
+                }
+                nodeTypes.put(node, lhs.functionSignature.returnType);
+                return;
+            }
+            ErrorManager.printError("Incorrect number of arguments for function: " + lhsSymbol.name);
+            return;
+        }
+        //if casting call
+        if (isBaseType(lhs.baseType)) {
+            if (inputs.size() != 1) {
+                ErrorManager.printError("Not a correct function call: " + lhsSymbol.name);
+                return;
+            }
+            //cases for bool casting
+            if (isBaseType(getType(inputs.get(0)).baseType)) {
+                nodeTypes.put(node, new TypeClass(lhs));
+                ErrorManager.printError("" + lhs);
+                return;
+            }
+        }
+
+        ErrorManager.printError("Not a correct function call: " + lhsSymbol.name);
+        return;
+    }
+
+    public void outAAppendedExprExp(AAppendedExprExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (!isAliasedCorrectly(leftType, rightType)) {
+            return;
+        }
+
+        ErrorManager.printError("" + leftType.totalArrayDimension);
+        if (leftType.totalArrayDimension > 0) {
+            if (rightType.baseType == leftType.baseType) {
+                nodeTypes.put(node, leftType);
+                return;
+            }
+        }
+
+        ErrorManager.printError("Append of incompatible types: " +
+                    leftType + ", " + rightType + ". (" + node.getL() + " / " +
+                    node.getR() + ")");
     }
 
     public void outAIdExp(AIdExp node)
@@ -410,7 +483,12 @@ public class TypeChecker extends DepthFirstAdapter
             return;
         }
 
-        addType(node, type.baseType);        
+        if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
+            addType(node, Type.BOOL);
+            return;
+        }
+
+        addType(node, new TypeClass(type));        
     }
 
     /**

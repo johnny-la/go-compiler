@@ -568,9 +568,9 @@ exp =
   {interpreted_string_literal} interpreted_string_literal |
   {function_call_secondary} exp [exp_list]:exp* |
   {array_indexing} exp [exp_list]:exp* |
+  {array_index} [lvalue]:exp [index]:exp | 
   {appended_expr} [l]:exp [r]:exp |
   {struct_selector}  [l]:exp [r]:exp |
-  {array_index} [lvalue]:exp [index]:exp | 
   {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
   {case}      [exp_list]:exp* |
   {default} |
