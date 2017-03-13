@@ -20,4 +20,4 @@ Authors:
 
 # To run pptype:
 
-`java golite.Main -pptype <filename>
+`java golite.Main -pptype <filename>`
