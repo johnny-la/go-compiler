@@ -686,12 +686,32 @@ public class TypeChecker extends DepthFirstAdapter
     public void outAReturnStmt(AReturnStmt node){
         TypeClass return_type = getType(node.getExp());
         if(return_type != null){
-            if(!(return_type.toString().equals(global_return_type.toString()))){
-                ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
+            // meaning function signature and actual return type do not match
+            if(global_return_type == null){
+                if(!(return_type.toString().equals(global_return_type))) {
+                    ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
+                    return;
+                }
+            }
+
+            else{
+                if(!(return_type.toString().equals(global_return_type.toString()))){
+                    ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
+                    return;
+                } 
+            }
+        }
+        // return_type == null
+        else{
+            // their values being null
+            if(global_return_type != return_type){
+                ErrorManager.printError("Function does not return a type. "+ " Expecting: " + global_return_type  + ".");
                 return;
             }
         }
     }
+
+
 
 
     // Statements End
