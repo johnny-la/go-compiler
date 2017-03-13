@@ -277,7 +277,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 String idName = getIdName(idNode.getIdType());
 
                 // If the id was not declared yet, declare it
-                if (!symbolTable.contains(idName))
+                if (!symbolTable.contains(idName) && !idName.trim().equals("_"))
                 {
                     declareVariable(idNode.getIdType(), null, SymbolKind.LOCAL, node);
                     idDeclared = true;
@@ -424,8 +424,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     {
         //System.out.println("Symbol table at var decl:\n" + symbolTable);
         String idName = getIdName(id);
+        /*if (idName.trim().equals("_")) { 
+            return null;
+        }*/
         // Throw an exception if the identifier was already declared
-        if (symbolTable.contains(idName))
+        if (symbolTable.contains(idName) && !idName.trim().equals("_"))
         {
             ErrorManager.printError("\"" + id + "\" is already declared in this block.");
             return null;
@@ -450,6 +453,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         Symbol symbol = new Symbol(idName, node, typeClass, kind);
         symbolTable.put(idName, symbol);
         symbolMap.put(node, symbol);
+        symbolMap.put(id, symbol);
 
         return symbol;
     }
@@ -617,6 +621,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         // Leave true/false to type checking
         if (id.equals("true") || id.equals("false"))
             return;
+
+        // Ignore blank ids
+        //if (id.trim().equals("_"))
+        //    return;
         
         // Don't redefine the symbols for nodes that already have a symbol
         if (symbolMap.get(node) != null)
