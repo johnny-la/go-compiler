@@ -104,162 +104,69 @@ public class Weeder extends DepthFirstAdapter
             throwBreakError();
         }
 
-        // The block does not contain any return statement when it should
-        // if (!containsAReturn(((ABlockStmt)node.getBlock()).getStmt())) {
-        //     throwReturnError();
-        // }
-
-        // if for loop does not contain a return, make sure if conditions do
-        // if(!forLoopContainsReturn(((ABlockStmt)node.getBlock()).getStmt())) {
-        //     if(!allConditionalsContainReturn(((ABlockStmt)node.getBlock()).getStmt())) {
-        //         throwReturnError();
-        //     }
-        // }
-
+        if (!containsAReturn(((ABlockStmt)node.getBlock()).getStmt())) {
+            throwReturnError();
+        }
     } 
 
-    // public boolean containsReturn(){
-
-    // }
-
-    // public boolean hasElseIfReturn(List<PStmt> nodes){
-    //     for (int i = 0; i < nodes.size(); i++){
-    //         PStmt node = nodes.get(i);
-    //         if(node instanceof AElseIfStmt){
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // public boolean hasElseReturn(List<PStmt> nodes){
-    //     for (int i = 0; i < nodes.size(); i++){
-    //         PStmt node = nodes.get(i);
-    //         if(node instanceof AElseStmt){
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // public boolean allConditionalsContainReturn(List<PStmt> nodes){
-    //     for (int i = 0; i < nodes.size(); i++){
-    //         PStmt node = nodes.get(i);
-            
-    //         if(node instanceof AReturnStmt){
-    //             return true;
-    //         }
-
-    //         if (node instanceof AIfStmt){
-    //             AIfStmt ifStmt = (AIfStmt)node;
-    //             Boolean hasElseIfStmtReturn = hasElseIfReturn((((ABlockStmt)ifStmt.getBlock()).getStmt()));
-    //             Boolean hasElseStmtReturn = hasElseReturn((((ABlockStmt)ifStmt.getBlock()).getStmt()));
-    //             // if, else if, and else
-    //             if(hasElseIfStmtReturn && hasElseStmtReturn && allConditionalsContainReturn(((ABlockStmt)ifStmt.getBlock()).getStmt())) {
-    //                 if(elseIfStmtReturn && elseStmtReturn){
-    //                     return true;
-    //                 }
-    //             }
-
-    //             if(!hasElseIfStmtReturn && !hasElseStmtReturn && allConditionalsContainReturn(((ABlockStmt)ifStmt.getBlock()).getStmt())) {
-    //                 return true;
-    //             }
-                
-    //             if(hasElseIfStmt && !hasElseStmtReturn && allConditionalsContainReturn(((ABlockStmt)ifStmt.getBlock()).getStmt())){
-    //                 AIfStmt elseStmt = (AIfStmt)node;
-    //                 return allConditionalsContainReturn(((ABlockStmt)elseStmt.getBlock()).getStmt());
-    //             }
-
-    //             if(!hasElseIfStmtReturn && hasElseStmtReturn && allConditionalsContainReturn(((ABlockStmt)ifStmt.getBlock()).getStmt())){
-    //                 AIfStmt elseStmt = (AIfStmt)node;
-    //                 return allConditionalsContainReturn(((ABlockStmt)elseStmt.getBlock()).getStmt());
-    //             }
-    //         }
-
-
-    //         if (node instanceof AElseIfStmt){
-    //             AIfStmt elseIfStmt = (AIfStmt)node;
-    //             if(allConditionalsContainReturn(((ABlockStmt)elseIfStmt.getBlock()).getStmt())) {
-    //                 return true;
-    //             }
-    //         }
-
-
-    //         if(node instanceof AElseStmt){
-    //             AIfStmt elseStmt = (AIfStmt)node;
-    //             if(allConditionalsContainReturn(((ABlockStmt)elseStmt.getBlock()).getStmt())) {
-    //                 return true;
-    //             }
-    //         }
-
-    //     }
-    //     return false; 
-    // }
-
-    // public boolean forLoopContainsReturn(List<PStmt> nodes){
-    //     for (int i = 0; i < nodes.size(); i++){
-    //         PStmt node = nodes.get(i);
-            
-    //         if(node instanceof AReturnStmt){
-    //             return true;
-    //         }
-
-    //         if (node instanceof AForStmt){
-    //             AForStmt forStmt = (AForStmt)node;
-    //             if(forLoopContainsReturn(((ABlockStmt)forStmt.getBlock()).getStmt())) {
-    //                 return true;
-    //             }
-    //         }
-    //     }
-    //     return false;
-    // }
-
     public boolean containsAReturn(List<PStmt> nodes){
-        // for (int i = 0; i < nodes.size(); i++){
-        //     PStmt node = nodes.get(i);
-        //     if(node instanceof AReturnStmt){
-        //         return true;
-        //     }
+        for (int i = 0; i < nodes.size(); i++){
+            PStmt node = nodes.get(i);
+            if(node instanceof AReturnStmt){
+                return true;
+            }
 
-        //     if (node instanceof AForStmt){
-        //         AForStmt forStmt = (AForStmt)node;
-        //         if(containsAReturn(((ABlockStmt)forStmt.getBlock()).getStmt())) {
-        //             return true;
-        //         }
-        //     }
+            if (node instanceof AForStmt){
+                AForStmt forStmt = (AForStmt)node;
+                if(containsAReturn(((ABlockStmt)forStmt.getBlock()).getStmt())) {
+                    return true;
+                }
+            }
 
-        //     if (node instanceof AIfStmt){
-        //         AIfStmt ifStmt = (AIfStmt)node;
-        //         if(containsAReturn(((ABlockStmt)ifStmt.getBlock()).getStmt())) {
-        //             if(!containsAReturn(((AIfStmt)node.getEnd()))) {
-        //                 return false;
-        //             }
-        //             return containsAReturn((AIfStmt)node.getEnd());
-        //         }
-        //     }
+            if (node instanceof AIfStmt){
+                Node current = node;
+                while (current instanceof AIfStmt) {
+                    AIfStmt temp = (AIfStmt) current;
+                    if(containsAReturn(((ABlockStmt) temp.getBlock()).getStmt())) {
+                        PStmt next = temp.getEnd();
+                        if (next instanceof AElseIfStmt) {
+                        current = (AIfStmt) ((AElseIfStmt) next).getStmt();
+                        continue;
+                        } else {
+                            current = next;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+                if (current instanceof AElseStmt) {
+                        AElseStmt temp = (AElseStmt) current;
+                        return containsAReturn(((ABlockStmt) temp.getStmt()).getStmt());
+                } else {
+                        return true;
+                }
+            }
 
-        //     if (node instanceof AElseIfStmt){
+            if (node instanceof AElseStmt) {
+                AElseStmt current = (AElseStmt) node;
+                ABlockStmt block = (ABlockStmt) current.getStmt();
+                return containsAReturn(block.getStmt());
+            }
 
-        //     }
+            if(node instanceof ASwitchStmt){
+                ASwitchStmt switchStmt = (ASwitchStmt)node;
+                if(containsAReturn(switchStmt.getCaseStmts())) {
+                    return true;
+                }          
+            }
 
-        //     if (node instanceof AElseStmt) {
-
-        //     }
-
-        //     if(node instanceof ASwitchStmt){
-        //         ASwitchStmt switchStmt = (ASwitchStmt)node;
-        //         if(containsAReturn(switchStmt.getCaseStmts())) {
-        //             return true;
-        //         }          
-        //     }
-
-        //     if(node instanceof ACaseStmt){
-        //         ACaseStmt caseStmt = (ACaseStmt)node;
-        //         if(containsAReturn(caseStmt.getStmtList())) {
-        //             return true;
-        //         }  
-        //     }
-        // }
+            if(node instanceof ACaseStmt){
+                ACaseStmt caseStmt = (ACaseStmt)node;
+                if(containsAReturn(caseStmt.getStmtList())) {
+                    return true;
+                }  
+            }
+        }
         return false;
     }
 
