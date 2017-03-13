@@ -577,6 +577,11 @@ public class TypeChecker extends DepthFirstAdapter
                 TypeClass right = getType(rightArgs.get(0));
                 AOpEqualsExp op = (AOpEqualsExp) operator;
                 
+                if (leftArgs.get(0) instanceof AIdExp && isBlankId( ((AIdExp)leftArgs.get(0)).getIdType() ))
+                {
+                    ErrorManager.printError("Expression on left-hand-side is not an lvalue: " + leftArgs.get(0));
+                }
+
                 if (op.getOpEquals().getText().equals("+=")) {
                     if (!isComparable(left, right, BinaryOps.NUMORSTRING)) {
                         ErrorManager.printError("Operation of incompatible types: " +
