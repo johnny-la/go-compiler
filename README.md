@@ -6,9 +6,9 @@ Below is a list of each team member's contribution to the project:
 
 Authors:
 
-# Ralph 260503614
-# Martin 260520930
-# Jonathan 2606328
+#### Ralph 260503614
+#### Martin 260520930
+#### Jonathan 2606328
 
 # To build:
 
