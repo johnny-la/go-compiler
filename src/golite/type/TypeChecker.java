@@ -447,7 +447,9 @@ public class TypeChecker extends DepthFirstAdapter
     public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
         Node left = node.getIdType();
         Node right = node.getExp();
-
+        if (getIdFromIdType(node.getIdType()).equals("_")) {
+            return;
+        }
         TypeClass temp = new TypeClass(getType(right));
         Symbol lhsSymbol = symbolTable.get(left);
         lhsSymbol.setType(temp);
@@ -773,6 +775,7 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     public void outAFloat64LiteralExp(AFloat64LiteralExp node){
+        System.out.println("float: " + node);
         addType(node, Type.FLOAT64);
     }
 
