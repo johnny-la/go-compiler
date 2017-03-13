@@ -1,51 +1,39 @@
 package main
 
 func temp () {
-	type int1 int;
 	var a int;
 	var b string;
 	var c rune;
 	var d bool;
 	var e float64;
-	var x [7]int1;
 	type here struct {
 		x int
 	}
 	var f here;
+	
+	d = d || d
 
-	var z = append(x, int1(bool(3)))
+	d = d && d
 
-	if (d || d) {
-	}
+	d = f == f
 
-	if (d && e) {
-	}
+	d = c!= c
 
-	if (e == f) {
-	}
+	d = c >= c
 
-	if (c != d) {
-	}
+	d = a > a
 
-	if (a >= a) {
-	}
+	d = a <= a
 
-	if (b > a) {
-	}
+	d = e < e
 
-	if (a <= e) {
-	}
-
-	if (e < f) {
-	}
-
-	b = b + e
-	a = a + e
-	c = c + d
-	e = e + f
+	b = b + b
+	a = a + a
+	c = c + c
+	e = e + e
 
 	a = a - a
-	c = c - a
+	c = c - c
 	e = e - e
 
 	a = a / a

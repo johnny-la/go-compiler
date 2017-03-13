@@ -11,7 +11,7 @@ func temp () {
         x int
     };
     var f here;
-    var z = append(x, int11);
+    var z = append(x, int1bool3);
     if (d||d){
     };
     if (d&&e){
