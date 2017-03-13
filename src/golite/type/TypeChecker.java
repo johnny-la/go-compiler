@@ -444,17 +444,12 @@ public class TypeChecker extends DepthFirstAdapter
     }
 
     public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
-        TypeClass idType = getType(node.getIdType());
-        TypeClass expType = getType(node.getExp());
+        Node left = node.getIdType();
+        Node right = node.getExp();
 
-        if (!isAliasedCorrectly(idType, expType)) {
-            return;
-        }
-
-        if (idType.baseType != expType.baseType) {
-            ErrorManager.printError("Assignment of incompatible types: " + idType + ", " + expType);
-        }
-
+        TypeClass temp = new TypeClass(getType(right));
+        Symbol lhsSymbol = symbolTable.get(left);
+        lhsSymbol.setType(temp);
     }
 
     public void outAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
