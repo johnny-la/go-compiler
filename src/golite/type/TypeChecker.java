@@ -15,7 +15,7 @@ public class TypeChecker extends DepthFirstAdapter
 
     private HashMap<Node, Symbol> symbolTable;
     private HashMap<Node, TypeClass> nodeTypes;
-    public TypeClass global_return_type;
+    public TypeClass global_return_type, global_case_exp_type;
 
     public TypeChecker(HashMap<Node, Symbol> symbolTable)
     {
@@ -761,6 +761,43 @@ public class TypeChecker extends DepthFirstAdapter
             // their values being null
             if(global_return_type != return_type){
                 ErrorManager.printError("Function does not return a type. "+ " Expecting: " + global_return_type  + ".");
+                return;
+            }
+        }
+    }
+
+    public void outACaseExp(ACaseExp node){
+        LinkedList<PExp> expList = node.getExpList();
+        if(expList != null){
+            int size = expList.size();
+            int i = 0;
+            TypeClass temp_case_exp_type = getType(expList.get(0));
+            while(i<size && size>=2){
+                PExp singleExp = expList.get(i);
+                if(getType(singleExp).baseType.toString() != temp_case_exp_type.baseType.toString()){
+                    if(temp_case_exp_type != null) {
+                        ErrorManager.printError("The expressions in the case statement are not all of the same type");
+                        return;
+                    }
+                }
+                i++;
+            }
+            global_case_exp_type = temp_case_exp_type;
+        }
+    }
+
+    public void outASwitchStmt(ASwitchStmt node){
+        TypeClass typeClass = getType(node.getExp());
+        // empty switch statement, assume it is of boolean type
+        if (typeClass == null){
+            if(global_case_exp_type.baseType.toString() != "BOOL"){
+                ErrorManager.printError("Expecting BOOL in case statements, provided with: " + global_case_exp_type.baseType.toString());
+                return;
+            }
+        }
+        if(typeClass != null && global_case_exp_type != null){
+            if(!(typeClass.baseType.toString().equals(global_case_exp_type.baseType.toString()))) {
+                ErrorManager.printError("The expression type " + typeClass.baseType.toString().trim() + " does not match the case expression type " + global_case_exp_type.baseType.toString());
                 return;
             }
         }
