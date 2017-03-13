@@ -14,9 +14,7 @@ public class TypeChecker extends DepthFirstAdapter
     public enum Operator { PLUS, MINUS, MULTIPLY, DIVIDE, CARET, EXCLAMATION_MARK}
 
     private HashMap<Node, Symbol> symbolTable;
-
     private HashMap<Node, TypeClass> nodeTypes;
-
     public TypeClass global_return_type;
 
     public TypeChecker(HashMap<Node, Symbol> symbolTable)
