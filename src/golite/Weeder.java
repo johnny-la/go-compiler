@@ -152,20 +152,6 @@ public class Weeder extends DepthFirstAdapter
                 ABlockStmt block = (ABlockStmt) current.getStmt();
                 return containsAReturn(block.getStmt());
             }
-
-            if(node instanceof ASwitchStmt){
-                ASwitchStmt switchStmt = (ASwitchStmt)node;
-                if(containsAReturn(switchStmt.getCaseStmts())) {
-                    return true;
-                }          
-            }
-
-            if(node instanceof ACaseStmt){
-                ACaseStmt caseStmt = (ACaseStmt)node;
-                if(containsAReturn(caseStmt.getStmtList())) {
-                    return true;
-                }  
-            }
         }
         return false;
     }
