@@ -187,7 +187,7 @@ public class TypeChecker extends DepthFirstAdapter
             addType(node, Type.BOOL);
         } else {
             ErrorManager.printError("Comparison of incompatible types: " +
-                    leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
+                    leftType + ", " + rightType + ". (" + node.getL() + ", " 
                     + node.getR() + ")");
         }
     }
@@ -954,9 +954,9 @@ public class TypeChecker extends DepthFirstAdapter
     public void outASwitchStmt(ASwitchStmt node){
         TypeClass typeClass = getType(node.getExp());
         // empty switch statement, assume it is of boolean type
-        if (typeClass == null){
-            if(global_case_exp_type.baseType.toString() != "BOOL"){
-                ErrorManager.printError("Expecting BOOL in case statements, provided with: " + global_case_exp_type.baseType.toString());
+        if (typeClass == null && global_case_exp_type != null){
+            if(global_case_exp_type.baseType != Type.BOOL){
+                ErrorManager.printError("Expecting BOOL in case statements, provided with: " + global_case_exp_type);
                 return;
             }
         }
@@ -966,6 +966,8 @@ public class TypeChecker extends DepthFirstAdapter
                 return;
             }
         }
+
+        global_case_exp_type = null;
     }
 
     // Statements End
