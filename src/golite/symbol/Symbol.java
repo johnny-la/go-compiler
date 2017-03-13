@@ -57,12 +57,28 @@ public class Symbol
         for (int i = 0; i < symbolsToInheritType.size(); i++)
         {
             Symbol symbolToInherit = symbolsToInheritType.get(i);
-            symbolToInherit.typeClass = new TypeClass(typeClass);
+            TypeClass newType = new TypeClass(typeClass);
+            System.out.println("Setting dynamic type of " + symbolToInherit + " to: " + newType);
+            symbolToInherit.typeClass = newType;
         } 
     }
 
     public String toString()
     {
-        return name + ", " +  kind + ", " + typeClass;
+        String output = name + ", " +  kind + ", " + typeClass;
+
+        if (symbolsToInheritType.size() != 0)
+        {
+            output += ", Inheriting types: {";
+            for (int i = 0; i < symbolsToInheritType.size(); i++)
+            {
+                output += symbolsToInheritType.get(i);
+                if (i != symbolsToInheritType.size()-1) 
+                    output += ", ";
+            }
+            output += "}";
+        }
+
+        return output;
     }
 }

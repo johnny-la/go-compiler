@@ -636,14 +636,17 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 newSymbol.typeClass.typeAliases.add(alias);
             }
             // If this is a symbol for a dynamically-typed variable
-            else if (symbol.kind == SymbolKind.LOCAL && 
-                        symbol.typeClass.baseType == null && symbol.typeClass.structNode == null)
+            else if (symbol.kind == SymbolKind.LOCAL && symbol.typeClass.isNull())
             {
                 System.out.println(id + " references a dynamically-typed variable: " + symbol);
                 symbol.symbolsToInheritType.add(newSymbol);
+                if (symbol.symbolsToInheritType.size() == 1)
+                {
+                    newSymbol = symbol;
+                }   
             }
             // Add a node->symbol mapping for future type checking
-            symbolMap.put(node, new Symbol(newSymbol));
+            symbolMap.put(node, newSymbol);
 
             System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
         }
