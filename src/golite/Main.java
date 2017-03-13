@@ -151,14 +151,14 @@ public class Main
                 printDebug(typeChecker.toString());
 
                 // Generate C code if no type errors occurred
-                /*if (ErrorManager.errorCount <= 0)
+                if (ErrorManager.errorCount <= 0)
                 {
                     generateCode(tree, typeChecker, inputFilename);
                 }
                 else
                 {
                     System.exit(1);
-                }*/
+                }
                 
             }
 

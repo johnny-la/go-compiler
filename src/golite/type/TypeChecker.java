@@ -9,7 +9,9 @@ import java.util.*;
 
 public class TypeChecker extends DepthFirstAdapter
 {
-    public enum Operator { PLUS, MINUS, MULTIPLY, DIVIDE, CARET, EXCLAMATION_MARK};
+
+    public enum BinaryOps { BOOL, COMPARABLE, ORDERED, NUMERIC, NUMORSTRING, INTEGER }
+    public enum Operator { PLUS, MINUS, MULTIPLY, DIVIDE, CARET, EXCLAMATION_MARK}
 
     private HashMap<Node, Symbol> symbolTable;
 
@@ -33,150 +35,362 @@ public class TypeChecker extends DepthFirstAdapter
     //                 "). Expected an integer.");
     //     }
     // }
-
-    // public void outAAssignStmt(AAssignStmt node)
     // {
-    //     Type idType = getIdType(node.getId());   
-    //     Type expType = getType(node.getExp());
-        
-    //     boolean compatibleTypes = false;
-
-    //     if (idType == expType || (idType == Type.FLOAT && expType == Type.INT))
+    //     TypeClass expType = getType(node.getExp());
+    //     if (expType.baseType != Type.BOOL)
     //     {
-    //         compatibleTypes = true;
-    //     }
-        
-    //     if (!compatibleTypes)
-    //     {
-    //         ErrorManager.printError("\"" + node.getId().getText().trim() + 
-    //                 "\" assigned type " + expType + ". Expecting type: " + idType);
+    //         ErrorManager.printError("If-statement expression type: "
+    //                 + expType + " (" + node.getExp().toString().trim() + 
+    //                 "). Expected an integer.");
     //     }
     // }
 
-    public void outAMinusExp(AMinusExp node)
-    {
+    public boolean isBool(Type isBool) {
+        if (isBool == Type.BOOL) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isComparable(Type isComparable) {
+        if (isComparable != Type.VOID && isComparable != Type.INVALID) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isOrdered(Type isOrdered) {
+        if (isOrdered == Type.INT || isOrdered == Type.STRING || isOrdered == Type.FLOAT64 
+            || isOrdered == Type.RUNE) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isNumericOrString(Type isNumericOrString) {
+        if (isNumericOrString == Type.INT || isNumericOrString == Type.STRING 
+            || isNumericOrString == Type.FLOAT64 || isNumericOrString == Type.RUNE) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isNumeric(Type isNumeric) {
+        if (isNumeric == Type.INT || isNumeric == Type.FLOAT64 || isNumeric == Type.RUNE) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isInteger(Type isInteger) {
+        if (isInteger == Type.INT) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
+
+        if (left.totalArrayDimension > 0 || right.totalArrayDimension > 0) {
+            ErrorManager.printError("Unable to perform binary operations on array type");
+            return false;
+        }
+
+        List<TypeAlias> leftAliases = left.typeAliases, rightAliases = right.typeAliases;
+        int leftSize = leftAliases.size(), rightSize = rightAliases.size();
+
+        if (leftSize > 0 && rightSize > 0) {
+            if (leftAliases.get(leftSize - 1).node != rightAliases.get(rightSize - 1).node) {
+                ErrorManager.printError("Aliases aren't compatible with each other");
+                return false;
+            }
+        } else if (leftSize > 0 || rightSize > 0) {
+            ErrorManager.printError("Aliases aren't compatible with base types");
+            return false;
+        }
+
+        switch (op) {
+            case BOOL:
+                return (isBool(left.baseType) && isBool(right.baseType));
+
+            case COMPARABLE:
+                if (left.baseType == Type.STRUCT && right.baseType == Type.STRUCT 
+                        && left.structNode == right.structNode) return true;
+                return (isComparable(left.baseType) && isComparable(right.baseType) 
+                        && left.baseType == right.baseType);
+
+            case ORDERED:
+                return (isOrdered(left.baseType) && isOrdered(right.baseType) 
+                    && (left.baseType == right.baseType));
+
+            case NUMERIC:
+                return (isNumeric(left.baseType) && isNumeric(right.baseType) 
+                    && (left.baseType == right.baseType));
+
+            case NUMORSTRING:
+                return (isNumericOrString(left.baseType) && isNumericOrString(right.baseType) 
+                    && (left.baseType == right.baseType));
+
+            case INTEGER:
+                return (isInteger(left.baseType) && isInteger(right.baseType));
+
+            default: 
+                return false;
+        }
+    }
+
+    public void outALogicalOrExp(ALogicalOrExp node) {
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        Type resultType = operationType(leftType.baseType, rightType.baseType, Operator.MINUS);
-
-        if (resultType != Type.INVALID)
-        {
-            //nodeTypes.put(node, resultType);
+        if (isComparable(leftType, rightType, BinaryOps.BOOL)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Comparison of incompatible types: " +
+                    leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
+                    + node.getR() + ")");
         }
-        else
-        {   
+    }
+
+    public void outALogicalAndExp(ALogicalAndExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.BOOL)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Comparison of incompatible types: " +
+                    leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
+                    + node.getR() + ")");
+        }
+    }
+
+    public void outAEqualsEqualsExp(AEqualsEqualsExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.COMPARABLE)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Comparison of incompatible types: " +
+                    leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
+                    + node.getR() + ")");
+        }
+    }
+
+    public void outANotEqualExp(ANotEqualExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.COMPARABLE)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Comparison of incompatible types: " +
+                    leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
+                    + node.getR() + ")");
+        }
+    }
+
+    public void outALessExp(ALessExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Comparison of incompatible types: " +
+                    leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
+                    + node.getR() + ")");
+        }
+    }
+
+    public void outALessEqualsExp(ALessEqualsExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Comparison of incompatible types: " +
+                    leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
+                    + node.getR() + ")");
+        }
+    }
+
+    public void outAGreaterExp(AGreaterExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Comparison of incompatible types: " +
+                    leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
+                    + node.getR() + ")");
+        }
+    }
+
+    public void outAGreaterEqualsExp(AGreaterEqualsExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Comparison of incompatible types: " +
+                    leftType.baseType + ", " + rightType.baseType + ". (" + node.getL() + " - " 
+                    + node.getR() + ")");
+        }
+    }
+
+    public void outAMinusExp(AMinusExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.NUMERIC)) {
+            nodeTypes.put(node, leftType);
+        } else {   
             ErrorManager.printError("Subtraction of incompatible types: " +
                     leftType + ", " + rightType + ". (" + node.getL() + " - " 
                     + node.getR() + ")");
         }  
     }
 
-    public void outAPlusExp(APlusExp node)
-    {
+    public void outAPlusExp(APlusExp node) {
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        Type resultType = operationType(leftType.baseType, rightType.baseType, Operator.PLUS);
-        
-        if (resultType != Type.INVALID)
-        {
-            //nodeTypes.put(node, resultType);
-        }
-        else
-        {
+        if (isComparable(leftType, rightType, BinaryOps.NUMORSTRING)) {
+            nodeTypes.put(node, leftType);
+        } else {
             ErrorManager.printError("Addition of incorrect types: " + leftType
                 + ", " + rightType + ". (" + node.getL() + " + " + node.getR()
                 + ")");
         }
-
     }
 
-    public void outAMultExp(AMultExp node)
-    {
+    public void outAMultExp(AMultExp node) {
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
-        
 
-        Type resultType = operationType(leftType.baseType, rightType.baseType, Operator.MULTIPLY);
-
-        if (resultType != Type.INVALID)
-        {
-            //nodeTypes.put(node, resultType);
-        }
-        else
-        {
+        if (isComparable(leftType, rightType, BinaryOps.NUMERIC)) {
+            nodeTypes.put(node, leftType);
+        } else {
             ErrorManager.printError("Multiplication of incompatible types: " +
                     leftType + ", " + rightType + ". (" + node.getL() + " * " +
                     node.getR() + ")");
         }
     }
 
-    public void outADivideExp(ADivideExp node)
-    {
+    public void outADivideExp(ADivideExp node) {
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
 
-        Type resultType = operationType(leftType.baseType, rightType.baseType, Operator.DIVIDE);
-
-        if (resultType != Type.INVALID)
-        {
-            //nodeTypes.put(node, resultType);
-        }
-        else 
-        {
+        if (isComparable(leftType, rightType, BinaryOps.NUMERIC)) {
+            nodeTypes.put(node, leftType);
+        } else {
             ErrorManager.printError("Division of incompatible types: " +
                     leftType + ", " + rightType + ". (" + node.getL() + " / " +
                     node.getR() + ")");
         }
     }
 
-    /**
-     * The resulting type of performing a binary operator on both types 
-     */
-    public Type operationType(Type leftType, Type rightType, Operator operator)
-    {
-        if (leftType == null || rightType == null)
-        {
-            return Type.INVALID;
-        }
+    public void outAModuloExp(AModuloExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
 
-        if (leftType == rightType &&
-                (operator == Operator.PLUS || leftType != Type.STRING))
-        {
-            return leftType;
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Modulo of incompatible type: " +
+                    leftType + ", " + rightType + ". (" + node.getL() + " / " +
+                    node.getR() + ")");
         }
-        else if ((leftType == Type.FLOAT64 && rightType == Type.INT) ||
-                 (leftType == Type.INT && rightType == Type.FLOAT64))
-        {
-            return Type.FLOAT64;
-        }
-
-        boolean stringAndInt = (leftType == Type.STRING && rightType == Type.INT)
-            || (leftType == Type.INT && rightType == Type.STRING);
-        if (operator == Operator.MULTIPLY && stringAndInt)
-        {
-            return Type.STRING;
-        }
-        
-        // Failure: operation on two incompatible types
-        return Type.INVALID;
     }
 
-    // public void outAUminusExp(AUminusExp node)
-    // {
-    //     Type expType = getType(node.getExp());
+    public void outAAmpersandExp(AAmpersandExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
 
-    //     if (expType == Type.INT || expType == Type.FLOAT)
-    //     {
-    //         nodeTypes.put(node, expType);
-    //     }
-    //     else
-    //     {
-    //         ErrorManager.printError("Error: unary minus on incompatible type: "
-    //                + expType + ". ( " + node.getExp() + ")"); 
-    //     }
-    // }
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Bitwise operation of incompatible types: " +
+                    leftType + ", " + rightType + ". (" + node.getL() + " / " +
+                    node.getR() + ")");
+        }
+    }
+
+    public void outAAmpersandCaretExp(AAmpersandCaretExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Bitwise operation of incompatible types: " +
+                    leftType + ", " + rightType + ". (" + node.getL() + " / " +
+                    node.getR() + ")");
+        }      
+    }
+
+    public void outAShiftLeftExp(AShiftLeftExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Bitwise operation of incompatible types: " +
+                    leftType + ", " + rightType + ". (" + node.getL() + " / " +
+                    node.getR() + ")");
+        }       
+    }
+
+    public void outAShiftRightExp(AShiftRightExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Bitwise operation of incompatible types: " +
+                    leftType + ", " + rightType + ". (" + node.getL() + " / " +
+                    node.getR() + ")");
+        }
+    }
+
+    public void outAPipeExp(APipeExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Bitwise operation of incompatible types: " +
+                    leftType + ", " + rightType + ". (" + node.getL() + " / " +
+                    node.getR() + ")");
+        }  
+    }
+
+    public void outACaretExp(ACaretExp node) {
+        TypeClass leftType = getType(node.getL());
+        TypeClass rightType = getType(node.getR());
+
+        if (isComparable(leftType, rightType, BinaryOps.INTEGER)) {
+            nodeTypes.put(node, leftType);
+        } else {
+            ErrorManager.printError("Bitwise operation of incompatible types: " +
+                    leftType + ", " + rightType + ". (" + node.getL() + " / " +
+                    node.getR() + ")");
+        }
+    }
+
+    public void outAFunctionCallSecondaryExp(AFunctionCallSecondaryExp node) {
+        int numberOfArgs = node.getExpList().size();
+        TypeClass lhs = nodeTypes.get(node.getExp());
+        //check if lhs is a name of a function
+    }
 
     public void outAIdExp(AIdExp node)
     {
@@ -213,23 +427,23 @@ public class TypeChecker extends DepthFirstAdapter
     /**
      * Returns the type (int, float, string) of an identifier token
      */
-    public Type getIdType(PIdType idTypeNode)
-    {
-        return getIdType(getIdName(idTypeNode));
-    }
+    // public Type getIdType(PIdType idTypeNode)
+    // {
+    //     return getIdType(getIdName(idTypeNode));
+    // }
 
-    /**
-     * Returns the type of the given identifier
-     */
-    public Type getIdType(String id)
-    {
-        // Retrieves the declaration node that created this variable
-        // AVarDecl declNode = (AVarDecl)symbolTable.get(id);
-        // // Gets the type of the identifier
-        // Type type = stringToType(declNode.getType().getText());
+    // // /**
+    // //  * Returns the type of the given identifier
+    // //  *
+    // public Type getIdType(String id)
+    // {
+    //     // Retrieves the declaration node that created this variable
+    //     // AVarDecl declNode = (AVarDecl)symbolTable.get(id);
+    //     // // Gets the type of the identifier
+    //     // Type type = stringToType(declNode.getType().getText());
 
-        return null;
-    }
+    //     return null;
+    // }
 
     public TypeClass invalidType(){
         TypeClass errorType = new TypeClass();
