@@ -286,14 +286,96 @@ cst_end_if {-> stmt} =
   {cst_else_if} else cst_if_stmt {-> New stmt.else_if(cst_if_stmt.stmt)} |
   {cst_else}    else cst_block   {-> New stmt.else(cst_block.stmt)};
 
-cst_exp {-> exp} = 
+cst_exp {-> exp} =
+  {cst_conj} cst_conj {-> cst_conj.exp} | 
+  {cst_or} cst_exp logical_or cst_conj {-> New exp.logical_or(cst_exp.exp, cst_conj.exp)} 
+  ;
+
+cst_conj {-> exp} =
+  {cst_cla} cst_cla {-> cst_cla.exp} |
+  {and} cst_conj logical_and cst_cla {-> New exp.logical_and(cst_conj.exp, cst_cla.exp)} 
+  ;
+
+cst_cla {-> exp} =
+  {cst_subex} cst_subex {-> cst_subex.exp} |
+  {cst_eq} cst_cla equals_equals cst_subex {-> New exp.equals_equals(cst_cla.exp, cst_subex.exp)} | 
+  {cst_neq} cst_cla exclamation_equals cst_subex {-> New exp.not_equal(cst_cla.exp, cst_subex.exp)} |
+  {cst_lt} cst_cla less cst_subex {-> New exp.less(cst_cla.exp, cst_subex.exp)} |
+  {cst_lte} cst_cla less_equals cst_subex {-> New exp.less_equals(cst_cla.exp, cst_subex.exp)} |
+  {cst_gt} cst_cla greater cst_subex {-> New exp.greater(cst_cla.exp, cst_subex.exp)} |
+  {cst_gte} cst_cla greater_equals cst_subex {-> New exp.greater_equals(cst_cla.exp, cst_subex.exp)} 
+  ;
+
+cst_subex {-> exp} =
+  {factor} factor {-> factor.exp} |
+  {plus} cst_subex plus factor {-> New exp.plus(cst_subex.exp, factor.exp)} |
+  {minus} cst_subex minus factor {-> New exp.minus(cst_subex.exp, factor.exp)} |
+  {bit_or} cst_subex pipe factor {-> New exp.pipe(cst_subex.exp, factor.exp)} |
+  {bit_xor} cst_subex caret factor {-> New exp.caret(cst_subex.exp, factor.exp)} 
+  ;
+
+factor {-> exp} =
+  {term} term {-> term.exp} |
+  {mult} factor star term {-> New exp.mult(factor.exp, term.exp)} |
+  {div} factor slash term {-> New exp.divide(factor.exp, term.exp)} |
+  {mod} factor modulo term {-> New exp.modulo(factor.exp, term.exp)} |
+  {bit_lshift} factor shift_left term {-> New exp.shift_left(factor.exp, term.exp)} |
+  {bit_rshift} factor shift_right term {-> New exp.shift_right(factor.exp, term.exp)} |
+  {bit_and} factor ampersand term {-> New exp.ampersand(factor.exp, term.exp)} |
+  {bit_clear} factor ampersand_caret term {-> New exp.ampersand_caret(factor.exp, term.exp)} 
+  ;
+
+term {-> exp} =
+  {atom} atom {-> atom.exp} |
+  {plus} plus term {-> New exp.unary_plus(term.exp)} |
+  {minus} minus term {-> New exp.unary_minus(term.exp)} |
+  {negate} exclamation term {-> New exp.exclamated_factors(term.exp)} |
+  {bit_comp} caret term {-> New exp.careted_factors(term.exp)} 
+  ;
+
+atom {-> exp} =
+  {lit} lit {-> lit.exp} |
+  {id} cst_id {-> New exp.id(cst_id.id_type)} |
+  {field} field {-> field.exp} |
+  {func_call} func_call {-> func_call.exp} |
+  {array_elem} array_elem {-> array_elem.exp} |
+  {paren} l_paren cst_exp r_paren {-> cst_exp.exp}
+  ;
+
+func_call {-> exp} =
+  {append} append l_paren cst_id comma cst_exp r_paren {-> New exp.appended_expr(New exp.id(cst_id.id_type), cst_exp.exp)} |
+  {custom} id l_paren cst_exp_list r_paren {-> New exp.empty()}//function_call_secondary(New exp.id(cst_id.id_type), [cst_exp_list.exp])} 
+  ;
+
+field {-> exp} = 
+  atom dot cst_id {-> New exp.struct_selector(atom.exp, New exp.id(cst_id.id_type))} 
+  ;
+
+// Weeding verifies the array access is conducted on a "Array accessible".
+array_elem {-> exp} = 
+  atom l_brack cst_exp r_brack {-> New exp.array_index(atom.exp, cst_exp.exp)} 
+  ;
+
+//* Literals. *//
+
+lit {-> exp} =
+  {int} int {-> New exp.int(int)} |
+  {oct} oct {-> New exp.oct(oct)} |
+  {hex} hex {-> New exp.hex(hex)} |
+  {float} float64_literal {-> New exp.float64_literal(float64_literal)} |
+  {rune} rune_literal {-> New exp.rune_literal(rune_literal)} |
+  {interpreted_string} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
+  {raw_string} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)}
+  ;
+
+/*cst_exp {-> exp} = 
   {term}     term {-> term.exp} |
   {unary_op}   unary_op {-> unary_op.exp} |
   {binary_op}  binary_op {-> binary_op.exp} |
   {function_call} function_call {-> function_call.exp} |
   {array_indexing} array_indexing {-> array_indexing.exp} |
   {cst_selection} cst_selection {-> cst_selection.exp} |
-  {append_expr} append_expr {-> append_expr.exp};
+  {append_expr} append_expr {-> append_expr.exp};*/
 
 cst_selection {-> exp} = 
   {cst_selection_first_term} term cst_selector+ {-> term.exp};
@@ -307,7 +389,7 @@ array_indexing {-> exp} =
 cst_index {-> exp} =
   {end_recurse} l_brack cst_exp r_brack  {-> cst_exp.exp};
 
-term {-> exp} =
+/*term {-> exp} =
   {cst_id}        cst_id {-> New exp.id(cst_id.id_type)} |
   {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
   {cst_int}       int    {-> New exp.int(int)} |
@@ -316,7 +398,7 @@ term {-> exp} =
   {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
   {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
   {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
-  {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
+  {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};*/
 
 special_term {-> exp} =
   {array_indexing} array_indexing {-> array_indexing.exp}|
