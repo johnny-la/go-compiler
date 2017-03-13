@@ -139,12 +139,70 @@ public class Weeder extends DepthFirstAdapter
         }
     }
 
+    public void caseAAssignListStmt(AAssignListStmt node) {
+        inAAssignListStmt(node);
+        {
+            List<PExp> copy = new ArrayList<PExp>(node.getL());
+            for(PExp e : copy)
+            {   
+                if (e instanceof AIdExp) {
+                    AIdExp temp = (AIdExp) e;
+                    if (temp.getIdType() instanceof AIdIdType) {
+                    AIdIdType newTemp = (AIdIdType) temp.getIdType();
+                    if (newTemp.getId().getText().equals("_")) {
+                    } else {
+                        e.apply(this);
+                        }
+                    }
+                } else {
+                    e.apply(this);
+                }
+            }
+        }
+        if(node.getOp() != null)
+        {
+            node.getOp().apply(this);
+        }
+        {
+            List<PExp> copy = new ArrayList<PExp>(node.getR());
+            for(PExp e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAAssignListStmt(node);
+    }
+
     public void inAIdExp(AIdExp node) {
         PIdType id = node.getIdType();
         if (id instanceof AIdIdType) {
             AIdIdType temp = (AIdIdType) id;
             if (temp.getId().getText().equals("_")) {
-                throwBlankIdError();
+                throwBlankIdError("Trying to evaluate an expression with a blank identifier \n");
+            }
+        }
+    }
+
+
+    public void inAPackageDecl(APackageDecl node) {
+        PIdType id = node.getIdType();
+        if (id instanceof AIdIdType) {
+            AIdIdType temp = (AIdIdType) id;
+            if (temp.getId().getText().equals("_")) {
+                throwBlankIdError("Trying to declare a package with a blank identifier \n");
+            }
+        }
+    }
+
+    public void inAStructSelectorExp(AStructSelectorExp node) {
+        PExp right = node.getR();
+        if (right instanceof AIdExp) {
+            AIdExp temp = (AIdExp) right;
+            if (temp.getIdType() instanceof AIdIdType) {
+                AIdIdType newTemp = (AIdIdType) temp.getIdType();
+                if (newTemp.getId().getText().equals("_")) {
+                    throwBlankIdError("Trying to evaluate an expression with a blank identifier \n");
+                }
             }
         }
     }
@@ -194,8 +252,8 @@ public class Weeder extends DepthFirstAdapter
         return false;
     } 
 
-    public void throwBlankIdError() {
-        ErrorManager.printError("Trying to evaluate an expression with a blank identifier \n");
+    public void throwBlankIdError(String message) {
+        ErrorManager.printError(message);
     }
 
     public void throwContinueError()

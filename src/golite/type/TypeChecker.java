@@ -14,7 +14,7 @@ public class TypeChecker extends DepthFirstAdapter
     public enum Operator { PLUS, MINUS, MULTIPLY, DIVIDE, CARET, EXCLAMATION_MARK}
 
     private HashMap<Node, Symbol> symbolTable;
-    private HashMap<Node, TypeClass> nodeTypes;
+    public HashMap<Node, TypeClass> nodeTypes;
     public TypeClass global_return_type, global_case_exp_type;
 
     public TypeChecker(HashMap<Node, Symbol> symbolTable)
@@ -490,10 +490,6 @@ public class TypeChecker extends DepthFirstAdapter
                 for (int i = 0; i < leftArgs.size(); i++) {
                     TypeClass left = getType(leftArgs.get(i));
                     TypeClass right = getType(rightArgs.get(i));
-                    if (left == null) {
-
-                    }
-
                     if (!isAliasedCorrectly(left, right)) {
                         return;
                     }
@@ -569,7 +565,7 @@ public class TypeChecker extends DepthFirstAdapter
         }
 
         TypeClass type = symbolTable.get(node).typeClass;
-        
+
         if (type.baseType == Type.INVALID)
         {
             ErrorManager.printError("Identifier \"" + node.getIdType() + "\"has"

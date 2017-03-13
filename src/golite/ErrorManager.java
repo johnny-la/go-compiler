@@ -6,7 +6,7 @@ public class ErrorManager
 
     public static void printError(String message)
     {
-        System.out.println("INVALID: " + message);
         errorCount++;
+        throw new RuntimeException("INVALID: " + message);
     }
 }

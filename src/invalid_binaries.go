@@ -40,10 +40,10 @@ func temp () {
 	if (e < f) {
 	}
 
-	b = b + e
-	a = a + e
-	c = c + d
-	e = e + f
+	b = b + b
+	a = a + a
+	c = c + c
+	e = e + e
 
 	a = a - a
 	c = c - a
