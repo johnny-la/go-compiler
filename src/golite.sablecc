@@ -78,6 +78,7 @@ Tokens
   less_equals = '<=';
   greater_equals = '>=';
   colon_equals = ':=';
+  binary_op = '||' | '&&' | '==' | '!=' | '<' | '<=' | '>' | '>=' | '+' | '-' | '|' | '^' | '*' | '/' | '%' | '<<' | '>>' | '&' | '&^';
   dot_dot_dot = '...';
   l_paren = '(';
   r_paren = ')';
@@ -286,20 +287,34 @@ cst_end_if {-> stmt} =
   {cst_else_if} else cst_if_stmt {-> New stmt.else_if(cst_if_stmt.stmt)} |
   {cst_else}    else cst_block   {-> New stmt.else(cst_block.stmt)};
 
-cst_exp {-> exp} = 
+/*cst_exp {-> exp} = 
+  {exp} cst_exp_t {-> cst_exp_t.exp};
   {term}     term {-> term.exp} |
   {unary_op}   unary_op {-> unary_op.exp} |
   {binary_op}  binary_op {-> binary_op.exp} |
   {function_call} function_call {-> function_call.exp} |
   {array_indexing} array_indexing {-> array_indexing.exp} |
   {cst_selection} cst_selection {-> cst_selection.exp} |
-  {append_expr} append_expr {-> append_expr.exp};
+  {append_expr} append_expr {-> append_expr.exp};*/
+
+primary_exp {-> exp} =
+  {operand} operand {-> operand.exp} |
+  {selector} primary_exp cst_selector {-> New exp.struct_selector(primary_exp.exp,cst_selector.exp)} |
+  {index} primary_exp cst_index {-> New exp.array_index(primary_exp.exp, cst_index.exp)} 
+  //{arguments} primary_exp arguments {-> New exp.function_call_exp(primary_exp.exp, [arguments.exp])}
+  ;
+
+operand {-> exp} =
+  {literal} literal {-> literal.exp} |
+  {cst_id}  cst_id {-> New exp.id(cst_id.id_type)} |
+  {paren}   l_paren cst_exp r_paren  {-> cst_exp.exp}
+  ;
 
 cst_selection {-> exp} = 
   {cst_selection_first_term} term cst_selector+ {-> term.exp};
 
 cst_selector {-> exp} =
-  {cst_dot_term} dot term {-> term.exp};
+  {cst_dot_term} dot cst_id {-> New exp.id(cst_id.id_type)};
 
 array_indexing {-> exp} = 
   {array_to_be_indexed} term cst_index+ {-> New exp.array_indexing(term.exp, [cst_index.exp])};
@@ -317,6 +332,16 @@ term {-> exp} =
   {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
   {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)} |
   {paren}         l_paren cst_exp r_paren  {-> cst_exp.exp};
+
+literal {-> exp} =
+  {cst_float64}   float64_literal  {-> New exp.float64_literal(float64_literal)} |
+  {cst_int}       int    {-> New exp.int(int)} |
+  {cst_oct}       oct    {-> New exp.oct(oct)} |
+  {cst_hex}       hex    {-> New exp.hex(hex)} |
+  {cst_rune_literal} rune_literal {-> New exp.rune_literal(rune_literal)} |
+  {cst_raw_string_lit} raw_string_lit {-> New exp.raw_string_lit(raw_string_lit)} |
+  {cst_interpreted_string_literal} interpreted_string_literal {-> New exp.interpreted_string_literal(interpreted_string_literal)}
+  ;
 
 special_term {-> exp} =
   {array_indexing} array_indexing {-> array_indexing.exp}|
@@ -351,6 +376,29 @@ binary_op {-> exp} =
   {cst_caret_and_special_term} cst_exp caret special_term {-> New exp.caret(cst_exp.exp, special_term.exp)} |
   {cst_rel_op} rel_op {-> rel_op.exp};
 
+cst_exp {-> exp} =
+  {unary_exp} unary_exp {-> unary_exp.exp} |
+  {cst_plus} [l]:cst_exp plus [r]:unary_exp  {-> New exp.plus(l.exp,r.exp)} 
+  /*{cst_multiply_factor} [l]:cst_exp star [r]:cst_exp {-> New exp.mult(l.exp, r.exp)} 
+  {cst_divide} [l]:cst_exp slash [r]:cst_exp {-> New exp.divide(l.exp,r.exp)} |
+  {cst_minus} [l]:cst_exp minus [r]:cst_exp {-> New exp.minus(l.exp,r.exp)} | 
+  {cst_modulo} [l]:cst_exp modulo [r]:cst_exp {-> New exp.modulo(l.exp, r.exp)} |
+  {cst_ampersand} [l]:cst_exp ampersand [r]:cst_exp {-> New exp.ampersand(l.exp, r.exp)} |
+  {cst_ampersand_caret} [l]:cst_exp ampersand_caret [r]:cst_exp {-> New exp.ampersand_caret(l.exp, r.exp)} |
+  {cst_shift_left} [l]:cst_exp shift_left [r]:cst_exp {-> New exp.shift_left(l.exp, r.exp)} |
+  {cst_shift_right} [l]:cst_exp shift_right [r]:cst_exp {-> New exp.shift_right(l.exp, r.exp)} |
+  {cst_logical_or} [l]:cst_exp logical_or [r]:cst_exp {-> New exp.logical_or(l.exp, r.exp)} |
+  {cst_logical_and} [l]:cst_exp logical_and [r]:cst_exp {-> New exp.logical_and(l.exp, r.exp)} |
+  {cst_pipe} [l]:cst_exp pipe [r]:cst_exp {-> New exp.pipe(l.exp, r.exp)} |
+  {cst_caret} [l]:cst_exp caret [r]:cst_exp {-> New exp.caret(l.exp, r.exp)} |
+  {cst_equals_equals} [l]:cst_exp equals_equals [r]:cst_exp {-> New exp.equals_equals(l.exp, r.exp)} |
+  {cst_not_equals} [l]:cst_exp exclamation_equals [r]:cst_exp {-> New exp.not_equal(l.exp, r.exp)} |
+  {cst_less_than} [l]:cst_exp less [r]:cst_exp {-> New exp.less(l.exp, r.exp)} |
+  {cst_greater_than} [l]:cst_exp greater [r]:cst_exp {-> New exp.greater(l.exp, r.exp)} |
+  {cst_less_than_equals} [l]:cst_exp less_equals [r]:cst_exp {-> New exp.less_equals(l.exp, r.exp)} |
+  {cst_greater_than_equals} [l]:cst_exp greater_equals [r]:cst_exp {-> New exp.greater_equals(l.exp, r.exp)}*/
+  ;
+
 rel_op {-> exp} = 
   {cst_equals_equals} cst_exp equals_equals term {-> New exp.equals_equals(cst_exp.exp, term.exp)} |
   {cst_equals_equals_special_term} cst_exp equals_equals special_term {-> New exp.equals_equals(cst_exp.exp, special_term.exp)} |
@@ -371,6 +419,14 @@ unary_op {-> exp} =
   {caret_expression} caret careted_factors {-> New exp.careted_factors(careted_factors.exp)} |
   {exclamation_exoression} exclamation exclamated_factors {-> New exp.exclamated_factors(exclamated_factors.exp)};
 
+unary_exp {-> exp} =
+  {primary_exp} primary_exp {-> primary_exp.exp} |
+  {positive_expression} plus unary_exp { -> New exp.unary_plus(unary_exp.exp)} |
+  {negative_expression} minus unary_exp {-> New exp.unary_minus(unary_exp.exp)} |
+  {caret_expression} caret unary_exp {-> New exp.careted_factors(unary_exp.exp)} |
+  {exclamation_exoression} exclamation unary_exp {-> New exp.exclamated_factors(unary_exp.exp)}
+  ;
+
 careted_factors {-> exp} = 
   {factor} term {-> term.exp} |
   {careted_factors} caret careted_factors { -> New exp.careted_factors(careted_factors.exp)};
@@ -383,6 +439,11 @@ function_call {-> exp} =
   {empty_args}  term l_paren r_paren {-> New exp.function_call_secondary(term.exp, [New exp.empty()])} |
   {one_or_more_args} term l_paren cst_exp_list r_paren {-> New exp.function_call_secondary(term.exp, [cst_exp_list.exp])};
   
+arguments {-> exp*} =
+  {empty_args}  l_paren r_paren {-> []} 
+  //{one_or_more_args} l_paren cst_exp_list r_paren {-> [cst_exp_list.exp]}
+  ;
+
 append_expr {-> exp} =
   append l_paren cst_exp comma other_exp r_paren { -> New exp.appended_expr(cst_exp.exp, other_exp.exp)};
 
@@ -572,6 +633,7 @@ exp =
   {interpreted_string_literal} interpreted_string_literal |
   {function_call} id_type [exp_list]:exp* |
   {function_call_secondary} exp [exp_list]:exp* |
+  {function_call_exp} [l]:exp [exp_list]:exp* |
   {array_indexing} exp [exp_list]:exp* |
   {function_name} exp |
   {appended_expr} [l]:exp [r]:exp |
