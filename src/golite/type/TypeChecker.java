@@ -762,6 +762,16 @@ public class TypeChecker extends DepthFirstAdapter
         addType(node, Type.INT);
     }
 
+    public void outAOctExp(AOctExp node)
+    {
+        addType(node, Type.INT);
+    }
+
+    public void outAHexExp(AHexExp node)
+    {
+        addType(node, Type.INT);
+    }
+
     public void outAFloat64LiteralExp(AFloat64LiteralExp node){
         addType(node, Type.FLOAT64);
     }
