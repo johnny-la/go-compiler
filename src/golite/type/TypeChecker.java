@@ -34,18 +34,6 @@ public class TypeChecker extends DepthFirstAdapter
     //     }
     // }
 
-    public void outAIfStmt(AIfStmt node)
-    {
-        TypeClass expType = getType(node.getExp());
-
-        if (expType.baseType != Type.BOOL)
-        {
-            ErrorManager.printError("If-statement expression type: "
-                    + expType + " (" + node.getExp().toString().trim() + 
-                    "). Expected an integer.");
-        }
-    }
-
     // public void outAAssignStmt(AAssignStmt node)
     // {
     //     Type idType = getIdType(node.getId());   
@@ -294,36 +282,44 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outAUnaryPlusExp(AUnaryPlusExp node){
         TypeClass typeClass = unaryOperationType(Operator.PLUS, getType(node.getExp()));
-        if(typeClass.baseType == Type.INVALID){
-            ErrorManager.printError("A + unary operation can only be used with an int, float64, or rune literal");
-            return;
+        if(typeClass != null){
+            if(typeClass.baseType == Type.INVALID){
+                ErrorManager.printError("Unary operator + used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A + unary operation can only be used with an int, float64, or rune literal.");
+                return;
+            }
         }
         addType(node, typeClass.baseType);
     }
 
     public void outAUnaryMinusExp(AUnaryPlusExp node){
         TypeClass typeClass = unaryOperationType(Operator.MINUS, getType(node.getExp()));
-        if(typeClass.baseType == Type.INVALID){
-            ErrorManager.printError("A - unary operation can only be used with an int, float64, or rune literal");
-            return;
+        if(typeClass != null){
+            if(typeClass.baseType == Type.INVALID){
+                ErrorManager.printError("Unary operator - used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A - unary operation can only be used with an int, float64, or rune literal.");
+                return;
+            }
         }
         addType(node, typeClass.baseType);
     }
 
     public void outACaretedFactorsExp(ACaretedFactorsExp node){
         TypeClass typeClass = unaryOperationType(Operator.CARET, getType(node.getExp()));
-        if(typeClass.baseType == Type.INVALID){
-            ErrorManager.printError("A ^ unary operation can only be used with an int or a rune literal");
-            return;
+        if(typeClass != null){
+            if(typeClass.baseType == Type.INVALID){
+                ErrorManager.printError("Unary operator ^ used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A ^ unary operation can only be used with an int or a rune literal.");
+                return;
+            }
         }
         addType(node, typeClass.baseType);
     }
 
     public void outAExclamatedFactorsExp(AExclamatedFactorsExp node){
         TypeClass typeClass = unaryOperationType(Operator.EXCLAMATION_MARK, getType(node.getExp()));
-        if(typeClass.baseType == Type.INVALID){
-            ErrorManager.printError("A ! unary operation can only be used with a bool literal");
-            return;
+        if(typeClass != null){
+            if(typeClass.baseType == Type.INVALID){
+                ErrorManager.printError("Unary operator ! used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A ! unary operation can only be used with a bool literal.");
+                return;
+            }
         }
         addType(node, typeClass.baseType);
     }    
@@ -362,22 +358,25 @@ public class TypeChecker extends DepthFirstAdapter
     // ----------------------------------------
     // Statements Start
 
+    // Print stmt
     public void outAPrintStmt(APrintStmt node){
         LinkedList<PExp> expList = node.getExp();
         if(expList != null){
             int size = expList.size();
             int i = 0;
             while(i<size){
-                System.out.println(expList.get(i));
                 TypeClass typeClass = getType(expList.get(i));
-                if (typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
+                if(typeClass != null){
+                    if (typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
                     typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
                     typeClass.baseType == Type.RUNE){
-                    i++;
-                    continue;
+                        i++;
+                        continue;
+                    }
                 }
+
                 else{
-                    ErrorManager.printError("Argument to print at index " + i + " is not well-type. Must be int, float64, bool, string, or rune.");
+                    ErrorManager.printError("Argument to print at index " + i + " is of type: " + typeClass +". Type must be int, float64, bool, string, or rune.");
                     return;
                 }
             }
@@ -386,44 +385,68 @@ public class TypeChecker extends DepthFirstAdapter
             // if none of them are invalid, then the expression is correct
     }
 
+    // Println stmt
     public void outAPrintlnStmt(APrintlnStmt node){
         LinkedList<PExp> expList = node.getExp();
         if(expList != null){
             int size = expList.size();
             int i = 0;
             while(i<size){
-                System.out.println(expList.get(i));
                 TypeClass typeClass = getType(expList.get(i));
-                if (typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
+                if(typeClass != null){
+                    if (typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
                     typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
                     typeClass.baseType == Type.RUNE){
-                    i++;
-                    continue;
+                        i++;
+                        continue;
+                    }
                 }
+
                 else{
-                    ErrorManager.printError("Argument to print at index " + i + " is not well-type. Must be int, float64, bool, string, or rune.");
+                    ErrorManager.printError("Argument to print at index " + i + " is of type: " + typeClass +". Type must be int, float64, bool, string, or rune.");
                     return;
                 }
             }
         }
     }
 
+    // For loops
     public void outAForStmt(AForStmt node){
-        LinkedList<PExp> expList = node.getCondition();
-        LinkedList<PStmt> stmtBlocks = node.getBlock();
+        PExp exp = node.getCondition();
+        if(exp instanceof AForCondExp){
+            return;
+        }
 
-        if(expList != null){
-            if(expList.size() == 1){
-               if(getType(expList.get(0)) != Type.BOOL){
-                    ErrorManager.printError("The expression of a for loop has to be of type bool");
+        if(exp != null){
+            if(getType(exp)!= null){
+                if(getType(exp).baseType != Type.BOOL){
+                    ErrorManager.printError("Expression of for loop: " + getType(exp) + "("  +node.getCondition().toString().trim() + ")"+ ". Expected a bool.");
                     return;
                 }
             }
-            if(expList.size() == 3){
-                if(getType(expList.get(1)) != Type.BOOL){
-                    ErrorManager.printError("The expression of a for loop has to be of type bool");
-                    return;
+        }
+    }
+
+    // For loops
+    public void outAForCondExp(AForCondExp node){
+        PExp exp = node.getSecond();
+        if(exp != null){
+            if(getType(exp)!= null){
+                if(getType(exp).baseType != Type.BOOL){
+                    ErrorManager.printError("Expression of for loop: " + getType(exp) + "(" + node.getSecond().toString().trim() + ")" +". Expected a bool.");
+                    return;                
                 }
+            }
+        }
+    }
+
+    // If condition
+    public void outAIfStmt(AIfStmt node){
+        TypeClass expType = getType(node.getExp());
+        if(expType != null){
+            if (expType.baseType != Type.BOOL){
+                ErrorManager.printError("If-statement expression type: " + expType + " (" + node.getExp().toString().trim() + "). Expected an integer.");
+                return;
             }
         }
     }
