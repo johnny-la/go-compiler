@@ -1,68 +1,68 @@
 package main
 
 func temp () {
-	// type int1 int;
-	// var a int;
-	// var b string;
-	// var c rune;
-	// var _ bool;
-	// var d bool;
-	// var e float64;
-	// var x [7]int1;
-	// type here struct {
-	// 	x int
-	// }
+	type int1 int;
+	var a int;
+	var b string;
+	var c rune;
+	var _ bool;
+	var d bool;
+	var e float64;
+	var x [7]int1;
+	type here struct {
+		x int
+	}
 	var l, y, z int = 3, 3, 3.0
-	// var f here;
+	var f here;
 
-	// var z = append(x, int1(bool(3)))
+	var z = append(x, int1(bool(3)))
 
-	// // if (_ || d) {
-	// // }
-
-	// if (d && e) {
+	// if (_ || d) {
 	// }
 
-	// if (e == f) {
-	// }
+	if (d && e) {
+	}
 
-	// if (c != d) {
-	// }
+	if (e == f) {
+	}
 
-	// if (a >= a) {
-	// }
+	if (c != d) {
+	}
 
-	// if (b > a) {
-	// }
+	if (a >= a) {
+	}
 
-	// if (a <= e) {
-	// }
+	if (b > a) {
+	}
 
-	// if (e < f) {
-	// }
+	if (a <= e) {
+	}
 
-	// b = b + b
-	// a = a + a
-	// c = c + c
-	// e = e + e
+	if (e < f) {
+	}
 
-	// a = a - a
-	// c = c - a
-	// e = e - e
+	b = b + b
+	a = a + a
+	c = c + c
+	e = e + e
 
-	// a = a / a
-	// c = c / c
-	// e = e / e
+	a = a - a
+	c = c - a
+	e = e - e
 
-	// a = a * a
-	// c = c * c
-	// e = e * e
+	a = a / a
+	c = c / c
+	e = e / e
 
-	// a = a % a
-	// a = a | a
-	// a = a & a
-	// a = a << a
-	// a = a >> a
-	// a = a &^ a
-	// a = a ^ a
+	a = a * a
+	c = c * c
+	e = e * e
+
+	a = a % a
+	a = a | a
+	a = a & a
+	a = a << a
+	a = a >> a
+	a = a &^ a
+	a = a ^ a
 }
