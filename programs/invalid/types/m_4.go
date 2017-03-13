@@ -1,7 +1,6 @@
 package main
 
 func test() {
-    var x,y int = 3,"string"
+    var x int = "string"
     x = 3 + 3
 }
-
