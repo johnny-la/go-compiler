@@ -16,7 +16,7 @@ public class Main
                                 PRETTY_PRINT_TYPE_SUFFIX = ".pptype.go",
                                 DUMP_SYMBOL_TABLE_SUFFIX = ".symtab",
                                 SYMBOL_TABLE_SUFFIX = ".symbol.txt",
-                                CODE_GENERATOR_SUFFIX = ".c";   
+                                CODE_GENERATOR_SUFFIX = ".j";   
                             
     private static final String DUMP_SYMBOL_TABLE_ARG = "-dumpsymtab",
                                 PRETTY_PRINT_TYPE_ARG = "-pptype";
@@ -163,7 +163,7 @@ public class Main
                 printDebug("\nType Checker:");
                 TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
                 tree.apply(typeChecker);
-                printDebug(typeChecker.toString());
+                printDebug(typeChecker.toString()); 
 
                 if (prettyPrintType) {
                     prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
