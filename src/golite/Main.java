@@ -14,6 +14,7 @@ public class Main
 {
     private static final String PRETTY_PRINT_SUFFIX = ".pretty.go",
                                 PRETTY_PRINT_TYPE_SUFFIX = ".pptype.go",
+                                DUMP_SYMBOL_TABLE_SUFFIX = ".symtab",
                                 SYMBOL_TABLE_SUFFIX = ".symbol.txt",
                                 CODE_GENERATOR_SUFFIX = ".c";   
                             
@@ -156,6 +157,8 @@ public class Main
                 printDebug("\nSymbol table:");
                 printDebug(symbolTable.toString());
                 printToFile(filenamePrefix + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
+                if (dumpSymbolTable)
+                    printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
                 
                 printDebug("\nType Checker:");
                 TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
@@ -185,7 +188,7 @@ public class Main
         catch (Exception e)
         {
             System.out.print("INVALID: " + e);
-            e.printStackTrace();
+            //e.printStackTrace();
             System.exit(1);
         }
     }

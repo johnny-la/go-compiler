@@ -77,7 +77,7 @@ public class SymbolTable
     {
         StringBuilder output = new StringBuilder();
 
-        output.append("ID\t\tNODE\n");
+        output.append("ID\t\tSYMBOL\n");
 
         for (Map.Entry<String, Symbol> entry : table.entrySet())
         {

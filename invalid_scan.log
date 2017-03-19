@@ -1,0 +1,102 @@
+grading/invalid/scanner//blockcomment1.go: INVALID: golite.parser.ParserException: [5,1] expecting: EOFgolite.parser.ParserException: [5,1] expecting: EOF
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//blockcomment2.go: INVALID: golite.parser.ParserException: [3,1] expecting: EOFgolite.parser.ParserException: [3,1] expecting: EOF
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//blockcomment3.go: [fail]
+grading/invalid/scanner//blockcomment4.go: INVALID: golite.parser.ParserException: [4,1] expecting: EOFgolite.parser.ParserException: [4,1] expecting: EOF
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//floatlit1.go: INVALID: golite.parser.ParserException: [3,17] expecting: type, '+', '-', '^', '!', '(', 'append', int, oct, hex, float64 literal, rune literal, raw string lit, interpreted string literal, idgolite.parser.ParserException: [3,17] expecting: type, '+', '-', '^', '!', '(', 'append', int, oct, hex, float64 literal, rune literal, raw string lit, interpreted string literal, id
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//floatlit2.go: INVALID: golite.parser.ParserException: [4,1] expecting: type, '(', int, oct, hex, float64 literal, rune literal, raw string lit, interpreted string literal, idgolite.parser.ParserException: [4,1] expecting: type, '(', int, oct, hex, float64 literal, rune literal, raw string lit, interpreted string literal, id
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//floatlit3.go: INVALID: golite.parser.ParserException: [3,18] expecting: type, '+', '-', '^', '!', '(', 'append', int, oct, hex, float64 literal, rune literal, raw string lit, interpreted string literal, idgolite.parser.ParserException: [3,18] expecting: type, '+', '-', '^', '!', '(', 'append', int, oct, hex, float64 literal, rune literal, raw string lit, interpreted string literal, id
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//integerdecimal1.go: INVALID: golite.parser.ParserException: [3,14] expecting: ';'golite.parser.ParserException: [3,14] expecting: ';'
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//integerhex1.go: INVALID: golite.parser.ParserException: [3,17] expecting: ';'golite.parser.ParserException: [3,17] expecting: ';'
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//integerhex2.go: INVALID: golite.parser.ParserException: [3,14] expecting: ';'golite.parser.ParserException: [3,14] expecting: ';'
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//interstring1.go: INVALID: golite.lexer.LexerException: [3,16] Unknown token: "escape \zgolite.lexer.LexerException: [3,16] Unknown token: "escape \z
+	at golite.lexer.Lexer.getToken(Lexer.java:989)
+	at golite.lexer.Lexer.peek(Lexer.java:54)
+	at golite.parser.Parser.parse(Parser.java:111)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//interstring2.go: INVALID: golite.lexer.LexerException: [3,16] Unknown token: "unterminated 
+golite.lexer.LexerException: [3,16] Unknown token: "unterminated 
+
+	at golite.lexer.Lexer.getToken(Lexer.java:989)
+	at golite.lexer.Lexer.peek(Lexer.java:54)
+	at golite.parser.Parser.parse(Parser.java:111)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//interstring3.go: INVALID: golite.lexer.LexerException: [3,18] Unknown token: " 
+golite.lexer.LexerException: [3,18] Unknown token: " 
+
+	at golite.lexer.Lexer.getToken(Lexer.java:989)
+	at golite.lexer.Lexer.peek(Lexer.java:54)
+	at golite.parser.Parser.parse(Parser.java:111)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//interstring4.go: INVALID: golite.lexer.LexerException: [3,16] Unknown token: "string
+golite.lexer.LexerException: [3,16] Unknown token: "string
+
+	at golite.lexer.Lexer.getToken(Lexer.java:989)
+	at golite.lexer.Lexer.peek(Lexer.java:54)
+	at golite.parser.Parser.parse(Parser.java:111)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//rawstring1.go: [fail]
+grading/invalid/scanner//rawstring2.go: INVALID: golite.parser.ParserException: [3,22] expecting: ';'golite.parser.ParserException: [3,22] expecting: ';'
+	at golite.parser.Parser.parse(Parser.java:182)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//rune1.go: INVALID: golite.lexer.LexerException: [3,14] Unknown token: ''golite.lexer.LexerException: [3,14] Unknown token: ''
+	at golite.lexer.Lexer.getToken(Lexer.java:989)
+	at golite.lexer.Lexer.peek(Lexer.java:54)
+	at golite.parser.Parser.parse(Parser.java:111)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//rune2.go: INVALID: golite.lexer.LexerException: [3,14] Unknown token: '\hgolite.lexer.LexerException: [3,14] Unknown token: '\h
+	at golite.lexer.Lexer.getToken(Lexer.java:989)
+	at golite.lexer.Lexer.peek(Lexer.java:54)
+	at golite.parser.Parser.parse(Parser.java:111)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//rune3.go: INVALID: golite.lexer.LexerException: [3,14] Unknown token: 'abgolite.lexer.LexerException: [3,14] Unknown token: 'ab
+	at golite.lexer.Lexer.getToken(Lexer.java:989)
+	at golite.lexer.Lexer.peek(Lexer.java:54)
+	at golite.parser.Parser.parse(Parser.java:111)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//rune4.go: INVALID: golite.lexer.LexerException: [3,14] Unknown token: ''golite.lexer.LexerException: [3,14] Unknown token: ''
+	at golite.lexer.Lexer.getToken(Lexer.java:989)
+	at golite.lexer.Lexer.peek(Lexer.java:54)
+	at golite.parser.Parser.parse(Parser.java:111)
+	at golite.Main.main(Main.java:142)
+[pass]
+grading/invalid/scanner//symbol1.go: INVALID: golite.lexer.LexerException: [2,1] Unknown token: $golite.lexer.LexerException: [2,1] Unknown token: $
+	at golite.lexer.Lexer.getToken(Lexer.java:989)
+	at golite.lexer.Lexer.peek(Lexer.java:54)
+	at golite.parser.Parser.parse(Parser.java:111)
+	at golite.Main.main(Main.java:142)
+[pass]
