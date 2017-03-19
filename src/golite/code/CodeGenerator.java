@@ -22,6 +22,14 @@ public class CodeGenerator extends DepthFirstAdapter
     private String leftBlock = "/*";
     private String rightBlock = "*/";
 
+    // The string buffer used for concatenating strings
+    private String stringBuffer = "buffer";
+
+    private static final String fileHeader = 
+        "import java.util.*;\n" +
+        "\n" +
+        "public class Main {\n";
+
     private static final int STRING_SIZE = 1024;
 
     private static final String STRING_TYPE = "char",
@@ -30,14 +38,6 @@ public class CodeGenerator extends DepthFirstAdapter
     private static final String INT_DEFAULT = "0",
                                 FLOAT_DEFAULT = "0.0",
                                 STRING_DEFAULT = "\"\"";
-
-    // The string buffer used for concatenating strings
-    private String stringBuffer = "buffer";
-
-    private static final String fileHeader = 
-        "import java.util.*;\n" +
-        "\n" +
-        "public class Main {\n";
 
     public CodeGenerator(Node root, TypeChecker typeChecker)
     {
