@@ -133,6 +133,7 @@ public class CodeGenerator extends DepthFirstAdapter
         
         for (int i = 0; i < node.getDecl().size(); i++)
         {
+            printi("");
             Node decl = node.getDecl().get(i);
             decl.apply(this);
             // Don't print newlines/semicolons for function declarations
@@ -178,13 +179,13 @@ public class CodeGenerator extends DepthFirstAdapter
 
     //package declarations
     public void caseAPackageDecl(APackageDecl node) {
-        println("package ");
+        print("package ");
         node.getIdType().apply(this);
         print("; \n");
     }
     //var declarations
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node) {
-        printi("var ");
+        print("var ");
         node.getVarDecl().apply(this);
         //println("");
 
@@ -286,7 +287,7 @@ public class CodeGenerator extends DepthFirstAdapter
 
     //function declarations
     public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node) {
-        printi("func ");
+        print("func ");
         node.getFuncDecl().apply(this);
         println("\n");
     }
@@ -473,9 +474,16 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAElseIfStmt(AElseIfStmt node)
     {
-        println(" else");
+        println(" else {");
+
+        indentLevel++;
         printi("");
+
         node.getStmt().apply(this);
+
+        indentLevel--;
+        println("");
+        printi("}");
     }
 
     public void caseAElseStmt(AElseStmt node)
