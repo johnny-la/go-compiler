@@ -11,6 +11,11 @@ import java.util.*;
 
 public class CodeGenerator extends DepthFirstAdapter
 {
+    // TODO: Print for-loop init statement
+    // in code block above for-loop
+    // (Also: print post-for-loop statement at end
+    //  of loop body?) 
+
     private int indentLevel;
     private StringBuffer output; 
 
@@ -495,10 +500,38 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAForStmt(AForStmt node)
     {
-        print("for ");
-        node.getCondition().apply(this);
-        print(" ");
+        PExp forCondition = node.getCondition();
+        // For loop
+        if (forCondition instanceof AForCondExp)
+        {
+            println("{");
+            indentLevel++;
+
+            printi("for (");
+            forCondition.apply(this);
+            print(") ");
+        }
+        // Infinite loop
+        else if (forCondition instanceof AEmptyExp)
+        {
+            print("while (true) ");
+        }
+        // While loop
+        else 
+        {
+            print("while (");
+            forCondition.apply(this);
+            print(") ");
+        }
+
         node.getBlock().apply(this);
+
+        if (forCondition instanceof AForCondExp)
+        {
+            indentLevel--;
+            println("");
+            printiln("}");
+        }
     }
 
     public void caseAForCondExp(AForCondExp node)
