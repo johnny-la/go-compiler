@@ -11,10 +11,12 @@ import java.util.*;
 
 public class CodeGenerator extends DepthFirstAdapter
 {
-    // TODO: Print for-loop init statement
-    // in code block above for-loop
-    // (Also: print post-for-loop statement at end
-    //  of loop body?) 
+    // TODO:
+    // * Print for-loop init statement
+    //   in code block above for-loop
+    //   (Also: print post-for-loop statement at end
+    //   of loop body?) 
+    // * Ensure --, ++, and assignments have lvalues on LHS
 
     private int indentLevel;
     private StringBuffer output; 
