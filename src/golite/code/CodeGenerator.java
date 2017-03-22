@@ -512,52 +512,101 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseASwitchStmt(ASwitchStmt node)
     {
-        print("switch ");
-        if (node.getSimpleStmt() != null) 
-        { 
-            node.getSimpleStmt().apply(this);
-            print("; ");
-        }
-        if (node.getExp() != null)
-        {
-            node.getExp().apply(this);
-        }
-
+        // Anonymous code block for init statement
         println("{");
         indentLevel++;
+
+        if (node.getSimpleStmt() != null)
+        {
+            printi("");
+            node.getSimpleStmt().apply(this);
+            println("; ");
+        }
+
+        PExp switchExp = node.getExp();
+        // Print the default stmt last
+        ACaseStmt defaultStmt = null;
+        int caseIndex = 0;
+
         for (int i = 0; i < node.getCaseStmts().size(); i++)
         {
-            node.getCaseStmts().get(i).apply(this);
+            ACaseStmt caseStmt = (ACaseStmt)node.getCaseStmts().get(i);
+            
+            // Don't print the default statement until the end
+            if (caseStmt.getCaseExp() instanceof ADefaultExp)
+            {
+                defaultStmt = caseStmt;
+                continue;
+            }
+
+            caseACaseStmt(caseStmt, switchExp, caseIndex);
+            caseIndex++;
         }
+
+        // Print the default statement last
+        if (defaultStmt != null)
+        {
+            caseACaseStmt(defaultStmt, switchExp, caseIndex);            
+        }
+
+        // End anonymous code block
+        println("");
         indentLevel--;
         printi("}");
     }
 
-    public void caseACaseStmt(ACaseStmt node)
+    public void caseACaseStmt(ACaseStmt node, PExp switchExp, int caseIndex)
     {
-        node.getCaseExp().apply(this);
-        indentLevel++;
+        if (node.getCaseExp() instanceof ACaseExp)
+        {
+            if (caseIndex > 0) { printi("else if "); }
+            else { printi("if "); }
 
+            print("(");
+            caseACaseExp((ACaseExp)node.getCaseExp(), switchExp);
+            println(") {");
+        }
+        else if (node.getCaseExp() instanceof ADefaultExp)
+        {
+            //node.getCaseExp().apply(this);
+            printiln("else {");
+        }
+
+        indentLevel++;
         for (int i = 0; i < node.getStmtList().size(); i++)
         {
+            PStmt stmt = node.getStmtList().get(i);
+            // Stop printing statements once a break is found
+            if (stmt instanceof ABreakStmt) 
+            {
+                //println(""); 
+                break; 
+            }
             printi("");
-            node.getStmtList().get(i).apply(this);
+            stmt.apply(this);
             println(";");
         }
 
         indentLevel--;
+        printiln("}");
     }
 
-    public void caseACaseExp(ACaseExp node)
+    public void caseACaseExp(ACaseExp node, PExp switchExp)
     {
-        printi("case ");
-        printNodesWithComma(node.getExpList());
-        println(":");
-    }
+        for (int i = 0; i < node.getExpList().size(); i++)
+        {
+            PExp exp = node.getExpList().get(i);
 
-    public void caseADefaultExp(ADefaultExp node)
-    {
-        printi("default:\n");
+            // Take a disjunction of all expressions
+            if (i > 0) { print(" || "); }
+
+            if (switchExp != null)
+            {
+                switchExp.apply(this);
+                print(" == ");
+            }
+            exp.apply(this);
+        }
     }
 
     public void caseAContinueStmt(AContinueStmt node)
