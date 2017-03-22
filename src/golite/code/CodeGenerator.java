@@ -116,6 +116,16 @@ public class CodeGenerator extends DepthFirstAdapter
         }
     }  
 
+    // Pretty prints the list of nodes, separating each element by the given delimiter
+    private void printNodes(LinkedList<? extends Node> nodes, String delimiter)
+    {
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            nodes.get(i).apply(this);
+            if (i != nodes.size()-1) { print(delimiter); }
+        }
+    }
+
     // Pretty prints the list of nodes, separating each element by a comma
     private void printNodesWithComma(LinkedList<? extends Node> nodes)
     {
@@ -335,20 +345,27 @@ public class CodeGenerator extends DepthFirstAdapter
     /** STATEMENTS */
     public void caseAPrintStmt(APrintStmt node)
     {
-        print("print("); 
-        if (node.getExp() != null) 
+        print("System.out.print("); 
+        if (node.getExp() != null && node.getExp().size() > 0) 
         {
-            printNodesWithComma(node.getExp());
+            print("\"\" + ");
+            printNodes(node.getExp(), " + \"\" + ");
+        }
+        else
+        {
+            // System.out.print() requires at least one argument
+            print("\"\"");
         }
         print(")");
     }
 
     public void caseAPrintlnStmt(APrintlnStmt node)
     {
-        print("println(");
-        if (node.getExp() != null) 
+        print("System.out.println(");
+        if (node.getExp() != null && node.getExp().size() > 0) 
         {
-            printNodesWithComma(node.getExp());
+            print("\"\" + ");
+            printNodes(node.getExp(), " + \" \" + ");
         }
         print(")");
     }
