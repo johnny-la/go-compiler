@@ -1,22 +1,5 @@
 package main
 
-func main() {
-    // Create the array to sort
-    var array []int
-    length := 3000
-    for i := 0; i < length; i++ {
-        array = append(array, length-i);
-    }
-
-    // Sort the array
-    selection_sort(array, length)
-
-    // Print the sorted array
-    for i := 0; i < length; i++ {
-        print(array[i], ",")
-    }
-}
-
 // Sorts the array in increasing order
 func selection_sort(array []int, length int) {
     for i := 0; i < length; i++ {
@@ -34,5 +17,22 @@ func selection_sort(array []int, length int) {
             array[min_index] = array[i]
             array[i] = min
         }
+    }
+}
+
+func main() {
+    // Create the array to sort
+    var array []int
+    length := 3000
+    for i := 0; i < length; i++ {
+        array = append(array, length-i);
+    }
+
+    // Sort the array
+    selection_sort(array, length)
+
+    // Print the sorted array
+    for i := 0; i < length; i++ {
+        print(array[i], ",")
     }
 }
