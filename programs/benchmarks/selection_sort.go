@@ -23,7 +23,7 @@ func selection_sort(array []int, length int) {
 func main() {
     // Create the array to sort
     var array []int
-    length := 3000
+    length := 100000
     for i := 0; i < length; i++ {
         array = append(array, length-i);
     }
@@ -32,7 +32,9 @@ func main() {
     selection_sort(array, length)
 
     // Print the sorted array
-    for i := 0; i < length; i++ {
+    /*for i := 0; i < length; i++ {
         print(array[i], ",")
-    }
+    }*/
+
+    println("Done")
 }
