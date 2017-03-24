@@ -31,6 +31,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     // If true, the top-most frame of the symbol table is dumped when a scope is left.
     private boolean dumpSymbolTable;
+    public String dumpSymbolTableOutput = "";
 
     // True if we are traversing inside a function block
     private boolean justEnterredFunction;
@@ -108,7 +109,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         ArrayList<TypeClass> parameterTypes = getParameterTypes(node);
         typeClass.functionSignature.parameterTypes = parameterTypes;
 
-        System.out.println("Declared function: " + functionSymbol);
+        //System.out.println("Declared function: " + functionSymbol);
 
         // Tells inABlockStmt() to not create a new scope 
         justEnterredFunction = true;
@@ -322,7 +323,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     public void inAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node)
     {   
-        System.out.println("declaring shit");
         declareVariable(node.getIdType(), node.getVarType(), SymbolKind.LOCAL, node);
     }
 
@@ -341,7 +341,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node)
     {
         Symbol symbol = declareVariable(node.getIdType(), node.getVarType(), SymbolKind.TYPE, node);
-        System.out.println("Declared type alias: " + symbol);
+        //System.out.println("Declared type alias: " + symbol);
     }
 
     // Struct declaration 
@@ -533,7 +533,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             }
             else 
             {
-                System.out.println("Traversing node: " + current);
+                //System.out.println("Traversing node: " + current);
             }
 
             nodeDepth++;
@@ -608,7 +608,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
                     symbolMap.put(lhs, symbol);
 
-                    System.out.println("LHS of function call is primitive type: " + lhs + ". Symbol = " + symbol);
+                    //System.out.println("LHS of function call is primitive type: " + lhs + ". Symbol = " + symbol);
                 }
             }
         }
@@ -629,7 +629,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         // Don't redefine the symbols for nodes that already have a symbol
         if (symbolMap.get(node) != null)
         {
-            System.out.println("Node: " + node + " already has a symbol. Not redefining it.");
+            //System.out.println("Node: " + node + " already has a symbol. Not redefining it.");
             return;
         }
 
@@ -648,7 +648,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             // If this is a symbol for a dynamically-typed variable
             else if (symbol.kind == SymbolKind.LOCAL && symbol.typeClass.isNull())
             {
-                System.out.println(id + " references a dynamically-typed variable: " + symbol);
+                //System.out.println(id + " references a dynamically-typed variable: " + symbol);
                 symbol.symbolsToInheritType.add(newSymbol);
                 if (symbol.symbolsToInheritType.size() == 1)
                 {
@@ -658,7 +658,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             // Add a node->symbol mapping for future type checking
             symbolMap.put(node, newSymbol);
 
-            System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
+            //System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
         }
     }
 
@@ -700,9 +700,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
         Node structNode = symbol.typeClass.structNode;
 
-        System.out.println("Stepping into struct: " + structNode);
+        //System.out.println("Stepping into struct: " + structNode);
         currentStructScope = structHierarchy.get(structNode);
-        System.out.println("Struct's symbol table: \n" + currentStructScope);
+        //System.out.println("Struct's symbol table: \n" + currentStructScope);
 
         // String rightId = node.getR().getText();
         // Symbol rightSymbol = currentStructScope.get(rightId);
@@ -767,7 +767,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     private void scope()
     {
         if (dumpSymbolTable)
-            System.out.println(symbolTable + "\n----------------------");
+            dumpSymbolTableOutput += symbolTable + "\n----------------------";
 
         // Creates a new scope after enterring a block
         symbolTable = symbolTable.scope();
@@ -779,7 +779,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     private void unscope()
     {
         if (dumpSymbolTable)
-            System.out.println(symbolTable + "\n----------------------");
+            dumpSymbolTableOutput += symbolTable + "\n----------------------\n";
 
         // Pop the inner-most scope after leaving a block
         symbolTable = symbolTable.unscope();
