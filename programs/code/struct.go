@@ -9,6 +9,7 @@ func int(a int, b int, c int) {
 			a, b, c float64
 		}
 	}
+	//see if struct assignments work
 	var x struct_1
 	x.str = "apple"
 	x.innerStruct.a = 5.3
