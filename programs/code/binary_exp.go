@@ -25,12 +25,16 @@ func binaryOperationsIntegers(a int, b int, c int, j rune, k rune, str1 string, 
 	var bool_val8 = bool_val4 && bool_val3;
 
 	// test binary operator precedence
-	var d = a*b+2; // higher than lower (L to R)
-	var e = a^2/b; // lower than higher (L to R)
-	var f = a*(b+2); // parenthezied expression
+	var d = a*b+2;
+	var e = a^2/b; 
+	var l = a + b - c; 
+	var m = a * b / c; 
+	var n = a == b != false; 
+	var f = a*(b+2); 
 	var g = bool_val1 && bool_val2 || bool_val3;
 	var h = a <= b && false;
 	var i = a != b || true;
+	var o = true && false || true;
 
 	var complicated_expression1 = addition * (multiplication / remainder) ^ shift_right % 2 % 5 &^ 6 >> (55 << 2*(piping) | 42354);
 	var complicated_expression2 = bool_val1 && bool_val8 == bool_val6 || bool_val1 && bool_val7 && 2<3;
