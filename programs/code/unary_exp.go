@@ -6,6 +6,9 @@ func unaryOperationsIntegers(){
 	var c = !(false);
 	var d = ^4;
 
+    var multiplePlus = + + + + 1;
+    var multipleMinus = - - - - -1;
+    var mixedPlusMinus = + - + - - +4;
 	var mixedMultipleExclam = !!!!!!!!(false);
 	var mixedMultipleCaret = ^^^^^5;
 
