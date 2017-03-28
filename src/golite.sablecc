@@ -50,6 +50,8 @@ Tokens
   select = 'select';
   struct = 'struct';
   switch = 'switch';
+  print = 'print';
+  println = 'println';
   op_equals = ('+' | '&' | '&^' | '-' | '|' | '*' | '^' | '/' | '<<' | '%' | '>>') '=';
   type = 'float64'|'rune'|'int'|'bool'|'string';
   type_keyword = 'type';
@@ -340,6 +342,8 @@ evaluated_exp {-> exp} =
 
 function_call {-> exp} =
   {cst_append} append l_paren [l]:cst_exp comma [r]: cst_exp r_paren {-> New exp.appended_expr(l.exp, r.exp)} |
+  {cst_print} print l_paren cst_exp_list r_paren {-> New exp.print([cst_exp_list.exp])} | 
+  {cst_println} println l_paren cst_exp_list r_paren {-> New exp.println([cst_exp_list.exp])} | 
   {cst_regular_func} cst_id l_paren cst_exp_list r_paren {-> New exp.function_call(New exp.id(cst_id.id_type), [cst_exp_list.exp])};
 
 field {-> exp} = 
@@ -423,8 +427,6 @@ id_type =
   ;
 
 stmt =
-  {print}           exp* |
-  {println}         exp* |
   {exp}             exp  |
   {return}          exp? |
   {increment}       exp  |
@@ -478,6 +480,8 @@ exp =
   {appended_expr} [l]:exp [r]:exp |
   {array_element} [array]:exp [index]:exp |
   {function_call} [name]:exp [args]:exp* |
+  {print}           exp* |
+  {println}         exp* |
   {for_cond}  [first]:stmt? [second]:exp? [third]:stmt? |
   {case}      [exp_list]:exp* |
   {default} |
