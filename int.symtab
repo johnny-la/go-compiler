@@ -1,0 +1,8 @@
+ID		SYMBOL
+main		"main, FUNCTION, Struct: null"
+
+----------------------ID		SYMBOL
+int		"int, LOCAL, INT"
+float		"float, LOCAL, FLOAT64"
+
+----------------------
