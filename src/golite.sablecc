@@ -122,7 +122,7 @@ top_level_declarations{-> decl} =
   ;
 
 cst_package_decl{-> package_decl} = 
-  package cst_id semicolon {-> New package_decl(cst_id.id_type)}
+  package cst_id cst_eos {-> New package_decl(cst_id.id_type)}
   ;
 
 declarations {-> decl} =
