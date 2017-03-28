@@ -25,25 +25,25 @@ public class Main
     private static final boolean PRINT_TO_FILE = true;
 
     // Pretty prints the given AST
-    private static void prettyPrint(Start tree, String inputFilename)
-    {
-        PrettyPrinter prettyPrinter = new PrettyPrinter();
-        String prettyPrint = prettyPrinter.prettyPrint(tree);
-        printDebug(prettyPrint);
-        printToFile(inputFilename + PRETTY_PRINT_SUFFIX, prettyPrint);
-    }
+    // private static void prettyPrint(Start tree, String inputFilename)
+    // {
+    //     PrettyPrinter prettyPrinter = new PrettyPrinter();
+    //     String prettyPrint = prettyPrinter.prettyPrint(tree);
+    //     printDebug(prettyPrint);
+    //     printToFile(inputFilename + PRETTY_PRINT_SUFFIX, prettyPrint);
+    // }
 
-    private static void prettyPrint(Start tree, String inputFilename, 
-        HashMap<Node, TypeClass> nodeTypes, boolean flag)
-    {
-        PrettyPrinter prettyPrinter = new PrettyPrinter();
-        prettyPrinter.nodeTypes = nodeTypes;
-        prettyPrinter.printType = flag;
-        String prettyPrint = prettyPrinter.prettyPrint(tree);
+    // private static void prettyPrint(Start tree, String inputFilename, 
+    //     HashMap<Node, TypeClass> nodeTypes, boolean flag)
+    // {
+    //     PrettyPrinter prettyPrinter = new PrettyPrinter();
+    //     prettyPrinter.nodeTypes = nodeTypes;
+    //     prettyPrinter.printType = flag;
+    //     String prettyPrint = prettyPrinter.prettyPrint(tree);
 
-        printDebug(prettyPrint);
-        printToFile(inputFilename + PRETTY_PRINT_TYPE_SUFFIX, prettyPrint);
-    }
+    //     printDebug(prettyPrint);
+    //     printToFile(inputFilename + PRETTY_PRINT_TYPE_SUFFIX, prettyPrint);
+    // }
 
     /**
      * Prints the given string to stdout if PRINT_TO_FILE == false
@@ -59,16 +59,16 @@ public class Main
     /** 
      * Generates C code from the given AST
      */
-    private static void generateCode(Start tree, TypeChecker typeChecker,
-            String inputFilename)
-    {
-        printDebug("Code Generator:");
-        CodeGenerator codeGenerator = new CodeGenerator(tree, typeChecker);
-        String code = codeGenerator.generateCode();
+    // private static void generateCode(Start tree, TypeChecker typeChecker,
+    //         String inputFilename)
+    // {
+    //     printDebug("Code Generator:");
+    //     CodeGenerator codeGenerator = new CodeGenerator(tree, typeChecker);
+    //     String code = codeGenerator.generateCode();
 
-        printDebug(code);
-        printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
-    }
+    //     printDebug(code);
+    //     printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
+    // }
 
     /**
      * Prints the given string to the specified file
@@ -145,41 +145,41 @@ public class Main
             Weeder weeder = new Weeder();
             tree.apply(weeder);
 
-            if (args[0] != null)
-            {
-                String filenamePrefix = inputFilename.split(".go")[0];
-                prettyPrint(tree, filenamePrefix);
+            // if (args[0] != null)
+            // {
+            //     String filenamePrefix = inputFilename.split(".go")[0];
+            //     prettyPrint(tree, filenamePrefix);
 
-                SymbolTable symbolTable = new SymbolTable();
-                SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
-                printDebug("Semantic Analyzer:");
-                tree.apply(semanticAnalyzer);
-                printDebug("\nSymbol table:");
-                printDebug(symbolTable.toString());
-                printToFile(filenamePrefix + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
-                if (dumpSymbolTable)
-                    printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
+            //     SymbolTable symbolTable = new SymbolTable();
+            //     SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
+            //     printDebug("Semantic Analyzer:");
+            //     tree.apply(semanticAnalyzer);
+            //     printDebug("\nSymbol table:");
+            //     printDebug(symbolTable.toString());
+            //     printToFile(filenamePrefix + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
+            //     if (dumpSymbolTable)
+            //         printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
                 
-                printDebug("\nType Checker:");
-                TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
-                tree.apply(typeChecker);
-                printDebug(typeChecker.toString()); 
+            //     printDebug("\nType Checker:");
+            //     TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
+            //     tree.apply(typeChecker);
+            //     printDebug(typeChecker.toString()); 
 
-                if (prettyPrintType) {
-                    prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
-                }
+            //     if (prettyPrintType) {
+            //         prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
+            //     }
 
-                // Generate C code if no type errors occurred
-                if (ErrorManager.errorCount <= 0)
-                {
-                    generateCode(tree, typeChecker, inputFilename);
-                }
-                else
-                {
-                    System.exit(1);
-                }
+            //     // Generate C code if no type errors occurred
+            //     if (ErrorManager.errorCount <= 0)
+            //     {
+            //         generateCode(tree, typeChecker, inputFilename);
+            //     }
+            //     else
+            //     {
+            //         System.exit(1);
+            //     }
                 
-            }
+            // }
 
             System.out.println("VALID");
             System.exit(0);
