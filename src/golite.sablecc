@@ -339,7 +339,7 @@ evaluated_exp {-> exp} =
   {cst_parenthesized} l_paren cst_exp r_paren {-> cst_exp.exp};
 
 function_call {-> exp} =
-  {cst_append} append l_paren cst_id comma cst_exp r_paren {-> New exp.appended_expr(New exp.id(cst_id.id_type), cst_exp.exp)} |
+  {cst_append} append l_paren [l]:cst_exp comma [r]: cst_exp r_paren {-> New exp.appended_expr(l.exp, r.exp)} |
   {cst_regular_func} cst_id l_paren cst_exp_list r_paren {-> New exp.function_call(New exp.id(cst_id.id_type), [cst_exp_list.exp])};
 
 field {-> exp} = 
