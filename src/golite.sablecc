@@ -116,7 +116,6 @@ cst_prog {-> program} =
   ; 
 
 top_level_declarations{-> decl} = 
-  {package_decl} cst_package_decl semicolon {-> New decl.pack_decl_ast(cst_package_decl.package_decl)} |
   {func_decl} cst_func_decl semicolon {-> New decl.func_decl_ast(cst_func_decl.func_decl)} | 
   {declarations} declarations semicolon {-> declarations.decl}
   ;
@@ -127,7 +126,7 @@ cst_package_decl{-> package_decl} =
 
 declarations {-> decl} =
   {var_decl} cst_var_decl {-> New decl.var_decl_ast(cst_var_decl.var_decl)} |
-  {type_decl} cst_type_decl {-> New decl.type_decl_ast(cst_type_decl.type_decl)}
+  {type_decl} cst_type_decl {-> New decl.type_decl_ast([cst_type_decl.type_decl])}
   ;
 
 //function declarations here
@@ -153,52 +152,17 @@ multi_sig {-> signature} =
 
 
 //type declaration and necessary subproductions here
-cst_type_decl {-> type_decl} =
-  {single_line} type_keyword type_top_level{-> type_top_level.type_decl} |
-  {multi_line} type_keyword l_paren type_top_level_eos* r_paren {-> New type_decl.multiline_list([type_top_level_eos.type_decl])}
+cst_type_decl {-> type_decl* } =
+  {single_line} type_keyword type_decl {-> [type_decl.type_decl]} |
+  {multi_line} type_keyword l_paren type_top_level* r_paren {-> [type_top_level.type_decl]}
   ;
 
-type_top_level_eos {-> type_decl} =
-  {type_top_level_eos} type_top_level /* cst_eos */{-> type_top_level.type_decl};
-
-type_top_level {-> type_decl} = 
-  {alias} type_aliasing {-> type_aliasing.type_decl} |
-  {struct} type_struct_declaration {-> type_struct_declaration.type_decl}
+type_top_level {-> type_decl } = 
+  {alias} type_decl cst_eos {-> type_decl.type_decl}
   ;
 
-type_aliasing {-> type_decl} = 
+type_decl {-> type_decl} = 
   cst_id cst_type {-> New type_decl.type_alias(cst_id.id_type, cst_type.var_type)}
-  ;
-
-type_struct_declaration {-> type_decl} = 
-  cst_id cst_list_multi? struct l_brace semicolon struct_or_list* r_brace {-> New type_decl
-  .struct_with_id(cst_list_multi.list_multi, cst_id.id_type, [struct_or_list.type_decl])}
-  ;
-
-struct_array_list {-> exp*} =
-  {end} struct_array {-> [struct_array.exp]} |
-  {list} struct_array_list struct_array {-> [struct_array_list.exp, struct_array.exp]}
-  ;
-
-struct_array {-> exp} =
-  {int} l_brack cst_int r_brack {-> cst_int.exp}
-  ;
-
-cst_int {-> exp} =
-  {int} int {-> New exp.int(int)} |
-  {oct} oct {-> New exp.oct(oct)} |
-  {hex} hex {-> New exp.hex(hex)}
-  ;
-
-struct_or_list {-> type_decl} =
-  {struct} type_struct_declaration semicolon {-> type_struct_declaration.type_decl} |
-  {list} type_with_one_or_more_ids {-> type_with_one_or_more_ids.type_decl}
-  ;
-
-type_with_one_or_more_ids {-> type_decl} = 
-  //{list} cst_id_list cst_type semicolon {-> New type_decl.struct_var_decl([cst_id_list.id_type],cst_type.var_type)}
-  {recurse} cst_id comma type_with_one_or_more_ids {-> New type_decl.type_with_many_ids(cst_id.id_type, type_with_one_or_more_ids.type_decl)} |
-  {base} cst_id cst_type semicolon {-> New type_decl.type_alias(cst_id.id_type, cst_type.var_type)}
   ;
 
 //variable declaration and necessary subproductions here
@@ -208,45 +172,41 @@ cst_var_decl {-> var_decl} =
   ;
 
 top_var_decl_eos {-> var_decl} =
-  {cst_decl_eos}  top_var_decl semicolon {-> top_var_decl.var_decl};
+  {cst_decl}  top_var_decl semicolon {-> top_var_decl.var_decl};
 
 top_var_decl {-> var_decl} = 
-  {cst_miat} var_id_and_type {-> var_id_and_type.var_decl} |
-  {cst_miae} var_id_and_exp_maybe_type {-> var_id_and_exp_maybe_type.var_decl}
+  {no_exp} var_id_and_type {-> var_id_and_type.var_decl} |
+  {with_exp_andor_type} var_id_and_exp_maybe_type {-> var_id_and_exp_maybe_type.var_decl}
   ;
 
 var_id_and_type {-> var_decl} = 
-  {miat_recurse} cst_id comma var_id_and_type {-> New var_decl.inline_list_no_exp(cst_id.id_type, var_id_and_type.var_decl)} |
-  {miat_end} cst_id cst_type {-> New var_decl.var_with_type(cst_id.id_type, cst_type.var_type)}
+  {no_exp_recurse} cst_id comma var_id_and_type {-> New var_decl.inline_list_no_exp(cst_id.id_type, var_id_and_type.var_decl)} |
+  {base} cst_id cst_type {-> New var_decl.var_with_type(cst_id.id_type, cst_type.var_type)}
   ;
 
 var_id_and_exp_maybe_type {-> var_decl} = 
-  {miae_recurse} cst_id [l]:comma var_id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(cst_id.id_type, var_id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
-  {miae_end} cst_id equals cst_exp {-> New var_decl.var_with_only_exp(cst_id.id_type, cst_exp.exp)} |
-  {mtae_end} cst_id cst_type equals cst_exp {-> New var_decl.var_with_type_and_exp(cst_id.id_type, cst_type.var_type, cst_exp.exp)};
+  {recurse} cst_id [l]:comma var_id_and_exp_maybe_type [r]:comma cst_exp {-> New var_decl.inline_list_with_exp(cst_id.id_type, var_id_and_exp_maybe_type.var_decl, cst_exp.exp)} |
+  {exp_only_base} cst_id equals cst_exp {-> New var_decl.var_with_only_exp(cst_id.id_type, cst_exp.exp)} |
+  {exp_and_type_base} cst_id cst_type equals cst_exp {-> New var_decl.var_with_type_and_exp(cst_id.id_type, cst_type.var_type, cst_exp.exp)};
 
 //general type production for all declarations
 cst_type {-> var_type} = 
-  {cst_base_type} type {-> New var_type.base_type(type)} | 
-  {cst_list_type} cst_list_multi type {-> New var_type.list_type(cst_list_multi.list_multi
-  , type)} |
-  {cst_list_id} cst_list_multi id {-> New var_type.list_struct(cst_list_multi.list_multi, id)} |
-  {cst_structs} id {-> New var_type.struct(id)}
+  {base} type {-> New var_type.type(type)} | 
+  {identifier} id {-> New var_type.id(id)} |
+  {array} l_brack int r_brack cst_type {-> New var_type.array(int, cst_type.var_type)} |
+  {slice} l_brack r_brack cst_type {-> New var_type.slice(cst_type.var_type)} |
+  {struct} struct l_brace semicolon field_dec* r_brace {-> New var_type.struct([field_dec.inner_fields])}
   ;
 
-cst_list_multi {-> list_multi} = 
-  cst_list_base+ {-> New list_multi([cst_list_base.list_base])}
-  ;
+field_dec {-> inner_fields} = cst_id_list cst_type semicolon
+  {-> New inner_fields.single([cst_id_list.id_type], cst_type.var_type)} ;
 
-cst_list_base {-> list_base} =
-  {slice} l_brack r_brack {-> New list_base.slice()} |
-  {array} l_brack int r_brack {-> New list_base.array(int)}
-  ;
-
-cst_id_list {-> id_type*} =
-  {id}   cst_id                 {-> [cst_id.id_type]} |
+cst_id_list {-> id_type+} =
+  {id}   cst_id  {-> [cst_id.id_type]} |
   {list} cst_id comma cst_id_list {-> [cst_id.id_type, cst_id_list.id_type]} 
   ;
+
+//Statement productions
 
 cst_block {-> stmt} =
   {cst_block} l_brace semicolon cst_stmt_list r_brace {-> New stmt.block([cst_stmt_list.stmt])};
@@ -410,13 +370,14 @@ cst_id {-> id_type} =
   {type} type {-> New id_type.type(type)};
 
 Abstract Syntax Tree
+
 program = package_decl decl*;
 
 decl = 
   {pack_decl_ast} package_decl |
-  {func_decl_ast} func_decl | 
+  {func_decl_ast} func_decl |
   {var_decl_ast} var_decl |
-  {type_decl_ast} type_decl
+  {type_decl_ast} type_decl*
   ;
 
 package_decl = 
@@ -435,10 +396,6 @@ signature =
 
 type_decl = 
   {type_alias} id_type var_type |
-  {type_with_many_ids} id_type type_decl |
-  {struct_with_id} list_multi? id_type type_decl* |
-  {multiline_list} type_decl* |
-  //{struct_var_decl} [id_list]:id_type* var_type
   ;
 
 var_decl = 
@@ -451,18 +408,15 @@ var_decl =
   ;
 
 var_type = 
-  {base_type} type |
-  {list_type} list_multi type |
-  {list_struct} list_multi id |
-  {struct} id
+  {type} type |
+  {slice} var_type |
+  {array} int var_type |
+  {struct} inner_fields* |
+  {id} id
   ;
 
-list_multi = 
-  list_base+
-  ;
-list_base = 
-  {slice} |
-  {array} int
+inner_fields = 
+  {single} id_type+ var_type
   ;
 
 id_type = 
