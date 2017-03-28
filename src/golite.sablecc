@@ -244,7 +244,7 @@ cst_list_base {-> list_base} =
   ;
 
 cst_id_list {-> id_type*} =
-  {id}   cst_id cst_type                 {-> [cst_id.id_type]} |
+  {id}   cst_id                 {-> [cst_id.id_type]} |
   {list} cst_id comma cst_id_list {-> [cst_id.id_type, cst_id_list.id_type]} 
   ;
 
