@@ -89,8 +89,6 @@ Tokens
   semicolon = ';';
   colon = ':';
   dot = '.';
-  print = 'print';
-  println = 'println';
   append = 'append';
   comment = '//' all_chars_but_linefeed*;
   block_comment = '/*' (all_chars_but_star_slash | '/*' | '/' | star_without_slash)* '*/';
