@@ -542,14 +542,32 @@ public class PrettyPrinter extends DepthFirstAdapter
    
 //     /** EXPRESSIONS */
 
-//     public void caseAFunctionCallSecondaryExp(AFunctionCallSecondaryExp node)
+	// public void caseAArrayElementExp(AArrayElementExp node){
+	// 	print("(");
+	// 	node.getArray().apply(this);
+	// 	print("[");
+	// 	node.getIndex().apply(this);
+	// 	print("]");
+	// 	print(")");
+	// }
+
+
+	// public void caseAFieldExp(AFieldExp node){
+	// 	print("(");
+	// 	node.getIdType().apply(this);
+	// 	print(").");
+	// 	print("(");
+	// 	node.getExp().apply(this);
+	// 	print(")");
+	// }
+
+//     public void caseAFunctionCallExp(AFunctionCallExp node)
 //     {
-//         node.getExp().apply(this);
+//         node.getName().apply(this);
 //         print("(");
-//         printNodesWithComma(node.getExpList());
+//         printNodesWithComma(node.getArgs());
 //         print(")");
 //     }
-//     //TODO: add function call secondary
 
 //     public void printWithType(Node node) {
 //             if (printType) {
@@ -761,7 +779,7 @@ public class PrettyPrinter extends DepthFirstAdapter
 //         printWithType(node);
 //     }
 
-//     public void caseACaretedFactorsExp(ACaretedFactorsExp node)
+//     public void caseAUnaryXorExp(AUnaryXorExp node)
 //     {
 //         print("^");
 //         print("(");
@@ -770,7 +788,7 @@ public class PrettyPrinter extends DepthFirstAdapter
 //         printWithType(node);
 //     }
 
-//     public void caseAExclamatedFactorsExp(AExclamatedFactorsExp node)
+//     public void caseAExclamationExp(AExclamationExp node)
 //     {
 //         print("!");
 //         print("(");
@@ -847,4 +865,15 @@ public class PrettyPrinter extends DepthFirstAdapter
 //        printWithType(node);
 //     }
 
+	// public void caseAPrintExp(APrintExp node){
+	// 	print("print(");
+	// 	printNodesWithComma(node.getExpList());
+	// 	print(")");
+	// }
+
+// 	   public void caseAPrintlnExp(APrintlnExp node){
+	// 	print("println(");
+	// 	printNodesWithComma(node.getExpList());
+	// 	print(")");
+	// }
 }
