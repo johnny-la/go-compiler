@@ -25,13 +25,13 @@ public class Main
     private static final boolean PRINT_TO_FILE = true;
 
     // Pretty prints the given AST
-    // private static void prettyPrint(Start tree, String inputFilename)
-    // {
-    //     PrettyPrinter prettyPrinter = new PrettyPrinter();
-    //     String prettyPrint = prettyPrinter.prettyPrint(tree);
-    //     printDebug(prettyPrint);
-    //     printToFile(inputFilename + PRETTY_PRINT_SUFFIX, prettyPrint);
-    // }
+    private static void prettyPrint(Start tree, String inputFilename)
+    {
+        PrettyPrinter prettyPrinter = new PrettyPrinter();
+        String prettyPrint = prettyPrinter.prettyPrint(tree);
+        printDebug(prettyPrint);
+        printToFile(inputFilename + PRETTY_PRINT_SUFFIX, prettyPrint);
+    }
 
     // private static void prettyPrint(Start tree, String inputFilename, 
     //     HashMap<Node, TypeClass> nodeTypes, boolean flag)
@@ -142,13 +142,13 @@ public class Main
 
             Start tree = parser.parse();
 
-            Weeder weeder = new Weeder();
-            tree.apply(weeder);
+            //Weeder weeder = new Weeder();
+            //tree.apply(weeder);
 
-            // if (args[0] != null)
-            // {
-            //     String filenamePrefix = inputFilename.split(".go")[0];
-            //     prettyPrint(tree, filenamePrefix);
+            if (args[0] != null)
+            {
+                String filenamePrefix = inputFilename.split(".go")[0];
+                prettyPrint(tree, filenamePrefix);
 
             //     SymbolTable symbolTable = new SymbolTable();
             //     SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
@@ -179,7 +179,7 @@ public class Main
             //         System.exit(1);
             //     }
                 
-            // }
+            }
 
             System.out.println("VALID");
             System.exit(0);
