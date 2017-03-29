@@ -126,7 +126,7 @@ cst_package_decl{-> package_decl} =
 
 declarations {-> decl} =
   {var_decl} cst_var_decl {-> New decl.var_decl_ast(cst_var_decl.var_decl)} |
-  {type_decl} cst_type_decl {-> New decl.type_decl_ast([cst_type_decl.type_decl])}
+  {type_decl} cst_type_decl {-> New decl.type_decl_ast(cst_type_decl.type_decl)}
   ;
 
 //function declarations here
@@ -152,9 +152,9 @@ multi_sig {-> signature} =
 
 
 //type declaration and necessary subproductions here
-cst_type_decl {-> type_decl* } =
-  {single_line} type_keyword type_decl {-> [type_decl.type_decl]} |
-  {multi_line} type_keyword l_paren type_top_level* r_paren {-> [type_top_level.type_decl]}
+cst_type_decl {-> type_decl } =
+  {single_line} type_keyword type_decl {-> type_decl.type_decl} |
+  {multi_line} type_keyword l_paren type_top_level* r_paren {-> New type_decl.multi([type_top_level.type_decl])}
   ;
 
 type_top_level {-> type_decl } = 
@@ -379,7 +379,7 @@ decl =
   {pack_decl_ast} package_decl |
   {func_decl_ast} func_decl |
   {var_decl_ast} var_decl |
-  {type_decl_ast} type_decl*
+  {type_decl_ast} type_decl
   ;
 
 package_decl = 
@@ -398,6 +398,7 @@ signature =
 
 type_decl = 
   {type_alias} id_type var_type |
+  {multi} type_decl+
   ;
 
 var_decl = 
