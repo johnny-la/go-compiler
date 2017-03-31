@@ -521,6 +521,22 @@ public class TypeChecker extends DepthFirstAdapter
  
     // }
 
+    // public void outADecrementStmt(ADecrementStmt node){
+    //     Node exp = node.getExp();
+    //     TypeClass expType = nodeTypes.get(exp);
+    //     if(expType.baseType != Type.INT && expType.baseType != Type.FLOAT64){
+    //          ErrorManager.printError("-- operator requires a numeric argument");
+    //     }
+    // }
+
+    // public void outAIncrementStmt(AIncrementStmt node){
+    //     Node exp = node.getExp();
+    //     TypeClass expType = nodeTypes.get(exp);
+    //     if(expType.baseType != Type.INT && expType.baseType != Type.FLOAT64){
+    //          ErrorManager.printError("++ operator requires a numeric argument");
+    //     }
+    // }
+
     // // Returns true if the node is a blank identifier
     // private boolean isBlankId(PIdType node)
     // {
@@ -816,7 +832,7 @@ public class TypeChecker extends DepthFirstAdapter
     // // Statements Start
 
     // // Print stmt
-    // public void outAPrintStmt(APrintStmt node){
+    // public void outAPrintExp(APrintExp node){
     //     LinkedList<PExp> expList = node.getExp();
     //     if(expList != null){
     //         int size = expList.size();
@@ -843,7 +859,7 @@ public class TypeChecker extends DepthFirstAdapter
     // }
 
     // // Println stmt
-    // public void outAPrintlnStmt(APrintlnStmt node){
+    // public void outAPrintlnExp(APrintlnExp node){
     //     LinkedList<PExp> expList = node.getExp();
     //     if(expList != null){
     //         int size = expList.size();
