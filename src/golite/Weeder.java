@@ -77,10 +77,10 @@ public class Weeder extends DepthFirstAdapter
         return false;
     }
 
-    public void inADecrementStmt(ADecrementStmt node)
-    {
-        //if (isBlankId())
-    }
+    // public void inADecrementStmt(ADecrementStmt node)
+    // {
+    //     //if (isBlankId())
+    // }
 
     public void inASwitchStmt(ASwitchStmt node)
     {
