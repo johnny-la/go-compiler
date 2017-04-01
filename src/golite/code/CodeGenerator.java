@@ -209,7 +209,7 @@ public class CodeGenerator extends DepthFirstAdapter
     }
     //var declarations
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node) {
-        print("var ");
+        print("int ");
         node.getVarDecl().apply(this);
         //println("");
 
@@ -311,26 +311,30 @@ public class CodeGenerator extends DepthFirstAdapter
 
     //function declarations
     public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node) {
-        print("func ");
+        print("public static ");
         node.getFuncDecl().apply(this);
         println("\n");
     }
     
     public void caseANoReturnFuncDecl(ANoReturnFuncDecl node) {
+        print("void ");
         node.getIdType().apply(this);
-        print(" (");
+        print("(");
         if (node.getSignature() != null) node.getSignature().apply(this);
         print(") ");
         node.getBlock().apply(this);
     }
 
     public void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node) {
-        node.getIdType().apply(this);
-        print(" (");
-        if (node.getSignature() != null) node.getSignature().apply(this);
-        print(") ");
+        // Return type
         node.getVarType().apply(this);
         print(" ");
+        // Function name
+        node.getIdType().apply(this);
+        // Signature
+        print("(");
+        if (node.getSignature() != null) node.getSignature().apply(this);
+        print(") ");
         node.getBlock().apply(this);
     }
 
@@ -922,9 +926,9 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         print("(");
         node.getL().apply(this);
-        print("&^");
+        print("& ~(");
         node.getR().apply(this);
-        print(")");
+        print("))");
         printWithType(node);
     }
 
@@ -948,7 +952,7 @@ public class CodeGenerator extends DepthFirstAdapter
         printWithType(node);
     }
 
-    public void caseAShiftRightExp(AShiftLeftExp node)
+    public void caseAShiftRightExp(AShiftRightExp node)
     {
         print("(");
         node.getL().apply(this);

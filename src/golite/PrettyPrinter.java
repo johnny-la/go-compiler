@@ -803,7 +803,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         printWithType(node);
     }
 
-    public void caseAShiftRightExp(AShiftLeftExp node)
+    public void caseAShiftRightExp(AShiftRightExp node)
     {
         print("(");
         node.getL().apply(this);
