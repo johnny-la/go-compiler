@@ -142,27 +142,27 @@ public class Main
 
             Start tree = parser.parse();
 
-            //Weeder weeder = new Weeder();
-            //tree.apply(weeder);
+            Weeder weeder = new Weeder();
+            tree.apply(weeder);
 
             if (args[0] != null)
             {
                 String filenamePrefix = inputFilename.split(".go")[0];
                 prettyPrint(tree, filenamePrefix);
 
-            //     SymbolTable symbolTable = new SymbolTable();
-            //     SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
-            //     printDebug("Semantic Analyzer:");
-            //     tree.apply(semanticAnalyzer);
-            //     printDebug("\nSymbol table:");
-            //     printDebug(symbolTable.toString());
+                SymbolTable symbolTable = new SymbolTable();
+                SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
+                printDebug("Semantic Analyzer:");
+                tree.apply(semanticAnalyzer);
+                printDebug("\nSymbol table:");
+                printDebug(symbolTable.toString());
             //     printToFile(filenamePrefix + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
             //     if (dumpSymbolTable)
             //         printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
                 
             //     printDebug("\nType Checker:");
-            //     TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
-            //     tree.apply(typeChecker);
+                TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
+                tree.apply(typeChecker);
             //     printDebug(typeChecker.toString()); 
 
             //     if (prettyPrintType) {

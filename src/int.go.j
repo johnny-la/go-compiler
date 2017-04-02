@@ -3,8 +3,8 @@ import java.util.*;
 
 public class Main {
     func main () {
-        var int int;
-        var float float64;
+        var x = 3;
+        x=(1+4);
     }
 
 }

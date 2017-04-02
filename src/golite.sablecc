@@ -344,7 +344,7 @@ function_call {-> exp} =
   {cst_append} append l_paren [l]:cst_exp comma [r]: cst_exp r_paren {-> New exp.appended_expr(l.exp, r.exp)} |
   {cst_print} print l_paren cst_exp_list r_paren {-> New exp.print([cst_exp_list.exp])} | 
   {cst_println} println l_paren cst_exp_list r_paren {-> New exp.println([cst_exp_list.exp])} | 
-  {cst_regular_func} cst_id l_paren cst_exp_list r_paren {-> New exp.function_call(New exp.id(cst_id.id_type), [cst_exp_list.exp])};
+  {cst_regular_func} evaluated_exp l_paren cst_exp_list r_paren {-> New exp.function_call(evaluated_exp.exp, [cst_exp_list.exp])};
 
 field {-> exp} = 
   {cst_field} evaluated_exp dot cst_id {-> New exp.field(evaluated_exp.exp, cst_id.id_type)};

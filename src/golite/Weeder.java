@@ -48,11 +48,12 @@ public class Weeder extends DepthFirstAdapter
                 "be used with one identifier");
         }
 
-           if (node.getOp() instanceof AOpEqualsExp && !allLValues)
+        if (node.getOp() instanceof AOpEqualsExp && !allLValues)
         {
             throw new RuntimeException("Operation assignment (+=,-=,etc) can only " +
                 "be used with proper LValues ");
         }
+
     }
 
     //check expr is id or arraySelector
@@ -76,11 +77,6 @@ public class Weeder extends DepthFirstAdapter
 
         return false;
     }
-
-    // public void inADecrementStmt(ADecrementStmt node)
-    // {
-    //     //if (isBlankId())
-    // }
 
     public void inASwitchStmt(ASwitchStmt node)
     {
@@ -214,26 +210,35 @@ public class Weeder extends DepthFirstAdapter
             throwContinueError();
         }
     }
+    public void inAFieldExp(AFieldExp node) {
+        Node id = node.getIdType();
+        if (id instanceof AIdIdType) {
+            AIdIdType newTemp = (AIdIdType) id;
+            if (newTemp.getId().getText().equals("_")) {
+                throwBlankIdError("Trying to evaluate a struct selector with a blank identifier \n");
+            }
+        }
+    }
 
     public void caseAAssignListStmt(AAssignListStmt node) {
         inAAssignListStmt(node);
         {
             List<PExp> copy = new ArrayList<PExp>(node.getL());
-            for(PExp e : copy)
-            {   
-                if (e instanceof AIdExp) {
-                    AIdExp temp = (AIdExp) e;
-                    if (temp.getIdType() instanceof AIdIdType) {
-                    AIdIdType newTemp = (AIdIdType) temp.getIdType();
-                    if (newTemp.getId().getText().equals("_")) {
-                    } else {
-                        e.apply(this);
+                for(PExp e : copy) {   
+                    if (e instanceof AIdExp) {
+                        AIdExp temp = (AIdExp) e;
+                        if (temp.getIdType() instanceof AIdIdType) {
+                        AIdIdType newTemp = (AIdIdType) temp.getIdType();
+                        if (newTemp.getId().getText().equals("_") && copy.size() > 1) {
+                            //nothing
+                        } else {
+                            e.apply(this);
                         }
                     }
                 } else {
                     e.apply(this);
+                    }
                 }
-            }
         }
         if(node.getOp() != null)
         {
@@ -249,7 +254,7 @@ public class Weeder extends DepthFirstAdapter
         outAAssignListStmt(node);
     }
 
-    public void inAIdExp(AIdExp node) {
+    public void caseAIdExp(AIdExp node) {
         PIdType id = node.getIdType();
         if (id instanceof AIdIdType) {
             AIdIdType temp = (AIdIdType) id;

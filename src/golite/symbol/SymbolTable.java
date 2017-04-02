@@ -32,7 +32,7 @@ public class SymbolTable
      * Call this function when leaving a block
      */
     public SymbolTable unscope()
-    {
+    {   
         return next;
     }
     /** 
@@ -86,7 +86,6 @@ public class SymbolTable
 
             output.append(key + "\t\t\""+value + "\"\n");
         }
-
         return output.toString();
     }
 

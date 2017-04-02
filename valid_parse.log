@@ -1,152 +1,146 @@
 grading/valid/parser//2-package.go: VALID
 [pass]
-grading/valid/parser//4-vardecs.go: declaring shit
-declaring shit
-declaring shit
-declaring shit
-FLOAT64
-FLOAT64
-Checking aliases: FLOAT64 R:FLOAT64
-INVALID: java.lang.NullPointerExceptionjava.lang.NullPointerException
-	at golite.type.TypeChecker.outAVarWithOnlyExpVarDecl(TypeChecker.java:453)
-	at golite.analysis.DepthFirstAdapter.caseAVarWithOnlyExpVarDecl(DepthFirstAdapter.java:480)
-	at golite.node.AVarWithOnlyExpVarDecl.apply(AVarWithOnlyExpVarDecl.java:40)
-	at golite.analysis.DepthFirstAdapter.caseAVarDeclAstDecl(DepthFirstAdapter.java:125)
-	at golite.node.AVarDeclAstDecl.apply(AVarDeclAstDecl.java:35)
-	at golite.analysis.DepthFirstAdapter.caseAProgram(DepthFirstAdapter.java:61)
-	at golite.node.AProgram.apply(AProgram.java:41)
-	at golite.analysis.DepthFirstAdapter.caseStart(DepthFirstAdapter.java:34)
-	at golite.node.Start.apply(Start.java:37)
-	at golite.Main.main(Main.java:162)
-[fail]
-grading/valid/parser//5-typedecs.go: INVALID: golite.parser.ParserException: [36,11] expecting: type, '[', idgolite.parser.ParserException: [36,11] expecting: type, '[', id
-	at golite.parser.Parser.parse(Parser.java:182)
-	at golite.Main.main(Main.java:142)
-[fail]
-grading/valid/parser//6-funcdecs.go: Declared function: f1, FUNCTION,  ():VOID
-Declared function: f2, FUNCTION,  ():INT
-Declared function: f3, FUNCTION,  (INT):VOID
-Declared function: f4, FUNCTION,  (INT, INT):VOID
-Declared function: f5, FUNCTION,  (INT, INT):VOID
-Declared function: f6, FUNCTION,  (INT, INT, BOOL, BOOL):VOID
+grading/valid/parser//4-vardecs.go: VALID
+[pass]
+grading/valid/parser//5-typedecs.go: VALID
+[pass]
+grading/valid/parser//6-funcdecs.go: {}
+{}
+{a=a, FORMAL, INT}
+{a=a, FORMAL, INT, b=b, FORMAL, INT}
+{a=a, FORMAL, INT, b=b, FORMAL, INT}
+{a=a, FORMAL, INT, b=b, FORMAL, INT, c=c, FORMAL, BOOL, d=d, FORMAL, BOOL}
 VALID
 [pass]
-grading/valid/parser//7-1-basic.go: Declared function: main, FUNCTION,  ():VOID
+grading/valid/parser//7-1-basic.go: {a=a, LOCAL, INT, b=b, LOCAL, FLOAT64, c=c, LOCAL, BOOL, d=d, LOCAL, RUNE, bool=bool, LOCAL, BOOL, string=string, LOCAL, STRING, e=e, LOCAL, STRING, float64=float64, LOCAL, FLOAT64, int=int, LOCAL, INT, rune=rune, LOCAL, RUNE}
 VALID
 [pass]
-grading/valid/parser//7-2-slices.go: Declared function: main, FUNCTION,  ():VOID
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (y1 ,y1, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (y2 ,y2, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (y3 ,y3, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (y4 ,y4, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (m ,m, LOCAL, INT) into symbolMap
-Inserting (y5 ,y5, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (m ,m, LOCAL, INT) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (m ,m, LOCAL, INT) into symbolMap
-Inserting (n ,n, LOCAL, INT) into symbolMap
-Inserting (b1 ,b1, LOCAL, FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (b2 ,b2, LOCAL, FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (b3 ,b3, LOCAL, FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (m ,m, LOCAL, INT) into symbolMap
-Inserting (n ,n, LOCAL, INT) into symbolMap
-Checking aliases: []INT R:INT
-Checking aliases: []INT R:[]INT
-Checking aliases: []INT R:INT
-Checking aliases: []INT R:[]INT
-Checking aliases: []INT R:INT
-Checking aliases: []INT R:[]INT
-Checking aliases: INT R:null
-INVALID: java.lang.NullPointerExceptionjava.lang.NullPointerException
-	at golite.type.TypeChecker.isAliasedCorrectly(TypeChecker.java:73)
-	at golite.type.TypeChecker.outAAssignListStmt(TypeChecker.java:525)
-	at golite.analysis.DepthFirstAdapter.caseAAssignListStmt(DepthFirstAdapter.java:905)
-	at golite.node.AAssignListStmt.apply(AAssignListStmt.java:46)
-	at golite.analysis.DepthFirstAdapter.caseABlockStmt(DepthFirstAdapter.java:926)
-	at golite.node.ABlockStmt.apply(ABlockStmt.java:36)
-	at golite.analysis.DepthFirstAdapter.caseANoReturnFuncDecl(DepthFirstAdapter.java:196)
-	at golite.node.ANoReturnFuncDecl.apply(ANoReturnFuncDecl.java:45)
-	at golite.analysis.DepthFirstAdapter.caseAFuncDeclAstDecl(DepthFirstAdapter.java:104)
-	at golite.node.AFuncDeclAstDecl.apply(AFuncDeclAstDecl.java:35)
-	at golite.analysis.DepthFirstAdapter.caseAProgram(DepthFirstAdapter.java:61)
-	at golite.node.AProgram.apply(AProgram.java:41)
-	at golite.analysis.DepthFirstAdapter.caseStart(DepthFirstAdapter.java:34)
-	at golite.node.Start.apply(Start.java:37)
-	at golite.Main.main(Main.java:162)
-[fail]
-grading/valid/parser//7-3-arrays.go: Declared function: main, FUNCTION,  ():VOID
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (m ,m, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (m ,m, LOCAL, INT) into symbolMap
-Inserting (y1 ,y1, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (y2 ,y2, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (y3 ,y3, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (y4 ,y4, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (m ,m, LOCAL, INT) into symbolMap
-Inserting (y5 ,y5, LOCAL, INT) into symbolMap
-Inserting (x ,x, LOCAL, []INT) into symbolMap
-Inserting (m ,m, LOCAL, INT) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (m ,m, LOCAL, INT) into symbolMap
-Inserting (n ,n, LOCAL, INT) into symbolMap
-Inserting (b1 ,b1, LOCAL, FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (b2 ,b2, LOCAL, FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (b3 ,b3, LOCAL, FLOAT64) into symbolMap
-Inserting (a ,a, LOCAL, [][]FLOAT64) into symbolMap
-Inserting (m ,m, LOCAL, INT) into symbolMap
-Inserting (n ,n, LOCAL, INT) into symbolMap
-Checking aliases: null R:INT
-INVALID: java.lang.NullPointerExceptionjava.lang.NullPointerException
-	at golite.type.TypeChecker.isAliasedCorrectly(TypeChecker.java:73)
-	at golite.type.TypeChecker.outAAssignListStmt(TypeChecker.java:525)
-	at golite.analysis.DepthFirstAdapter.caseAAssignListStmt(DepthFirstAdapter.java:905)
-	at golite.node.AAssignListStmt.apply(AAssignListStmt.java:46)
-	at golite.analysis.DepthFirstAdapter.caseABlockStmt(DepthFirstAdapter.java:926)
-	at golite.node.ABlockStmt.apply(ABlockStmt.java:36)
-	at golite.analysis.DepthFirstAdapter.caseANoReturnFuncDecl(DepthFirstAdapter.java:196)
-	at golite.node.ANoReturnFuncDecl.apply(ANoReturnFuncDecl.java:45)
-	at golite.analysis.DepthFirstAdapter.caseAFuncDeclAstDecl(DepthFirstAdapter.java:104)
-	at golite.node.AFuncDeclAstDecl.apply(AFuncDeclAstDecl.java:35)
-	at golite.analysis.DepthFirstAdapter.caseAProgram(DepthFirstAdapter.java:61)
-	at golite.node.AProgram.apply(AProgram.java:41)
-	at golite.analysis.DepthFirstAdapter.caseStart(DepthFirstAdapter.java:34)
-	at golite.node.Start.apply(Start.java:37)
-	at golite.Main.main(Main.java:162)
-[fail]
-grading/valid/parser//7-4-structs.go: INVALID: golite.parser.ParserException: [5,8] expecting: type, '=', '[', ',', idgolite.parser.ParserException: [5,8] expecting: type, '=', '[', ',', id
-	at golite.parser.Parser.parse(Parser.java:182)
-	at golite.Main.main(Main.java:142)
-[fail]
-grading/valid/parser//8-0-blockstmts.go: Declared function: block_stmts, FUNCTION,  ():VOID
+grading/valid/parser//7-2-slices.go: {b2=b2, LOCAL, FLOAT64, a=a, LOCAL, [][]FLOAT64, b3=b3, LOCAL, FLOAT64, x=x, LOCAL, []INT, y1=y1, LOCAL, INT, y2=y2, LOCAL, INT, y3=y3, LOCAL, INT, y4=y4, LOCAL, INT, y5=y5, LOCAL, INT, m=m, LOCAL, INT, n=n, LOCAL, INT, b1=b1, LOCAL, FLOAT64}
 VALID
+[pass]
+grading/valid/parser//7-3-arrays.go: {b2=b2, LOCAL, FLOAT64, a=a, LOCAL, [][]FLOAT64, b3=b3, LOCAL, FLOAT64, x=x, LOCAL, []INT, y1=y1, LOCAL, INT, y2=y2, LOCAL, INT, y3=y3, LOCAL, INT, y4=y4, LOCAL, INT, y5=y5, LOCAL, INT, m=m, LOCAL, INT, n=n, LOCAL, INT, b1=b1, LOCAL, FLOAT64}
+VALID
+[pass]
+grading/valid/parser//7-4-structs.go: {p=p, LOCAL, STRUCT, q=q, LOCAL, STRUCT, t=t, LOCAL, []STRUCT, z1=z1, LOCAL, INT, y1=y1, LOCAL, INT, z2=z2, LOCAL, INT, x1=x1, LOCAL, INT, y2=y2, LOCAL, INT, x2=x2, LOCAL, INT}
+VALID
+[pass]
+grading/valid/parser//8-0-blockstmts.go: {x=x, LOCAL, INT}
+{}
+{}
+{x=x, LOCAL, INT, y=y, LOCAL, INT}
+VALID
+[pass]
+grading/valid/parser//8-1-emptystmts.go: {}
+VALID
+[pass]
+grading/valid/parser//8-10-switchstmts.go: {}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{x=x, LOCAL, INT}
+VALID
+[pass]
+grading/valid/parser//8-11-forstmts.go: {}
+{}
+{}
+{}
+{}
+{}
+{}
+{a=a, LOCAL, No Type, Inheriting types: {a, LOCAL, No Type}}
+{}
+{}
+{}
+{}
+{}
+{a=a, LOCAL, No Type, Inheriting types: {a, LOCAL, No Type, a, LOCAL, No Type}}
+{}
+{a=a, LOCAL, No Type, Inheriting types: {a, LOCAL, No Type, a, LOCAL, No Type}}
+{}
+{}
+{}
+{a=a, LOCAL, No Type, Inheriting types: {a, LOCAL, No Type, a, LOCAL, No Type, a, LOCAL, No Type}}
+{a=a, LOCAL, INT}
+INVALID: java.lang.RuntimeException: INVALID: Comparison of incompatible types: No Type, INT. (a , 10 )[fail]
+grading/valid/parser//8-12-breakcontinuestmts.go: {}
+{}
+{}
+{}
+{}
+{}
+{}
+VALID
+[pass]
+grading/valid/parser//8-2-exprstmts.go: {}
+{}
+VALID
+[pass]
+grading/valid/parser//8-3-assignstmts.go: {a=a, LOCAL, INT, b=b, LOCAL, INT}
+VALID
+[pass]
+grading/valid/parser//8-4-decstmts.go: {t4=t4, TYPE, STRUCT, t5=t5, TYPE, STRUCT, t6=t6, TYPE, STRUCT, t7=t7, TYPE, []INT, t8=t8, TYPE, [](t1 int) []INT, t9=t9, TYPE, []STRUCT, b1=b1, LOCAL, INT, b2=b2, LOCAL, FLOAT64, b3=b3, LOCAL, No Type, b4=b4, LOCAL, STRING, t10=t10, TYPE, [][]FLOAT64, b5=b5, LOCAL, STRING, b6=b6, LOCAL, STRING, t12=t12, TYPE, [](t1 int) []INT, b7=b7, LOCAL, STRING, t11=t11, TYPE, []INT, b8=b8, LOCAL, No Type, t14=t14, TYPE, [][]FLOAT64, b9=b9, LOCAL, No Type, t13=t13, TYPE, []STRUCT, _=_, LOCAL, INT, a1=a1, LOCAL, INT, a2=a2, LOCAL, FLOAT64, a3=a3, LOCAL, No Type, a4=a4, LOCAL, STRING, a5=a5, LOCAL, STRING, a6=a6, LOCAL, STRING, a7=a7, LOCAL, STRING, a8=a8, LOCAL, No Type, a9=a9, LOCAL, No Type, t1=t1, TYPE, INT, t2=t2, TYPE, RUNE, t3=t3, TYPE, BOOL}
+VALID
+[pass]
+grading/valid/parser//8-5-shortdecstmts.go: {a=a, LOCAL, No Type, Inheriting types: {a, LOCAL, No Type}, b=b, LOCAL, No Type, Inheriting types: {b, LOCAL, No Type}, c=c, LOCAL, No Type, Inheriting types: {c, LOCAL, No Type}, x=x, LOCAL, No Type, Inheriting types: {x, LOCAL, No Type}, _=_, LOCAL, No Type, Inheriting types: {_, LOCAL, No Type}}
+VALID
+[pass]
+grading/valid/parser//8-6-incdecstmts.go: {x=x, LOCAL, INT}
+VALID
+[pass]
+grading/valid/parser//8-7-printstmts.go: {x=x, LOCAL, INT}
+VALID
+[pass]
+grading/valid/parser//8-8-returnstmts.go: {}
+{}
+{}
+INVALID: java.lang.RuntimeException: INVALID: Function does not return a type.  Expecting: INT.[fail]
+grading/valid/parser//8-9-ifstmts.go: {}
+{}
+{}
+{}
+{}
+{x=x, LOCAL, No Type, Inheriting types: {x, LOCAL, No Type, x, LOCAL, No Type}}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{x=x, LOCAL, INT}
+INVALID: java.lang.RuntimeException: INVALID: Comparison of incompatible types: null, INT. (x  - 0 )[fail]
+grading/valid/parser//9-1-parenexprs.go: {x=x, LOCAL, INT}
+VALID
+[pass]
+grading/valid/parser//9-4-unaryexprs.go: {b=b, LOCAL, BOOL, c=c, LOCAL, BOOL, x=x, LOCAL, INT, y=y, LOCAL, INT}
+VALID
+[pass]
+grading/valid/parser//9-5-binexprs.go: {r=r, LOCAL, INT, b=b, LOCAL, BOOL, c=c, LOCAL, BOOL, x=x, LOCAL, INT, y=y, LOCAL, INT}
+VALID
+[pass]
+grading/valid/parser//9-6-funccallexprs.go: INVALID: golite.parser.ParserException: [17,5] expecting: op equals, '=', ':='[fail]
+grading/valid/parser//9-8-typecastexpr.go: INVALID: java.lang.RuntimeException: INVALID: "int" is not declared[fail]

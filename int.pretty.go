@@ -1,6 +1,20 @@
 package main; 
 func main () {
-    var int int;
-    var float float64;
+    var x struct {
+        a, bint
+        innerStructstruct {
+            c, dint
 }
+};
+            type z struct {
+                a, bint
+                innerStructstruct {
+                    c, dint
+}
+};
+                    var n z;
+                    if (n==x){
+                        (print(n));
+                    };
+                }
 
