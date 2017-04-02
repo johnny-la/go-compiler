@@ -739,7 +739,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     private void scope()
     {
         if (dumpSymbolTable)
-            dumpSymbolTableOutput += symbolTable + "\n----------------------";
+            dumpSymbolTableOutput += symbolTable + "\n----------------------\n";
 
         // Creates a new scope after enterring a block
         symbolTable = symbolTable.scope();
