@@ -534,9 +534,7 @@ public class PrettyPrinter extends DepthFirstAdapter
 		print("(");
 		node.getIdType().apply(this);
 		print(").");
-		print("(");
 		node.getExp().apply(this);
-		print(")");
 	}
 
     public void caseAFunctionCallExp(AFunctionCallExp node)
@@ -805,7 +803,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         printWithType(node);
     }
 
-    public void caseAShiftRightExp(AShiftLeftExp node)
+    public void caseAShiftRightExp(AShiftRightExp node)
     {
         print("(");
         node.getL().apply(this);
@@ -843,13 +841,13 @@ public class PrettyPrinter extends DepthFirstAdapter
        printWithType(node);
     }
 
-	public void caseAPrintExp(APrintExp node){
+    public void caseAPrintExp(APrintExp node) {
 		print("print(");
 		printNodesWithComma(node.getExp());
 		print(")");
 	}
 
-	   public void caseAPrintlnExp(APrintlnExp node){
+    public void caseAPrintlnExp(APrintlnExp node) {
 		print("println(");
 		printNodesWithComma(node.getExp());
 		print(")");

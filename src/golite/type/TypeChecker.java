@@ -596,6 +596,22 @@ public class TypeChecker extends DepthFirstAdapter
  
     // }
 
+    // public void outADecrementStmt(ADecrementStmt node){
+    //     Node exp = node.getExp();
+    //     TypeClass expType = nodeTypes.get(exp);
+    //     if(expType.baseType != Type.INT && expType.baseType != Type.FLOAT64){
+    //          ErrorManager.printError("-- operator requires a numeric argument");
+    //     }
+    // }
+
+    // public void outAIncrementStmt(AIncrementStmt node){
+    //     Node exp = node.getExp();
+    //     TypeClass expType = nodeTypes.get(exp);
+    //     if(expType.baseType != Type.INT && expType.baseType != Type.FLOAT64){
+    //          ErrorManager.printError("++ operator requires a numeric argument");
+    //     }
+    // }
+
     // // Returns true if the node is a blank identifier
     // private boolean isBlankId(PIdType node)
     // {
@@ -843,10 +859,6 @@ public class TypeChecker extends DepthFirstAdapter
         }
         addType(node, typeClass.baseType);
     }    
-
-    // // ----------------------------------------
-    // // Unary Expressions End
-  
 
     // Base Literals Start
     // ----------------------------------------
