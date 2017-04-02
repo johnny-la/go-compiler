@@ -7,7 +7,7 @@ public class TypeClass
 {
     public PVarType varTypeNode;    // The top-most PVarType node
     public Type baseType;   // The base type of the variable (INT, FLOAT64, etc.)
-    public Node structNode; // If this is a struct-type, this stores the struct declaration node
+    public List<PInnerFields> innerFields; // If this is a struct-type, this stores the struct declaration node
     public int totalArrayDimension; // The dimension of the base type
     public FunctionSignature functionSignature; // Only populated if baseType == FUNCTION
     //public Node typeAliasNode;      // If this variable is a custom type, this stores the type alias declaration node 
@@ -24,7 +24,7 @@ public class TypeClass
         
         varTypeNode = other.varTypeNode;
         baseType = other.baseType;
-        structNode = other.structNode;
+        innerFields = other.innerFields;
         totalArrayDimension = other.totalArrayDimension;
         functionSignature = (other.functionSignature != null)? 
                                 new FunctionSignature(other.functionSignature) : null;
@@ -67,14 +67,14 @@ public class TypeClass
 
     public boolean isNull()
     {
-        return (baseType == null && structNode == null);
+        return (baseType == null && innerFields == null);
     }
 
     public String toString()
     {
         String output = "";
 
-        for (int i = typeAliases.size()-1; i >= 0; i--)
+        for (int i = typeAliases.size() - 1; i >= 0; i--)
         {
             output += typeAliases.get(i) + " ";
         }
@@ -86,8 +86,9 @@ public class TypeClass
 
         if (functionSignature == null)
         {
-            output += (baseType != null)? baseType:"Struct: " + structNode;
+            output += (baseType != null)? baseType : "No Type";
         }
+
         else
         {
             output += " " + functionSignature;
