@@ -1218,9 +1218,8 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAAppendedExprExp(AAppendedExprExp node)
     {
-        print("append(");
         node.getL().apply(this);
-        print(", ");
+        print(".add(");
         node.getR().apply(this);
         print(")");
         printWithType(node);
