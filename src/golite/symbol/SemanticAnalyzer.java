@@ -424,8 +424,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         symbolTable.put(idName, symbol);
         symbolMap.put(node, symbol);
         symbolMap.put(id, symbol);
-        System.out.println(symbol.toString());
-        System.out.println(typeClass);
+        // System.out.println(symbol.toString());
+        // System.out.println(typeClass);
         return symbol;
     }
 

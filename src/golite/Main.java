@@ -59,16 +59,16 @@ public class Main
     /** 
      * Generates C code from the given AST
      */
-    private static void generateCode(Start tree, HashMap<Node,TypeClass> nodeTypes,
-            String inputFilename)
-    {
-        printDebug("Code Generator:");
-        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes);
-        String code = codeGenerator.generateCode();
+    // private static void generateCode(Start tree, HashMap<Node,TypeClass> nodeTypes,
+    //         String inputFilename)
+    // {
+    //     printDebug("Code Generator:");
+    //     CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes);
+    //     String code = codeGenerator.generateCode();
 
-        printDebug(code);
-        printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
-    }
+    //     printDebug(code);
+    //     printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
+    // }
 
     /**
      * Prints the given string to the specified file
@@ -152,33 +152,33 @@ public class Main
 
                 SymbolTable symbolTable = new SymbolTable();
                 SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
-                printDebug("Semantic Analyzer:");
+                // printDebug("Semantic Analyzer:");
                 tree.apply(semanticAnalyzer);
-                printDebug("\nSymbol table:");
-                printDebug(symbolTable.toString());
-                if (dumpSymbolTable)
-                    printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
+                // printDebug("\nSymbol table:");
+                // printDebug(symbolTable.toString());
+                // if (dumpSymbolTable)
+                //     printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
                 
-                System.out.println("Semantic Analyzer Node Types:");
-                printSymbolMap(semanticAnalyzer.symbolMap);
-                System.out.println("-------------");
+                // System.out.println("Semantic Analyzer Node Types:");
+                // printSymbolMap(semanticAnalyzer.symbolMap);
+                // System.out.println("-------------");
 
-                printDebug("\nType Checker:");
+                // printDebug("\nType Checker:");
                 TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
                 tree.apply(typeChecker);
-                printDebug(typeChecker.toString()); 
+                // printDebug(typeChecker.toString()); 
 
-                System.out.println("Type Checker Node Types:");
-                printNodeTypes(typeChecker.nodeTypes);
+                // System.out.println("Type Checker Node Types:");
+                // printNodeTypes(typeChecker.nodeTypes);
 
-                if (prettyPrintType) {
-                    prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
-                }
+                // if (prettyPrintType) {
+                //     prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
+                // }
 
                 // Generate C code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)
                 {
-                    generateCode(tree, typeChecker.nodeTypes, filenamePrefix);
+                    // generateCode(tree, typeChecker.nodeTypes, filenamePrefix);
                 }
                 else
                 {

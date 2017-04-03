@@ -87,7 +87,7 @@ public class TypeChecker extends DepthFirstAdapter
 
     public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
 
-        if (left.totalArrayDimension != null || right.totalArrayDimension != null) {
+        if (left.totalArrayDimension.size() > 0 || right.totalArrayDimension.size() > 0) {
             ErrorManager.printError("Unable to perform binary operations on array type");
             return false;
         }
@@ -519,7 +519,7 @@ public class TypeChecker extends DepthFirstAdapter
     public void outAAppendedExprExp(AAppendedExprExp node) {
         TypeClass leftType = getSliceType(getType(node.getL()));
         TypeClass rightType = getType(node.getR());
-        System.out.println(leftType.baseType);
+        // System.out.println(leftType.baseType);
         if (leftType == null) {
             ErrorManager.printError("Must append to slices only");
         }
@@ -539,6 +539,61 @@ public class TypeChecker extends DepthFirstAdapter
                     leftType + ", " + rightType + ". (" + node.getL() + " / " +
                     node.getR() + ")");
     }
+
+    //check to see that each element is of right type, aka int is associated correctly
+    public void outAArrayElementExp(AArrayElementExp node) {
+        int levels = 1;
+        Node current = node.getArray();
+        while (!(current instanceof AIdExp)) {
+            levels += 1;
+            if (!(getType(node.getIndex()).baseType == Type.INT)) {
+                ErrorManager.printError("Index must be of type int");
+            }
+            current = ((AArrayElementExp) current).getArray();
+        }
+
+        TypeClass arrayType = new TypeClass(getType(current));
+        if (arrayType.totalArrayDimension.size() < levels) {
+                ErrorManager.printError("Array size too small");
+        }
+        nodeTypes.put(node, arrayType);
+    }
+    
+
+    // public TypeClass getLastType(TypeClass t, LinkedList<Node> fields, int index) {
+    //     if (t.innerFields == null) {
+    //         ErrorManager.printError("no inner fields for struct");
+    //     }
+
+    //     for (PInnerFields inner: t.innerFields) {
+    //         for (PIdType node : ((ASingleInnerFields) inner).getIdType()) {
+    //             if (node.getClass().equals(fields.get(index).getClass())) {
+    //                 //check if ids are same
+    //                 if ((index + 1) == fields.size()) {
+    //                     //return type 
+    //                 } else {
+    //                     //go deeper and increment index
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }    
+    // //check that the field exists and associate with right type
+    // public void outAFieldExp(AFieldExp node) {
+    //     LinkedList<Node> fields = new LinkedList<Node>();
+    //     Node current = node.getExp();
+    //     fields.add(node.getIdType());
+    //     while (!(current instanceof AIdExp)) {
+    //         fields.add(((AFieldExp) current).getIdType());
+    //         current = ((AFieldExp) current).getExp();
+    //     }
+    //     TypeClass type = getType(current);
+    //     if (type.baseType != Type.STRUCT) {
+    //         ErrorManager.printError("Cannot select a field on a non-struct");
+    //     }
+    //     //traverse down fields to make sure everything exists;
+    //     nodeTypes.put(node, getLastType(type, fields, 0));
+    // }
 
     // public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
     //     Node left = node.getIdType();
@@ -734,7 +789,7 @@ public class TypeChecker extends DepthFirstAdapter
     // These are IDs in expressions
     public void outAIdExp(AIdExp node)
     {
-        System.out.println("Traversing ID: " + node);
+        // System.out.println("Traversing ID: " + node);
         if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
             addType(node, Type.BOOL);
             return;
