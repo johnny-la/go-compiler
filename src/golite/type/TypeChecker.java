@@ -731,8 +731,10 @@ public class TypeChecker extends DepthFirstAdapter
     //     }
     // }
 
+    // These are IDs in expressions
     public void outAIdExp(AIdExp node)
     {
+        System.out.println("Traversing ID: " + node);
         if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
             addType(node, Type.BOOL);
             return;
@@ -752,6 +754,26 @@ public class TypeChecker extends DepthFirstAdapter
         }
 
         addType(node, new TypeClass(type));        
+    }
+
+    // These are IDs inside declarations
+    public void outAIdIdType(AIdIdType node)
+    {
+        if (!nodeTypes.containsKey(node))
+        {
+            Symbol symbol = symbolTable.get(node);
+            if (symbol == null) { return; }
+
+            TypeClass type = symbol.typeClass;
+            if (type.baseType == Type.INVALID)
+            {
+                ErrorManager.printError("Identifier \"" + node + "\"has"
+                        + " invalid type");
+                return;
+            }
+
+            addType(node, new TypeClass(type));
+        }
     }
 
     /**

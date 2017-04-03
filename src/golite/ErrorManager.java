@@ -9,4 +9,9 @@ public class ErrorManager
         errorCount++;
         throw new RuntimeException("INVALID: " + message);
     }
+
+    public static void printWarning(String message)
+    {
+        System.out.println("WARNING: " + message);
+    }
 }
