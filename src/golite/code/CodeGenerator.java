@@ -1101,7 +1101,9 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseARawStringLitExp(ARawStringLitExp node)
     {
-       print(node.getRawStringLit().getText()); 
+       String strValue = node.getRawStringLit().getText();
+       String strValueWithoutRawQuotes = strValue.substring(1,strValue.length()-1);
+       print("\"" + strValueWithoutRawQuotes + "\""); 
        printWithType(node);
     }
 
