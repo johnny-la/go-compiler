@@ -566,83 +566,6 @@ public class TypeChecker extends DepthFirstAdapter
                     node.getR() + ")");
     }
 
-<<<<<<< HEAD
-    //check to see that each element is of right type, aka int is associated correctly
-
-    // public TypeClass getBaseType(TypeClass t) {
-    //     if 
-=======
-    public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
-        Node left = node.getIdType();
-        Node right = node.getExp();
-        if (isBlankId(node.getIdType())) {
-            return;
-        }
-        TypeClass temp = new TypeClass(getType(right));
-        Symbol lhsSymbol = symbolTable.get(left);
-        lhsSymbol.setType(temp);
-        System.out.println("outAVarWithOnlyExpVarDecl(): Set type of " + left + 
-            " to " + temp);
-        nodeTypes.put(left,lhsSymbol.typeClass);
-    }
->>>>>>> 1d7bbd368d4f85ce6a7cd684fd57350a41ce568a
-
-    // }
-    public void outAArrayElementExp(AArrayElementExp node) {
-        int levels = 1;
-        Node current = node.getArray();
-        while (!(current instanceof AIdExp)) {
-            levels += 1;
-            if (!(getType(node.getIndex()).baseType == Type.INT)) {
-                ErrorManager.printError("Index must be of type int");
-            }
-            current = ((AArrayElementExp) current).getArray();
-        }
-
-        TypeClass arrayType = new TypeClass(getType(current));
-        if (arrayType.totalArrayDimension.size() < levels) {
-                ErrorManager.printError("Array size too small");
-        }
-        nodeTypes.put(node, arrayType);
-    }
-    
-
-    // public TypeClass getLastType(TypeClass t, LinkedList<Node> fields, int index) {
-    //     if (t.innerFields == null) {
-    //         ErrorManager.printError("no inner fields for struct");
-    //     }
-
-    //     for (PInnerFields inner: t.innerFields) {
-    //         for (PIdType node : ((ASingleInnerFields) inner).getIdType()) {
-    //             if (node.getClass().equals(fields.get(index).getClass())) {
-    //                 //check if ids are same
-    //                 if ((index + 1) == fields.size()) {
-    //                     //return type 
-    //                 } else {
-    //                     //go deeper and increment index
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }    
-    // //check that the field exists and associate with right type
-    // public void outAFieldExp(AFieldExp node) {
-    //     LinkedList<Node> fields = new LinkedList<Node>();
-    //     Node current = node.getExp();
-    //     fields.add(node.getIdType());
-    //     while (!(current instanceof AIdExp)) {
-    //         fields.add(((AFieldExp) current).getIdType());
-    //         current = ((AFieldExp) current).getExp();
-    //     }
-    //     TypeClass type = getType(current);
-    //     if (type.baseType != Type.STRUCT) {
-    //         ErrorManager.printError("Cannot select a field on a non-struct");
-    //     }
-    //     //traverse down fields to make sure everything exists;
-    //     nodeTypes.put(node, getLastType(type, fields, 0));
-    // }
-
-<<<<<<< HEAD
     public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
         Node left = node.getIdType();
         Node right = node.getExp();
@@ -704,8 +627,6 @@ public class TypeChecker extends DepthFirstAdapter
 
     }
 
-=======
->>>>>>> 1d7bbd368d4f85ce6a7cd684fd57350a41ce568a
     public void outAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
         List<PIdType> leftArgs = new ArrayList<PIdType>();
         LinkedList<PExp> rightArgs = new LinkedList<PExp>();
@@ -720,12 +641,9 @@ public class TypeChecker extends DepthFirstAdapter
 
         //finished recursion
         if (current instanceof AVarWithOnlyExpVarDecl) {
-<<<<<<< HEAD
-=======
             AVarWithOnlyExpVarDecl varDecl = (AVarWithOnlyExpVarDecl)current;
             leftArgs.add(varDecl.getIdType());
             rightArgs.addFirst(varDecl.getExp());
->>>>>>> 1d7bbd368d4f85ce6a7cd684fd57350a41ce568a
             for (int i = 0; i < leftArgs.size(); i++) {
                 // Skip blank ids
                 if (isBlankId(leftArgs.get(i)))
@@ -733,11 +651,8 @@ public class TypeChecker extends DepthFirstAdapter
                 TypeClass temp = new TypeClass(getType(rightArgs.get(i)));
                 Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
                 lhsSymbol.setType(temp);
-<<<<<<< HEAD
-=======
                 nodeTypes.put(leftArgs.get(i), lhsSymbol.typeClass);
                 System.out.println("Type of " + leftArgs.get(i) + " = " + lhsSymbol.typeClass);
->>>>>>> 1d7bbd368d4f85ce6a7cd684fd57350a41ce568a
             }
         } else if (current instanceof AVarWithTypeAndExpVarDecl) {
             for (int i = 0; i < leftArgs.size(); i++) {
@@ -906,10 +821,10 @@ public class TypeChecker extends DepthFirstAdapter
 
     // Struct selector
     // Ex: "x.y.z"
-    // public void inAArrayElementExp(AArrayElementExp node)
-    // {
-    //     declareNodeType(node);
-    // }
+    public void inAArrayElementExp(AArrayElementExp node)
+    {
+        declareNodeType(node);
+    }
 
     // Struct selector
     // Ex: "x.y.z"
