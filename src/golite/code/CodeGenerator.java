@@ -49,6 +49,16 @@ public class CodeGenerator extends DepthFirstAdapter
                                 FLOAT_DEFAULT = "0.0",
                                 STRING_DEFAULT = "\"\"";
 
+    private static final String CLASS_MODIFIER = "class ",
+                                ANONYMOUS_CLASS_NAME = "AnonymousClass";
+
+    // The index of the next anonymous class
+    private int anonymousClassIndex = 1;
+
+    // The struct nodes which have already had their classes declared
+    // Maps the struct node to its class text
+    private HashMap<Node,String> declaredStructs = new HashMap<Node,String>();
+
     public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes)
     {
         this.root = root;
@@ -164,6 +174,7 @@ public class CodeGenerator extends DepthFirstAdapter
         indentLevel--;
         println("}"); 
 
+        // Print the classes
     }
 
     /** DECLARATIONS */
@@ -212,43 +223,53 @@ public class CodeGenerator extends DepthFirstAdapter
     }
     //var declarations
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node) {
-        print("int ");
+        //print("int ");
         node.getVarDecl().apply(this);
         //println("");
 
     }
 
+    // Prints the type of the node, followed by the name of the id
+    private void declareVariable(PIdType node)
+    {
+        String typeName = getTypeName(node);
+        print(typeName + " ");
+        node.apply(this);
+    }
+
     public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
-        node.getIdType().apply(this);
-        print(" ");
-        node.getVarType().apply(this);
+        declareVariable(node.getIdType());
+        //print(" ");
+        //node.getVarType().apply(this);
     }
 
     public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
-        node.getIdType().apply(this);
+        declareVariable(node.getIdType());
         print(" = ");
         node.getExp().apply(this);
     }
 
     public void caseAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
-        node.getIdType().apply(this);
-        print(" ");
-        node.getVarType().apply(this);
+        declareVariable(node.getIdType());
+        //node.getVarType().apply(this);
         print(" = ");
         node.getExp().apply(this);
     }
 
     public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
-        node.getIdType().apply(this);
-        print(", ");
-        node.getVarDecl().apply(this);
+        declareVariable(node.getIdType());
+        // node.getIdType().apply(this);
+        // print(", ");
+        // node.getVarDecl().apply(this);
     }
 
     public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
-        node.getIdType().apply(this);
-        print(", ");
-        node.getVarDecl().apply(this);
-        print(", ");
+        declareVariable(node.getIdType());
+        // node.getIdType().apply(this);
+        // print(", ");
+        // node.getVarDecl().apply(this);
+        // print(", ");
+        print(" = ");
         node.getExp().apply(this);
     }
 
@@ -381,7 +402,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
     }
 
-    public String getTypeName(PIdType node)
+    public String getTypeName(Node node)
     {
         TypeClass type = nodeTypes.get(node);
         String typeName = "";
@@ -443,7 +464,7 @@ public class CodeGenerator extends DepthFirstAdapter
         return typeName;
     }
 
-    private String getStructName(PIdType node)
+    private String getStructName(Node node)
     {
         TypeClass type = nodeTypes.get(node);
         
@@ -460,7 +481,9 @@ public class CodeGenerator extends DepthFirstAdapter
             if (structAlias.node instanceof ATypeAliasTypeDecl)
             {
                 ATypeAliasTypeDecl typeAlias = (ATypeAliasTypeDecl)structAlias.node;
-                return typeAlias.getIdType().toString().trim();
+                String structName = typeAlias.getIdType().toString().trim();
+                declareStruct(structName, node);
+                return structName;
             }
         }
         else
@@ -469,6 +492,39 @@ public class CodeGenerator extends DepthFirstAdapter
         }
 
         return null;
+    }
+
+    // Declares a struct if it doens't yet exist
+    private void declareStruct(String structName, Node node)
+    {
+        TypeClass type = nodeTypes.get(node);
+
+        // Don't declare a struct that was already declared
+        if (declaredStructs.containsKey(type.structNode))
+        {
+            return;
+        }
+
+        String classText = CLASS_MODIFIER;
+
+        // The struct was created using a type alias
+        if (structName != null)
+        {
+            classText += structName;
+        }
+        // The struct is an anonymous struct
+        else
+        {
+            // Give the struct the next available name
+            classText += ANONYMOUS_CLASS_NAME + anonymousClassIndex;
+            anonymousClassIndex++;
+        }
+
+        int indentLevel = 0;
+        classText += "{\n";
+        indentLevel++;
+        
+        classText += "}\n";
     }
 
     /** STATEMENTS */
@@ -815,7 +871,19 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAFunctionCallExp(AFunctionCallExp node)
     {
-        node.getName().apply(this);
+        TypeClass type = nodeTypes.get(node.getName());
+        // This is a type cast
+        if (type.functionSignature == null)
+        {
+            String typeName = getTypeName(node.getName());
+            print("(" + typeName + ")");
+        }
+        // This is a function call
+        else
+        {
+            node.getName().apply(this);
+        }
+        
         print("(");
         printNodesWithComma(node.getArgs());
         print(")");

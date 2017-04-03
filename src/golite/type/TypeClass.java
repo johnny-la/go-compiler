@@ -25,6 +25,12 @@ public class TypeClass
     {
         if (other == null) { return;}
         
+        set(other);
+    }
+
+    // Copies the attributes of the given type
+    public void set(TypeClass other)
+    {
         varTypeNode = other.varTypeNode;
         baseType = other.baseType;
         innerFields = other.innerFields;

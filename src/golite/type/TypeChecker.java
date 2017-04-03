@@ -540,16 +540,19 @@ public class TypeChecker extends DepthFirstAdapter
                     node.getR() + ")");
     }
 
-    // public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
-    //     Node left = node.getIdType();
-    //     Node right = node.getExp();
-    //     if (isBlankId(node.getIdType())) {
-    //         return;
-    //     }
-    //     TypeClass temp = new TypeClass(getType(right));
-    //     Symbol lhsSymbol = symbolTable.get(left);
-    //     lhsSymbol.setType(temp);
-    // }
+    public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
+        Node left = node.getIdType();
+        Node right = node.getExp();
+        if (isBlankId(node.getIdType())) {
+            return;
+        }
+        TypeClass temp = new TypeClass(getType(right));
+        Symbol lhsSymbol = symbolTable.get(left);
+        lhsSymbol.setType(temp);
+        System.out.println("outAVarWithOnlyExpVarDecl(): Set type of " + left + 
+            " to " + temp);
+        nodeTypes.put(left,lhsSymbol.typeClass);
+    }
 
     // public String getIdFromIdType(PIdType node) {
     //     if (node instanceof AIdIdType) {

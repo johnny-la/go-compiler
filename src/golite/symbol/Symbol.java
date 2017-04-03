@@ -52,14 +52,14 @@ public class Symbol
     // reference this symbol
     public void setType(TypeClass typeClass)
     {
-        this.typeClass = typeClass;
+        this.typeClass.set(typeClass);
 
         for (int i = 0; i < symbolsToInheritType.size(); i++)
         {
             Symbol symbolToInherit = symbolsToInheritType.get(i);
             TypeClass newType = new TypeClass(typeClass);
             //System.out.println("Setting dynamic type of " + symbolToInherit + " to: " + newType);
-            symbolToInherit.typeClass = newType;
+            symbolToInherit.typeClass.set(newType);
         } 
     }
 
