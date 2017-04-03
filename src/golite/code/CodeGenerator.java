@@ -6,7 +6,7 @@ import golite.node.*;
 import golite.analysis.*;
 import golite.code.*;
 import golite.type.*;
-
+import java.math.*;
 import java.util.*;
 
 public class CodeGenerator extends DepthFirstAdapter
@@ -685,15 +685,6 @@ public class CodeGenerator extends DepthFirstAdapter
         print("break");
     }
 
-    public void caseAFunctionCallExp(AFunctionCallExp node)
-    {
-        node.getName().apply(this);
-        print("(");
-        printNodesWithComma(node.getArgs());
-        print(")");
-    }
-    //TODO: add function call secondary
-
     public void printWithType(Node node) {
         if (printType) {
             if (nodeTypes.containsKey(node)) {
@@ -702,6 +693,16 @@ public class CodeGenerator extends DepthFirstAdapter
                 print(rightBlock);
             }
         }
+    }
+
+    // EXPRESSIONS
+
+    public void caseAFunctionCallExp(AFunctionCallExp node)
+    {
+        node.getName().apply(this);
+        print("(");
+        printNodesWithComma(node.getArgs());
+        print(")");
     }
 
     public void caseAPlusExp(APlusExp node)
@@ -878,13 +879,17 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAHexExp(AHexExp node)
     {
-        print(node.getHex().getText());
+        String[] splittedHex = node.getHex().getText().split("x");
+        Integer integerValue = Integer.parseInt(splittedHex[1], 16);  
+        print(integerValue.toString());
         printWithType(node);
     }
 
     public void caseAOctExp(AOctExp node)
-    {
-       print(node.getOct().getText()); 
+    {   
+       String octSuffix = node.getOct().getText().substring(1);
+       Integer integerValue = Integer.parseInt(octSuffix, 8);   
+       print(integerValue.toString()); 
        printWithType(node);
     }
 
