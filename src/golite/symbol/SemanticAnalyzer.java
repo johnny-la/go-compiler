@@ -312,6 +312,22 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     public void inAVarWithTypeVarDecl(AVarWithTypeVarDecl node)
     {   
+        Node type = node.getIdType();
+        Node varType = node.getVarType();
+        String idName;
+        String typeName;
+
+        if (type instanceof ATypeIdType) {
+            idName = ((ATypeIdType) type).getType().getText();
+            if (varType instanceof ATypeVarType) {
+                typeName = ((ATypeVarType) varType).getType().getText();
+                if (idName != null && typeName != null && idName.equals(typeName)) {
+                    ErrorManager.printError("can't alias like that bro");
+                }
+            }
+        }
+
+
         declareVariable(node.getIdType(), node.getVarType(), SymbolKind.LOCAL, node);
     }
 
@@ -424,8 +440,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         symbolTable.put(idName, symbol);
         symbolMap.put(node, symbol);
         symbolMap.put(id, symbol);
-        System.out.println(symbol.toString());
-        System.out.println(typeClass);
+        // System.out.println(symbol.toString());
+        // System.out.println(typeClass);
         return symbol;
     }
 

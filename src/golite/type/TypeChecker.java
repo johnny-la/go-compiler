@@ -87,7 +87,7 @@ public class TypeChecker extends DepthFirstAdapter
 
     public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
 
-        if (left.totalArrayDimension.size() != 0 || right.totalArrayDimension.size() != 0) {
+        if (left.totalArrayDimension.size() > 0 || right.totalArrayDimension.size() > 0) {
             ErrorManager.printError("Unable to perform binary operations on array type");
             return false;
         }
@@ -487,7 +487,6 @@ public class TypeChecker extends DepthFirstAdapter
                 ErrorManager.printError("Not a correct function call: " + lhsSymbol.name);
                 return;
             }
-            
             if (isBaseType(getType(inputs.get(0)).baseType)) {
                 nodeTypes.put(node, new TypeClass(lhs));
                 return;
@@ -501,25 +500,52 @@ public class TypeChecker extends DepthFirstAdapter
     // public TypeClass getArrayType(TypeClass array) {
     //     if (array.)
     // }
-    public TypeClass getSliceType(TypeClass t) {
-        if (t.totalArrayDimension.size() == 0) {
-            if (t.typeAliases != null && t.typeAliases.size() > 0) {
-                return getSliceType(symbolTable.get(t.typeAliases.get(t.typeAliases.size() - 1).node).typeClass);
-            } else {
-                return null;
-            }
-        } else {
-            if (!(t.totalArrayDimension.getLast().isArray)) {
-                return t;
-            }
-            return null;
-        }
-    }
+    //iterate though until slice size decreases or until we're at the end 
+    // public TypeClass getSliceType(TypeClass t) {
+    //     if (t.typeAliases != null && t.typeAliases.size() > 0) {
+    //         for (int i = t.typeAliases.size() - 1; i >= 0; i--) {
+    //             if (t.typeAliases.get(i).arrayDimensions.size() != t.typeAliases.size()) {
+    //                 if (i != (t.typeAliases.size() - 1)) {
+    //                     Symbol s = symbolTable.get(t.typeAliases.get(i + 1).node);
+    //                     return s.typeClass;
+    //                 } else {
+    //                     return t;
+    //                 }
+    //             }     
+    //         }
+    //     }
+
+    //     return t;
+        // if (t.totalArrayDimension.size() == 0) {
+        //     if (t.typeAliases != null && t.typeAliases.size() > 0) {
+        //         return getSliceType(symbolTable.get(t.typeAliases.get(t.typeAliases.size() - 1).node).typeClass);
+        //     } else {
+        //         return null;
+        //     }
+        // } else {
+        //     if (!(t.totalArrayDimension.getLast().isArray)) {
+        //         return t;
+        //     }
+        //     return null;
+        // }
+    // }
+
+    //   public TypeClass getArrayOrSliceType(TypeClass t) {
+    //     if (t.totalArrayDimension.size() == 0) {
+    //         if (t.typeAliases != null && t.typeAliases.size() > 0) {
+    //             return getSliceType(symbolTable.get(t.typeAliases.get(t.typeAliases.size() - 1).node).typeClass);
+    //         } else {
+    //             return null;
+    //         }
+    //     } else {
+    //         return t;
+    //     }
+    // }
     
     public void outAAppendedExprExp(AAppendedExprExp node) {
-        TypeClass leftType = getSliceType(getType(node.getL()));
+        TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
-        System.out.println(leftType.baseType);
+        // System.out.println(leftType.baseType);
         if (leftType == null) {
             ErrorManager.printError("Must append to slices only");
         }
@@ -547,37 +573,59 @@ public class TypeChecker extends DepthFirstAdapter
             return;
         }
         TypeClass temp = new TypeClass(getType(right));
+        if (temp.baseType == Type.VOID) {
+            ErrorManager.printError("Assigning to a void value");
+        }
+        
+        if (symbolTable.containsKey(right)) {
+            Symbol rhsSymbol = symbolTable.get(right);
+            if (rhsSymbol.kind != Symbol.SymbolKind.LOCAL) {
+                ErrorManager.printError("Please assign to variables or base types");
+            }
+        }
         Symbol lhsSymbol = symbolTable.get(left);
         lhsSymbol.setType(temp);
-        System.out.println("outAVarWithOnlyExpVarDecl(): Set type of " + left + 
-            " to " + temp);
-        nodeTypes.put(left,lhsSymbol.typeClass);
     }
 
-    // public String getIdFromIdType(PIdType node) {
-    //     if (node instanceof AIdIdType) {
-    //         return ((AIdIdType) node).getId().getText();
-    //     } else {
-    //         return ((ATypeIdType) node).getType().getText();
-    //     }
-    // }
+    public String getIdFromIdType(PIdType node) {
+        if (node instanceof AIdIdType) {
+            return ((AIdIdType) node).getId().getText();
+        } else {
+            return ((ATypeIdType) node).getType().getText();
+        }
+    }
 
-    // public void outAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
-    //     // Skip blank ids
-    //     if (isBlankId(node.getIdType()))
-    //         return;
-    //     TypeClass idType = symbolTable.get(node).typeClass;
-    //     TypeClass expType = getType(node.getExp());
-    //     //System.out.println("" + idType);
-    //     //System.out.println("" + expType);
-    //     if (!isAliasedCorrectly(idType, expType)) {
-    //         return;
-    //     }
+    public boolean isSameDimension(TypeClass l, TypeClass r) {
+        if (l.totalArrayDimension.size() != r.totalArrayDimension.size()) {
+            return false;
+        }
 
-    //     if (idType.baseType != expType.baseType) {
-    //     ErrorManager.printError("Assignment of incompatible types: " + idType + ", " + expType);
-    //     }
-    // }
+        for (int i = 0; i < l.totalArrayDimension.size(); i++) {
+            Dimension lD = l.totalArrayDimension.get(i);
+            Dimension rD = r.totalArrayDimension.get(i);
+            if (lD.isArray != rD.isArray) return false;
+            if (lD.size != rD.size) return false;
+        }
+        return true;
+    }
+    public void outAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
+        // Skip blank ids
+        if (isBlankId(node.getIdType()))
+            return;
+        TypeClass idType = symbolTable.get(node).typeClass;
+        TypeClass expType = getType(node.getExp());
+        System.out.println("" + idType);
+        System.out.println("" + expType);
+        if (!isAliasedCorrectly(idType, expType)) {
+            return;
+        }
+
+        if (idType.baseType != expType.baseType 
+            || !isSameDimension(idType, expType)) {
+        ErrorManager.printError("Assignment of incompatible types: " + idType + ", " + expType);
+        }
+
+    }
 
     public void outAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
         List<PIdType> leftArgs = new ArrayList<PIdType>();
@@ -625,21 +673,23 @@ public class TypeChecker extends DepthFirstAdapter
  
     }
 
-    // public void outADecrementStmt(ADecrementStmt node){
-    //     Node exp = node.getExp();
-    //     TypeClass expType = nodeTypes.get(exp);
-    //     if(expType.baseType != Type.INT && expType.baseType != Type.FLOAT64){
-    //          ErrorManager.printError("-- operator requires a numeric argument");
-    //     }
-    // }
+    public void outADecrementStmt(ADecrementStmt node){
+        Node exp = node.getExp();
+        TypeClass expType = nodeTypes.get(exp);
+        if(expType.baseType != Type.INT && expType.baseType != Type.FLOAT64 
+            && expType.baseType != Type.RUNE){
+             ErrorManager.printError("-- operator requires a numeric argument");
+        }
+    }
 
-    // public void outAIncrementStmt(AIncrementStmt node){
-    //     Node exp = node.getExp();
-    //     TypeClass expType = nodeTypes.get(exp);
-    //     if(expType.baseType != Type.INT && expType.baseType != Type.FLOAT64){
-    //          ErrorManager.printError("++ operator requires a numeric argument");
-    //     }
-    // }
+    public void outAIncrementStmt(AIncrementStmt node){
+        Node exp = node.getExp();
+        TypeClass expType = nodeTypes.get(exp);
+        if(expType.baseType != Type.INT && expType.baseType != Type.FLOAT64
+            && expType.baseType != Type.RUNE){
+             ErrorManager.printError("++ operator requires a numeric argument");
+        }
+    }
 
     // Returns true if the node is a blank identifier
     private boolean isBlankId(PIdType node)
@@ -658,9 +708,12 @@ public class TypeChecker extends DepthFirstAdapter
                 for (int i = 0; i < leftArgs.size(); i++) {
                     TypeClass left = getType(leftArgs.get(i));
                     TypeClass right = getType(rightArgs.get(i));
-                    //if (!isAliasedCorrectly(left, right)) {
-                    //    return;
-                    //}
+                    if (!(leftArgs.get(i) instanceof AArrayElementExp 
+                        || rightArgs.get(i) instanceof AArrayElementExp)) {
+                        if (!isAliasedCorrectly(left, right)) {
+                            return;
+                        }
+                    }
                     if (right.baseType != left.baseType) {
                         ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
                         return;
@@ -743,7 +796,8 @@ public class TypeChecker extends DepthFirstAdapter
     // These are IDs in expressions
     public void outAIdExp(AIdExp node)
     {
-        System.out.println("outAIdExp: " + node);
+        // System.out.println("Traversing ID: " + node);
+
         if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
             addType(node, Type.BOOL);
             return;

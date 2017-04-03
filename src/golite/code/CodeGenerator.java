@@ -572,7 +572,6 @@ public class CodeGenerator extends DepthFirstAdapter
             ErrorManager.printWarning("Node has null type: " + node);
             return "";
         }
-        
         if (type.totalArrayDimension.size() <= 0)
         {
             switch (type.baseType)
