@@ -579,46 +579,51 @@ public class TypeChecker extends DepthFirstAdapter
     //     }
     // }
 
-    // public void outAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
-    //     List<PIdType> leftArgs = new ArrayList<PIdType>();
-    //     LinkedList<PExp> rightArgs = new LinkedList<PExp>();
-    //     PVarDecl current = node;
+    public void outAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
+        List<PIdType> leftArgs = new ArrayList<PIdType>();
+        LinkedList<PExp> rightArgs = new LinkedList<PExp>();
+        PVarDecl current = node;
 
-    //     while (current instanceof AInlineListWithExpVarDecl) {
-    //         AInlineListWithExpVarDecl temp = (AInlineListWithExpVarDecl) current;
-    //         leftArgs.add(temp.getIdType());
-    //         rightArgs.addFirst(temp.getExp());
-    //         current = temp.getVarDecl();
-    //     }
+        while (current instanceof AInlineListWithExpVarDecl) {
+            AInlineListWithExpVarDecl temp = (AInlineListWithExpVarDecl) current;
+            leftArgs.add(temp.getIdType());
+            rightArgs.addFirst(temp.getExp());
+            current = temp.getVarDecl();
+        }
 
-    //     //finished recursion
-    //     if (current instanceof AVarWithOnlyExpVarDecl) {
-    //         for (int i = 0; i < leftArgs.size(); i++) {
-    //             // Skip blank ids
-    //             if (isBlankId(leftArgs.get(i)))
-    //                 continue;
-    //             TypeClass temp = new TypeClass(getType(rightArgs.get(i)));
-    //             Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
-    //             lhsSymbol.setType(temp);
-    //         }
-    //     } else if (current instanceof AVarWithTypeAndExpVarDecl) {
-    //         for (int i = 0; i < leftArgs.size(); i++) {
-    //             // Skip blank ids
-    //             if (isBlankId(leftArgs.get(i)))
-    //                 continue;
-    //             TypeClass left = symbolTable.get(current).typeClass;
-    //             TypeClass right = getType(rightArgs.get(i));
-    //             if (!isAliasedCorrectly(left, right)) {
-    //                 return;
-    //             }
-    //             if (left.baseType != right.baseType) {
-    //                 ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
-    //                 return;
-    //             }
-    //         }  
-    //     }
+        //finished recursion
+        if (current instanceof AVarWithOnlyExpVarDecl) {
+            AVarWithOnlyExpVarDecl varDecl = (AVarWithOnlyExpVarDecl)current;
+            leftArgs.add(varDecl.getIdType());
+            rightArgs.addFirst(varDecl.getExp());
+            for (int i = 0; i < leftArgs.size(); i++) {
+                // Skip blank ids
+                if (isBlankId(leftArgs.get(i)))
+                    continue;
+                TypeClass temp = new TypeClass(getType(rightArgs.get(i)));
+                Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
+                lhsSymbol.setType(temp);
+                nodeTypes.put(leftArgs.get(i), lhsSymbol.typeClass);
+                System.out.println("Type of " + leftArgs.get(i) + " = " + lhsSymbol.typeClass);
+            }
+        } else if (current instanceof AVarWithTypeAndExpVarDecl) {
+            for (int i = 0; i < leftArgs.size(); i++) {
+                // Skip blank ids
+                if (isBlankId(leftArgs.get(i)))
+                    continue;
+                TypeClass left = symbolTable.get(current).typeClass;
+                TypeClass right = getType(rightArgs.get(i));
+                if (!isAliasedCorrectly(left, right)) {
+                    return;
+                }
+                if (left.baseType != right.baseType) {
+                    ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
+                    return;
+                }
+            }  
+        }
  
-    // }
+    }
 
     // public void outADecrementStmt(ADecrementStmt node){
     //     Node exp = node.getExp();

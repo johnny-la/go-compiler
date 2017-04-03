@@ -232,9 +232,16 @@ public class CodeGenerator extends DepthFirstAdapter
     // Prints the type of the node, followed by the name of the id
     private void declareVariable(PIdType node)
     {
+        declareVariable(node, true);
+    }
+
+    // Prints the type of the node, followed by the name of the id
+    private void declareVariable(PIdType node, boolean traverseId)
+    {
         String typeName = getTypeName(node);
         print(typeName + " ");
-        node.apply(this);
+        if (traverseId)
+            node.apply(this);
     }
 
     public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
@@ -256,11 +263,30 @@ public class CodeGenerator extends DepthFirstAdapter
         node.getExp().apply(this);
     }
 
+    // Returns true if the node is a blank identifier
+    private boolean isBlankId(PIdType node)
+    {
+        return getIdName(node).trim().equals("_");
+    }
+
+    /**
+     * Returns the name of the id_type node
+     */
+    private String getIdName(PIdType node)
+    {
+        String idName = null;
+
+        if (node instanceof AIdIdType) { idName = ((AIdIdType)node).getId().getText(); }
+        else if (node instanceof ATypeIdType) { idName = ((ATypeIdType)node).getType().getText(); }
+    
+        return idName;
+    }
+
     public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
         declareVariable(node.getIdType());
-        // node.getIdType().apply(this);
-        // print(", ");
-        // node.getVarDecl().apply(this);
+        println(";");
+        printi("");
+        node.getVarDecl().apply(this);
     }
 
     public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
@@ -271,18 +297,57 @@ public class CodeGenerator extends DepthFirstAdapter
         // print(", ");
         print(" = ");
         node.getExp().apply(this);
+
+        List<PIdType> leftArgs = new ArrayList<PIdType>();
+        LinkedList<PExp> rightArgs = new LinkedList<PExp>();
+        PVarDecl current = node;
+
+        while (current instanceof AInlineListWithExpVarDecl) {
+            AInlineListWithExpVarDecl temp = (AInlineListWithExpVarDecl) current;
+            leftArgs.add(temp.getIdType());
+            rightArgs.addFirst(temp.getExp());
+            current = temp.getVarDecl();
+        }
+
+        //finished recursion
+        if (current instanceof AVarWithOnlyExpVarDecl) {
+            AVarWithOnlyExpVarDecl varDecl = (AVarWithOnlyExpVarDecl)current;
+            leftArgs.add(varDecl.getIdType());
+            rightArgs.addFirst(varDecl.getExp());
+        } else if (current instanceof AVarWithTypeAndExpVarDecl) {
+            AVarWithTypeAndExpVarDecl varDecl = (AVarWithTypeAndExpVarDecl)current;
+            leftArgs.add(varDecl.getIdType());
+            rightArgs.addFirst(varDecl.getExp());
+        }
+
+        for (int i = 0; i < leftArgs.size(); i++) {
+            // Skip blank ids
+            if (isBlankId(leftArgs.get(i)))
+                continue;
+            if (i != 0) { printi(""); }
+
+            declareVariable(leftArgs.get(i), false);
+            print(" = ");
+            rightArgs.get(i).apply(this);
+
+            if (i != leftArgs.size()-1)
+                println(";");
+        }
     }
 
     public void caseAMultilineListVarDecl(AMultilineListVarDecl node) {
-        println("(");
-        indentLevel++;
-        for (Node n: node.getVarDecl()) {
-            printi("");
-            n.apply(this);
-            println("");
+        //println("(");
+        //indentLevel++;
+        
+        // Print all the variable declarations in the multiline list
+        for (int i = 0; i < node.getVarDecl().size(); i++) {
+            Node varDecl = node.getVarDecl().get(i);
+            if (i != 0) { printi(""); }
+            varDecl.apply(this);
+            println(";");
         }
-        indentLevel--;
-        printi(")");
+        //indentLevel--;
+        //printi(")");
     }
 
     //type declarations
