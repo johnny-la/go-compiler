@@ -25,6 +25,7 @@ Helpers
   back_quote = '`' ;
   not_end_of_line = [all_chars - [carriage_return + line_feed]] ;
 
+
 Tokens
   if = 'if';
   else = 'else';
@@ -469,7 +470,6 @@ exp =
   {unary_minus} exp |
   {unary_xor} exp |
   {unary_exclamation} exp |
-  {field} exp id_type |
   {id} id_type |
   {int} int |
   {oct} oct |
@@ -478,6 +478,7 @@ exp =
   {rune_literal} rune_literal |
   {interpreted_string_literal} interpreted_string_literal |
   {raw_string_lit} raw_string_lit |
+  {field} exp id_type |
   {appended_expr} [l]:exp [r]:exp |
   {array_element} [array]:exp [index]:exp |
   {function_call} [name]:exp [args]:exp* |

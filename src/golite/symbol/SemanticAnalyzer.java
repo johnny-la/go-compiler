@@ -7,7 +7,6 @@ import golite.type.FunctionSignature;
 import golite.analysis.*;
 import golite.symbol.Symbol;
 import golite.symbol.Symbol.SymbolKind;
-
 import java.util.*;
 
 // TODO: type_decl.multiline_list, var_decl.multiline_list???
@@ -425,6 +424,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         symbolTable.put(idName, symbol);
         symbolMap.put(node, symbol);
         symbolMap.put(id, symbol);
+        System.out.println(symbol.toString());
+        System.out.println(typeClass);
         return symbol;
     }
 
@@ -457,13 +458,17 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         {
             if (current instanceof ASliceVarType)
             {
+                Dimension d = new Dimension(false, 0);
+                typeClass.incrementDimension(d);
                 current = ((ASliceVarType)current).getVarType();
-                typeClass.totalArrayDimension++;
+               
             }
             else if (current instanceof AArrayVarType)
             {
+                Dimension d = new Dimension(true, 
+                    Integer.valueOf(((AArrayVarType)current).getInt().getText()));
+                typeClass.incrementDimension(d);
                 current = ((AArrayVarType)current).getVarType();
-                typeClass.totalArrayDimension++;
             } else if (current instanceof AStructVarType) {
             		AStructVarType struct = (AStructVarType) current;
             		typeClass.innerFields = struct.getInnerFields();
@@ -472,9 +477,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             }
             else if (current instanceof AIdVarType)
             {
-                // Get the name of the type alias
+                //Check if alias exists in symbol table
                 String typeAliasName = ((AIdVarType)current).getId().getText();
-                
                 Symbol typeAliasSymbol = symbolTable.get(typeAliasName);
 
                 if (typeAliasSymbol == null)
@@ -483,6 +487,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                     break;
                 }
 
+                //alias exists case
                 ArrayList<TypeAlias> typeAliasesToInherit = typeAliasSymbol.typeClass.typeAliases;
                 //System.out.println("Inheriting " + typeAliasesToInherit.size() + " from type: " + typeAliasSymbol);
                 for (int i = 0; i < typeAliasesToInherit.size(); i++)
@@ -496,14 +501,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 {
                     TypeAlias typeAlias = new TypeAlias();
                     typeAlias.node = typeAliasSymbol.node;
-                    typeAlias.arrayDimension = typeClass.totalArrayDimension;
+                    typeAlias.arrayDimensions = typeAliasSymbol.typeClass.totalArrayDimension;
                     typeClass.typeAliases.add(typeAlias);
                 }
 
                 typeClass.baseType = typeAliasSymbol.typeClass.baseType;
                 typeClass.innerFields = typeAliasSymbol.typeClass.innerFields;
-                typeClass.totalArrayDimension += typeAliasSymbol.typeClass.totalArrayDimension;
-
                 break;
             } else {
                 //System.out.println("Traversing node: " + current);
@@ -614,7 +617,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             {
                 TypeAlias alias = new TypeAlias();
                 alias.node = symbol.node;
-                alias.arrayDimension = 0;
                 newSymbol.typeClass.typeAliases.add(alias);
             }
             // If this is a symbol for a dynamically-typed variable

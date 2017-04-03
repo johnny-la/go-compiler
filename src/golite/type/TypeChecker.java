@@ -79,7 +79,6 @@ public class TypeChecker extends DepthFirstAdapter
                 return false;
             }
         } else if (leftSize > 0 || rightSize > 0) {
-
             ErrorManager.printError("Aliases aren't compatible with each other: " + left + " " + right);
             return false;
         }
@@ -88,7 +87,7 @@ public class TypeChecker extends DepthFirstAdapter
 
     public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
 
-        if (left.totalArrayDimension > 0 || right.totalArrayDimension > 0) {
+        if (left.totalArrayDimension != null || right.totalArrayDimension != null) {
             ErrorManager.printError("Unable to perform binary operations on array type");
             return false;
         }
@@ -499,15 +498,37 @@ public class TypeChecker extends DepthFirstAdapter
         return;
     }
 
+    // public TypeClass getArrayType(TypeClass array) {
+    //     if (array.)
+    // }
+    public TypeClass getSliceType(TypeClass t) {
+        if (t.totalArrayDimension.size() == 0) {
+            if (t.typeAliases != null && t.typeAliases.size() > 0) {
+                return getSliceType(symbolTable.get(t.typeAliases.get(t.typeAliases.size() - 1).node).typeClass);
+            } else {
+                return null;
+            }
+        } else {
+            if (!(t.totalArrayDimension.getLast().isArray)) {
+                return t;
+            }
+            return null;
+        }
+    }
+    
     public void outAAppendedExprExp(AAppendedExprExp node) {
-        TypeClass leftType = getType(node.getL());
+        TypeClass leftType = getSliceType(getType(node.getL()));
         TypeClass rightType = getType(node.getR());
+        System.out.println(leftType.baseType);
+        if (leftType == null) {
+            ErrorManager.printError("Must append to slices only");
+        }
 
         if (!isAliasedCorrectly(leftType, rightType)) {
             return;
         }
 
-        if (leftType.totalArrayDimension > 0) {
+        if (leftType.totalArrayDimension.size() > 0) {
             if (rightType.baseType == leftType.baseType) {
                 nodeTypes.put(node, leftType);
                 return;
