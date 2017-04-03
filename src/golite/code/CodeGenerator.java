@@ -166,15 +166,24 @@ public class CodeGenerator extends DepthFirstAdapter
             printi("");
             Node decl = node.getDecl().get(i);
             decl.apply(this);
+            boolean isEmptyMultilineList = (decl instanceof AVarDeclAstDecl && ((AVarDeclAstDecl)decl).getVarDecl() instanceof AMultilineListVarDecl)
+                && isEmptyMultilineList(((AVarDeclAstDecl)decl).getVarDecl());
             // Don't print newlines/semicolons for function declarations
-            if (!(decl instanceof AFuncDeclAstDecl)) println(";");
+            if (!(decl instanceof AFuncDeclAstDecl) && !isEmptyMultilineList) 
+                println(";");
         }
 
         // Close the main class
         indentLevel--;
-        println("}"); 
+        println("\n}"); 
 
         // Print the classes
+    }
+
+    private boolean isEmptyMultilineList(PVarDecl node)
+    {
+        return node instanceof AMultilineListVarDecl 
+            && ((AMultilineListVarDecl)node).getVarDecl().size() == 0;
     }
 
     /** DECLARATIONS */
@@ -238,6 +247,9 @@ public class CodeGenerator extends DepthFirstAdapter
     // Prints the type of the node, followed by the name of the id
     private void declareVariable(PIdType node, boolean traverseId)
     {
+        // Ignore blank ids
+        if (isBlankId(node)) { return; }
+
         String typeName = getTypeName(node);
         print(typeName + " ");
         if (traverseId)
@@ -251,6 +263,8 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
+        if (isBlankId(node.getIdType())) { return; }
+        
         declareVariable(node.getIdType());
         print(" = ");
         node.getExp().apply(this);
@@ -283,6 +297,8 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
+        if (isBlankId(node.getIdType())) { return; }
+
         declareVariable(node.getIdType());
         println(";");
         printi("");
@@ -290,13 +306,13 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
-        declareVariable(node.getIdType());
-        // node.getIdType().apply(this);
-        // print(", ");
-        // node.getVarDecl().apply(this);
-        // print(", ");
-        print(" = ");
-        node.getExp().apply(this);
+        // declareVariable(node.getIdType());
+        // // node.getIdType().apply(this);
+        // // print(", ");
+        // // node.getVarDecl().apply(this);
+        // // print(", ");
+        // print(" = ");
+        // node.getExp().apply(this);
 
         List<PIdType> leftArgs = new ArrayList<PIdType>();
         LinkedList<PExp> rightArgs = new LinkedList<PExp>();
@@ -320,18 +336,22 @@ public class CodeGenerator extends DepthFirstAdapter
             rightArgs.addFirst(varDecl.getExp());
         }
 
+        int idsPrinted = 0;
         for (int i = 0; i < leftArgs.size(); i++) {
             // Skip blank ids
             if (isBlankId(leftArgs.get(i)))
                 continue;
-            if (i != 0) { printi(""); }
 
-            declareVariable(leftArgs.get(i), false);
+            if (idsPrinted != 0)
+                println(";");
+
+            if (idsPrinted != 0) { printi(""); }
+
+            declareVariable(leftArgs.get(i));
             print(" = ");
             rightArgs.get(i).apply(this);
 
-            if (i != leftArgs.size()-1)
-                println(";");
+            idsPrinted++;
         }
     }
 
@@ -339,13 +359,25 @@ public class CodeGenerator extends DepthFirstAdapter
         //println("(");
         //indentLevel++;
         
+        int idsPrinted = 0;
         // Print all the variable declarations in the multiline list
         for (int i = 0; i < node.getVarDecl().size(); i++) {
+            // if (isBlankId(node.getIdType())) { return; }
+
             Node varDecl = node.getVarDecl().get(i);
-            if (i != 0) { printi(""); }
+            if (idsPrinted != 0) 
+            { 
+                println(";");
+                printi(""); 
+            }
+                
             varDecl.apply(this);
-            println(";");
+
+            idsPrinted++;
         }
+
+        //if (idsPrinted > 0)
+        //    println(";");
         //indentLevel--;
         //printi(")");
     }
