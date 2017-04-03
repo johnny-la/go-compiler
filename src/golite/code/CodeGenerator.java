@@ -49,6 +49,16 @@ public class CodeGenerator extends DepthFirstAdapter
                                 FLOAT_DEFAULT = "0.0",
                                 STRING_DEFAULT = "\"\"";
 
+    private static final String CLASS_MODIFIER = "class ",
+                                ANONYMOUS_CLASS_NAME = "AnonymousClass";
+
+    // The index of the next anonymous class
+    private int anonymousClassIndex = 1;
+
+    // The struct nodes which have already had their classes declared
+    // Maps the struct node to its class text
+    private HashMap<Node,String> declaredStructs = new HashMap<Node,String>();
+
     public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes)
     {
         this.root = root;
@@ -164,6 +174,7 @@ public class CodeGenerator extends DepthFirstAdapter
         indentLevel--;
         println("}"); 
 
+        // Print the classes
     }
 
     /** DECLARATIONS */
@@ -212,56 +223,131 @@ public class CodeGenerator extends DepthFirstAdapter
     }
     //var declarations
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node) {
-        print("int ");
+        //print("int ");
         node.getVarDecl().apply(this);
         //println("");
 
     }
 
+    // Prints the type of the node, followed by the name of the id
+    private void declareVariable(PIdType node)
+    {
+        declareVariable(node, true);
+    }
+
+    // Prints the type of the node, followed by the name of the id
+    private void declareVariable(PIdType node, boolean traverseId)
+    {
+        String typeName = getTypeName(node);
+        print(typeName + " ");
+        if (traverseId)
+            node.apply(this);
+    }
+
     public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
-        node.getIdType().apply(this);
-        print(" ");
-        node.getVarType().apply(this);
+        declareVariable(node.getIdType());
+        //print(" ");
+        //node.getVarType().apply(this);
     }
 
     public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
-        node.getIdType().apply(this);
+        declareVariable(node.getIdType());
         print(" = ");
         node.getExp().apply(this);
     }
 
     public void caseAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
-        node.getIdType().apply(this);
-        print(" ");
-        node.getVarType().apply(this);
+        declareVariable(node.getIdType());
+        //node.getVarType().apply(this);
         print(" = ");
         node.getExp().apply(this);
     }
 
+    // Returns true if the node is a blank identifier
+    private boolean isBlankId(PIdType node)
+    {
+        return getIdName(node).trim().equals("_");
+    }
+
+    /**
+     * Returns the name of the id_type node
+     */
+    private String getIdName(PIdType node)
+    {
+        String idName = null;
+
+        if (node instanceof AIdIdType) { idName = ((AIdIdType)node).getId().getText(); }
+        else if (node instanceof ATypeIdType) { idName = ((ATypeIdType)node).getType().getText(); }
+    
+        return idName;
+    }
+
     public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
-        node.getIdType().apply(this);
-        print(", ");
+        declareVariable(node.getIdType());
+        println(";");
+        printi("");
         node.getVarDecl().apply(this);
     }
 
     public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
-        node.getIdType().apply(this);
-        print(", ");
-        node.getVarDecl().apply(this);
-        print(", ");
+        declareVariable(node.getIdType());
+        // node.getIdType().apply(this);
+        // print(", ");
+        // node.getVarDecl().apply(this);
+        // print(", ");
+        print(" = ");
         node.getExp().apply(this);
+
+        List<PIdType> leftArgs = new ArrayList<PIdType>();
+        LinkedList<PExp> rightArgs = new LinkedList<PExp>();
+        PVarDecl current = node;
+
+        while (current instanceof AInlineListWithExpVarDecl) {
+            AInlineListWithExpVarDecl temp = (AInlineListWithExpVarDecl) current;
+            leftArgs.add(temp.getIdType());
+            rightArgs.addFirst(temp.getExp());
+            current = temp.getVarDecl();
+        }
+
+        //finished recursion
+        if (current instanceof AVarWithOnlyExpVarDecl) {
+            AVarWithOnlyExpVarDecl varDecl = (AVarWithOnlyExpVarDecl)current;
+            leftArgs.add(varDecl.getIdType());
+            rightArgs.addFirst(varDecl.getExp());
+        } else if (current instanceof AVarWithTypeAndExpVarDecl) {
+            AVarWithTypeAndExpVarDecl varDecl = (AVarWithTypeAndExpVarDecl)current;
+            leftArgs.add(varDecl.getIdType());
+            rightArgs.addFirst(varDecl.getExp());
+        }
+
+        for (int i = 0; i < leftArgs.size(); i++) {
+            // Skip blank ids
+            if (isBlankId(leftArgs.get(i)))
+                continue;
+            if (i != 0) { printi(""); }
+
+            declareVariable(leftArgs.get(i), false);
+            print(" = ");
+            rightArgs.get(i).apply(this);
+
+            if (i != leftArgs.size()-1)
+                println(";");
+        }
     }
 
     public void caseAMultilineListVarDecl(AMultilineListVarDecl node) {
-        println("(");
-        indentLevel++;
-        for (Node n: node.getVarDecl()) {
-            printi("");
-            n.apply(this);
-            println("");
+        //println("(");
+        //indentLevel++;
+        
+        // Print all the variable declarations in the multiline list
+        for (int i = 0; i < node.getVarDecl().size(); i++) {
+            Node varDecl = node.getVarDecl().get(i);
+            if (i != 0) { printi(""); }
+            varDecl.apply(this);
+            println(";");
         }
-        indentLevel--;
-        printi(")");
+        //indentLevel--;
+        //printi(")");
     }
 
     //type declarations
@@ -381,7 +467,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
     }
 
-    public String getTypeName(PIdType node)
+    public String getTypeName(Node node)
     {
         TypeClass type = nodeTypes.get(node);
         String typeName = "";
@@ -442,7 +528,7 @@ public class CodeGenerator extends DepthFirstAdapter
         return typeName;
     }
 
-    private String getStructName(PIdType node)
+    private String getStructName(Node node)
     {
         TypeClass type = nodeTypes.get(node);
         
@@ -459,7 +545,9 @@ public class CodeGenerator extends DepthFirstAdapter
             if (structAlias.node instanceof ATypeAliasTypeDecl)
             {
                 ATypeAliasTypeDecl typeAlias = (ATypeAliasTypeDecl)structAlias.node;
-                return typeAlias.getIdType().toString().trim();
+                String structName = typeAlias.getIdType().toString().trim();
+                declareStruct(structName, node);
+                return structName;
             }
         }
         else
@@ -468,6 +556,39 @@ public class CodeGenerator extends DepthFirstAdapter
         }
 
         return null;
+    }
+
+    // Declares a struct if it doens't yet exist
+    private void declareStruct(String structName, Node node)
+    {
+        TypeClass type = nodeTypes.get(node);
+
+        // Don't declare a struct that was already declared
+        if (declaredStructs.containsKey(type.structNode))
+        {
+            return;
+        }
+
+        String classText = CLASS_MODIFIER;
+
+        // The struct was created using a type alias
+        if (structName != null)
+        {
+            classText += structName;
+        }
+        // The struct is an anonymous struct
+        else
+        {
+            // Give the struct the next available name
+            classText += ANONYMOUS_CLASS_NAME + anonymousClassIndex;
+            anonymousClassIndex++;
+        }
+
+        int indentLevel = 0;
+        classText += "{\n";
+        indentLevel++;
+        
+        classText += "}\n";
     }
 
     /** STATEMENTS */
@@ -814,7 +935,19 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAFunctionCallExp(AFunctionCallExp node)
     {
-        node.getName().apply(this);
+        TypeClass type = nodeTypes.get(node.getName());
+        // This is a type cast
+        if (type.functionSignature == null)
+        {
+            String typeName = getTypeName(node.getName());
+            print("(" + typeName + ")");
+        }
+        // This is a function call
+        else
+        {
+            node.getName().apply(this);
+        }
+        
         print("(");
         printNodesWithComma(node.getArgs());
         print(")");
@@ -1084,9 +1217,8 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAAppendedExprExp(AAppendedExprExp node)
     {
-        print("append(");
         node.getL().apply(this);
-        print(", ");
+        print(".add(");
         node.getR().apply(this);
         print(")");
         printWithType(node);

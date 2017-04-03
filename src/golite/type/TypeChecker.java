@@ -566,10 +566,26 @@ public class TypeChecker extends DepthFirstAdapter
                     node.getR() + ")");
     }
 
+<<<<<<< HEAD
     //check to see that each element is of right type, aka int is associated correctly
 
     // public TypeClass getBaseType(TypeClass t) {
     //     if 
+=======
+    public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
+        Node left = node.getIdType();
+        Node right = node.getExp();
+        if (isBlankId(node.getIdType())) {
+            return;
+        }
+        TypeClass temp = new TypeClass(getType(right));
+        Symbol lhsSymbol = symbolTable.get(left);
+        lhsSymbol.setType(temp);
+        System.out.println("outAVarWithOnlyExpVarDecl(): Set type of " + left + 
+            " to " + temp);
+        nodeTypes.put(left,lhsSymbol.typeClass);
+    }
+>>>>>>> 1d7bbd368d4f85ce6a7cd684fd57350a41ce568a
 
     // }
     public void outAArrayElementExp(AArrayElementExp node) {
@@ -626,6 +642,7 @@ public class TypeChecker extends DepthFirstAdapter
     //     nodeTypes.put(node, getLastType(type, fields, 0));
     // }
 
+<<<<<<< HEAD
     public void outAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
         Node left = node.getIdType();
         Node right = node.getExp();
@@ -687,6 +704,8 @@ public class TypeChecker extends DepthFirstAdapter
 
     }
 
+=======
+>>>>>>> 1d7bbd368d4f85ce6a7cd684fd57350a41ce568a
     public void outAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
         List<PIdType> leftArgs = new ArrayList<PIdType>();
         LinkedList<PExp> rightArgs = new LinkedList<PExp>();
@@ -701,6 +720,12 @@ public class TypeChecker extends DepthFirstAdapter
 
         //finished recursion
         if (current instanceof AVarWithOnlyExpVarDecl) {
+<<<<<<< HEAD
+=======
+            AVarWithOnlyExpVarDecl varDecl = (AVarWithOnlyExpVarDecl)current;
+            leftArgs.add(varDecl.getIdType());
+            rightArgs.addFirst(varDecl.getExp());
+>>>>>>> 1d7bbd368d4f85ce6a7cd684fd57350a41ce568a
             for (int i = 0; i < leftArgs.size(); i++) {
                 // Skip blank ids
                 if (isBlankId(leftArgs.get(i)))
@@ -708,6 +733,11 @@ public class TypeChecker extends DepthFirstAdapter
                 TypeClass temp = new TypeClass(getType(rightArgs.get(i)));
                 Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
                 lhsSymbol.setType(temp);
+<<<<<<< HEAD
+=======
+                nodeTypes.put(leftArgs.get(i), lhsSymbol.typeClass);
+                System.out.println("Type of " + leftArgs.get(i) + " = " + lhsSymbol.typeClass);
+>>>>>>> 1d7bbd368d4f85ce6a7cd684fd57350a41ce568a
             }
         } else if (current instanceof AVarWithTypeAndExpVarDecl) {
             for (int i = 0; i < leftArgs.size(); i++) {

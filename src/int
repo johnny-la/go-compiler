@@ -2,6 +2,8 @@ package main
 
 func print_stmts() {
 var x int
+var y float64
+var t1,t2,t3,t4,t5 string;
 
 // simple prints
 print("main")

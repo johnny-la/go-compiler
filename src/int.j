@@ -2,8 +2,10 @@ package main;
 import java.util.*;
 
 public class Main {
-    func print_stmts () {
-        var x int;
+    public static void print_stmts() {
+        int x;
+        double y;
+        t1, t2, t3, t4, String t5;
         System.out.print("" + "main");
         System.out.print("" + x);
         System.out.print("" + "main" + "" + x);

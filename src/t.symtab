@@ -1,0 +1,40 @@
+ID		SYMBOL
+point		"point, TYPE, STRUCT"
+
+----------------------
+ID		SYMBOL
+y		"y, STRUCT_FIELD, INT"
+thing		"thing, LOCAL, STRUCT"
+x		"x, STRUCT_FIELD, INT"
+
+----------------------
+ID		SYMBOL
+z		"z, STRUCT_FIELD, RUNE"
+y		"y, STRUCT_FIELD, RUNE"
+
+----------------------
+ID		SYMBOL
+y		"y, STRUCT_FIELD, INT"
+thing		"thing, LOCAL, STRUCT"
+x		"x, STRUCT_FIELD, INT"
+
+----------------------
+ID		SYMBOL
+point		"point, TYPE, STRUCT"
+point2		"point2, TYPE, STRUCT"
+
+----------------------
+ID		SYMBOL
+p		"p, LOCAL, (point x y int thing y z rune) STRUCT"
+
+----------------------
+ID		SYMBOL
+point		"point, TYPE, STRUCT"
+point2		"point2, TYPE, STRUCT"
+test3		"test3, FUNCTION, No Type"
+
+----------------------
+ID		SYMBOL
+x		"x, LOCAL, (point2 p point) STRUCT"
+
+----------------------
