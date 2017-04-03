@@ -12,6 +12,11 @@ public class Dimension
     	this.size = size;
     }
 
+	public Dimension(Dimension other) {
+		this.isArray = other.isArray;
+		this.size = other.size;
+	}
+
     public String toString() {
     	String output = "";
     	output += "[";

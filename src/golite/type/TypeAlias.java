@@ -8,14 +8,23 @@ import java.util.*;
 public class TypeAlias
 {
     public Node node;
-    public LinkedList<Dimension> arrayDimensions;
+    public LinkedList<Dimension> arrayDimensions = new LinkedList<Dimension>();
 
     public TypeAlias() {}
 
     public TypeAlias(TypeAlias other)
     {
         this.node = other.node;
-        this.arrayDimensions = other.arrayDimensions;
+        setArrayDimensions(other.arrayDimensions);
+    }
+
+    public void setArrayDimensions(LinkedList<Dimension> dimensions)
+    {
+        arrayDimensions.clear();
+        for (int i = 0; i < dimensions.size(); i++)
+        {
+            this.arrayDimensions.add(dimensions.get(i));   
+        }
     }
 
     public String toString()

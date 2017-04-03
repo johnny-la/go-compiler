@@ -756,8 +756,28 @@ public class TypeChecker extends DepthFirstAdapter
         addType(node, new TypeClass(type));        
     }
 
+    // Struct selector
+    // Ex: "x.y.z"
+    public void inAArrayElementExp(AArrayElementExp node)
+    {
+        declareNodeType(node);
+    }
+
+    // Struct selector
+    // Ex: "x.y.z"
+    public void inAFieldExp(AFieldExp node)
+    {
+        declareNodeType(node);
+    }
+
     // These are IDs inside declarations
+    // Ex: function parameters
     public void outAIdIdType(AIdIdType node)
+    {
+        declareNodeType(node);
+    }
+
+    private void declareNodeType(Node node)
     {
         if (!nodeTypes.containsKey(node))
         {

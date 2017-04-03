@@ -392,7 +392,7 @@ public class CodeGenerator extends DepthFirstAdapter
             return "";
         }
         
-        if (type.totalArrayDimension <= 0)
+        if (type.totalArrayDimension.size() <= 0)
         {
             switch (type.baseType)
             {
@@ -415,9 +415,9 @@ public class CodeGenerator extends DepthFirstAdapter
         // The node is an array
         else
         {
-            for (int i = 0; i < type.totalArrayDimension; i++)
+            for (int i = 0; i < type.totalArrayDimension.size(); i++)
             typeName += "ArrayList<";
-            for (int i = 0; i < type.totalArrayDimension; i++)
+            for (int i = 0; i < type.totalArrayDimension.size(); i++)
                 typeName += ">";
 
             switch (type.baseType)
@@ -455,7 +455,7 @@ public class CodeGenerator extends DepthFirstAdapter
             // Index 0 stores the first type alias of the struct 
             TypeAlias structAlias = type.typeAliases.get(0);
 
-            System.out.println(node + " has type alias: " + structAlias + "[" + structAlias.node.getClass() + "]");
+            System.out.println(node + " has type alias: " + structAlias + "[" + type.structNode + ", " + structAlias.node.getClass() + "]");
 
             if (structAlias.node instanceof ATypeAliasTypeDecl)
             {
@@ -465,7 +465,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
         else
         {
-            System.out.println(node + " has an anonymous struct type");
+            System.out.println(node + " has an anonymous struct type: " + type.structNode);
         }
 
         return null;
