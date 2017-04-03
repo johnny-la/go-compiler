@@ -1026,8 +1026,8 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     public void caseAUnaryXorExp(AUnaryXorExp node)
-    {
-        print("^");
+    {   
+        print("~");
         print("(");
         node.getExp().apply(this);
         print(")");
