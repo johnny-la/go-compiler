@@ -33,17 +33,17 @@ public class Main
         printToFile(inputFilename + PRETTY_PRINT_SUFFIX, prettyPrint);
     }
 
-    // private static void prettyPrint(Start tree, String inputFilename, 
-    //     HashMap<Node, TypeClass> nodeTypes, boolean flag)
-    // {
-    //     PrettyPrinter prettyPrinter = new PrettyPrinter();
-    //     prettyPrinter.nodeTypes = nodeTypes;
-    //     prettyPrinter.printType = flag;
-    //     String prettyPrint = prettyPrinter.prettyPrint(tree);
+    private static void prettyPrint(Start tree, String inputFilename, 
+        HashMap<Node, TypeClass> nodeTypes, boolean flag)
+    {
+        PrettyPrinter prettyPrinter = new PrettyPrinter();
+        prettyPrinter.nodeTypes = nodeTypes;
+        prettyPrinter.printType = flag;
+        String prettyPrint = prettyPrinter.prettyPrint(tree);
 
-    //     printDebug(prettyPrint);
-    //     printToFile(inputFilename + PRETTY_PRINT_TYPE_SUFFIX, prettyPrint);
-    // }
+        printDebug(prettyPrint);
+        printToFile(inputFilename + PRETTY_PRINT_TYPE_SUFFIX, prettyPrint);
+    }
 
     /**
      * Prints the given string to stdout if PRINT_TO_FILE == false
@@ -59,11 +59,11 @@ public class Main
     /** 
      * Generates C code from the given AST
      */
-    private static void generateCode(Start tree, TypeChecker typeChecker,
+    private static void generateCode(Start tree, HashMap<Node,TypeClass> nodeTypes,
             String inputFilename)
     {
         printDebug("Code Generator:");
-        CodeGenerator codeGenerator = new CodeGenerator(tree, typeChecker);
+        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes);
         String code = codeGenerator.generateCode();
 
         printDebug(code);
@@ -156,23 +156,29 @@ public class Main
                 tree.apply(semanticAnalyzer);
                 printDebug("\nSymbol table:");
                 printDebug(symbolTable.toString());
-            //     printToFile(filenamePrefix + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
-            //     if (dumpSymbolTable)
-            //         printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
+                if (dumpSymbolTable)
+                    printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
                 
-            //     printDebug("\nType Checker:");
+                System.out.println("Semantic Analyzer Node Types:");
+                printSymbolMap(semanticAnalyzer.symbolMap);
+                System.out.println("-------------");
+
+                printDebug("\nType Checker:");
                 TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
                 tree.apply(typeChecker);
-            //     printDebug(typeChecker.toString()); 
+                printDebug(typeChecker.toString()); 
 
-            //     if (prettyPrintType) {
-            //         prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
-            //     }
+                System.out.println("Type Checker Node Types:");
+                printNodeTypes(typeChecker.nodeTypes);
+
+                if (prettyPrintType) {
+                    prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
+                }
 
                 // Generate C code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)
                 {
-                    generateCode(tree, null, filenamePrefix);
+                    generateCode(tree, typeChecker.nodeTypes, filenamePrefix);
                 }
                 else
                 {
@@ -188,8 +194,24 @@ public class Main
         catch (Exception e)
         {
             System.out.print("INVALID: " + e);
-            //e.printStackTrace();
+            e.printStackTrace();
             System.exit(1);
+        }
+    }
+
+    public static void printNodeTypes(HashMap<Node,TypeClass> nodeTypes)
+    {
+        for (Map.Entry<Node,TypeClass> entry : nodeTypes.entrySet())
+        {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    public static void printSymbolMap(HashMap<Node,Symbol> symbolMap)
+    {
+        for (Map.Entry<Node,Symbol> entry : symbolMap.entrySet())
+        {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
 }

@@ -7,6 +7,8 @@ import golite.analysis.*;
 import golite.code.*;
 import golite.type.*;
 import java.math.*;
+import golite.*;
+import java.security.spec.EllipticCurve;
 import java.util.*;
 
 public class CodeGenerator extends DepthFirstAdapter
@@ -16,7 +18,8 @@ public class CodeGenerator extends DepthFirstAdapter
     //   in code block above for-loop
     //   (Also: print post-for-loop statement at end
     //   of loop body?) 
-    // * Ensure --, ++, and assignments have lvalues on LHS
+    // * Print characters as integers
+    // * Handle array capacity (var x [3]int)
 
     private int indentLevel;
     private StringBuffer output; 
@@ -46,10 +49,10 @@ public class CodeGenerator extends DepthFirstAdapter
                                 FLOAT_DEFAULT = "0.0",
                                 STRING_DEFAULT = "\"\"";
 
-    public CodeGenerator(Node root, TypeChecker typeChecker)
+    public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes)
     {
         this.root = root;
-        this.typeChecker = typeChecker;
+        this.nodeTypes = nodeTypes;
     }
 
     public String generateCode()
@@ -269,9 +272,17 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     public void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node) {
-        node.getIdType().apply(this);
-        print(" ");
-        node.getVarType().apply(this);
+        //node.getIdType().apply(this);
+        //print(" ");
+        //node.getVarType().apply(this);
+
+        TypeClass type = nodeTypes.get(node.getIdType());
+
+        if (type.baseType == Type.STRUCT && type.typeAliases.size() == 0)
+        {
+            // TODO: Create the class
+            System.out.println("First time encountering struct: " + node.getIdType() + ". Creating the class");
+        }
     } 
 
     // public void caseAStructVarDeclTypeDecl(AStructVarDeclTypeDecl node)
@@ -341,18 +352,123 @@ public class CodeGenerator extends DepthFirstAdapter
     //signature declarations
     public void caseAMultipleTypesSignature(AMultipleTypesSignature node)
     {
-        printNodesWithComma(node.getIdList());
-        print(" ");
-        node.getVarType().apply(this);
+        printMethodParameters(node.getIdList());
+        //print("");
+        //node.getVarType().apply(this);
         print(", ");
         node.getSignature().apply(this);
     }
 
     public void caseASingleTypeSignature(ASingleTypeSignature node)
     {
-        printNodesWithComma(node.getIdList());
-        print(" ");
-        node.getVarType().apply(this);
+        printMethodParameters(node.getIdList());
+        //print(" ");
+        //node.getVarType().apply(this);
+    }
+
+    private void printMethodParameters(LinkedList<PIdType> parameters)
+    {
+        if (parameters == null) { return; }
+
+        for (int i = 0; i < parameters.size(); i++)
+        {
+            PIdType parameter = parameters.get(i);
+            
+            String typeName = getTypeName(parameter);
+            print(typeName + " ");
+            parameter.apply(this);
+            if (i != parameters.size()-1) { print(", "); }
+        }
+    }
+
+    public String getTypeName(PIdType node)
+    {
+        TypeClass type = nodeTypes.get(node);
+        String typeName = "";
+
+        if (type == null) 
+        {
+            ErrorManager.printWarning("Node has null type: " + node);
+            return "";
+        }
+        
+        if (type.totalArrayDimension <= 0)
+        {
+            switch (type.baseType)
+            {
+                case INT:
+                    return "int";
+                case FLOAT64:
+                    return "double";
+                case BOOL:
+                    return "boolean";
+                case RUNE:
+                    return "char";
+                case STRING:
+                    return "String";
+                case STRUCT:
+                    return getStructName(node);
+                default:
+                    ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
+            }
+        }
+        // The node is an array
+        else
+        {
+            for (int i = 0; i < type.totalArrayDimension; i++)
+            typeName += "ArrayList<";
+            for (int i = 0; i < type.totalArrayDimension; i++)
+                typeName += ">";
+
+            switch (type.baseType)
+            {
+                case INT:
+                    typeName += "Integer";
+                case FLOAT64:
+                    typeName += "Double";
+                case BOOL:
+                    typeName += "Boolean";
+                case RUNE:
+                    typeName += "Character";
+                case STRING:
+                    typeName += "String";
+                case STRUCT:
+                    return getStructName(node);
+                default:
+                    ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
+
+            }
+        }
+
+        return typeName;
+    }
+
+    private String getStructName(PIdType node)
+    {
+        TypeClass type = nodeTypes.get(node);
+        
+        if (type.baseType != Type.STRUCT) { return null; }
+
+        // If the struct was declared using a type alias
+        if (type.typeAliases.size() > 0)
+        {
+            // Index 0 stores the first type alias of the struct 
+            TypeAlias structAlias = type.typeAliases.get(0);
+
+            System.out.println(node + " has type alias: " + structAlias + "[" + structAlias.node.getClass() + "]");
+
+            if (structAlias.node instanceof ATypeAliasTypeDecl)
+            {
+                ATypeAliasTypeDecl typeAlias = (ATypeAliasTypeDecl)structAlias.node;
+                return typeAlias.getIdType().toString().trim();
+            }
+        }
+        else
+        {
+            System.out.println(node + " has an anonymous struct type");
+        }
+
+        return null;
     }
 
     /** STATEMENTS */
