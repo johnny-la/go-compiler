@@ -472,9 +472,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             } else if (current instanceof AStructVarType) {
             		AStructVarType struct = (AStructVarType) current;
             		typeClass.innerFields = struct.getInnerFields();
+                    typeClass.structNode = struct;
             		typeClass.baseType = Type.STRUCT;
+
+                    //inAStructVarType(struct);
             		break;
             }
+            // Type alias
             else if (current instanceof AIdVarType)
             {
                 //Check if alias exists in symbol table
@@ -501,12 +505,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 {
                     TypeAlias typeAlias = new TypeAlias();
                     typeAlias.node = typeAliasSymbol.node;
-                    typeAlias.arrayDimensions = typeAliasSymbol.typeClass.totalArrayDimension;
+                    typeAlias.setArrayDimensions(typeAliasSymbol.typeClass.totalArrayDimension);
                     typeClass.typeAliases.add(typeAlias);
                 }
 
                 typeClass.baseType = typeAliasSymbol.typeClass.baseType;
                 typeClass.innerFields = typeAliasSymbol.typeClass.innerFields;
+                typeClass.structNode = typeAliasSymbol.typeClass.structNode;
+                typeClass.addDimensions(typeAliasSymbol.typeClass.totalArrayDimension);
                 break;
             } else {
                 //System.out.println("Traversing node: " + current);
@@ -636,76 +642,154 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
     }
 
-// TO BE FIXED BY RALPH
-    // public void outAArrayIndexExp(AArrayIndexingExp node)
-    // {
-    //     Symbol lvalueSymbol = symbolMap.get(node.getLvalue());
+    public void outAArrayElementExp(AArrayElementExp node)
+    {
+        Symbol arraySymbol = symbolMap.get(node.getArray());
         
-    //     if (lvalueSymbol == null || lvalueSymbol.typeClass.totalArrayDimension == 0)
-    //     {
-    //         ErrorManager.printError("Indexing a non-array type: " + lvalueSymbol);
-    //         return;
-    //     }
+        if (arraySymbol == null || arraySymbol.typeClass.totalArrayDimension.size() == 0)
+        {
+            ErrorManager.printError("Indexing a non-array type: " + arraySymbol);
+            return;
+        }
 
-    //     Symbol newSymbol = new Symbol(lvalueSymbol);
-    //     newSymbol.typeClass.decrementDimension();
+        Symbol newSymbol = new Symbol(arraySymbol);
+        newSymbol.typeClass.decrementDimension();
 
-    //     symbolMap.put(node, newSymbol);
-    //     System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
-    // // }
+        symbolMap.put(node, newSymbol);
+        System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
+    }
 
-    // public void caseAStructSelectorExp(AStructSelectorExp node)
-    // {
-    //     node.getL().apply(this);
-    //     // Get the symbol for the RHS of the struct selector
-    //     Symbol symbol = symbolMap.get(node.getL());
+    // Struct declaration 
+    // "type point struct { ... }"
+    public void inAStructVarType(AStructVarType node)
+    {
+        //declareVariable(node.getIdType(), null, SymbolKind.STRUCT, node);
+        
+        // Struct is already declared. Exit function
+        if (structHierarchy.containsKey(node)) { return; }
 
-    //     if (symbol == null || symbol.typeClass.structNode == null)
-    //     {
-    //         ErrorManager.printError("Using the . operator on a non-struct type: " + node.getL()
-    //             + ", symbol = " + symbol);
-    //         return;
-    //     }
+        System.out.println("Enterring new scope for struct: " + node);
 
-    //     if (symbol.typeClass.totalArrayDimension != 0)
-    //     {
-    //         ErrorManager.printError("Using the . operator on an array: " + symbol);
-    //     }
+        // Create a new scope which will contain the struct fields
+        scope();
+        // Add a mapping between the struct and its internal symbol table
+        structHierarchy.put(node, symbolTable);
+    }
 
-    //     Node structNode = symbol.typeClass.structNode;
+    public void outAStructVarType(AStructVarType node)
+    {
+        System.out.println("Exitting scope for struct: " + node);
+        unscope();
+    }   
 
-    //     //System.out.println("Stepping into struct: " + structNode);
-    //     currentStructScope = structHierarchy.get(structNode);
-        //System.out.println("Struct's symbol table: \n" + currentStructScope);
+    public void inASingleInnerFields(ASingleInnerFields node)
+    {
+        //String id = getIdName(node);
 
-        // String rightId = node.getR().getText();
-        // Symbol rightSymbol = currentStructScope.get(rightId);
-        // if (symbol == null)
+        TypeClass type = getTypeClass(node.getVarType());
+        // If this inner field is a struct that was not declared, do not declare the struct in this method
+        // if (type.structNode != null && !structHierarchy.containsKey(type.structNode)) 
         // {
-        //     ErrorManager.printError("\"" + rightId + "\" is not declared");
         //     return;
         // }
-        // //node.getR().apply(this);
 
-        // currentStructScope = null;
+        System.out.println("inASingleInnerFields: " + node);
 
-        // Symbol newSymbol = new Symbol(rightSymbol);
-        // symbolMap.put(node, newSymbol);
+        for (int i = 0; i < node.getIdType().size(); i++)
+        {
+            // Thus, declare the struct field
+            declareVariable(node.getIdType().get(i), node.getVarType(), SymbolKind.STRUCT_FIELD, node);
+        }
+        
+        // Don't redefine the symbols for nodes that already have a symbol
+        // if (symbolMap.get(node) != null)
+        // {
+        //     System.out.println("Node: " + node + " already has a symbol. Not redefining it.");
+        //     return;
+        // }
 
-        // System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
-        //String structId = node.getL().getText();
-        //Symbol symbol = checkVariableDeclared(structId);
+        // Symbol symbol = checkVariableDeclared(id);
 
-        //if (symbol != null)
-        //{
-            // Retrieve the symbol table containing the fields defined in the struct
-            //Node structDeclarationNode = symbol.node;
-            //SymbolTable structSymbolTable = structHierarchy.get(structDeclarationNode);
+        // if (symbol != null)
+        // {
+        //     Symbol newSymbol = new Symbol(symbol);
+        //     if (symbol.kind == SymbolKind.TYPE)
+        //     {
+        //         TypeAlias alias = new TypeAlias();
+        //         alias.node = symbol.node;
+        //         newSymbol.typeClass.typeAliases.add(alias);
+        //     }
+        //     // If this is a symbol for a dynamically-typed variable
+        //     else if (symbol.kind == SymbolKind.LOCAL && symbol.typeClass.isNull())
+        //     {
+        //         //System.out.println(id + " references a dynamically-typed variable: " + symbol);
+        //         symbol.symbolsToInheritType.add(newSymbol);
+        //         if (symbol.symbolsToInheritType.size() == 1)
+        //         {
+        //             newSymbol = symbol;
+        //         }   
+        //     }
+        //     // Add a node->symbol mapping for future type checking
+        //     symbolMap.put(node, newSymbol);
+
+        //     //System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
+        // }
+    }
+
+    public void caseAFieldExp(AFieldExp node)
+    {
+        node.getExp().apply(this);
+        // Get the symbol for the LHS of the struct selector
+        Symbol symbol = symbolMap.get(node.getExp());
+
+        if (symbol == null || symbol.typeClass.structNode == null)
+        {
+            ErrorManager.printError("Using the . operator on a non-struct type: " + node.getExp()
+                + ", symbol = " + symbol);
+            return;
+        }
+
+        if (symbol.typeClass.totalArrayDimension.size() != 0)
+        {
+            ErrorManager.printError("Using the . operator on an array: " + symbol);
+        }
+
+        Node structNode = symbol.typeClass.structNode;
+
+        //System.out.println("Stepping into struct: " + structNode);
+        currentStructScope = structHierarchy.get(structNode);
+        System.out.println("Struct's symbol table: \n" + currentStructScope);
+
+        String rightId = getIdName(node.getIdType());
+        Symbol rightSymbol = currentStructScope.get(rightId);
+        if (rightSymbol == null)
+        {
+            ErrorManager.printError("\"" + rightId + "\" is not declared");
+            return;
+        }
+        //node.getR().apply(this);
+
+        currentStructScope = null;
+
+        System.out.println("Struct field: " + node + ". RHS has symbol " + rightSymbol + " in struct symbolTable");
+        
+        Symbol newSymbol = new Symbol(rightSymbol);
+        symbolMap.put(node, newSymbol);
+
+        System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
+        // String structId = node.getL().getText();
+        // Symbol symbol = checkVariableDeclared(structId);
+
+        // if (symbol != null)
+        // {
+        //     // Retrieve the symbol table containing the fields defined in the struct
+        //     Node structDeclarationNode = symbol.node;
+        //     SymbolTable structSymbolTable = structHierarchy.get(structDeclarationNode);
             
-            //String rightId = getId(node.getR());
-            //structSymbolTable.contains() 
-        //}
-    // }
+        //     String rightId = getId(node.getR());
+        //     // structSymbolTable.contains() 
+        // }
+    }
 
     /**
      * Returns the name of the left-most identifier in the given lvalue node

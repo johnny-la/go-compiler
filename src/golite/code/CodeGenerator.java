@@ -391,230 +391,229 @@
 //             ErrorManager.printWarning("Node has null type: " + node);
 //             return "";
 //         }
+ //        if (type.totalArrayDimension.size() <= 0)
+ //        {
+ //            switch (type.baseType)
+ //            {
+ //                case INT:
+ //                    return "int";
+ //                case FLOAT64:
+ //                    return "double";
+ //                case BOOL:
+ //                    return "boolean";
+ //                case RUNE:
+ //                    return "char";
+ //                case STRING:
+ //                    return "String";
+ //                case STRUCT:
+ //                    return getStructName(node);
+ //                default:
+ //                    ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
+ //            }
+ //        }
+ //        // The node is an array
+ //        else
+ //        {
+ //            for (int i = 0; i < type.totalArrayDimension.size(); i++)
+ //            typeName += "ArrayList<";
+ //            for (int i = 0; i < type.totalArrayDimension.size(); i++)
+ //                typeName += ">";
+
+ //            switch (type.baseType)
+ //            {
+ //                case INT:
+ //                    typeName += "Integer";
+ //                case FLOAT64:
+ //                    typeName += "Double";
+ //                case BOOL:
+ //                    typeName += "Boolean";
+ //                case RUNE:
+ //                    typeName += "Character";
+ //                case STRING:
+ //                    typeName += "String";
+ //                case STRUCT:
+ //                    return getStructName(node);
+ //                default:
+ //                    ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
+
+ //            }
+ //        }
+
+ //        return typeName;
+ //    }
+
+ //    private String getStructName(PIdType node)
+ //    {
+ //        TypeClass type = nodeTypes.get(node);
         
-//         if (type.totalArrayDimension <= 0)
-//         {
-//             switch (type.baseType)
-//             {
-//                 case INT:
-//                     return "int";
-//                 case FLOAT64:
-//                     return "double";
-//                 case BOOL:
-//                     return "boolean";
-//                 case RUNE:
-//                     return "char";
-//                 case STRING:
-//                     return "String";
-//                 case STRUCT:
-//                     return getStructName(node);
-//                 default:
-//                     ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
-//             }
-//         }
-//         // The node is an array
-//         else
-//         {
-//             for (int i = 0; i < type.totalArrayDimension; i++)
-//             typeName += "ArrayList<";
-//             for (int i = 0; i < type.totalArrayDimension; i++)
-//                 typeName += ">";
+ //        if (type.baseType != Type.STRUCT) { return null; }
 
-//             switch (type.baseType)
-//             {
-//                 case INT:
-//                     typeName += "Integer";
-//                 case FLOAT64:
-//                     typeName += "Double";
-//                 case BOOL:
-//                     typeName += "Boolean";
-//                 case RUNE:
-//                     typeName += "Character";
-//                 case STRING:
-//                     typeName += "String";
-//                 case STRUCT:
-//                     return getStructName(node);
-//                 default:
-//                     ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
+ //        // If the struct was declared using a type alias
+ //        if (type.typeAliases.size() > 0)
+ //        {
+ //            // Index 0 stores the first type alias of the struct 
+ //            TypeAlias structAlias = type.typeAliases.get(0);
 
-//             }
-//         }
+ //            System.out.println(node + " has type alias: " + structAlias + "[" + type.structNode + ", " + structAlias.node.getClass() + "]");
 
-//         return typeName;
-//     }
+ //            if (structAlias.node instanceof ATypeAliasTypeDecl)
+ //            {
+ //                ATypeAliasTypeDecl typeAlias = (ATypeAliasTypeDecl)structAlias.node;
+ //                return typeAlias.getIdType().toString().trim();
+ //            }
+ //        }
+ //        else
+ //        {
+ //            System.out.println(node + " has an anonymous struct type: " + type.structNode);
+ //        }
 
-//     private String getStructName(PIdType node)
-//     {
-//         TypeClass type = nodeTypes.get(node);
-        
-//         if (type.baseType != Type.STRUCT) { return null; }
+ //        return null;
+ //    }
 
-//         // If the struct was declared using a type alias
-//         if (type.typeAliases.size() > 0)
-//         {
-//             // Index 0 stores the first type alias of the struct 
-//             TypeAlias structAlias = type.typeAliases.get(0);
+ //    /** STATEMENTS */
+ //    public void caseAPrintExp(APrintExp node)
+ //    {
+ //        print("System.out.print("); 
+ //        if (node.getExp() != null && node.getExp().size() > 0) 
+ //        {
+ //            print("\"\" + ");
+ //            printNodes(node.getExp(), " + \"\" + ");
+ //        }
+ //        else
+ //        {
+ //            // System.out.print() requires at least one argument
+ //            print("\"\"");
+ //        }
+ //        print(")");
+ //    }
 
-//             System.out.println(node + " has type alias: " + structAlias + "[" + structAlias.node.getClass() + "]");
+ //    public void caseAPrintlnExp(APrintlnExp node)
+ //    {
+ //        print("System.out.println(");
+ //        if (node.getExp() != null && node.getExp().size() > 0) 
+ //        {
+ //            print("\"\" + ");
+ //            printNodes(node.getExp(), " + \" \" + ");
+ //        }
+ //        print(")");
+ //    }
 
-//             if (structAlias.node instanceof ATypeAliasTypeDecl)
-//             {
-//                 ATypeAliasTypeDecl typeAlias = (ATypeAliasTypeDecl)structAlias.node;
-//                 return typeAlias.getIdType().toString().trim();
-//             }
-//         }
-//         else
-//         {
-//             System.out.println(node + " has an anonymous struct type");
-//         }
+ //    public void caseAReturnStmt(AReturnStmt node)
+ //    {
+ //        print("return");
+ //        if (node.getExp() != null) 
+ //        {
+ //            print(" ");
+ //            node.getExp().apply(this);
+ //        }
+ //    }
 
-//         return null;
-//     }
+ //    public void caseAIncrementStmt(AIncrementStmt node)
+ //    {
+ //        node.getExp().apply(this);
+ //        print("++");
+ //    }
 
-//     /** STATEMENTS */
-//     public void caseAPrintExp(APrintExp node)
-//     {
-//         print("System.out.print("); 
-//         if (node.getExp() != null && node.getExp().size() > 0) 
-//         {
-//             print("\"\" + ");
-//             printNodes(node.getExp(), " + \"\" + ");
-//         }
-//         else
-//         {
-//             // System.out.print() requires at least one argument
-//             print("\"\"");
-//         }
-//         print(")");
-//     }
+ //    public void caseADecrementStmt(ADecrementStmt node)
+ //    {
+ //        node.getExp().apply(this);
+ //        print("--");
+ //    }
 
-//     public void caseAPrintlnExp(APrintlnExp node)
-//     {
-//         print("System.out.println(");
-//         if (node.getExp() != null && node.getExp().size() > 0) 
-//         {
-//             print("\"\" + ");
-//             printNodes(node.getExp(), " + \" \" + ");
-//         }
-//         print(")");
-//     }
+ //    public void caseADeclStmt(ADeclStmt node)
+ //    {
+ //        node.getDecl().apply(this);
+ //    }
 
-//     public void caseAReturnStmt(AReturnStmt node)
-//     {
-//         print("return");
-//         if (node.getExp() != null) 
-//         {
-//             print(" ");
-//             node.getExp().apply(this);
-//         }
-//     }
+ //    public void caseAAssignListStmt(AAssignListStmt node)
+ //    {
+ //        printNodesWithComma(node.getL());
+ //        node.getOp().apply(this);
+ //        printNodesWithComma(node.getR()); 
+ //    } 
 
-//     public void caseAIncrementStmt(AIncrementStmt node)
-//     {
-//         node.getExp().apply(this);
-//         print("++");
-//     }
+ //    public void caseAEqualsExp(AEqualsExp node)
+ //    {
+ //        print("=");
+ //    } 
 
-//     public void caseADecrementStmt(ADecrementStmt node)
-//     {
-//         node.getExp().apply(this);
-//         print("--");
-//     }
+ //    public void caseAColonEqualsExp(AColonEqualsExp node)
+ //    {
+ //        print(":=");
+ //    }
 
-//     public void caseADeclStmt(ADeclStmt node)
-//     {
-//         node.getDecl().apply(this);
-//     }
+ //    public void caseAOpEqualsExp(AOpEqualsExp node)
+ //    {
+ //        print(node.getOpEquals().getText());
+ //    }
 
-//     public void caseAAssignListStmt(AAssignListStmt node)
-//     {
-//         printNodesWithComma(node.getL());
-//         node.getOp().apply(this);
-//         printNodesWithComma(node.getR()); 
-//     } 
+ //    private void printIndices(LinkedList<? extends Node> nodes){
+ //        for( int i = 0; i<nodes.size(); i++){
+ //            if (i != nodes.size()) { 
+ //                print("["); 
+ //                nodes.get(i).apply(this);
+ //                print("]");
+ //            }
+ //        }
+ //    }
 
-//     public void caseAEqualsExp(AEqualsExp node)
-//     {
-//         print("=");
-//     } 
+ //    public void caseAArrayElementExp(AArrayElementExp node){
+	// 	print("(");
+	// 	node.getArray().apply(this);
+	// 	print("[");
+	// 	node.getIndex().apply(this);
+	// 	print("]");
+	// 	print(")");
+	// }
 
-//     public void caseAColonEqualsExp(AColonEqualsExp node)
-//     {
-//         print(":=");
-//     }
+ //    public void caseAFieldExp(AFieldExp node) {
+	// 	print("(");
+	// 	node.getIdType().apply(this);
+	// 	print(").");
+	// 	node.getExp().apply(this);
+	// }
 
-//     public void caseAOpEqualsExp(AOpEqualsExp node)
-//     {
-//         print(node.getOpEquals().getText());
-//     }
+ //    public void caseABlockStmt(ABlockStmt node)
+ //    {
+ //        println("{");
+ //        indentLevel++;
+ //        for (int i = 0; i < node.getStmt().size(); i++)
+ //        {
+ //            printi("");
+ //            node.getStmt().get(i).apply(this);
+ //            // Print a semicolon after every non-control statement (not if/for/switch stmts)
+ //            if (!isControlStatement(node.getStmt().get(i))) 
+ //                println(";");
+ //            else
+ //                println("");
+ //        }
+ //        indentLevel--;
+ //        printi("}");
+ //    }
 
-//     private void printIndices(LinkedList<? extends Node> nodes){
-//         for( int i = 0; i<nodes.size(); i++){
-//             if (i != nodes.size()) { 
-//                 print("["); 
-//                 nodes.get(i).apply(this);
-//                 print("]");
-//             }
-//         }
-//     }
+ //    // Returns true if the node is an if/switch/for statement
+ //    private boolean isControlStatement(Node node)
+ //    {
+ //        return (node instanceof AIfStmt || node instanceof ASwitchStmt || 
+ //                node instanceof AForStmt);
+ //    }
 
-//     public void caseAArrayElementExp(AArrayElementExp node){
-// 		print("(");
-// 		node.getArray().apply(this);
-// 		print("[");
-// 		node.getIndex().apply(this);
-// 		print("]");
-// 		print(")");
-// 	}
+ //    public void caseAIfStmt(AIfStmt node)
+ //    {
+ //        // Anonymous code block for init statement
+ //        println("{");
+ //        indentLevel++;
 
-//     public void caseAFieldExp(AFieldExp node) {
-// 		print("(");
-// 		node.getIdType().apply(this);
-// 		print(").");
-// 		node.getExp().apply(this);
-// 	}
+ //        if (node.getSimpleStmt() != null)
+ //        {
+ //            printi("");
+ //            node.getSimpleStmt().apply(this);
+ //            println("; ");
+ //        }
 
-//     public void caseABlockStmt(ABlockStmt node)
-//     {
-//         println("{");
-//         indentLevel++;
-//         for (int i = 0; i < node.getStmt().size(); i++)
-//         {
-//             printi("");
-//             node.getStmt().get(i).apply(this);
-//             // Print a semicolon after every non-control statement (not if/for/switch stmts)
-//             if (!isControlStatement(node.getStmt().get(i))) 
-//                 println(";");
-//             else
-//                 println("");
-//         }
-//         indentLevel--;
-//         printi("}");
-//     }
-
-//     // Returns true if the node is an if/switch/for statement
-//     private boolean isControlStatement(Node node)
-//     {
-//         return (node instanceof AIfStmt || node instanceof ASwitchStmt || 
-//                 node instanceof AForStmt);
-//     }
-
-//     public void caseAIfStmt(AIfStmt node)
-//     {
-//         // Anonymous code block for init statement
-//         println("{");
-//         indentLevel++;
-
-//         if (node.getSimpleStmt() != null)
-//         {
-//             printi("");
-//             node.getSimpleStmt().apply(this);
-//             println("; ");
-//         }
-
-//         printi("if (");
-//         node.getExp().apply(this);
-//         print(") ");
+ //        printi("if (");
+ //        node.getExp().apply(this);
+ //        print(") ");
     
 //         node.getBlock().apply(this);
 

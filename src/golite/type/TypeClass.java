@@ -8,6 +8,7 @@ public class TypeClass
     public PVarType varTypeNode;    // The top-most PVarType node
     public Type baseType;   // The base type of the variable (INT, FLOAT64, etc.)
     public List<PInnerFields> innerFields; // If this is a struct-type, this stores the struct declaration node
+    public Node structNode; // The struct node if baseType == STRUCT  
     public LinkedList<Dimension> totalArrayDimension; // The dimension of the base type
     public FunctionSignature functionSignature; // Only populated if baseType == FUNCTION
     public ArrayList<TypeAlias> typeAliases = new ArrayList<TypeAlias>(); 
@@ -27,12 +28,17 @@ public class TypeClass
         varTypeNode = other.varTypeNode;
         baseType = other.baseType;
         innerFields = other.innerFields;
-        totalArrayDimension = other.totalArrayDimension;
+        structNode = other.structNode;
         functionSignature = (other.functionSignature != null)? 
                                 new FunctionSignature(other.functionSignature) : null;
         //typeAliasNode = other.typeAliasNode;
         //aliasArrayDimension = other.aliasArrayDimension;
 
+        totalArrayDimension = new LinkedList<Dimension>();
+        for (int i = 0; i < other.totalArrayDimension.size(); i++)
+        {
+            totalArrayDimension.add(other.totalArrayDimension.get(i));
+        }
         for (int i = 0; i < other.typeAliases.size(); i++)
         {
             typeAliases.add(new TypeAlias(other.typeAliases.get(i)));
@@ -46,30 +52,40 @@ public class TypeClass
     /**
      * Decrements the dimension of this type
      */
-    // public void decrementDimension()
-    // {
-    //     totalArrayDimension--;
+    public void decrementDimension()
+    {
+        totalArrayDimension.removeLast();
 
-    //     for (int i = typeAliases.size()-1; i >= 0; i--)
-    //     {
-    //         TypeAlias typeAlias = typeAliases.get(i);
+        for (int i = typeAliases.size()-1; i >= 0; i--)
+        {
+            TypeAlias typeAlias = typeAliases.get(i);
 
-    //         // Get rid of the type aliases that are not arrays
-    //         if (typeAlias.arrayDimension <= 0)
-    //         {
-    //             typeAliases.remove(i);
-    //         }
-    //         else
-    //         {
-    //             typeAlias.arrayDimension--;
+            // Get rid of the type aliases that are not arrays
+            if (typeAlias.arrayDimensions.size() <= 0)
+            {
+                typeAliases.remove(i);
+            }
+            else
+            {
+                // Remove last array dimension in the type alias
+                typeAlias.arrayDimensions.removeLast();
                 
-    //             //if (typeAlias.arrayDimension <= 0)
-    //                 //typeAliases.remove(i);
+                //if (typeAlias.arrayDimension <= 0)
+                    //typeAliases.remove(i);
 
-    //             break;
-    //         }
-    //     }
-    // }
+                break;
+            }
+        }
+    }
+
+    // Adds the array dimensions to the 
+    public void addDimensions(LinkedList<Dimension> dimensions)
+    {
+        for (int i = 0; i < dimensions.size(); i++)
+        {
+            totalArrayDimension.add(dimensions.get(i));
+        }
+    }  
 
     public boolean isNull()
     {
