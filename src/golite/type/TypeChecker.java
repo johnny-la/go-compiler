@@ -75,11 +75,11 @@ public class TypeChecker extends DepthFirstAdapter
 
         if (leftSize > 0 && rightSize > 0) {
             if (leftAliases.get(leftSize - 1).node != rightAliases.get(rightSize - 1).node) {
-                ErrorManager.printError("Aliases aren't compatible with each other: " + left + " " + right);
+                ErrorManager.printError("Aliases aren't compatible with each other: " + left + ", " + right);
                 return false;
             }
         } else if (leftSize > 0 || rightSize > 0) {
-            ErrorManager.printError("Aliases aren't compatible with each other: " + left + " " + right);
+            ErrorManager.printError("Aliases aren't compatible with each other: " + left + ", " + right);
             return false;
         }
         return true;
@@ -87,7 +87,7 @@ public class TypeChecker extends DepthFirstAdapter
 
     public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
 
-        if (left.totalArrayDimension != null || right.totalArrayDimension != null) {
+        if (left.totalArrayDimension.size() != 0 || right.totalArrayDimension.size() != 0) {
             ErrorManager.printError("Unable to perform binary operations on array type");
             return false;
         }
@@ -524,9 +524,9 @@ public class TypeChecker extends DepthFirstAdapter
             ErrorManager.printError("Must append to slices only");
         }
 
-        if (!isAliasedCorrectly(leftType, rightType)) {
-            return;
-        }
+        // if (!isAliasedCorrectly(leftType, rightType)) {
+        //     return;
+        // }
 
         if (leftType.totalArrayDimension.size() > 0) {
             if (rightType.baseType == leftType.baseType) {
@@ -633,108 +633,109 @@ public class TypeChecker extends DepthFirstAdapter
     //     }
     // }
 
-    // // Returns true if the node is a blank identifier
-    // private boolean isBlankId(PIdType node)
-    // {
-    //     return getIdFromIdType(node).trim().equals("_");
-    // }
+    // Returns true if the node is a blank identifier
+    private boolean isBlankId(PIdType node)
+    {
+        return getIdName(node).trim().equals("_");
+    }
 
-    // public void outAAssignListStmt(AAssignListStmt node) {
-    //     List<PExp> leftArgs = node.getL();
-    //     List<PExp> rightArgs = node.getR();
-    //     PExp operator = node.getOp();
+    public void outAAssignListStmt(AAssignListStmt node) {
+        System.out.println("outAAssignListStmt: " + node);
+        List<PExp> leftArgs = node.getL();
+        List<PExp> rightArgs = node.getR();
+        PExp operator = node.getOp();
 
-    //     if (operator instanceof AEqualsExp) {
-    //         if (leftArgs.size() == rightArgs.size()) {
-    //             for (int i = 0; i < leftArgs.size(); i++) {
-    //                 TypeClass left = getType(leftArgs.get(i));
-    //                 TypeClass right = getType(rightArgs.get(i));
-    //                 if (!isAliasedCorrectly(left, right)) {
-    //                     return;
-    //                 }
-    //                 if (right.baseType != left.baseType) {
-    //                     ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
-    //                     return;
-    //                 }
-    //             }
-    //             return;
-    //         } else {
-    //              ErrorManager.printError("Assignment of incorrectlenghts: " 
-    //                 + leftArgs.size() + ", " + rightArgs.size());
-    //              return;
-    //         }
-    //     } else if (operator instanceof AColonEqualsExp) {
-    //         if (leftArgs.size() == rightArgs.size()) {
-    //             for (int i = 0; i < leftArgs.size(); i++) {
-    //                 TypeClass left = getType(leftArgs.get(i));
-    //                 TypeClass right = getType(rightArgs.get(i));
-    //                 if (!isAliasedCorrectly(left, right)) {
-    //                     return;
-    //                 }
-    //                 if (left.isNull()) {
-    //                     TypeClass copy = new TypeClass(right);
-    //                     Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
-    //                     //System.out.println("Setting dynamic type of " + lhsSymbol + " to: " + copy);
-    //                     lhsSymbol.setType(copy);
-    //                 } else if (right.baseType != left.baseType) {
-    //                     ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
-    //                     return;
-    //                 }
-    //             }
-    //             return;
-    //         }
-    //     } else {
-    //         if (leftArgs.size() == 1 && rightArgs.size() == 1) {
-    //             TypeClass left = getType(leftArgs.get(0));
-    //             TypeClass right = getType(rightArgs.get(0));
-    //             AOpEqualsExp op = (AOpEqualsExp) operator;
+        if (operator instanceof AEqualsExp) {
+            if (leftArgs.size() == rightArgs.size()) {
+                for (int i = 0; i < leftArgs.size(); i++) {
+                    TypeClass left = getType(leftArgs.get(i));
+                    TypeClass right = getType(rightArgs.get(i));
+                    //if (!isAliasedCorrectly(left, right)) {
+                    //    return;
+                    //}
+                    if (right.baseType != left.baseType) {
+                        ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
+                        return;
+                    }
+                }
+                return;
+            } else {
+                 ErrorManager.printError("Assignment of incorrectlenghts: " 
+                    + leftArgs.size() + ", " + rightArgs.size());
+                 return;
+            }
+        } else if (operator instanceof AColonEqualsExp) {
+            if (leftArgs.size() == rightArgs.size()) {
+                for (int i = 0; i < leftArgs.size(); i++) {
+                    TypeClass left = getType(leftArgs.get(i));
+                    TypeClass right = getType(rightArgs.get(i));
+                    if (!left.isNull() && !isAliasedCorrectly(left, right)) {
+                        return;
+                    }
+                    if (left.isNull()) {
+                        TypeClass copy = new TypeClass(right);
+                        Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
+                        //System.out.println("Setting dynamic type of " + lhsSymbol + " to: " + copy);
+                        lhsSymbol.setType(copy);
+                    } else if (right.baseType != left.baseType) {
+                        ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
+                        return;
+                    }
+                }
+                return;
+            }
+        } else {
+            if (leftArgs.size() == 1 && rightArgs.size() == 1) {
+                TypeClass left = getType(leftArgs.get(0));
+                TypeClass right = getType(rightArgs.get(0));
+                AOpEqualsExp op = (AOpEqualsExp) operator;
                 
-    //             if (leftArgs.get(0) instanceof AIdExp && isBlankId( ((AIdExp)leftArgs.get(0)).getIdType() ))
-    //             {
-    //                 ErrorManager.printError("Expression on left-hand-side is not an lvalue: " + leftArgs.get(0));
-    //             }
+                if (leftArgs.get(0) instanceof AIdExp && isBlankId( ((AIdExp)leftArgs.get(0)).getIdType() ))
+                {
+                    ErrorManager.printError("Expression on left-hand-side is not an lvalue: " + leftArgs.get(0));
+                }
 
-    //             if (op.getOpEquals().getText().equals("+=")) {
-    //                 if (!isComparable(left, right, BinaryOps.NUMORSTRING)) {
-    //                     ErrorManager.printError("Operation of incompatible types: " +
-    //                     left + ", " + right);
-    //                     return;
-    //                 }
-    //                 return;
-    //             }
+                if (op.getOpEquals().getText().equals("+=")) {
+                    if (!isComparable(left, right, BinaryOps.NUMORSTRING)) {
+                        ErrorManager.printError("Operation of incompatible types: " +
+                        left + ", " + right);
+                        return;
+                    }
+                    return;
+                }
 
-    //             if (op.getOpEquals().getText().equals("-=") || op.getOpEquals().getText().equals("*=") 
-    //                 || op.getOpEquals().getText().equals("/=")) {
-    //                 if (!isComparable(left, right, BinaryOps.NUMERIC)) {
-    //                     ErrorManager.printError("Operation of incompatible types: " +
-    //                     left + ", " + right);
-    //                     return;
-    //                 }
-    //                 return;
-    //             }
+                if (op.getOpEquals().getText().equals("-=") || op.getOpEquals().getText().equals("*=") 
+                    || op.getOpEquals().getText().equals("/=")) {
+                    if (!isComparable(left, right, BinaryOps.NUMERIC)) {
+                        ErrorManager.printError("Operation of incompatible types: " +
+                        left + ", " + right);
+                        return;
+                    }
+                    return;
+                }
 
-    //             if (op.getOpEquals().getText().equals("&=") || op.getOpEquals().getText().equals("&^=") 
-    //                 || op.getOpEquals().getText().equals("|=") || op.getOpEquals().getText().equals("<<=")
-    //                 || op.getOpEquals().getText().equals(">>=") || op.getOpEquals().getText().equals("%=")
-    //                 || op.getOpEquals().getText().equals("^=")) {
-    //                 if (!isComparable(left, right, BinaryOps.INTEGER)) {
-    //                     ErrorManager.printError("Operation of incompatible types: " +
-    //                     left + ", " + right);
-    //                     return;
-    //                 }
-    //                 return;
-    //             }
+                if (op.getOpEquals().getText().equals("&=") || op.getOpEquals().getText().equals("&^=") 
+                    || op.getOpEquals().getText().equals("|=") || op.getOpEquals().getText().equals("<<=")
+                    || op.getOpEquals().getText().equals(">>=") || op.getOpEquals().getText().equals("%=")
+                    || op.getOpEquals().getText().equals("^=")) {
+                    if (!isComparable(left, right, BinaryOps.INTEGER)) {
+                        ErrorManager.printError("Operation of incompatible types: " +
+                        left + ", " + right);
+                        return;
+                    }
+                    return;
+                }
 
-    //         }
-    //         ErrorManager.printError("Only single arguments allowed for operations");
-    //         return;
-    //     }
-    // }
+            }
+            ErrorManager.printError("Only single arguments allowed for operations");
+            return;
+        }
+    }
 
     // These are IDs in expressions
     public void outAIdExp(AIdExp node)
     {
-        System.out.println("Traversing ID: " + node);
+        System.out.println("outAIdExp: " + node);
         if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
             addType(node, Type.BOOL);
             return;
