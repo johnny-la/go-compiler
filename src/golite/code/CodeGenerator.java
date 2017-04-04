@@ -43,10 +43,13 @@ public class CodeGenerator extends DepthFirstAdapter
     // The string buffer used for concatenating strings
     private String stringBuffer = "buffer";
 
+    // File name
+    private static String className = "";
+
     private static final String fileHeader = 
         "import java.util.*;\n" +
         "\n" +
-        "public class Main {\n";
+        "public class " + className + "{\n";
 
     private static final String fileFooter =
         	"    public static <T> T _get_(ArrayList<T> list, int index, boolean isArray, int maxSize, T defaultValue) {\n" +
@@ -122,11 +125,12 @@ public class CodeGenerator extends DepthFirstAdapter
     // Maps the struct node to its class text
     private HashMap<Node,String> declaredStructs = new HashMap<Node,String>();
 
-    public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes, HashSet<Node> newShortDeclarationVariables)
+    public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes, HashSet<Node> newShortDeclarationVariables, String fileName)
     {
         this.root = root;
         this.nodeTypes = nodeTypes;
         this.newShortDeclarationVariables = newShortDeclarationVariables;
+        this.className = fileName;
     }
 
     public String generateCode()

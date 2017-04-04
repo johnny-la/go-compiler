@@ -63,11 +63,11 @@ public class Main
             HashSet<Node> newShortDeclarationVariables, String inputFilename)
     {
         printDebug("Code Generator:");
-        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables);
+        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables, inputFilename);
         String code = codeGenerator.generateCode();
 
         printDebug(code);
-        printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
+        printToFile(wellFormattedFileName + CODE_GENERATOR_SUFFIX, code);
     }
 
     /**
