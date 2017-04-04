@@ -59,7 +59,7 @@ public class CodeGenerator extends DepthFirstAdapter
             "        list.set(index, data);\n" +
             "    }\n" +
             "\n" +
-            "    @SuppressWarnings(\"unchecked\")" +
+            "    @SuppressWarnings(\"unchecked\")\n" +
             "    public static <T> void _ensureCapacity_(ArrayList<T> list, boolean isArray, int maxSize, T defaultValue) {\n" +
 	        "        if (isArray) {\n" +
 			"            for (int i = list.size(); i < maxSize; i++) {\n" +
