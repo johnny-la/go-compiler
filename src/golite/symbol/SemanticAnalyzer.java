@@ -441,6 +441,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         	kind = SymbolKind.LOCAL;
         }
 
+        if(!inAFunction && kind == SymbolKind.LOCAL){
+            kind = SymbolKind.FIELD;
+        }
 
         // Insert the symbol in the symbol table
         Symbol symbol = new Symbol(idName, node, typeClass, kind);
