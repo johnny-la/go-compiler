@@ -178,7 +178,7 @@ public class Main
                 // Generate code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)
                 {
-                     generateCode(tree, typeChecker.nodeTypes, filenamePrefix);
+                     // generateCode(tree, typeChecker.nodeTypes, filenamePrefix);
                 }
                 else
                 {
