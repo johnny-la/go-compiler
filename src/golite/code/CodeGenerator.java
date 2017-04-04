@@ -20,6 +20,11 @@ public class CodeGenerator extends DepthFirstAdapter
     //   of loop body?) 
     // * Print characters as integers
     // * Handle array capacity (var x [3]int)
+    // * Structs are instantiated upon declaration
+    // * Slices and arrays are instantiated as arraylists.
+    //   slices start empty, arrays start with n values populated,
+    //   where n is the size of the array (each element populated
+    //   with that element's default value)
 
     private int indentLevel;
     private StringBuffer output; 
@@ -47,6 +52,8 @@ public class CodeGenerator extends DepthFirstAdapter
 
     private static final String INT_DEFAULT = "0",
                                 FLOAT_DEFAULT = "0.0",
+                                RUNE_DEFAULT = "0",
+                                BOOL_DEFAULT = "false",
                                 STRING_DEFAULT = "\"\"";
 
     private static final String CLASS_MODIFIER = "class ",
@@ -163,13 +170,18 @@ public class CodeGenerator extends DepthFirstAdapter
         
         for (int i = 0; i < node.getDecl().size(); i++)
         {
-            printi("");
             Node decl = node.getDecl().get(i);
+            if (decl instanceof AVarDeclAstDecl)
+            {
+                PVarDecl varDecl = ((AVarDeclAstDecl)decl).getVarDecl();
+                if (isEmptyMultilineList(varDecl) || isBlankId(varDecl))
+                    continue;
+            }
+            
+            printi("");
             decl.apply(this);
-            boolean isEmptyMultilineList = (decl instanceof AVarDeclAstDecl && ((AVarDeclAstDecl)decl).getVarDecl() instanceof AMultilineListVarDecl)
-                && isEmptyMultilineList(((AVarDeclAstDecl)decl).getVarDecl());
             // Don't print newlines/semicolons for function declarations
-            if (!(decl instanceof AFuncDeclAstDecl) && !isEmptyMultilineList) 
+            if (!(decl instanceof AFuncDeclAstDecl)) 
                 println(";");
         }
 
@@ -178,6 +190,20 @@ public class CodeGenerator extends DepthFirstAdapter
         println("\n}"); 
 
         // Print the classes
+    }
+
+    private boolean isEmptyMultilineList(PStmt node)
+    {
+        if (node instanceof ADeclStmt)
+        {
+            PDecl decl = ((ADeclStmt)node).getDecl();
+            if (decl instanceof AVarDeclAstDecl)
+            {
+                return isEmptyMultilineList(((AVarDeclAstDecl)decl).getVarDecl());
+            }
+        }
+
+        return false;
     }
 
     private boolean isEmptyMultilineList(PVarDecl node)
@@ -283,6 +309,27 @@ public class CodeGenerator extends DepthFirstAdapter
         return getIdName(node).trim().equals("_");
     }
 
+    // Returns true if the declaration has a blank identifier
+    private boolean isBlankId(PVarDecl node)
+    {
+        // System.out.println(node + " type = " + node.getClass());
+        return getIdName(node).trim().equals("_");
+    }
+
+    private boolean isBlankId(PStmt node)
+    {
+        if (node instanceof ADeclStmt)
+        {
+            PDecl decl = ((ADeclStmt)node).getDecl();
+            if (decl instanceof AVarDeclAstDecl)
+            {
+                return isBlankId(((AVarDeclAstDecl)decl).getVarDecl());
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Returns the name of the id_type node
      */
@@ -293,6 +340,20 @@ public class CodeGenerator extends DepthFirstAdapter
         if (node instanceof AIdIdType) { idName = ((AIdIdType)node).getId().getText(); }
         else if (node instanceof ATypeIdType) { idName = ((ATypeIdType)node).getType().getText(); }
     
+        return idName;
+    }
+
+    /**
+     * Returns the name of the varDecl node
+     */ 
+    private String getIdName(PVarDecl node)
+    {
+        String idName = "";
+
+        if (node instanceof AVarWithTypeVarDecl) { idName = ((AVarWithTypeVarDecl)node).getIdType().toString(); }
+        else if (node instanceof AVarWithOnlyExpVarDecl) { idName = ((AVarWithOnlyExpVarDecl)node).getIdType().toString(); }
+        else if (node instanceof AVarWithTypeAndExpVarDecl) { idName = ((AVarWithTypeAndExpVarDecl)node).getIdType().toString(); }
+
         return idName;
     }
 
@@ -362,7 +423,9 @@ public class CodeGenerator extends DepthFirstAdapter
         int idsPrinted = 0;
         // Print all the variable declarations in the multiline list
         for (int i = 0; i < node.getVarDecl().size(); i++) {
-            // if (isBlankId(node.getIdType())) { return; }
+            // Ignore blank identifiers
+            if (isBlankId(node.getVarDecl().get(i))) 
+                continue; 
 
             Node varDecl = node.getVarDecl().get(i);
             if (idsPrinted != 0) 
@@ -630,7 +693,17 @@ public class CodeGenerator extends DepthFirstAdapter
         if (node.getExp() != null && node.getExp().size() > 0) 
         {
             print("\"\" + ");
-            printNodes(node.getExp(), " + \"\" + ");
+            for (int i = 0; i < node.getExp().size(); i++)
+            {
+                TypeClass type = nodeTypes.get(node.getExp().get(i));
+                if(type.baseType == Type.RUNE){
+                    print("(int)");
+                }
+                node.getExp().get(i).apply(this);
+                if (i != node.getExp().size()-1) { 
+                    print(" + \"\" + "); 
+                }
+            }
         }
         else
         {
@@ -646,7 +719,17 @@ public class CodeGenerator extends DepthFirstAdapter
         if (node.getExp() != null && node.getExp().size() > 0) 
         {
             print("\"\" + ");
-            printNodes(node.getExp(), " + \" \" + ");
+            for (int i = 0; i < node.getExp().size(); i++)
+            {
+                TypeClass type = nodeTypes.get(node.getExp().get(i));
+                if(type.baseType == Type.RUNE){
+                    print("(int)");
+                }
+                node.getExp().get(i).apply(this);
+                if (i != node.getExp().size()-1) { 
+                    print(" + \"\" + "); 
+                }
+            }
         }
         print(")");
     }
@@ -732,10 +815,13 @@ public class CodeGenerator extends DepthFirstAdapter
         indentLevel++;
         for (int i = 0; i < node.getStmt().size(); i++)
         {
+            PStmt stmt = node.getStmt().get(i);
+            if (isBlankId(stmt)) { continue; }
+
             printi("");
-            node.getStmt().get(i).apply(this);
+            stmt.apply(this);
             // Print a semicolon after every non-control statement (not if/for/switch stmts)
-            if (!isControlStatement(node.getStmt().get(i))) 
+            if (!isControlStatement(stmt) && !isEmptyMultilineList(stmt)) 
                 println(";");
             else
                 println("");
@@ -1266,7 +1352,14 @@ public class CodeGenerator extends DepthFirstAdapter
     {
        String strValue = node.getRawStringLit().getText();
        String strValueWithoutRawQuotes = strValue.substring(1,strValue.length()-1);
-       print("\"" + strValueWithoutRawQuotes + "\""); 
+       String newString = "";
+       for(char c: strValueWithoutRawQuotes.toCharArray()){
+        if(c == '\\'){
+            newString += "\\";
+        }
+         newString += c;
+       }
+       print("\"" + newString + "\""); 
        printWithType(node);
     }
 
