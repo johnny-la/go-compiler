@@ -627,11 +627,17 @@ public class CodeGenerator extends DepthFirstAdapter
     }
     
     public void caseANoReturnFuncDecl(ANoReturnFuncDecl node) {
-        print("void ");
-        node.getIdType().apply(this);
-        print("(");
-        if (node.getSignature() != null) node.getSignature().apply(this);
-        print(") ");
+        String functionName = node.getIdType().toString().trim();
+        if((new String(functionName).equals("main"))){
+            print("void main(String[] args)");
+        }
+        else{
+            print("void ");
+            node.getIdType().apply(this);
+            print("(");
+            if (node.getSignature() != null) node.getSignature().apply(this);
+                print(") ");
+        }
         node.getBlock().apply(this);
     }
 
