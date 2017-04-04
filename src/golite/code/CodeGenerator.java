@@ -46,10 +46,7 @@ public class CodeGenerator extends DepthFirstAdapter
     // File name
     private static String className = "";
 
-    private static final String fileHeader = 
-        "import java.util.*;\n" +
-        "\n" +
-        "public class " + className + "{\n";
+    private String fileHeader = "";
 
     private static final String fileFooter =
         	"    public static <T> T _get_(ArrayList<T> list, int index, boolean isArray, int maxSize, T defaultValue) {\n" +
@@ -131,7 +128,10 @@ public class CodeGenerator extends DepthFirstAdapter
         this.root = root;
         this.nodeTypes = nodeTypes;
         this.newShortDeclarationVariables = newShortDeclarationVariables;
-        this.className = fileName;
+        this.fileHeader = 
+        "import java.util.*;\n" +
+        "\n" +
+        "public class " + fileName + "{\n";
     }
 
     public String generateCode()
