@@ -67,7 +67,7 @@ public class Main
         String code = codeGenerator.generateCode();
 
         printDebug(code);
-        printToFile(wellFormattedFileName + CODE_GENERATOR_SUFFIX, code);
+        printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
     }
 
     /**
