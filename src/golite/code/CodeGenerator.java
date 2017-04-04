@@ -365,11 +365,13 @@ public class CodeGenerator extends DepthFirstAdapter
         {   
             return; 
         }
-        Symbol sym = semanticAnalyzer.symbolMap.get(node);
-        System.out.println(sym.kind);
-        // TODO CODE GOES HERE -------------
+        
+        Symbol symbol = semanticAnalyzer.symbolMap.get(node);
+        String symbolKind = new String(symbol.kind.toString().trim());
+        if(symbolKind.equals("FIELD")) {
+           print("static "); 
+        }
 
-        // System.out.println("Declaring variable: " + node);
         String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);
 
         print(typeName + " ");
