@@ -33,8 +33,7 @@ public class CodeGenerator extends DepthFirstAdapter
     private StringBuffer output; 
 
     private Node root;
-    private TypeChecker typeChecker;
-    private SymbolTable symbolTable;
+    private SemanticAnalyzer semanticAnalyzer;
 
     public static HashMap<Node, TypeClass> nodeTypes;
     private HashSet<Node> newShortDeclarationVariables; // The lvalues that were declared in short declaration statements
@@ -123,11 +122,12 @@ public class CodeGenerator extends DepthFirstAdapter
     // Maps the struct node to its class text
     private HashMap<Node,String> declaredStructs = new HashMap<Node,String>();
 
-    public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes, HashSet<Node> newShortDeclarationVariables, String fileName)
+    public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes, HashSet<Node> newShortDeclarationVariables, SemanticAnalyzer semanticAnalyzer, String fileName)
     {
         this.root = root;
         this.nodeTypes = nodeTypes;
         this.newShortDeclarationVariables = newShortDeclarationVariables;
+        this.semanticAnalyzer = semanticAnalyzer;
         this.fileHeader = 
         "import java.util.*;\n" +
         "\n" +
@@ -365,6 +365,9 @@ public class CodeGenerator extends DepthFirstAdapter
         {   
             return; 
         }
+        Symbol sym = semanticAnalyzer.symbolMap.get(node);
+        System.out.println(sym.kind);
+        // TODO CODE GOES HERE -------------
 
         // System.out.println("Declaring variable: " + node);
         String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);

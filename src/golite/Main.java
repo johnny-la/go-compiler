@@ -7,7 +7,6 @@ import golite.symbol.*;
 import golite.type.*;
 import golite.code.*;
 import java.util.*;
-
 import java.io.*;
 
 public class Main
@@ -23,6 +22,8 @@ public class Main
 
     // If true, print to file. Else, print to STDOUT
     private static final boolean PRINT_TO_FILE = true;
+
+    private static SemanticAnalyzer semanticAnalyzer;
 
     // Pretty prints the given AST
     private static void prettyPrint(Start tree, String inputFilename)
@@ -63,7 +64,9 @@ public class Main
             HashSet<Node> newShortDeclarationVariables, String inputFilename)
     {
         printDebug("Code Generator:");
-        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables, inputFilename);
+        File f = new File(inputFilename);
+        String baseFileName = f.getName();
+        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables, semanticAnalyzer, baseFileName);
         String code = codeGenerator.generateCode();
 
         printDebug(code);
@@ -151,7 +154,7 @@ public class Main
                 prettyPrint(tree, filenamePrefix);
 
                 SymbolTable symbolTable = new SymbolTable();
-                SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
+                semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
                 // printDebug("Semantic Analyzer:");
                 tree.apply(semanticAnalyzer);
                 // printDebug("\nSymbol table:");
