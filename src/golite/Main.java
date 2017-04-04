@@ -60,10 +60,10 @@ public class Main
      * Generates C code from the given AST
      */
     private static void generateCode(Start tree, HashMap<Node,TypeClass> nodeTypes,
-            String inputFilename)
+            HashSet<Node> newShortDeclarationVariables, String inputFilename)
     {
         printDebug("Code Generator:");
-        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes);
+        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables);
         String code = codeGenerator.generateCode();
 
         printDebug(code);
@@ -178,7 +178,7 @@ public class Main
                 // Generate code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)
                 {
-                    generateCode(tree, typeChecker.nodeTypes, filenamePrefix);
+                    generateCode(tree, typeChecker.nodeTypes, semanticAnalyzer.newShortDeclarationVariables, filenamePrefix);
                 }
                 else
                 {

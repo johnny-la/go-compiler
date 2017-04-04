@@ -585,6 +585,7 @@ public class TypeChecker extends DepthFirstAdapter
         }
         Symbol lhsSymbol = symbolTable.get(left);
         lhsSymbol.setType(temp);
+        nodeTypes.put(left, lhsSymbol.typeClass);
     }
 
     public String getIdFromIdType(PIdType node) {
@@ -753,6 +754,7 @@ public class TypeChecker extends DepthFirstAdapter
                         Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
                         //System.out.println("Setting dynamic type of " + lhsSymbol + " to: " + copy);
                         lhsSymbol.setType(copy);
+                        nodeTypes.put(leftArgs.get(i), lhsSymbol.typeClass);
                     } else if (right.baseType != left.baseType) {
                         ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
                         return;
