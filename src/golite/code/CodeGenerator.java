@@ -59,6 +59,7 @@ public class CodeGenerator extends DepthFirstAdapter
             "        list.set(index, data);\n" +
             "    }\n" +
             "\n" +
+            "    @SuppressWarnings(\"unchecked\")" +
             "    public static <T> void _ensureCapacity_(ArrayList<T> list, boolean isArray, int maxSize, T defaultValue) {\n" +
 	        "        if (isArray) {\n" +
 			"            for (int i = list.size(); i < maxSize; i++) {\n" +
@@ -1268,6 +1269,10 @@ public class CodeGenerator extends DepthFirstAdapter
         print(firstDimension.size + ",");
 
         TypeClass elementType = nodeTypes.get(node);
+        String defaultValue = getDefaultValue(node);
+        // Cast the default value to a char
+        if (defaultValue.equals("char"))
+            print("(char)");
         print(getDefaultValue(node) + ")"); 
     }
 
