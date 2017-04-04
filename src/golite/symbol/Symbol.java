@@ -24,6 +24,7 @@ public class Symbol
     public Node node;
     public TypeClass typeClass;
     public SymbolKind kind;
+    public boolean alreadyDeclared;
 
     public ArrayList<Symbol> symbolsToInheritType = new ArrayList<Symbol>();
 
@@ -38,6 +39,7 @@ public class Symbol
         node = other.node;
         typeClass = new TypeClass(other.typeClass);
         kind = other.kind;
+        alreadyDeclared = other.alreadyDeclared;
     }
 
     public Symbol(String name, Node node, TypeClass typeClass, SymbolKind kind)

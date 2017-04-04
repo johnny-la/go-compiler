@@ -42,6 +42,9 @@ public class CodeGenerator extends DepthFirstAdapter
     private String leftBlock = "/*";
     private String rightBlock = "*/";
 
+    // The variables declared in this function
+    private HashMap<String,TypeClass> declaredVariables = new HashMap<String,TypeClass>();
+
     // The string buffer used for concatenating strings
     private String stringBuffer = "buffer";
 
@@ -366,10 +369,20 @@ public class CodeGenerator extends DepthFirstAdapter
             return; 
         }
 
-        // System.out.println("Declaring variable: " + node);
-        String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);
+        String variableName = getIdName(node);
+        
+        // If the variable wasn't declared in this function, declare it
+        //if (!declaredVariables.containsKey(variableName))
+        {
+            // System.out.println("Declaring variable: " + node);
+            String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);
+            print(typeName + " ");
 
-        print(typeName + " ");
+            // Insert id into HashMap so we don't redeclare it
+            //declaredVariables.put(variableName, nodeTypes.get(node));
+        }
+
+        
         if (node != null)
             node.apply(this);
         else if (expNode != null)
@@ -1384,8 +1397,20 @@ public class CodeGenerator extends DepthFirstAdapter
             println("{");
             indentLevel++;
 
-            printi("for (");
-            forCondition.apply(this);
+            AForCondExp forCond = (AForCondExp)forCondition;
+            if (forCond.getFirst() != null)
+            {
+                printi("");
+                forCond.getFirst().apply(this);
+            }
+
+            printi("for (;");
+            if (forCond.getSecond() != null)
+                forCond.getSecond().apply(this);
+            print(";");
+            if (forCond.getThird() != null)
+                forCond.getThird().apply(this);
+            //forCondition.apply(this);
             print(") ");
         }
         // Infinite loop

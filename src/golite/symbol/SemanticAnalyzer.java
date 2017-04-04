@@ -441,11 +441,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         	kind = SymbolKind.LOCAL;
         }
 
+
         // Insert the symbol in the symbol table
         Symbol symbol = new Symbol(idName, node, typeClass, kind);
+        // Check if the symbol already exists in the symbol table and is
+        // a redeclared local
+        Symbol existingSymbol = symbolTable.get(idName);
+        if (existingSymbol != null && existingSymbol.kind != SymbolKind.FIELD)
+        {
+            symbol.alreadyDeclared = true;
+        }
+
         symbolTable.put(idName, symbol);
         symbolMap.put(node, symbol);
         symbolMap.put(id, symbol);
+
         System.out.println(symbol.toString());
         System.out.println(typeClass);
         return symbol;
