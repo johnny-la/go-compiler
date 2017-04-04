@@ -355,8 +355,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
 
 
-    public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node)
+    public void outATypeAliasTypeDecl(ATypeAliasTypeDecl node)
     {
+        //traverse VarType until base check if its an id, check if the id is declared
         Symbol symbol = declareVariable(node.getIdType(), node.getVarType(), SymbolKind.TYPE, node);
         //System.out.println("Declared type alias: " + symbol);
     }
@@ -500,11 +501,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 //Check if alias exists in symbol table
                 String typeAliasName = ((AIdVarType)current).getId().getText();
                 Symbol typeAliasSymbol = symbolTable.get(typeAliasName);
-
                 if (typeAliasSymbol == null)
                 {
                     ErrorManager.printError("Type alias was never declared: \"" + typeAliasName + "\"");
                     break;
+                }
+
+                if (typeAliasSymbol.kind != SymbolKind.TYPE) {
+                    ErrorManager.printError("Type aliasing of variable");
                 }
 
                 //alias exists case
@@ -579,6 +583,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         return Type.INVALID;
     }*/
 
+  
+
     public void inAFunctionCallExp(AFunctionCallExp node)
     {   
         PExp lhs = node.getName();
@@ -599,7 +605,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                     Symbol symbol = new Symbol();
                     symbol.name = lhsIdName;
                     symbol.node = lhs;
-                    symbol.kind = SymbolKind.LOCAL;
+                    symbol.kind = SymbolKind.TYPE;
                     symbol.typeClass = new TypeClass();
                     symbol.typeClass.baseType = lhsIdType;
 

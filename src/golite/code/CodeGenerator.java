@@ -702,7 +702,17 @@ public class CodeGenerator extends DepthFirstAdapter
         if (node.getExp() != null && node.getExp().size() > 0) 
         {
             print("\"\" + ");
-            printNodes(node.getExp(), " + \"\" + ");
+            for (int i = 0; i < node.getExp().size(); i++)
+            {
+                TypeClass type = nodeTypes.get(node.getExp().get(i));
+                if(type.baseType == Type.RUNE){
+                    print("(int)");
+                }
+                node.getExp().get(i).apply(this);
+                if (i != node.getExp().size()-1) { 
+                    print(" + \"\" + "); 
+                }
+            }
         }
         else
         {
@@ -718,7 +728,17 @@ public class CodeGenerator extends DepthFirstAdapter
         if (node.getExp() != null && node.getExp().size() > 0) 
         {
             print("\"\" + ");
-            printNodes(node.getExp(), " + \" \" + ");
+            for (int i = 0; i < node.getExp().size(); i++)
+            {
+                TypeClass type = nodeTypes.get(node.getExp().get(i));
+                if(type.baseType == Type.RUNE){
+                    print("(int)");
+                }
+                node.getExp().get(i).apply(this);
+                if (i != node.getExp().size()-1) { 
+                    print(" + \"\" + "); 
+                }
+            }
         }
         print(")");
     }
@@ -1341,7 +1361,14 @@ public class CodeGenerator extends DepthFirstAdapter
     {
        String strValue = node.getRawStringLit().getText();
        String strValueWithoutRawQuotes = strValue.substring(1,strValue.length()-1);
-       print("\"" + strValueWithoutRawQuotes + "\""); 
+       String newString = "";
+       for(char c: strValueWithoutRawQuotes.toCharArray()){
+        if(c == '\\'){
+            newString += "\\";
+        }
+         newString += c;
+       }
+       print("\"" + newString + "\""); 
        printWithType(node);
     }
 

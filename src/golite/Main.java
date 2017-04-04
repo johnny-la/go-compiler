@@ -175,7 +175,7 @@ public class Main
                     prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
                 }
 
-                // Generate C code if no type errors occurred
+                // Generate code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)
                 {
                     generateCode(tree, typeChecker.nodeTypes, filenamePrefix);
