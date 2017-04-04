@@ -693,7 +693,17 @@ public class CodeGenerator extends DepthFirstAdapter
         if (node.getExp() != null && node.getExp().size() > 0) 
         {
             print("\"\" + ");
-            printNodes(node.getExp(), " + \"\" + ");
+            for (int i = 0; i < node.getExp().size(); i++)
+            {
+                TypeClass type = nodeTypes.get(node.getExp().get(i));
+                if(type.baseType == Type.RUNE){
+                    print("(int)");
+                }
+                node.getExp().get(i).apply(this);
+                if (i != node.getExp().size()-1) { 
+                    print(" + \"\" + "); 
+                }
+            }
         }
         else
         {
@@ -709,7 +719,17 @@ public class CodeGenerator extends DepthFirstAdapter
         if (node.getExp() != null && node.getExp().size() > 0) 
         {
             print("\"\" + ");
-            printNodes(node.getExp(), " + \" \" + ");
+            for (int i = 0; i < node.getExp().size(); i++)
+            {
+                TypeClass type = nodeTypes.get(node.getExp().get(i));
+                if(type.baseType == Type.RUNE){
+                    print("(int)");
+                }
+                node.getExp().get(i).apply(this);
+                if (i != node.getExp().size()-1) { 
+                    print(" + \"\" + "); 
+                }
+            }
         }
         print(")");
     }

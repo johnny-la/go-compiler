@@ -59,16 +59,16 @@ public class Main
     /** 
      * Generates C code from the given AST
      */
-    // private static void generateCode(Start tree, HashMap<Node,TypeClass> nodeTypes,
-    //         String inputFilename)
-    // {
-    //     printDebug("Code Generator:");
-    //     CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes);
-    //     String code = codeGenerator.generateCode();
+    private static void generateCode(Start tree, HashMap<Node,TypeClass> nodeTypes,
+            String inputFilename)
+    {
+        printDebug("Code Generator:");
+        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes);
+        String code = codeGenerator.generateCode();
 
-    //     printDebug(code);
-    //     printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
-    // }
+        printDebug(code);
+        printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
+    }
 
     /**
      * Prints the given string to the specified file
@@ -175,10 +175,10 @@ public class Main
                 //     prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
                 // }
 
-                // Generate C code if no type errors occurred
+                // Generate code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)
                 {
-                    // generateCode(tree, typeChecker.nodeTypes, filenamePrefix);
+                     generateCode(tree, typeChecker.nodeTypes, filenamePrefix);
                 }
                 else
                 {
