@@ -33,6 +33,7 @@ public class CodeGenerator extends DepthFirstAdapter
     private TypeChecker typeChecker;
 
     public static HashMap<Node, TypeClass> nodeTypes;
+    private HashSet<Node> newShortDeclarationVariables; // The lvalues that were declared in short declaration statements
     public static boolean printType;
     private String leftBlock = "/*";
     private String rightBlock = "*/";
@@ -66,10 +67,11 @@ public class CodeGenerator extends DepthFirstAdapter
     // Maps the struct node to its class text
     private HashMap<Node,String> declaredStructs = new HashMap<Node,String>();
 
-    public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes)
+    public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes, HashSet<Node> newShortDeclarationVariables)
     {
         this.root = root;
         this.nodeTypes = nodeTypes;
+        this.newShortDeclarationVariables = newShortDeclarationVariables;
     }
 
     public String generateCode()
@@ -94,8 +96,15 @@ public class CodeGenerator extends DepthFirstAdapter
     // Prints the given string with preceding indentation
     private void printi(String s)
     {
-        for (int i = 0; i < indentLevel; i++) { output.append("    "); }
+        output.append(getIndent());
         print(s);
+    }
+
+    private String getIndent()
+    {
+        String output = "";
+        for (int i = 0; i < indentLevel; i++) { output += ("    "); }
+        return output;
     }
 
     /** 
@@ -162,7 +171,7 @@ public class CodeGenerator extends DepthFirstAdapter
     public void caseAProgram(AProgram node)
     {
         // Print declarations
-        node.getPackageDecl().apply(this);
+        //node.getPackageDecl().apply(this);
 
         // Print the file header        
         print(fileHeader);
@@ -267,23 +276,51 @@ public class CodeGenerator extends DepthFirstAdapter
     // Prints the type of the node, followed by the name of the id
     private void declareVariable(PIdType node)
     {
-        declareVariable(node, true);
+        declareVariable(node, false);
+    }
+
+    private void declareVariable(PExp node, boolean printDefaultValue)
+    {
+        if (node instanceof AIdExp)
+        {
+            declareVariable(null, node, printDefaultValue);
+        }
     }
 
     // Prints the type of the node, followed by the name of the id
-    private void declareVariable(PIdType node, boolean traverseId)
+    private void declareVariable(PIdType node, boolean printDefaultValue)
+    {
+        declareVariable(node, null, printDefaultValue);
+    }
+
+    // Prints the type of the node, followed by the name of the id
+    private void declareVariable(PIdType node, PExp expNode, boolean printDefaultValue)
     {
         // Ignore blank ids
-        if (isBlankId(node)) { return; }
+        if ((node != null && isBlankId(node)) || 
+            (expNode != null && isBlankId(expNode))) 
+        {   
+            return; 
+        }
 
-        String typeName = getTypeName(node);
+        // System.out.println("Declaring variable: " + node);
+        String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);
+
         print(typeName + " ");
-        if (traverseId)
+        if (node != null)
             node.apply(this);
+        else if (expNode != null)
+            expNode.apply(this);
+
+        if (printDefaultValue)
+        {
+            String defaultValue = (node != null)? getDefaultValue(node) : getDefaultValue(expNode);
+            print(" = " + defaultValue);
+        }
     }
 
     public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
-        declareVariable(node.getIdType());
+        declareVariable(node.getIdType(), true);
         //print(" ");
         //node.getVarType().apply(this);
     }
@@ -330,6 +367,16 @@ public class CodeGenerator extends DepthFirstAdapter
         return false;
     }
 
+    private boolean isBlankId(PExp node)
+    {
+        if (node instanceof AIdExp)
+        {
+            return isBlankId(((AIdExp)node).getIdType());
+        }
+
+        return false;
+    }
+
     /**
      * Returns the name of the id_type node
      */
@@ -357,10 +404,23 @@ public class CodeGenerator extends DepthFirstAdapter
         return idName;
     }
 
+    /**
+     * Returns the name of the expression if it is an ID
+     */
+    private String getIdName(PExp node)
+    {
+        if (node instanceof AIdExp)
+        {
+            return getIdName(((AIdExp)node).getIdType());
+        }
+
+        return "";
+    }
+
     public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
         if (isBlankId(node.getIdType())) { return; }
 
-        declareVariable(node.getIdType());
+        declareVariable(node.getIdType(),true);
         println(";");
         printi("");
         node.getVarDecl().apply(this);
@@ -572,6 +632,7 @@ public class CodeGenerator extends DepthFirstAdapter
             ErrorManager.printWarning("Node has null type: " + node);
             return "";
         }
+
         if (type.totalArrayDimension.size() <= 0)
         {
             switch (type.baseType)
@@ -597,27 +658,34 @@ public class CodeGenerator extends DepthFirstAdapter
         {
             for (int i = 0; i < type.totalArrayDimension.size(); i++)
             typeName += "ArrayList<";
-            for (int i = 0; i < type.totalArrayDimension.size(); i++)
-                typeName += ">";
 
             switch (type.baseType)
             {
                 case INT:
                     typeName += "Integer";
+                    break;
                 case FLOAT64:
                     typeName += "Double";
+                    break;
                 case BOOL:
                     typeName += "Boolean";
+                    break;
                 case RUNE:
                     typeName += "Character";
+                    break;
                 case STRING:
                     typeName += "String";
+                    break;
                 case STRUCT:
-                    return getStructName(node);
+                    typeName += getStructName(node);
+                    break;
                 default:
-                    ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
+                    ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type.baseType);
 
             }
+
+            for (int i = 0; i < type.totalArrayDimension.size(); i++)
+                typeName += ">";
         }
 
         return typeName;
@@ -761,12 +829,307 @@ public class CodeGenerator extends DepthFirstAdapter
         node.getDecl().apply(this);
     }
 
+    // Returns true if the given node is a function call or 
+    // an append expression
+    private boolean isFunctionCall(PExp node)
+    {
+        return node instanceof AFunctionCallExp || node instanceof AAppendedExprExp;
+    }
+
     public void caseAAssignListStmt(AAssignListStmt node)
     {
-        printNodesWithComma(node.getL());
-        node.getOp().apply(this);
-        printNodesWithComma(node.getR()); 
+        ArrayList<PExp> lvalues = new ArrayList<PExp>();
+        ArrayList<PExp> expressions = new ArrayList<PExp>();
+        // Mapping from expression ID name to index in expressions array 
+        HashMap<String,ArrayList<Integer>> expressionIndexMap = new HashMap<String,ArrayList<Integer>>();
+        HashMap<String,ArrayList<Integer>> lvalueIndexMap = new HashMap<String,ArrayList<Integer>>();
+
+        for (int i = 0; i < node.getL().size(); i++)
+        {
+            PExp lvalue = node.getL().get(i);
+            PExp expression = node.getR().get(i);
+            if (isBlankId(lvalue)) 
+            { 
+                // If the RHS is a function call, evaluate it
+                if (isFunctionCall(expression))
+                {
+                    // Insert an empty lvalue to ensure it won't be printed
+                    lvalues.add(null);
+                    expressions.add(expression);
+                }
+                continue; 
+            }
+            
+            // Add the lvalue/expression to its corresponding list
+            lvalues.add(lvalue);
+            expressions.add(expression);
+            // Keep track of the index of each lvalue
+            if (!lvalueIndexMap.containsKey(lvalue.toString()))
+                lvalueIndexMap.put(lvalue.toString(),new ArrayList<Integer>());
+            lvalueIndexMap.get(lvalue.toString()).add(i);
+            // Keep track of the index of each expression
+            if (!expressionIndexMap.containsKey(expression.toString()))
+                expressionIndexMap.put(expression.toString(),new ArrayList<Integer>());
+            expressionIndexMap.get(expression.toString()).add(i);
+        }
+
+        System.out.println("Lvalue Index Map:");
+        printIndexMap(lvalueIndexMap);
+        System.out.println("Expression Index Map:");
+        printIndexMap(expressionIndexMap);
+
+        // Get all lvalues that are swapped
+        HashSet<PExp> swappedExpressions = new HashSet<PExp>();
+        HashSet<PExp> swappedLvalues = getSwappedLvalues(lvalues,expressions,expressionIndexMap,lvalueIndexMap,swappedExpressions);
+
+        boolean newVariablesDeclared = false;
+        // Declare new variables from short declarations
+        for (int i = 0; i < lvalues.size(); i++)
+        {
+            PExp lvalue = lvalues.get(i);
+            if (newShortDeclarationVariables.contains(lvalue))
+            {
+                if (newVariablesDeclared)
+                    printi("");
+                // String typeName = getTypeName(lvalue);
+                // print(typeName + " ");
+                // lvalue.apply(this);
+                // print(" = ");
+                // String defaultValue = getDefaultValue(lvalue);
+                // println(defaultValue + ";");
+                declareVariable(lvalue, true);
+                println(";");
+
+                newVariablesDeclared = true;
+            }
+        }
+        if (newVariablesDeclared)
+            printi("");
+
+        // Create a new scope and create temporary variables to perform swaps
+        if (swappedLvalues.size() != 0)
+        {
+            println("{");
+            indentLevel++;
+
+            int lvaluesPrinted = 0;
+            // Print any temporary variables for swaps
+            for (PExp lvalue : swappedLvalues)
+            {
+                String typeName = getTypeName(lvalue);
+                // The name of the temporary variable
+                String tempVariableName = lvalue.toString().trim() + "Temp";
+                
+                printi("");
+                print(typeName + " " + tempVariableName + " = ");
+                lvalue.apply(this);
+                println(";");
+
+                lvaluesPrinted++;
+            }
+
+            println("");
+            printi("");
+        }
+
+        // Print the assignment statements
+        for (int i = 0; i < lvalues.size(); i++)
+        {
+            PExp lvalue = lvalues.get(i);
+            PExp expression = expressions.get(i);
+
+            // The lvalue is a blank ID
+            if (lvalue == null)
+            {
+                expression.apply(this);
+            }
+            // The lvalue is not a blank ID -- print it
+            else
+            {
+                if (i != 0)
+                    printi("");
+
+                lvalue.apply(this);
+                print(" = ");
+                expression.apply(this);
+                // Use temporary variables for swapping
+                if (swappedExpressions.contains(expression))
+                    print("Temp");
+                
+                //if (i != lvalues.size()-1)
+                    println(";");
+            }
+        }
+
+        // End the temporary block
+        if (swappedLvalues.size() != 0)
+        {
+            indentLevel--;
+            printiln("}");
+        }
+
+        // printNodesWithComma(node.getL());
+        // node.getOp().apply(this);
+        // printNodesWithComma(node.getR()); 
     } 
+
+    // Returns a hashset of all lvalues that were swapped in the assignment list
+    private HashSet<PExp> getSwappedLvalues(ArrayList<PExp> lvalues, ArrayList<PExp> expressions,
+        HashMap<String,ArrayList<Integer>> expressionIndexMap,
+        HashMap<String,ArrayList<Integer>> lvalueIndexMap,
+        HashSet<PExp> swappedExpressions)
+    {
+        // Contains all lvalues that are swapped
+        HashSet<PExp> swappedLvalues = new HashSet<PExp>();
+
+        // Check for value swaps
+        for (int i = 0; i < lvalues.size(); i++)
+        {
+            PExp lvalue = lvalues.get(i);
+            PExp expression = expressions.get(i);
+
+            // If the lvalue is an expression on the LHS
+            if (expressionIndexMap.containsKey(lvalue.toString()))
+            {
+                //System.out.println("expressionIndexMap contains lvalue:" + lvalue);
+                // Find the corresponding expression on the RHS
+                ArrayList<Integer> matchingExpressionIndices = expressionIndexMap.get(lvalue.toString());
+                for (int j = 0; j < matchingExpressionIndices.size(); j++)
+                {
+                    int lvalueRhsIndex = matchingExpressionIndices.get(j);
+                    PExp lvalueLhs = lvalues.get(lvalueRhsIndex);
+                    if (lvalueLhs != lvalue)
+                    {
+                        if (expressionIndexMap.containsKey(lvalueLhs.toString()))
+                        {
+                            ArrayList<Integer> matchingExpressionRhsIndices = expressionIndexMap.get(lvalueLhs.toString());
+                            for (int k = 0; k < matchingExpressionRhsIndices.size(); k++)
+                            {
+                                int expressionRhsIndex = matchingExpressionRhsIndices.get(k);
+                                // The current lvalue is being swapped with another lvalue
+                                if (expressionRhsIndex == i)
+                                {
+                                    swappedLvalues.add(lvalue);
+                                    swappedExpressions.add(expression);
+                                    System.out.println(lvalue + " is being swapped with " + lvalueLhs);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return swappedLvalues;
+    }
+
+    /** 
+     * Returns the default value for the node's type
+     */
+    private String getDefaultValue(Node node)
+    {
+        TypeClass type = nodeTypes.get(node);
+        String defaultValue = "";
+
+        if (type == null) 
+        {
+            ErrorManager.printWarning("Node has null type: " + node);
+            return "";
+        }
+
+        if (type.totalArrayDimension.size() <= 0)
+        {
+            switch (type.baseType)
+            {
+                case INT:
+                    return INT_DEFAULT;
+                case FLOAT64:
+                    return FLOAT_DEFAULT;
+                case BOOL:
+                    return BOOL_DEFAULT;
+                case RUNE:
+                    return RUNE_DEFAULT;
+                case STRING:
+                    return STRING_DEFAULT;
+                case STRUCT:
+                    return getStructName(node);
+                default:
+                    ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
+            }
+        }
+        // The node is an array
+        else
+        {
+            defaultValue += "new ";
+            for (int i = 0; i < type.totalArrayDimension.size(); i++)
+                defaultValue += "ArrayList<";
+
+            switch (type.baseType)
+            {
+                case INT:
+                    defaultValue += "Integer";
+                    break;
+                case FLOAT64:
+                    defaultValue += "Double";
+                    break;
+                case BOOL:
+                    defaultValue += "Boolean";
+                    break;
+                case RUNE:
+                    defaultValue += "Character";
+                    break;
+                case STRING:
+                    defaultValue += "String";
+                    break;
+                case STRUCT:
+                    defaultValue += getStructName(node);
+                    break;
+                default:
+                    ErrorManager.printError("CodeGenerator.getdefaultValue(): Invalid type: " + type.baseType);
+
+            }
+
+            for (int i = 0; i < type.totalArrayDimension.size(); i++)
+                defaultValue += ">";
+
+            defaultValue += "()";
+
+            /*if (type.totalArrayDimension.size() > 1)
+            {
+                defaultValue += ";\n";
+                defaultValue += getIndent();
+            }
+
+            //String idName = getIdName(node);
+
+            for (int i = 0; i < type.totalArrayDimension.size(); i++)
+            {
+                Dimension dimension = type.totalArrayDimension.get(i);
+                if (dimension.isArray)
+                {
+                    for (int j = 0; j < dimension.size; j++)
+                    {
+
+                    }
+                }
+            }*/
+        }
+
+        return defaultValue;
+    }
+
+    private void printIndexMap(HashMap<String,ArrayList<Integer>> indexMap)
+    {
+        for (Map.Entry<String,ArrayList<Integer>> entries : indexMap.entrySet())
+        {
+            System.out.print(entries.getKey() + ":");
+            for (int i = 0; i < entries.getValue().size(); i++)
+            {
+                System.out.print(entries.getValue().get(i) + ",");
+            }
+            System.out.println();
+        }
+    }
 
     public void caseAEqualsExp(AEqualsExp node)
     {
@@ -794,12 +1157,12 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     public void caseAArrayElementExp(AArrayElementExp node){
-		print("(");
+		// print("(");
 		node.getArray().apply(this);
-		print("[");
+		print(".get(");
 		node.getIndex().apply(this);
-		print("]");
 		print(")");
+		// print(")");
 	}
 
     public void caseAFieldExp(AFieldExp node) {
@@ -821,7 +1184,7 @@ public class CodeGenerator extends DepthFirstAdapter
             printi("");
             stmt.apply(this);
             // Print a semicolon after every non-control statement (not if/for/switch stmts)
-            if (!isControlStatement(stmt) && !isEmptyMultilineList(stmt)) 
+            if (!isControlStatement(stmt) && !isEmptyMultilineList(stmt) && !isAssignList(stmt)) 
                 println(";");
             else
                 println("");
@@ -835,6 +1198,12 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         return (node instanceof AIfStmt || node instanceof ASwitchStmt || 
                 node instanceof AForStmt);
+    }
+    
+    // Returns true if this node is an assignment list statement
+    private boolean isAssignList(Node node)
+    {
+        return node instanceof AAssignListStmt;
     }
 
     public void caseAIfStmt(AIfStmt node)

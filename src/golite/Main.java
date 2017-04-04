@@ -60,10 +60,10 @@ public class Main
      * Generates C code from the given AST
      */
     private static void generateCode(Start tree, HashMap<Node,TypeClass> nodeTypes,
-            String inputFilename)
+            HashSet<Node> newShortDeclarationVariables, String inputFilename)
     {
         printDebug("Code Generator:");
-        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes);
+        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables);
         String code = codeGenerator.generateCode();
 
         printDebug(code);
@@ -156,8 +156,8 @@ public class Main
                 tree.apply(semanticAnalyzer);
                 // printDebug("\nSymbol table:");
                 // printDebug(symbolTable.toString());
-                // if (dumpSymbolTable)
-                //     printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
+                if (dumpSymbolTable)
+                    printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
                 
                 // System.out.println("Semantic Analyzer Node Types:");
                 // printSymbolMap(semanticAnalyzer.symbolMap);
@@ -171,14 +171,14 @@ public class Main
                 // System.out.println("Type Checker Node Types:");
                 // printNodeTypes(typeChecker.nodeTypes);
 
-                // if (prettyPrintType) {
-                //     prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
-                // }
+                if (prettyPrintType) {
+                    prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
+                }
 
                 // Generate code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)
                 {
-                     generateCode(tree, typeChecker.nodeTypes, filenamePrefix);
+                    generateCode(tree, typeChecker.nodeTypes, semanticAnalyzer.newShortDeclarationVariables, filenamePrefix);
                 }
                 else
                 {
