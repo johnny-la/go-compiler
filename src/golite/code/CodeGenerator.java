@@ -276,6 +276,7 @@ public class CodeGenerator extends DepthFirstAdapter
         // Ignore blank ids
         if (isBlankId(node)) { return; }
 
+        System.out.println("Declaring variable: " + node);
         String typeName = getTypeName(node);
         print(typeName + " ");
         if (traverseId)
@@ -572,6 +573,7 @@ public class CodeGenerator extends DepthFirstAdapter
             ErrorManager.printWarning("Node has null type: " + node);
             return "";
         }
+
         if (type.totalArrayDimension.size() <= 0)
         {
             switch (type.baseType)
@@ -597,27 +599,34 @@ public class CodeGenerator extends DepthFirstAdapter
         {
             for (int i = 0; i < type.totalArrayDimension.size(); i++)
             typeName += "ArrayList<";
-            for (int i = 0; i < type.totalArrayDimension.size(); i++)
-                typeName += ">";
 
             switch (type.baseType)
             {
                 case INT:
                     typeName += "Integer";
+                    break;
                 case FLOAT64:
                     typeName += "Double";
+                    break;
                 case BOOL:
                     typeName += "Boolean";
+                    break;
                 case RUNE:
                     typeName += "Character";
+                    break;
                 case STRING:
                     typeName += "String";
+                    break;
                 case STRUCT:
-                    return getStructName(node);
+                    typeName += getStructName(node);
+                    break;
                 default:
-                    ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
+                    ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type.baseType);
 
             }
+
+            for (int i = 0; i < type.totalArrayDimension.size(); i++)
+                typeName += ">";
         }
 
         return typeName;
