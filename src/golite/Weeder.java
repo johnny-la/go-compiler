@@ -125,68 +125,7 @@ public class Weeder extends DepthFirstAdapter
             throwBreakError();
         }
 
-        if (!containsAReturn(((ABlockStmt)node.getBlock()).getStmt())) {
-            throwReturnError();
-        }
     } 
-
-    public boolean containsAReturn(List<PStmt> nodes){
-        for (int i = 0; i < nodes.size(); i++){
-            PStmt node = nodes.get(i);
-            if(node instanceof AReturnStmt){
-                return true;
-            }
-
-            if (node instanceof AForStmt){
-                AForStmt forStmt = (AForStmt)node;
-                if(containsAReturn(((ABlockStmt)forStmt.getBlock()).getStmt())) {
-                    return true;
-                }
-            }
-
-            if (node instanceof AIfStmt){
-                Node current = node;
-                while (current instanceof AIfStmt) {
-                    AIfStmt temp = (AIfStmt) current;
-                    if(containsAReturn(((ABlockStmt) temp.getBlock()).getStmt())) {
-                        PStmt next = temp.getEnd();
-                        if (next instanceof AElseIfStmt) {
-                        current = (AIfStmt) ((AElseIfStmt) next).getStmt();
-                        continue;
-                        } else {
-                            current = next;
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-                if (current instanceof AElseStmt) {
-                        AElseStmt temp = (AElseStmt) current;
-                        return containsAReturn(((ABlockStmt) temp.getStmt()).getStmt());
-                } else {
-                        return true;
-                }
-            }
-
-            if (node instanceof AElseStmt) {
-                AElseStmt current = (AElseStmt) node;
-                ABlockStmt block = (ABlockStmt) current.getStmt();
-                return containsAReturn(block.getStmt());
-            }
-
-            if (node instanceof ASwitchStmt) {
-                LinkedList<PStmt> switches = ((ASwitchStmt) node).getCaseStmts();
-                for (Node n : switches) {
-                    ACaseStmt cur = (ACaseStmt) n;
-                    if (!containsAReturn(cur.getStmtList())) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
-    }
 
     public void inAIfStmt(AIfStmt node)
     {

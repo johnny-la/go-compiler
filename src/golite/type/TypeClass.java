@@ -60,7 +60,7 @@ public class TypeClass
      */
     public void decrementDimension()
     {
-        totalArrayDimension.removeLast();
+        totalArrayDimension.remove(0);
 
         for (int i = typeAliases.size()-1; i >= 0; i--)
         {

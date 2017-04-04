@@ -19,6 +19,8 @@ public class CodeGenerator extends DepthFirstAdapter
     //   (Also: print post-for-loop statement at end
     //   of loop body?) 
     // * Print characters as integers
+    // * Print fields as "static"
+    // * Add "String[] args" to main method
     // * Handle array capacity (var x [3]int)
     // * Structs are instantiated upon declaration
     // * Slices and arrays are instantiated as arraylists.
@@ -45,6 +47,59 @@ public class CodeGenerator extends DepthFirstAdapter
         "import java.util.*;\n" +
         "\n" +
         "public class Main {\n";
+
+    private static final String fileFooter =
+        	"    public static <T> T _get_(ArrayList<T> list, int index, boolean isArray, int maxSize, T defaultValue) {\n" +
+		    "        _ensureCapacity_(list,isArray,maxSize,defaultValue);\n" +
+		    "        return list.get(index);\n" +
+	        "    }\n" +
+	        "\n" + 
+            "    public static <T> void _set_(ArrayList<T> list, int index, T data, boolean isArray, int maxSize, T defaultValue) {\n" +
+		    "        _ensureCapacity_(list,isArray,maxSize,defaultValue);\n" +
+            "        list.set(index, data);\n" +
+            "    }\n" +
+            "\n" +
+            "    public static <T> void _ensureCapacity_(ArrayList<T> list, boolean isArray, int maxSize, T defaultValue) {\n" +
+	        "        if (isArray) {\n" +
+			"            for (int i = list.size(); i < maxSize; i++) {\n" +
+			"                try {\n" +
+	        "                    T value = null;\n" +
+		    "                    if (isPrimitive(defaultValue))\n" +
+			"                        value = defaultValue;\n" +
+			"                    else\n" +
+			"                        value = (T)defaultValue.getClass().newInstance();\n" +
+            "                    list.add(value);\n" +
+		    "                } catch (Exception e) {\n" +
+			"                    throw new RuntimeException(e);\n" +
+			"                }\n" +
+			"            }\n" +
+		    "        }\n" +
+	        "    }\n" +
+            "\n" +
+            "    public static <T> boolean isPrimitive(T value) {\n" +
+	        "        if (value.getClass().equals(Integer.class)\n" +
+			"            || value.getClass().equals(Double.class)\n" +
+			"            || value.getClass().equals(Character.class)\n" +
+			"            || value.getClass().equals(Boolean.class)\n" +
+		    "            || value.getClass().equals(String.class))\n" +
+		    "            return true;\n" +
+            "\n" +
+		    "        return false;\n" +
+	        "    }\n";
+	
+	public static <T> boolean isPrimitive(T value)
+	{
+		if (value.getClass().equals(Integer.class) 
+			|| value.getClass().equals(Double.class)
+			|| value.getClass().equals(Character.class)
+			|| value.getClass().equals(Boolean.class)
+		    || value.getClass().equals(String.class)) 
+		{
+		    return true;
+		}
+
+		return false;
+	}
 
     private static final int STRING_SIZE = 1024;
 
@@ -175,6 +230,9 @@ public class CodeGenerator extends DepthFirstAdapter
 
         // Print the file header        
         print(fileHeader);
+        // Print the helper methods
+        print(fileFooter);
+
         indentLevel++;
         
         for (int i = 0; i < node.getDecl().size(); i++)
@@ -939,7 +997,7 @@ public class CodeGenerator extends DepthFirstAdapter
             PExp expression = expressions.get(i);
 
             // The lvalue is a blank ID
-            if (lvalue == null)
+            if (lvalue == null || expression instanceof AAppendedExprExp)
             {
                 expression.apply(this);
             }
@@ -949,16 +1007,34 @@ public class CodeGenerator extends DepthFirstAdapter
                 if (i != 0)
                     printi("");
 
-                lvalue.apply(this);
-                print(" = ");
-                expression.apply(this);
-                // Use temporary variables for swapping
-                if (swappedExpressions.contains(expression))
-                    print("Temp");
-                
-                //if (i != lvalues.size()-1)
-                    println(";");
+                // Array assignment
+                if (lvalue instanceof AArrayElementExp)
+                {
+                    AArrayElementExp arrayElementExp = (AArrayElementExp)lvalue;
+                    PExp array = arrayElementExp.getArray();
+                    print("_set_(");
+                    array.apply(this);
+                    print(",");
+                    arrayElementExp.getIndex().apply(this);
+                    print(",");
+                    expression.apply(this);
+                    print(",");
+                    printLastArrayArguments(arrayElementExp, false);
+                }
+                // Regular assignment
+                else
+                {
+                    lvalue.apply(this);
+                    print(" = ");
+                    expression.apply(this);
+                    // Use temporary variables for swapping
+                    if (swappedExpressions.contains(expression))
+                        print("Temp");
+                }
             }
+
+            //if (i != lvalues.size()-1)
+                println(";");
         }
 
         // End the temporary block
@@ -1158,12 +1234,42 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAArrayElementExp(AArrayElementExp node){
 		// print("(");
-		node.getArray().apply(this);
-		print(".get(");
-		node.getIndex().apply(this);
-		print(")");
+		// node.getArray().apply(this);
+		// print(".get(");
+		// node.getIndex().apply(this);
+		// print(")");
+
+        print("_get_(");
+        node.getArray().apply(this);
+        print(",");
+        node.getIndex().apply(this);
+        print(",");
+        
+        printLastArrayArguments(node,true);
+        
 		// print(")");
 	}
+
+    // Print the last arguments in a _get_/_set_() call
+    private void printLastArrayArguments(AArrayElementExp node, boolean get)
+    {
+        TypeClass arrayType =  nodeTypes.get(node.getArray());//(get)? nodeTypes.get(node.getArray()) : nodeType.get(node);
+        int dimensions = arrayType.totalArrayDimension.size();
+
+        System.out.println(node.getArray() + " array dimensions: ");
+        for (int i = 0; i < dimensions; i++)
+        {
+            System.out.print(arrayType.totalArrayDimension.get(i) + ",");
+        }
+        System.out.println();
+
+        Dimension firstDimension = arrayType.totalArrayDimension.get(0);
+        print(firstDimension.isArray + ",");
+        print(firstDimension.size + ",");
+
+        TypeClass elementType = nodeTypes.get(node);
+        print(getDefaultValue(node) + ")"); 
+    }
 
     public void caseAFieldExp(AFieldExp node) {
 		print("(");
