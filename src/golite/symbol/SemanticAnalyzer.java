@@ -19,6 +19,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     // Mapping between nodes and symbols, used later for type checking
     public HashMap<Node,Symbol> symbolMap;
+    // The lvalues that were declared in short declaration statements
+    public HashSet<Node> newShortDeclarationVariables;
     // Maps every struct declaration node to a symbol table which contains
     // the struct's fields 
     private HashMap<Node,SymbolTable> structHierarchy;
@@ -42,6 +44,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         symbolTable = new SymbolTable();
         symbolMap = new HashMap<Node, Symbol>();
         structHierarchy = new HashMap<Node, SymbolTable>();
+        newShortDeclarationVariables = new HashSet<Node>();
     }
 
     public SemanticAnalyzer(SymbolTable symbolTable, boolean dumpSymbolTable)
@@ -281,6 +284,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 {
                     declareVariable(idNode.getIdType(), null, SymbolKind.LOCAL, node);
                     idDeclared = true;
+                    // Tells code generator which variables were newly declared
+                    newShortDeclarationVariables.add(idNode);
                 }
             }
 
