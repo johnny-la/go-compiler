@@ -1354,11 +1354,11 @@ public class CodeGenerator extends DepthFirstAdapter
        String strValueWithoutRawQuotes = strValue.substring(1,strValue.length()-1);
        String newString = "";
        for(char c: strValueWithoutRawQuotes.toCharArray()){
-        if(c == '\\'){
-            newString += "\\";
+            if(c == '\\'){
+                newString += "\\";
+            }
+            newString += c;
         }
-         newString += c;
-       }
        print("\"" + newString + "\""); 
        printWithType(node);
     }
