@@ -482,7 +482,7 @@ public class TypeChecker extends DepthFirstAdapter
             return;
         }
         //if casting call
-        if (isBaseType(lhs.baseType)) {
+        if (lhsSymbol.kind == Symbol.SymbolKind.TYPE && isBaseType(lhs.baseType)) {
             if (inputs.size() != 1) {
                 ErrorManager.printError("Not a correct function call: " + lhsSymbol.name);
                 return;
@@ -673,11 +673,26 @@ public class TypeChecker extends DepthFirstAdapter
  
     }
 
+    public void inAExpStmt(AExpStmt node) {
+        Node exp = node.getExp();
+        if (exp instanceof AFunctionCallExp) {
+            Symbol lhsSymbol = symbolTable.get(((AFunctionCallExp) exp).getName());
+            if (lhsSymbol == null) {
+                ErrorManager.printError("Function doesn't exist");
+                return;
+            }
+            //if function call
+            if (lhsSymbol.kind != Symbol.SymbolKind.FUNCTION) {
+                ErrorManager.printError("Casts are not stand alone statements");
+            }
+        }
+    }
+
     public void outADecrementStmt(ADecrementStmt node){
         Node exp = node.getExp();
         TypeClass expType = nodeTypes.get(exp);
-        if(expType.baseType != Type.INT && expType.baseType != Type.FLOAT64 
-            && expType.baseType != Type.RUNE){
+        if ((expType.baseType != Type.INT && expType.baseType != Type.FLOAT64 
+            && expType.baseType != Type.RUNE) || expType.totalArrayDimension.size() != 0) {
              ErrorManager.printError("-- operator requires a numeric argument");
         }
     }
@@ -685,8 +700,8 @@ public class TypeChecker extends DepthFirstAdapter
     public void outAIncrementStmt(AIncrementStmt node){
         Node exp = node.getExp();
         TypeClass expType = nodeTypes.get(exp);
-        if(expType.baseType != Type.INT && expType.baseType != Type.FLOAT64
-            && expType.baseType != Type.RUNE){
+        if ((expType.baseType != Type.INT && expType.baseType != Type.FLOAT64
+            && expType.baseType != Type.RUNE) || expType.totalArrayDimension.size() != 0) {
              ErrorManager.printError("++ operator requires a numeric argument");
         }
     }
@@ -1034,18 +1049,24 @@ public class TypeChecker extends DepthFirstAdapter
             int size = expList.size();
             int i = 0;
             while (i < size) {
+                Symbol s = symbolTable.get(expList.get(i));
+                if (s != null) {
+                    if (s.kind == Symbol.SymbolKind.TYPE) {
+                        ErrorManager.printError("can't print types");
+                    }
+                }
                 TypeClass typeClass = getType(expList.get(i));
                 if (typeClass != null) {
-                    if (typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
+                    if ((typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
                     typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
-                    typeClass.baseType == Type.RUNE){
+                    typeClass.baseType == Type.RUNE) && typeClass.totalArrayDimension.size() == 0){
                         i++;
                         continue;
                     } else {
                         ErrorManager.printError("Argument to print at index " + i + " is of type: " + typeClass +". Type must be int, float64, bool, string, or rune.");
                         return;
                     }
-                } else{
+                } else {
                     ErrorManager.printError("Argument to print at index " + i + " is of type: " + typeClass +". Type must be int, float64, bool, string, or rune.");
                     return;
                 }
@@ -1061,12 +1082,18 @@ public class TypeChecker extends DepthFirstAdapter
         if(expList != null){
             int size = expList.size();
             int i = 0;
-            while(i < size){
+            while(i < size) {
+                Symbol s = symbolTable.get(expList.get(i));
+                if (s != null) {
+                    if (s.kind == Symbol.SymbolKind.TYPE) {
+                        ErrorManager.printError("can't print types");
+                    }
+                }
                 TypeClass typeClass = getType(expList.get(i));
                 if(typeClass != null){
-                    if (typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
+                    if ((typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
                     typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
-                    typeClass.baseType == Type.RUNE){
+                    typeClass.baseType == Type.RUNE) && typeClass.totalArrayDimension.size() == 0) {
                         i++;
                         continue;
                     } else {
@@ -1172,17 +1199,22 @@ public class TypeChecker extends DepthFirstAdapter
             int size = expList.size();
             int i = 0;
             TypeClass temp_case_exp_type = getType(expList.get(0));
-            while(i<size && size>=2){
+            while(i < size && size >= 2){
                 PExp singleExp = expList.get(i);
-                if(getType(singleExp).baseType.toString() != temp_case_exp_type.baseType.toString()){
-                    if(temp_case_exp_type != null) {
+                if(isAliasedCorrectly(getType(singleExp), temp_case_exp_type)) {
+                    if(temp_case_exp_type != null 
+                        && getType(singleExp).baseType != temp_case_exp_type.baseType) {
                         ErrorManager.printError("The expressions in the case statement are not all of the same type");
                         return;
                     }
                 }
                 i++;
             }
-            global_case_exp_type = temp_case_exp_type;
+            if (global_case_exp_type != null) {
+                isAliasedCorrectly(global_case_exp_type, temp_case_exp_type);
+            } else {
+                global_case_exp_type = temp_case_exp_type;
+            }
         }
     }
 
@@ -1190,17 +1222,27 @@ public class TypeChecker extends DepthFirstAdapter
         TypeClass typeClass = getType(node.getExp());
         // empty switch statement, assume it is of boolean type
         if (typeClass == null && global_case_exp_type != null){
-            if(global_case_exp_type.baseType != Type.BOOL){
+            if(global_case_exp_type.baseType != Type.BOOL || global_case_exp_type.typeAliases.size() != 0){
                 ErrorManager.printError("Expecting BOOL in case statements, provided with: " + global_case_exp_type);
                 return;
             }
         }
         if(typeClass != null && global_case_exp_type != null){
-            if(!(typeClass.baseType.toString().equals(global_case_exp_type.baseType.toString()))) {
-                ErrorManager.printError("The expression type " + typeClass.baseType.toString().trim() + " does not match the case expression type " + global_case_exp_type.baseType.toString());
-                return;
+            if(isAliasedCorrectly(typeClass, global_case_exp_type)) {
+                if (typeClass.baseType != global_case_exp_type.baseType) {
+                    ErrorManager.printError("The expression type " + typeClass.baseType.toString().trim() + " does not match the case expression type " + global_case_exp_type.baseType.toString());
+                    return;
+                } 
             }
         }
+
+        if (typeClass != null) {
+            if (typeClass.baseType == Type.VOID) {
+                ErrorManager.printError("No void switch expressions allowed");
+            }
+        }
+
+
 
         global_case_exp_type = null;
     }
