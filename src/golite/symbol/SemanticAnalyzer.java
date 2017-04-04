@@ -446,8 +446,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         symbolTable.put(idName, symbol);
         symbolMap.put(node, symbol);
         symbolMap.put(id, symbol);
-        // System.out.println(symbol.toString());
-        // System.out.println(typeClass);
+        System.out.println(symbol.toString());
+        System.out.println(typeClass);
         return symbol;
     }
 
@@ -772,6 +772,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         if (symbol == null || symbol.typeClass.structNode == null)
         {
             ErrorManager.printError("Using the . operator on a non-struct type: " + node.getExp()
+                + ", symbol = " + symbol);
+            return;
+        }
+
+        if (symbol.kind != Symbol.SymbolKind.LOCAL) {
+             ErrorManager.printError("Using the . operator on a non-variable: " + node.getExp()
                 + ", symbol = " + symbol);
             return;
         }

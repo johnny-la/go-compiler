@@ -70,7 +70,8 @@ public class TypeChecker extends DepthFirstAdapter
 
     public boolean isAliasedCorrectly(TypeClass left, TypeClass right) {
         //System.out.println("Checking aliases: " + left + " R:" + right);
-        List<TypeAlias> leftAliases = left.typeAliases, rightAliases = right.typeAliases;
+        List<TypeAlias> leftAliases = left.typeAliases;
+        List<TypeAlias> rightAliases = right.typeAliases;
         int leftSize = leftAliases.size(), rightSize = rightAliases.size();
 
         if (leftSize > 0 && rightSize > 0) {
@@ -188,6 +189,10 @@ public class TypeChecker extends DepthFirstAdapter
 
 
     public boolean isSameStruct(List<PInnerFields> left, List<PInnerFields> right) {
+        if (left == null && right == null) {
+            return true;
+        }
+
         if (left.size() != right.size()) {
             return false;
         }
@@ -470,7 +475,8 @@ public class TypeChecker extends DepthFirstAdapter
             List<TypeClass> params = lhs.functionSignature.parameterTypes;
             if (numberOfArgs == params.size()) {
                 for (int i = 0; i < params.size(); i++) {
-                    if (params.get(i).baseType != nodeTypes.get(inputs.get(i)).baseType) {
+                    if (!isAliasedCorrectly(params.get(i), nodeTypes.get(inputs.get(i))) 
+                        || params.get(i).baseType != nodeTypes.get(inputs.get(i)).baseType) {
                         ErrorManager.printError("Argument types don't match for function: " + lhsSymbol.name);
                         return;
                     }
@@ -542,6 +548,32 @@ public class TypeChecker extends DepthFirstAdapter
     //     }
     // }
     
+    public TypeClass resolveType(TypeClass t) {
+        int totalDim = t.totalArrayDimension.size();
+        Node prevNode = null;
+        List<TypeAlias> typeAliases = t.typeAliases;
+        if (typeAliases != null && typeAliases.size() > 0) {
+            for (int i = typeAliases.size() - 1; i >= 0; i--) {
+                int curDimen = typeAliases.get(i).arrayDimensions.size();
+                if (curDimen != totalDim) {
+                    if (prevNode == null) {
+                        return t;
+                    }
+                    Symbol s = symbolTable.get(prevNode);
+                    System.out.println("prev typeclass is " + s.typeClass);
+                    return s.typeClass;
+                }
+                prevNode = typeAliases.get(i).node;
+            }
+            Symbol s = symbolTable.get(typeAliases.get(0).node);
+            System.out.println("cur typeclass is " + s.typeClass);
+            return s.typeClass;
+        } else {
+            return t;
+        }
+    }
+
+    //check if structs Are same when appending
     public void outAAppendedExprExp(AAppendedExprExp node) {
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
@@ -550,14 +582,26 @@ public class TypeChecker extends DepthFirstAdapter
             ErrorManager.printError("Must append to slices only");
         }
 
-        // if (!isAliasedCorrectly(leftType, rightType)) {
-        //     return;
-        // }
-
         if (leftType.totalArrayDimension.size() > 0) {
-            if (rightType.baseType == leftType.baseType) {
-                nodeTypes.put(node, leftType);
-                return;
+            if (leftType.totalArrayDimension.getLast().isArray) {
+                ErrorManager.printError("Must append to slices only");
+            }
+
+            TypeClass nleftType = resolveType(leftType);
+            System.out.println("left type is " + nleftType);
+            if (isAliasedCorrectly(nleftType, rightType)) {
+                if (nleftType.baseType == Type.STRUCT && rightType.baseType == Type.STRUCT) {
+                    if (!isSameStruct(nleftType.innerFields, rightType.innerFields)) {
+                        ErrorManager.printError("not same struct");
+                    }
+                }
+                if (rightType.baseType == nleftType.baseType) {
+                    nodeTypes.put(node, leftType);
+                    return;
+                }
+            } else if (rightType.baseType == nleftType.baseType) {
+                    nodeTypes.put(node, leftType);
+                    return;
             }
         }
 
@@ -573,7 +617,7 @@ public class TypeChecker extends DepthFirstAdapter
             return;
         }
         TypeClass temp = new TypeClass(getType(right));
-        if (temp.baseType == Type.VOID) {
+        if (temp != null && temp.baseType == Type.VOID) {
             ErrorManager.printError("Assigning to a void value");
         }
         
@@ -724,10 +768,12 @@ public class TypeChecker extends DepthFirstAdapter
                 for (int i = 0; i < leftArgs.size(); i++) {
                     TypeClass left = getType(leftArgs.get(i));
                     TypeClass right = getType(rightArgs.get(i));
-                    if (!(leftArgs.get(i) instanceof AArrayElementExp 
-                        || rightArgs.get(i) instanceof AArrayElementExp)) {
-                        if (!isAliasedCorrectly(left, right)) {
+                    if (!isAliasedCorrectly(left, right)) {
                             return;
+                    }
+                    if (right.baseType == Type.STRUCT && left.baseType == Type.STRUCT) {
+                        if (!isSameStruct(right.innerFields, left.innerFields)) {
+                            ErrorManager.printError("incompatible structs");
                         }
                     }
                     if (right.baseType != left.baseType) {
@@ -743,13 +789,42 @@ public class TypeChecker extends DepthFirstAdapter
             }
         } else if (operator instanceof AColonEqualsExp) {
             if (leftArgs.size() == rightArgs.size()) {
+                boolean newDecl = false;
+                Set<String> newIds = new HashSet<String>();
                 for (int i = 0; i < leftArgs.size(); i++) {
                     TypeClass left = getType(leftArgs.get(i));
                     TypeClass right = getType(rightArgs.get(i));
                     if (!left.isNull() && !isAliasedCorrectly(left, right)) {
                         return;
                     }
+
+                    Symbol l = symbolTable.get(leftArgs.get(i));
+                    if (l != null) {
+                        if (l.kind != Symbol.SymbolKind.LOCAL) {
+                            ErrorManager.printError("Assignment of non locals not allowed");
+                        }
+                    }
+                    if (right != null) {
+                        if (right.baseType == Type.VOID) {
+                            ErrorManager.printError("assigning to a void value");
+                        }
+                    }
+
                     if (left.isNull()) {
+                        if (!newIds.add(getIdName(((AIdExp)leftArgs.get(i)).getIdType()))) {
+                            ErrorManager.printError("Cannot redeclare same id twice");
+                        }
+                        if (isBlankId(((AIdExp)leftArgs.get(i)).getIdType())) {
+                            continue;
+                        }
+                        newDecl = true;
+                        Symbol s = symbolTable.get(rightArgs.get(i));
+                            if (s != null) {
+                                if (s.kind != Symbol.SymbolKind.LOCAL) {
+                                ErrorManager.printError("Assignment of only local variable or primitive allowed");
+                            }
+                        }
+
                         TypeClass copy = new TypeClass(right);
                         Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
                         //System.out.println("Setting dynamic type of " + lhsSymbol + " to: " + copy);
@@ -759,6 +834,9 @@ public class TypeChecker extends DepthFirstAdapter
                         ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
                         return;
                     }
+                }
+                if (!newDecl) {
+                    ErrorManager.printError("Short declarations must contain one new variable");
                 }
                 return;
             }
@@ -836,11 +914,70 @@ public class TypeChecker extends DepthFirstAdapter
         addType(node, new TypeClass(type));        
     }
 
+
+    //array dimensions List<Dimension> size of all lists of itself and its aliases
+    //returning type associated with a certain dimension of the node
+    //so i want to be looking at size - levels and retrieve that type
+    //i..e [][][] int
+    //level levels = 2 [] ->[] []
+    //slice = [] int
+    //[][] slice
+    // levels = 2 -> slice
+    //figure out either: a) which alias it belongs to or b) return base type
     // Struct selector
     // Ex: "x.y.z"
-    public void inAArrayElementExp(AArrayElementExp node)
+    //iterate through and find base type of current index
+    public void caseAArrayElementExp(AArrayElementExp node)
     {
-        declareNodeType(node);
+        int levels = 0;
+        Node cur = node;
+        while (cur instanceof AArrayElementExp) {
+            ((AArrayElementExp) cur).getIndex().apply(this);
+            TypeClass i = nodeTypes.get(((AArrayElementExp) cur).getIndex());
+            if (i.baseType != Type.INT) {
+                ErrorManager.printError("Only integer indexes allowed");
+            }
+            cur = ((AArrayElementExp) cur).getArray();
+            levels++;
+        }
+        AIdExp id = (AIdExp) cur;
+        id.apply(this);
+        TypeClass arrayType = getType(id);
+        if (levels > arrayType.totalArrayDimension.size()) {
+            ErrorManager.printError("Index doesn't exist");
+        }
+        System.out.println("Array element type is " + arrayType);
+        //iterate through aliases
+        List<TypeAlias> typeAliases = arrayType.typeAliases;
+        //return basetype in this case
+        if (typeAliases.size() == 0) {
+            addType(node, arrayType);
+            return;
+        } else {
+            //aliased and need to traverse
+            Node prevNode = id;
+            int prevDim = arrayType.totalArrayDimension.size();
+            int totalDim = arrayType.totalArrayDimension.size();
+            for (int i = typeAliases.size() - 1; i >= 0; i--) {
+                int curDim = typeAliases.get(i).arrayDimensions.size();
+                if (prevDim != curDim) {
+                    levels = levels - (totalDim - curDim);
+                    if (levels <= 0) {
+                        TypeClass indexType = symbolTable.get(prevNode).typeClass;
+                        System.out.println("Type to insert is" + indexType);
+                        addType(node, new TypeClass(indexType));
+                        return;
+                    }
+                    prevNode = typeAliases.get(i).node;
+                }
+                prevDim = curDim;
+            }
+            TypeClass indexType = symbolTable.get(typeAliases.get(0).node).typeClass;
+            addType(node, new TypeClass(indexType));
+            return; 
+            //last alias is the one
+            
+        }
     }
 
     // Struct selector
@@ -1165,28 +1302,114 @@ public class TypeChecker extends DepthFirstAdapter
 
     public void outASingleReturnFuncDecl(ASingleReturnFuncDecl node){
         global_return_type = null;
+        if (!containsAReturn(((ABlockStmt)node.getBlock()).getStmt())) {
+            ErrorManager.printError("Program doesn't contain a return statement");
+        }
+    }
+
+    public boolean containsAReturn(List<PStmt> nodes){
+        for (int i = 0; i < nodes.size(); i++){
+            PStmt node = nodes.get(i);
+            if(node instanceof AReturnStmt){
+                return true;
+            }
+
+            if (node instanceof AForStmt) {
+                AForStmt forStmt = (AForStmt)node;
+                if(containsAReturn(((ABlockStmt)forStmt.getBlock()).getStmt())) {
+                    PExp exp = forStmt.getCondition();
+                    if(exp instanceof AForCondExp){
+                         PExp temp = ((AForCondExp) exp).getSecond();
+                            if(temp != null){
+                                if(getType(temp) != null) {
+                                    continue;
+                                }
+                            }
+                    } else if (exp != null){
+                        if (getType(exp) != null) {
+                            continue;
+                        }
+                    }
+                    return true;
+                }
+            }
+                
+            if (node instanceof AIfStmt){
+                Node current = node;
+                while (current instanceof AIfStmt) {
+                    AIfStmt temp = (AIfStmt) current;
+                    if(containsAReturn(((ABlockStmt) temp.getBlock()).getStmt())) {
+                        PStmt next = temp.getEnd();
+                        if (next instanceof AElseIfStmt) {
+                        current = (AIfStmt) ((AElseIfStmt) next).getStmt();
+                        continue;
+                        } else {
+                            current = next;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+                if (current instanceof AElseStmt) {
+                        AElseStmt temp = (AElseStmt) current;
+                        return containsAReturn(((ABlockStmt) temp.getStmt()).getStmt());
+                } 
+                // else {
+                //         return false;
+                // }
+            }
+
+            if (node instanceof AElseStmt) {
+                AElseStmt current = (AElseStmt) node;
+                ABlockStmt block = (ABlockStmt) current.getStmt();
+                return containsAReturn(block.getStmt());
+            }
+
+            if (node instanceof ASwitchStmt) {
+                LinkedList<PStmt> switches = ((ASwitchStmt) node).getCaseStmts();
+                boolean containsDefault = false;
+                for (Node n : switches) {
+                    ACaseStmt cur = (ACaseStmt) n;
+                    if (!containsAReturn(cur.getStmtList())) {
+                        return false;
+                    }
+                    if (cur.getCaseExp() instanceof ADefaultExp) {
+                        containsDefault = true;
+                    }
+                }
+                if (containsDefault) {
+                    return true;
+                } else {
+                    continue;
+                }
+            }
+        }
+        return false;
     }
 
     public void outAReturnStmt(AReturnStmt node){
         TypeClass return_type = getType(node.getExp());
-        if(return_type != null){
+        if (return_type != null){
             // meaning function signature and actual return type do not match
-            if(global_return_type == null){
-                if(!(return_type.toString().equals(global_return_type))) {
+            if (global_return_type == null) {
                     ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
                     return;
-                }
             }
-
-            else{
-                if(!(return_type.toString().equals(global_return_type.toString()))){
-                    ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
-                    return;
+             // else if (return_type.baseType == Type.INT 
+            //     && node.getExp() instanceof AIntExp && ((AIntExp) node.getExp()).getInt().getText().equals("0")) {
+            //     ErrorManager.printError("Cannot return 0 with return type int");
+            // } 
+            else {
+                if (isAliasedCorrectly(return_type, global_return_type)) {
+                    if (return_type.baseType != global_return_type.baseType) {
+                        ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
+                        return;
+                    }
                 } 
             }
         }
         // return_type == null
-        else{
+        else {
             // their values being null
             if(global_return_type != return_type){
                 ErrorManager.printError("Function does not return a type. "+ " Expecting: " + global_return_type  + ".");
