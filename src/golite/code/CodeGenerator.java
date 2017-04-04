@@ -1352,7 +1352,14 @@ public class CodeGenerator extends DepthFirstAdapter
     {
        String strValue = node.getRawStringLit().getText();
        String strValueWithoutRawQuotes = strValue.substring(1,strValue.length()-1);
-       print("\"" + strValueWithoutRawQuotes + "\""); 
+       String newString = "";
+       for(char c: strValueWithoutRawQuotes.toCharArray()){
+        if(c == '\\'){
+            newString += "\\";
+        }
+         newString += c;
+       }
+       print("\"" + newString + "\""); 
        printWithType(node);
     }
 
