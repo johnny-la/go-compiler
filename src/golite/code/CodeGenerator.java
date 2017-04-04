@@ -628,11 +628,17 @@ public class CodeGenerator extends DepthFirstAdapter
     }
     
     public void caseANoReturnFuncDecl(ANoReturnFuncDecl node) {
-        print("void ");
-        node.getIdType().apply(this);
-        print("(");
-        if (node.getSignature() != null) node.getSignature().apply(this);
-        print(") ");
+        String functionName = node.getIdType().toString().trim();
+        if((new String(functionName).equals("main"))){
+            print("void main(String[] args)");
+        }
+        else{
+            print("void ");
+            node.getIdType().apply(this);
+            print("(");
+            if (node.getSignature() != null) node.getSignature().apply(this);
+                print(") ");
+        }
         node.getBlock().apply(this);
     }
 
@@ -1834,11 +1840,11 @@ public class CodeGenerator extends DepthFirstAdapter
        String strValueWithoutRawQuotes = strValue.substring(1,strValue.length()-1);
        String newString = "";
        for(char c: strValueWithoutRawQuotes.toCharArray()){
-        if(c == '\\'){
-            newString += "\\";
+            if(c == '\\'){
+                newString += "\\";
+            }
+            newString += c;
         }
-         newString += c;
-       }
        print("\"" + newString + "\""); 
        printWithType(node);
     }
