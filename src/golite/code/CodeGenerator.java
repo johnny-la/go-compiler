@@ -7,6 +7,7 @@ import golite.analysis.*;
 import golite.code.*;
 import golite.type.*;
 import java.math.*;
+import golite.symbol.*;
 import golite.*;
 import java.security.spec.EllipticCurve;
 import java.util.*;
@@ -33,6 +34,7 @@ public class CodeGenerator extends DepthFirstAdapter
 
     private Node root;
     private TypeChecker typeChecker;
+    private SymbolTable symbolTable;
 
     public static HashMap<Node, TypeClass> nodeTypes;
     private HashSet<Node> newShortDeclarationVariables; // The lvalues that were declared in short declaration statements
@@ -44,8 +46,6 @@ public class CodeGenerator extends DepthFirstAdapter
     private String stringBuffer = "buffer";
 
     // File name
-    private static String className = "";
-
     private String fileHeader = "";
 
     private static final String fileFooter =
