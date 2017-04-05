@@ -143,6 +143,14 @@ public class TypeChecker extends DepthFirstAdapter
         return false;
     }
 
+    public void ASingleInnerFields(ASingleInnerFields node) {
+        for (int i = 0; i < node.getIdType().size(); i++)
+        {
+            Symbol s = symbolTable.get(node.getIdType().get(i));
+            addType(node.getIdType().get(i), s.typeClass);
+        }
+    }
+
     public boolean isSameInnerField(PInnerFields l, PInnerFields r) {
         ASingleInnerFields left = (ASingleInnerFields) l, right = (ASingleInnerFields) r;        
         List<PIdType> leftIds = left.getIdType(), rightIds = right.getIdType();
@@ -951,7 +959,11 @@ public class TypeChecker extends DepthFirstAdapter
         List<TypeAlias> typeAliases = arrayType.typeAliases;
         //return basetype in this case
         if (typeAliases.size() == 0) {
-            addType(node, arrayType);
+            TypeClass temp = new TypeClass(arrayType);
+            for (int i = 0; i < levels; i++) {
+                temp.decrementDimension();
+            }
+            addType(node, temp);
             return;
         } else {
             //aliased and need to traverse

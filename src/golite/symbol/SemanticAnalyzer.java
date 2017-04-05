@@ -725,7 +725,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         for (int i = 0; i < node.getIdType().size(); i++)
         {
             // Thus, declare the struct field
-            declareVariable(node.getIdType().get(i), node.getVarType(), SymbolKind.STRUCT_FIELD, node);
+            Symbol s = declareVariable(node.getIdType().get(i), node.getVarType(), SymbolKind.STRUCT_FIELD, node);
+            symbolMap.put(node.getIdType().get(i), s);
         }
         
         // Don't redefine the symbols for nodes that already have a symbol
