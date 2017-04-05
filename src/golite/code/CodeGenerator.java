@@ -707,10 +707,12 @@ public class CodeGenerator extends DepthFirstAdapter
         if (isBlankId(node.getIdType())) { return; }
         printi("");
         declareVariable(node.getIdType(),true);
+
     }
 
     public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
         node.getVarDecl().apply(this);
+        println(";");
         outAInlineListNoExpVarDecl(node);
     }
 
@@ -1247,16 +1249,7 @@ public class CodeGenerator extends DepthFirstAdapter
                 else
                 {
                     lvalue.apply(this);
-                    if (!(node.getOp() instanceof AOpEqualsExp))
-                        print(" = ");
-                    else 
-                    {
-                        String op = node.getOp().toString().trim();
-                        if (!op.equals("&^="))
-                            node.getOp().apply(this);
-                        else
-                            print("&= ~");
-                    }
+                    print(" = ");
                     expression.apply(this);
                     // Use temporary variables for swapping
                     if (swappedExpressions.contains(expression))
@@ -1330,18 +1323,12 @@ public class CodeGenerator extends DepthFirstAdapter
         return swappedLvalues;
     }
 
-    private String getDefaultValue(Node node)
-    {
-        TypeClass type = nodeTypes.get(node);
-        return getDefaultValue(type);
-    }
-
     /** 
      * Returns the default value for the node's type
      */
-    private String getDefaultValue(TypeClass type)
+    private String getDefaultValue(Node node)
     {
-        //TypeClass type = nodeTypes.get(node);
+        TypeClass type = nodeTypes.get(node);
         String defaultValue = "";
 
         if (type == null) 
@@ -1505,9 +1492,7 @@ public class CodeGenerator extends DepthFirstAdapter
         print(firstDimension.size + ",");
 
         TypeClass elementType = nodeTypes.get(node);
-        TypeClass temp = new TypeClass(elementType);
-        temp.decrementDimension();
-        String defaultValue = getDefaultValue(temp);
+        String defaultValue = getDefaultValue(node);
         // Cast the default value to a char
         if (defaultValue.equals("char"))
             print("(char)");
@@ -1906,12 +1891,10 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") == 0");
-             print(")");
         }
         else{
             print("(");
@@ -1928,12 +1911,10 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") != 0");
-             print(")");
         }
         else{
             print("(");
@@ -1950,12 +1931,10 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") < 0");
-             print(")");
         }
         else{
             print("(");
@@ -1972,12 +1951,10 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") > 0");
-             print(")");
         }
         else{
             print("(");
@@ -1994,12 +1971,10 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") <= 0");
-             print(")");
         }
         else{
             print("(");
@@ -2016,12 +1991,10 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") >= 0");
-             print(")");
         }
         else{
             print("(");
@@ -2173,9 +2146,8 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node)
     {
-       String stringValue = node.getInterpretedStringLiteral().getText();
-       stringValue = stringValue.replaceAll("\\\\a", "\\\\\\\\a");
-       stringValue = stringValue.replaceAll("\\\\v", "\\\\\\\\v");
-       print(stringValue); 
+       print(node.getInterpretedStringLiteral().getText()); 
+       printWithType(node);
     }
+
 }
