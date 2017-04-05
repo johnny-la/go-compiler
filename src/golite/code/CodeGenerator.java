@@ -442,7 +442,7 @@ public class CodeGenerator extends DepthFirstAdapter
         indentLevel++;
         printiln(name + " " + "cur = ((" + name + ") object);");
 
-	if (node.getInnerFields.size() > 0) {
+	if (node.getInnerFields().size() > 0) {
 		printiln("if (");
 		indentLevel++;
 		for (int j = 0 ; j < node.getInnerFields().size(); j++) {
