@@ -7,6 +7,7 @@ import golite.analysis.*;
 import golite.code.*;
 import golite.type.*;
 import java.math.*;
+import golite.symbol.*;
 import golite.*;
 import java.security.spec.EllipticCurve;
 import java.util.*;
@@ -34,6 +35,7 @@ public class CodeGenerator extends DepthFirstAdapter
     private Node root;
     private TypeChecker typeChecker;
     //structs
+    private SemanticAnalyzer semanticAnalyzer;
 
     public static HashMap<Node, TypeClass> nodeTypes;
     private HashSet<Node> newShortDeclarationVariables; // The lvalues that were declared in short declaration statements
@@ -45,13 +47,12 @@ public class CodeGenerator extends DepthFirstAdapter
     private boolean isInnerStruct = false;
     private int levels = 0;
     private String topLevelName = "";
+
     // The string buffer used for concatenating strings
     private String stringBuffer = "buffer";
 
-    private static final String fileHeader = 
-        "import java.util.*;\n" +
-        "\n" +
-        "public class Main {\n";
+    // File name
+    private String fileHeader = "";
 
     private static final String fileFooter =
         	"    public static <T> T _get_(ArrayList<T> list, int index, boolean isArray, int maxSize, T defaultValue) {\n" +
@@ -64,6 +65,7 @@ public class CodeGenerator extends DepthFirstAdapter
             "        list.set(index, data);\n" +
             "    }\n" +
             "\n" +
+            "    @SuppressWarnings(\"unchecked\")\n" +
             "    public static <T> void _ensureCapacity_(ArrayList<T> list, boolean isArray, int maxSize, T defaultValue) {\n" +
 	        "        if (isArray) {\n" +
 			"            for (int i = list.size(); i < maxSize; i++) {\n" +
@@ -128,11 +130,16 @@ public class CodeGenerator extends DepthFirstAdapter
     private HashMap<Node,String> staticStructs = new HashMap<Node,String>();
     private HashMap<Node,String> localStructs = new HashMap<Node,String>();
 
-    public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes, HashSet<Node> newShortDeclarationVariables)
+    public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes, HashSet<Node> newShortDeclarationVariables, SemanticAnalyzer semanticAnalyzer, String fileName)
     {
         this.root = root;
         this.nodeTypes = nodeTypes;
         this.newShortDeclarationVariables = newShortDeclarationVariables;
+        this.semanticAnalyzer = semanticAnalyzer;
+        this.fileHeader = 
+        "import java.util.*;\n" +
+        "\n" +
+        "public class " + fileName + "{\n";
     }
 
     public String generateCode()
@@ -539,11 +546,26 @@ public class CodeGenerator extends DepthFirstAdapter
         {   
             return; 
         }
+        
+        Symbol symbol = semanticAnalyzer.symbolMap.get(node);
+        if(symbol != null && symbol.kind != null && symbol.kind == Symbol.SymbolKind.FIELD) {
+           print("static "); 
+        }
 
-        // System.out.println("Declaring variable: " + node);
-        String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);
+        String variableName = getIdName(node);
+        
+        // If the variable wasn't declared in this function, declare it
+        if (symbol == null || !symbol.alreadyDeclared)
+        {
+            // System.out.println("Declaring variable: " + node);
+            String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);
+            print(typeName + " ");
 
-        print(typeName + " ");
+            // Insert id into HashMap so we don't redeclare it
+            //declaredVariables.put(variableName, nodeTypes.get(node));
+        }
+
+        
         if (node != null)
             node.apply(this);
         else if (expNode != null)
@@ -857,11 +879,17 @@ public class CodeGenerator extends DepthFirstAdapter
     }
     
     public void caseANoReturnFuncDecl(ANoReturnFuncDecl node) {
-        print("void ");
-        node.getIdType().apply(this);
-        print("(");
-        if (node.getSignature() != null) node.getSignature().apply(this);
-        print(") ");
+        String functionName = node.getIdType().toString().trim();
+        if((new String(functionName).equals("main"))){
+            print("void main(String[] args)");
+        }
+        else{
+            print("void ");
+            node.getIdType().apply(this);
+            print("(");
+            if (node.getSignature() != null) node.getSignature().apply(this);
+                print(") ");
+        }
         node.getBlock().apply(this);
     }
 
@@ -1095,7 +1123,7 @@ public class CodeGenerator extends DepthFirstAdapter
                 }
                 node.getExp().get(i).apply(this);
                 if (i != node.getExp().size()-1) { 
-                    print(" + \"\" + "); 
+                    print(" + \" \" + "); 
                 }
             }
         }
@@ -1510,6 +1538,10 @@ public class CodeGenerator extends DepthFirstAdapter
         print(firstDimension.size + ",");
 
         TypeClass elementType = nodeTypes.get(node);
+        String defaultValue = getDefaultValue(node);
+        // Cast the default value to a char
+        if (defaultValue.equals("char"))
+            print("(char)");
         print(getDefaultValue(node) + ")"); 
     }
 
@@ -1570,7 +1602,7 @@ public class CodeGenerator extends DepthFirstAdapter
         {
             printi("");
             node.getSimpleStmt().apply(this);
-            println("; ");
+            // println("; ");
         }
 
         printi("if (");
@@ -1617,8 +1649,20 @@ public class CodeGenerator extends DepthFirstAdapter
             println("{");
             indentLevel++;
 
-            printi("for (");
-            forCondition.apply(this);
+            AForCondExp forCond = (AForCondExp)forCondition;
+            if (forCond.getFirst() != null)
+            {
+                printi("");
+                forCond.getFirst().apply(this);
+            }
+
+            printi("for (;");
+            if (forCond.getSecond() != null)
+                forCond.getSecond().apply(this);
+            print(";");
+            if (forCond.getThird() != null)
+                forCond.getThird().apply(this);
+            //forCondition.apply(this);
             print(") ");
         }
         // Infinite loop
@@ -1663,7 +1707,7 @@ public class CodeGenerator extends DepthFirstAdapter
         {
             printi("");
             node.getSimpleStmt().apply(this);
-            println("; ");
+            //println("; ");
         }
 
         PExp switchExp = node.getExp();
@@ -2077,11 +2121,11 @@ public class CodeGenerator extends DepthFirstAdapter
        String strValueWithoutRawQuotes = strValue.substring(1,strValue.length()-1);
        String newString = "";
        for(char c: strValueWithoutRawQuotes.toCharArray()){
-        if(c == '\\'){
-            newString += "\\";
+            if(c == '\\'){
+                newString += "\\";
+            }
+            newString += c;
         }
-         newString += c;
-       }
        print("\"" + newString + "\""); 
        printWithType(node);
     }

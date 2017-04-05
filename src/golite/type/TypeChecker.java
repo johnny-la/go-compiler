@@ -948,7 +948,7 @@ public class TypeChecker extends DepthFirstAdapter
             cur = ((AArrayElementExp) cur).getArray();
             levels++;
         }
-        AIdExp id = (AIdExp) cur;
+        AIdExp id = (AIdExp)cur;
         id.apply(this);
         TypeClass arrayType = getType(id);
         if (levels > arrayType.totalArrayDimension.size()) {
