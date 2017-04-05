@@ -1947,62 +1947,122 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAEqualsEqualsExp(AEqualsEqualsExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("==");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        TypeClass type1 = nodeTypes.get(node.getL());
+        TypeClass type2 = nodeTypes.get(node.getR());
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             node.getL().apply(this);
+             print(".compareTo(");
+             node.getR().apply(this);
+             print(") == 0");
+        }
+        else{
+            print("(");
+            node.getL().apply(this);
+            print("==");
+            node.getR().apply(this);
+            print(")");
+            printWithType(node);
+        }
     }
 
     public void caseANotEqualExp(ANotEqualExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("!=");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        TypeClass type1 = nodeTypes.get(node.getL());
+        TypeClass type2 = nodeTypes.get(node.getR());
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             node.getL().apply(this);
+             print(".compareTo(");
+             node.getR().apply(this);
+             print(") != 0");
+        }
+        else{
+            print("(");
+            node.getL().apply(this);
+            print("!=");
+            node.getR().apply(this);
+            print(")");
+            printWithType(node);
+        }
     }
 
     public void caseALessExp(ALessExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("<");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        TypeClass type1 = nodeTypes.get(node.getL());
+        TypeClass type2 = nodeTypes.get(node.getR());
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             node.getL().apply(this);
+             print(".compareTo(");
+             node.getR().apply(this);
+             print(") < 0");
+        }
+        else{
+            print("(");
+            node.getL().apply(this);
+            print("<");
+            node.getR().apply(this);
+            print(")");
+            printWithType(node);
+        }
     }
 
     public void caseAGreaterExp(AGreaterExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print(">");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        TypeClass type1 = nodeTypes.get(node.getL());
+        TypeClass type2 = nodeTypes.get(node.getR());
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             node.getL().apply(this);
+             print(".compareTo(");
+             node.getR().apply(this);
+             print(") > 0");
+        }
+        else{
+            print("(");
+            node.getL().apply(this);
+            print(">");
+            node.getR().apply(this);
+            print(")");
+            printWithType(node);
+        }
     }
 
     public void caseALessEqualsExp(ALessEqualsExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("<=");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        TypeClass type1 = nodeTypes.get(node.getL());
+        TypeClass type2 = nodeTypes.get(node.getR());
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             node.getL().apply(this);
+             print(".compareTo(");
+             node.getR().apply(this);
+             print(") <= 0");
+        }
+        else{
+            print("(");
+            node.getL().apply(this);
+            print("<=");
+            node.getR().apply(this);
+            print(")");
+            printWithType(node);
+        }
     }
 
     public void caseAGreaterEqualsExp(AGreaterEqualsExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print(">=");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        TypeClass type1 = nodeTypes.get(node.getL());
+        TypeClass type2 = nodeTypes.get(node.getR());
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             node.getL().apply(this);
+             print(".compareTo(");
+             node.getR().apply(this);
+             print(") >= 0");
+        }
+        else{
+            print("(");
+            node.getL().apply(this);
+            print(">=");
+            node.getR().apply(this);
+            print(")");
+            printWithType(node);
+        }
     }
 
     public void caseAIdExp(AIdExp node)

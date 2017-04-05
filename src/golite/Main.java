@@ -71,7 +71,6 @@ public class Main
 
         String absolutePath = f.getAbsolutePath();
         String filePath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));
-        System.out.println("The path is: " + filePath);
         printDebug(code);
         printToFile(filePath + "/GoLite" + baseFileName + CODE_GENERATOR_SUFFIX, code);
     }
