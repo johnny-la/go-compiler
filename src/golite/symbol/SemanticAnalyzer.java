@@ -282,10 +282,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 // If the id was not declared yet, declare it
                 if (!symbolTable.contains(idName))
                 {
-                    declareVariable(idNode.getIdType(), null, SymbolKind.LOCAL, node);
+                    Symbol s = declareVariable(idNode.getIdType(), null, SymbolKind.LOCAL, node);
+                    symbolMap.put(idNode.getIdType(),s);
+                    symbolMap.put(idNode,s);
                     idDeclared = true;
                     // Tells code generator which variables were newly declared
                     newShortDeclarationVariables.add(idNode);
+                    
                 }
             }
 

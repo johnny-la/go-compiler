@@ -550,7 +550,11 @@ public class CodeGenerator extends DepthFirstAdapter
             return; 
         }
         
-        Symbol symbol = semanticAnalyzer.symbolMap.get(node);
+        Symbol symbol = null;
+        if (node != null)
+            symbol = semanticAnalyzer.symbolMap.get(node);
+        else
+            symbol = semanticAnalyzer.symbolMap.get(expNode);
         if(symbol != null && symbol.kind != null && symbol.kind == Symbol.SymbolKind.FIELD) {
            print("static "); 
         }
@@ -1556,6 +1560,8 @@ public class CodeGenerator extends DepthFirstAdapter
         {
             printi("");
             node.getSimpleStmt().apply(this);
+            if (!isAssignList(node.getSimpleStmt()))
+                println(";");
             // println("; ");
         }
 
@@ -1608,6 +1614,9 @@ public class CodeGenerator extends DepthFirstAdapter
             {
                 printi("");
                 forCond.getFirst().apply(this);
+
+                if (!isAssignList(forCond.getFirst()))
+                    println(";");
             }
 
             printi("for (;");
@@ -1661,7 +1670,8 @@ public class CodeGenerator extends DepthFirstAdapter
         {
             printi("");
             node.getSimpleStmt().apply(this);
-            //println("; ");
+            if (!isAssignList(node.getSimpleStmt()))
+                println(";");
         }
 
         PExp switchExp = node.getExp();
@@ -1694,6 +1704,11 @@ public class CodeGenerator extends DepthFirstAdapter
         println("");
         indentLevel--;
         printi("}");
+    }
+
+    private boolean isAssignList(PStmt node)
+    {
+        return node instanceof AAssignListStmt;
     }
 
     public void caseACaseStmt(ACaseStmt node, PExp switchExp, int caseIndex)
