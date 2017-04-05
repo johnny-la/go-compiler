@@ -1906,10 +1906,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+	     print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") == 0");
+	     print(")");
         }
         else{
             print("(");
@@ -1926,10 +1928,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+	     print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") != 0");
+	     print(")");
         }
         else{
             print("(");
@@ -1946,10 +1950,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+	     print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") < 0");
+	     print(")");
         }
         else{
             print("(");
@@ -1966,10 +1972,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+	     print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") > 0");
+	     print(")");
         }
         else{
             print("(");
@@ -1986,10 +1994,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+	     print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") <= 0");
+	     print(")");
         }
         else{
             print("(");
@@ -2006,10 +2016,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+	     print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") >= 0");
+	     print(")");
         }
         else{
             print("(");
