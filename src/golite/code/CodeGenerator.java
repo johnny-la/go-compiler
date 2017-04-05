@@ -969,7 +969,7 @@ public class CodeGenerator extends DepthFirstAdapter
                 case STRING:
                     return "String";
                 case STRUCT:
-                    return getStructName(node);
+                    return getStructName(type);
                 default:
                     ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
             }
@@ -998,7 +998,7 @@ public class CodeGenerator extends DepthFirstAdapter
                     typeName += "String";
                     break;
                 case STRUCT:
-                    typeName += getStructName(node);
+                    typeName += getStructName(type);
                     break;
                 default:
                     ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type.baseType);
@@ -1015,8 +1015,16 @@ public class CodeGenerator extends DepthFirstAdapter
     private String getStructName(Node node)
     {
         TypeClass type = nodeTypes.get(node);
-        
-        if (type.baseType != Type.STRUCT) { return null; }
+        return getStructName(type);
+    }
+
+    private String getStructName(TypeClass type)
+    {
+        if (type.baseType != Type.STRUCT) 
+        { 
+            System.out.println("getStructName(): type is not a struct: " + type);// + ". node = " + node);
+            return null; 
+        }
 
         // If the struct was declared using a type alias
         if (type.typeAliases.size() > 0)
@@ -1024,7 +1032,7 @@ public class CodeGenerator extends DepthFirstAdapter
             // Index 0 stores the first type alias of the struct 
             TypeAlias structAlias = type.typeAliases.get(0);
 
-            System.out.println(node + " has type alias: " + structAlias + "[" + type.structNode + ", " + structAlias.node.getClass() + "]");
+            // System.out.println(node + " has type alias: " + structAlias + "[" + type.structNode + ", " + structAlias.node.getClass() + "]");
 
             if (structAlias.node instanceof ATypeAliasTypeDecl)
             {
@@ -1035,7 +1043,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
         else
         {   
-            System.out.println(node + " has an anonymous struct type: " + type.structNode);
+            // System.out.println(node + " has an anonymous struct type: " + type.structNode);
             for (Node n : staticStructs.keySet()) {
                 AStructVarType cur = (AStructVarType) n;
                 if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
