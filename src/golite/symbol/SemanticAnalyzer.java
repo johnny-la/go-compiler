@@ -450,7 +450,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         // Check if the symbol already exists in the symbol table and is
         // a redeclared local
         Symbol existingSymbol = symbolTable.get(idName);
-        if (existingSymbol != null && existingSymbol.kind != SymbolKind.FIELD)
+        if (existingSymbol != null && existingSymbol.kind != SymbolKind.FIELD 
+            && symbol.kind != SymbolKind.STRUCT_FIELD)
         {
             System.out.println("Symbol is already declared: " + existingSymbol);
             symbol.alreadyDeclared = true;

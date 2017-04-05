@@ -428,6 +428,7 @@ public class CodeGenerator extends DepthFirstAdapter
             ASingleInnerFields cur = (ASingleInnerFields) n;
             for (int i = 0; i < cur.getIdType().size(); i++) {
                 printi("");
+                System.out.println("declaring variable" + getIdName(cur.getIdType().get(i)));
                 declareVariable(cur.getIdType().get(i), true);
                 println(";");
             }
@@ -558,7 +559,7 @@ public class CodeGenerator extends DepthFirstAdapter
         // If the variable wasn't declared in this function, declare it
         if (symbol == null || !symbol.alreadyDeclared)
         {
-            // System.out.println("Declaring variable: " + node);
+            System.out.println("Declaring variable: " + node);
             String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);
             print(typeName + " ");
 
@@ -908,7 +909,7 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         // TypeClass type = nodeTypes.get(node);
         String typeName = "";
-
+        System.out.println("getting typeName" + type);
         if (type == null) 
         {
             ErrorManager.printWarning("Node has null type: " + node);
