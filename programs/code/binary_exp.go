@@ -39,3 +39,4 @@ func binaryOperationsIntegers(a int, b int, c int, j rune, k rune, str1 string, 
 	var complicated_expression1 = addition * (multiplication / remainder) ^ shift_right % 2 % 5 &^ 6 >> (55 << 2*(piping) | 42354);
 	var complicated_expression2 = bool_val1 && bool_val8 == bool_val6 || bool_val1 && bool_val7 && 2<3;
 }
+

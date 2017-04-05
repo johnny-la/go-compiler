@@ -1,29 +1,40 @@
 package golite.type;
 
 import golite.node.*;
+import java.util.*;
 
 // Stores a mapping between a type alias and the dimension 
 // of the array (if applicable)
 public class TypeAlias
 {
     public Node node;
-    public int arrayDimension;
+    public LinkedList<Dimension> arrayDimensions = new LinkedList<Dimension>();
 
     public TypeAlias() {}
 
     public TypeAlias(TypeAlias other)
     {
         this.node = other.node;
-        this.arrayDimension = other.arrayDimension;
+        setArrayDimensions(other.arrayDimensions);
+    }
+
+    public void setArrayDimensions(LinkedList<Dimension> dimensions)
+    {
+        arrayDimensions.clear();
+        for (int i = 0; i < dimensions.size(); i++)
+        {
+            this.arrayDimensions.add(dimensions.get(i));   
+        }
     }
 
     public String toString()
     {
         String output = "";
 
-        for (int i = 0; i < arrayDimension; i++)
-        {
-            output += "[]";
+        if (arrayDimensions !=null) {
+            for (int i = 0; i < arrayDimensions.size(); i++) {
+                output += arrayDimensions.get(i).toString();
+            }
         }
         
         output += "(" + node.toString().trim() + ")";

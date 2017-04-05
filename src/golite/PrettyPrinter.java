@@ -84,9 +84,10 @@ public class PrettyPrinter extends DepthFirstAdapter
     }
 
     /** DECLARATIONS */
+
     //base case varTypes
 
-    public void caseABaseTypeVarType(ABaseTypeVarType node) {
+    public void caseATypeVarType(ATypeVarType node) {
         print(node.getType().getText());
     }
 
@@ -101,7 +102,29 @@ public class PrettyPrinter extends DepthFirstAdapter
     }
 
     public void caseAStructVarType(AStructVarType node) {
-        print(node.getId().getText());
+    		println("struct {");
+    		indentLevel++;
+    		for (Node n : node.getInnerFields()) {
+    				printi("");
+    				n.apply(this);
+    				println("");
+    		}
+    		print("}");
+    }
+
+    public void caseAIdVarType(AIdVarType node) {
+    	  print(node.getId().getText());
+    }
+
+    //field declarations
+
+    public void caseASingleInnerFields(ASingleInnerFields node) {
+    		for (int i = 0; i < node.getIdType().size() - 1; i++) {
+    			node.getIdType().get(i).apply(this);
+    			print(", ");
+    		}
+    		node.getIdType().get(node.getIdType().size() - 1).apply(this);
+    		node.getVarType().apply(this);
     }
 
     //base case idTypes
@@ -120,6 +143,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getIdType().apply(this);
         print("; \n");
     }
+
     //var declarations
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node) {
         print("var ");
@@ -187,30 +211,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getVarType().apply(this);
     } 
 
-    public void caseAStructVarDeclTypeDecl(AStructVarDeclTypeDecl node)
-    {
-        printNodesWithComma(node.getIdList());
-        print(" ");
-        node.getVarType().apply(this);
-    }
-    
-    public void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node) {
-        node.getIdType().apply(this);
-        print(" struct {");
-        println("");
-
-        indentLevel++;
-        for (Node n: node.getTypeDecl()) {
-            printi("");
-            n.apply(this);
-            println("");
-        }
-        
-        indentLevel--;
-        printi("}");
-    }
-
-    public void caseAMultilineListTypeDecl(AMultilineListTypeDecl node) {
+    public void caseAMultilineListTypeDecl(AMultiTypeDecl node) {
         println("(");
         indentLevel++;
         for (Node n: node.getTypeDecl()) {
@@ -265,6 +266,13 @@ public class PrettyPrinter extends DepthFirstAdapter
     }
 
     // /** STATEMENTS */
+
+    public void caseAExpStmt(AExpStmt node){
+        print("(");
+        node.getExp().apply(this);
+        print(")");
+    }
+
     // public void caseAReadStmt(AReadStmt node)
     // {
     //     printi("read " + node.getId().getText() + ";");
@@ -310,25 +318,6 @@ public class PrettyPrinter extends DepthFirstAdapter
     //     indentLevel++;
     //     printNodes(node.getStmt());       
     /** STATEMENTS */
-    public void caseAPrintStmt(APrintStmt node)
-    {
-        print("print("); 
-        if (node.getExp() != null) 
-        {
-            printNodesWithComma(node.getExp());
-        }
-        print(")");
-    }
-
-    public void caseAPrintlnStmt(APrintlnStmt node)
-    {
-        print("println(");
-        if (node.getExp() != null) 
-        {
-            printNodesWithComma(node.getExp());
-        }
-        print(")");
-    }
 
     public void caseAReturnStmt(AReturnStmt node)
     {
@@ -397,19 +386,6 @@ public class PrettyPrinter extends DepthFirstAdapter
                 print("]");
             }
         }
-    }
-
-    public void caseAArrayIndexingExp(AArrayIndexingExp node)
-    {
-        node.getExp().apply(this);
-        printIndices(node.getExpList());
-    }
-
-    public void caseAStructSelectorExp(AStructSelectorExp node)
-    {
-        node.getL().apply(this);
-        print(".");
-        node.getR().apply(this);
     }
 
     public void caseABlockStmt(ABlockStmt node)
@@ -514,7 +490,9 @@ public class PrettyPrinter extends DepthFirstAdapter
     public void caseACaseExp(ACaseExp node)
     {
         printi("case ");
+        print("(");
         printNodesWithComma(node.getExpList());
+        print(")");
         println(":");
     }
 
@@ -542,14 +520,30 @@ public class PrettyPrinter extends DepthFirstAdapter
    
     /** EXPRESSIONS */
 
-    public void caseAFunctionCallSecondaryExp(AFunctionCallSecondaryExp node)
+	public void caseAArrayElementExp(AArrayElementExp node){
+		print("(");
+		node.getArray().apply(this);
+		print("[");
+		node.getIndex().apply(this);
+		print("]");
+		print(")");
+	}
+
+
+	public void caseAFieldExp(AFieldExp node){
+		print("(");
+		node.getIdType().apply(this);
+		print(").");
+		node.getExp().apply(this);
+	}
+
+    public void caseAFunctionCallExp(AFunctionCallExp node)
     {
-        node.getExp().apply(this);
+        node.getName().apply(this);
         print("(");
-        printNodesWithComma(node.getExpList());
+        printNodesWithComma(node.getArgs());
         print(")");
     }
-    //TODO: add function call secondary
 
     public void printWithType(Node node) {
             if (printType) {
@@ -761,7 +755,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         printWithType(node);
     }
 
-    public void caseACaretedFactorsExp(ACaretedFactorsExp node)
+    public void caseAUnaryXorExp(AUnaryXorExp node)
     {
         print("^");
         print("(");
@@ -770,7 +764,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         printWithType(node);
     }
 
-    public void caseAExclamatedFactorsExp(AExclamatedFactorsExp node)
+    public void caseAUnaryExclamationExp(AUnaryExclamationExp node)
     {
         print("!");
         print("(");
@@ -809,7 +803,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         printWithType(node);
     }
 
-    public void caseAShiftRightExp(AShiftLeftExp node)
+    public void caseAShiftRightExp(AShiftRightExp node)
     {
         print("(");
         node.getL().apply(this);
@@ -847,4 +841,15 @@ public class PrettyPrinter extends DepthFirstAdapter
        printWithType(node);
     }
 
+    public void caseAPrintExp(APrintExp node) {
+		print("print(");
+		printNodesWithComma(node.getExp());
+		print(")");
+	}
+
+    public void caseAPrintlnExp(APrintlnExp node) {
+		print("println(");
+		printNodesWithComma(node.getExp());
+		print(")");
+	}
 }

@@ -1,68 +1,21 @@
 grading/valid/scanner//comments.go: VALID
 [pass]
-grading/valid/scanner//floatlit.go: Declared function: scan_floats, FUNCTION,  ():VOID
-Inserting (n ,n, LOCAL, FLOAT64) into symbolMap
-Inserting (n ,n, LOCAL, FLOAT64) into symbolMap
-Inserting (n ,n, LOCAL, FLOAT64) into symbolMap
-Checking aliases: FLOAT64 R:FLOAT64
-Checking aliases: FLOAT64 R:FLOAT64
-Checking aliases: FLOAT64 R:FLOAT64
+grading/valid/scanner//floatlit.go: {n=n, LOCAL, FLOAT64}
 VALID
 [pass]
-grading/valid/scanner//identifiers.go: Declared function: scan_identifiers, FUNCTION,  ():VOID
+grading/valid/scanner//identifiers.go: {abc=abc, LOCAL, INT, _var=_var, LOCAL, INT, Var=Var, LOCAL, INT, var123=var123, LOCAL, INT, _=_, LOCAL, INT}
 VALID
 [pass]
-grading/valid/scanner//integerlit.go: Declared function: scan_integers, FUNCTION,  ():VOID
-Inserting (n ,n, LOCAL, INT) into symbolMap
-Inserting (n ,n, LOCAL, INT) into symbolMap
-Inserting (n ,n, LOCAL, INT) into symbolMap
-Checking aliases: INT R:INT
-Checking aliases: INT R:INT
-Checking aliases: INT R:INT
+grading/valid/scanner//integerlit.go: {n=n, LOCAL, INT}
 VALID
 [pass]
-grading/valid/scanner//interstringlit.go: Declared function: scan_interstring, FUNCTION,  ():VOID
-Inserting (s ,s, LOCAL, STRING) into symbolMap
-Inserting (s ,s, LOCAL, STRING) into symbolMap
-Inserting (s ,s, LOCAL, STRING) into symbolMap
-Checking aliases: STRING R:STRING
-Checking aliases: STRING R:STRING
-Checking aliases: STRING R:STRING
+grading/valid/scanner//interstringlit.go: {s=s, LOCAL, STRING}
 VALID
 [pass]
-grading/valid/scanner//rawstringlit.go: Declared function: scan_rawstring, FUNCTION,  ():VOID
-Inserting (r ,r, LOCAL, STRING) into symbolMap
-Inserting (r ,r, LOCAL, STRING) into symbolMap
-Inserting (r ,r, LOCAL, STRING) into symbolMap
-Checking aliases: STRING R:STRING
-Checking aliases: STRING R:STRING
-Checking aliases: STRING R:STRING
+grading/valid/scanner//newline.go: INVALID: golite.parser.ParserException: [1,23] expecting: ';', end of file[fail]
+grading/valid/scanner//rawstringlit.go: {r=r, LOCAL, STRING}
 VALID
 [pass]
-grading/valid/scanner//runelit.go: Declared function: scan_runes, FUNCTION,  ():VOID
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Inserting (c ,c, LOCAL, RUNE) into symbolMap
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
-Checking aliases: RUNE R:RUNE
+grading/valid/scanner//runelit.go: {c=c, LOCAL, RUNE}
 VALID
 [pass]

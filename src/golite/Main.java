@@ -7,7 +7,6 @@ import golite.symbol.*;
 import golite.type.*;
 import golite.code.*;
 import java.util.*;
-
 import java.io.*;
 
 public class Main
@@ -16,13 +15,15 @@ public class Main
                                 PRETTY_PRINT_TYPE_SUFFIX = ".pptype.go",
                                 DUMP_SYMBOL_TABLE_SUFFIX = ".symtab",
                                 SYMBOL_TABLE_SUFFIX = ".symbol.txt",
-                                CODE_GENERATOR_SUFFIX = ".j";   
+                                CODE_GENERATOR_SUFFIX = ".java";   
                             
     private static final String DUMP_SYMBOL_TABLE_ARG = "-dumpsymtab",
                                 PRETTY_PRINT_TYPE_ARG = "-pptype";
 
     // If true, print to file. Else, print to STDOUT
     private static final boolean PRINT_TO_FILE = true;
+
+    private static SemanticAnalyzer semanticAnalyzer;
 
     // Pretty prints the given AST
     private static void prettyPrint(Start tree, String inputFilename)
@@ -59,15 +60,19 @@ public class Main
     /** 
      * Generates C code from the given AST
      */
-    private static void generateCode(Start tree, TypeChecker typeChecker,
-            String inputFilename)
+    private static void generateCode(Start tree, HashMap<Node,TypeClass> nodeTypes,
+            HashSet<Node> newShortDeclarationVariables, String inputFilename)
     {
         printDebug("Code Generator:");
-        CodeGenerator codeGenerator = new CodeGenerator(tree, typeChecker);
+        File f = new File(inputFilename);
+        String baseFileName = f.getName().replaceAll("-", "_");
+        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables, semanticAnalyzer, "GoLite" + baseFileName);
         String code = codeGenerator.generateCode();
 
+        String absolutePath = f.getAbsolutePath();
+        String filePath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));
         printDebug(code);
-        printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
+        printToFile(filePath + "/GoLite" + baseFileName + CODE_GENERATOR_SUFFIX, code);
     }
 
     /**
@@ -151,28 +156,34 @@ public class Main
                 prettyPrint(tree, filenamePrefix);
 
                 SymbolTable symbolTable = new SymbolTable();
-                SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
-                printDebug("Semantic Analyzer:");
+                semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
+                // printDebug("Semantic Analyzer:");
                 tree.apply(semanticAnalyzer);
-                printDebug("\nSymbol table:");
-                printDebug(symbolTable.toString());
-                printToFile(filenamePrefix + SYMBOL_TABLE_SUFFIX, symbolTable.toString());
+                // printDebug("\nSymbol table:");
+                // printDebug(symbolTable.toString());
                 if (dumpSymbolTable)
                     printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
                 
-                printDebug("\nType Checker:");
+                // System.out.println("Semantic Analyzer Node Types:");
+                // printSymbolMap(semanticAnalyzer.symbolMap);
+                // System.out.println("-------------");
+
+                // printDebug("\nType Checker:");
                 TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
                 tree.apply(typeChecker);
-                printDebug(typeChecker.toString()); 
+                // printDebug(typeChecker.toString()); 
+
+                // System.out.println("Type Checker Node Types:");
+                // printNodeTypes(typeChecker.nodeTypes);
 
                 if (prettyPrintType) {
                     prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
                 }
 
-                // Generate C code if no type errors occurred
+                // Generate code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)
                 {
-                    generateCode(tree, typeChecker, inputFilename);
+                    generateCode(tree, typeChecker.nodeTypes, semanticAnalyzer.newShortDeclarationVariables, filenamePrefix);
                 }
                 else
                 {
@@ -188,8 +199,24 @@ public class Main
         catch (Exception e)
         {
             System.out.print("INVALID: " + e);
-            //e.printStackTrace();
+            // e.printStackTrace();
             System.exit(1);
+        }
+    }
+
+    public static void printNodeTypes(HashMap<Node,TypeClass> nodeTypes)
+    {
+        for (Map.Entry<Node,TypeClass> entry : nodeTypes.entrySet())
+        {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    public static void printSymbolMap(HashMap<Node,Symbol> symbolMap)
+    {
+        for (Map.Entry<Node,Symbol> entry : symbolMap.entrySet())
+        {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
 }

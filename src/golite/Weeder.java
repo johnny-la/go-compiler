@@ -7,18 +7,30 @@ import java.util.*;
 
 public class Weeder extends DepthFirstAdapter
 {
+    //short decls
     public void inAAssignListStmt(AAssignListStmt node)
     {
         // Stores true if all the lvalues are identifiers
         boolean allIds = true;
+        boolean allLValues = true;
+        // Check size 
+        int lsize = node.getL().size();
+        int rsize = node.getR().size();
 
-        // Checks if all lvalues are identifiers
+        if (lsize != rsize)
+        {
+            throw new RuntimeException("Number of ids and expressions do not match in assignment statement");
+        }
+        // Checks if all lvalues are identifiers or array elements 
         List<PExp> lvalues = (List<PExp>)node.getL();
         for (int i = 0; i < lvalues.size(); i++)
-        {
-            if (!(lvalues.get(i) instanceof AIdExp))
-            {
+        {   
+
+            if (!(lvalues.get(i) instanceof AIdExp)) {
                 allIds = false;
+                if (!(lvalues.get(i) instanceof AArrayElementExp)) {
+                    allLValues = false;
+                }
             }
         }
 
@@ -36,12 +48,26 @@ public class Weeder extends DepthFirstAdapter
                 "be used with one identifier");
         }
 
-        int lsize = node.getL().size();
-        int rsize = node.getR().size();
-
-        if (lsize != rsize)
+        if (node.getOp() instanceof AOpEqualsExp && !allLValues)
         {
-            throw new RuntimeException("Number of ids and expressions do not match in assignment statement");
+            throw new RuntimeException("Operation assignment (+=,-=,etc) can only " +
+                "be used with proper LValues ");
+        }
+
+    }
+
+    //check expr is id or arraySelector
+    public void inAIncrementStmt(AIncrementStmt node) {
+        if (!(node.getExp() instanceof AIdExp || node.getExp() instanceof AArrayElementExp)) {
+            throw new RuntimeException("Increment assignment ++ can only " +
+                "be used with proper LValues ");
+        }
+    }
+
+    public void inADecrementStmt(ADecrementStmt node) {
+        if (!(node.getExp() instanceof AIdExp || node.getExp() instanceof AArrayElementExp)) {
+            throw new RuntimeException("Increment assignment -- can only " +
+                "be used with proper LValues ");
         }
     }
 
@@ -50,11 +76,6 @@ public class Weeder extends DepthFirstAdapter
         if (node instanceof AIdExp) return true;
 
         return false;
-    }
-
-    public void inADecrementStmt(ADecrementStmt node)
-    {
-        //if (isBlankId())
     }
 
     public void inASwitchStmt(ASwitchStmt node)
@@ -104,57 +125,7 @@ public class Weeder extends DepthFirstAdapter
             throwBreakError();
         }
 
-        if (!containsAReturn(((ABlockStmt)node.getBlock()).getStmt())) {
-            throwReturnError();
-        }
     } 
-
-    public boolean containsAReturn(List<PStmt> nodes){
-        for (int i = 0; i < nodes.size(); i++){
-            PStmt node = nodes.get(i);
-            if(node instanceof AReturnStmt){
-                return true;
-            }
-
-            if (node instanceof AForStmt){
-                AForStmt forStmt = (AForStmt)node;
-                if(containsAReturn(((ABlockStmt)forStmt.getBlock()).getStmt())) {
-                    return true;
-                }
-            }
-
-            if (node instanceof AIfStmt){
-                Node current = node;
-                while (current instanceof AIfStmt) {
-                    AIfStmt temp = (AIfStmt) current;
-                    if(containsAReturn(((ABlockStmt) temp.getBlock()).getStmt())) {
-                        PStmt next = temp.getEnd();
-                        if (next instanceof AElseIfStmt) {
-                        current = (AIfStmt) ((AElseIfStmt) next).getStmt();
-                        continue;
-                        } else {
-                            current = next;
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-                if (current instanceof AElseStmt) {
-                        AElseStmt temp = (AElseStmt) current;
-                        return containsAReturn(((ABlockStmt) temp.getStmt()).getStmt());
-                } else {
-                        return true;
-                }
-            }
-
-            if (node instanceof AElseStmt) {
-                AElseStmt current = (AElseStmt) node;
-                ABlockStmt block = (ABlockStmt) current.getStmt();
-                return containsAReturn(block.getStmt());
-            }
-        }
-        return false;
-    }
 
     public void inAIfStmt(AIfStmt node)
     {
@@ -189,26 +160,35 @@ public class Weeder extends DepthFirstAdapter
             throwContinueError();
         }
     }
+    public void inAFieldExp(AFieldExp node) {
+        Node id = node.getIdType();
+        if (id instanceof AIdIdType) {
+            AIdIdType newTemp = (AIdIdType) id;
+            if (newTemp.getId().getText().equals("_")) {
+                throwBlankIdError("Trying to evaluate a struct selector with a blank identifier \n");
+            }
+        }
+    }
 
     public void caseAAssignListStmt(AAssignListStmt node) {
         inAAssignListStmt(node);
         {
             List<PExp> copy = new ArrayList<PExp>(node.getL());
-            for(PExp e : copy)
-            {   
-                if (e instanceof AIdExp) {
-                    AIdExp temp = (AIdExp) e;
-                    if (temp.getIdType() instanceof AIdIdType) {
-                    AIdIdType newTemp = (AIdIdType) temp.getIdType();
-                    if (newTemp.getId().getText().equals("_")) {
-                    } else {
-                        e.apply(this);
+                for(PExp e : copy) {   
+                    if (e instanceof AIdExp) {
+                        AIdExp temp = (AIdExp) e;
+                        if (temp.getIdType() instanceof AIdIdType) {
+                        AIdIdType newTemp = (AIdIdType) temp.getIdType();
+                        if (newTemp.getId().getText().equals("_") && copy.size() > 1) {
+                            //nothing
+                        } else {
+                            e.apply(this);
                         }
                     }
                 } else {
                     e.apply(this);
+                    }
                 }
-            }
         }
         if(node.getOp() != null)
         {
@@ -224,7 +204,7 @@ public class Weeder extends DepthFirstAdapter
         outAAssignListStmt(node);
     }
 
-    public void inAIdExp(AIdExp node) {
+    public void caseAIdExp(AIdExp node) {
         PIdType id = node.getIdType();
         if (id instanceof AIdIdType) {
             AIdIdType temp = (AIdIdType) id;
@@ -245,18 +225,18 @@ public class Weeder extends DepthFirstAdapter
         }
     }
 
-    public void inAStructSelectorExp(AStructSelectorExp node) {
-        PExp right = node.getR();
-        if (right instanceof AIdExp) {
-            AIdExp temp = (AIdExp) right;
-            if (temp.getIdType() instanceof AIdIdType) {
-                AIdIdType newTemp = (AIdIdType) temp.getIdType();
-                if (newTemp.getId().getText().equals("_")) {
-                    throwBlankIdError("Trying to evaluate an expression with a blank identifier \n");
-                }
-            }
-        }
-    }
+    // public void inAStructSelectorExp(AStructSelectorExp node) {
+    //     PExp right = node.getR();
+    //     if (right instanceof AIdExp) {
+    //         AIdExp temp = (AIdExp) right;
+    //         if (temp.getIdType() instanceof AIdIdType) {
+    //             AIdIdType newTemp = (AIdIdType) temp.getIdType();
+    //             if (newTemp.getId().getText().equals("_")) {
+    //                 throwBlankIdError("Trying to evaluate an expression with a blank identifier \n");
+    //             }
+    //         }
+    //     }
+    // }
 
     // public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node) {
     //     PVarType current = node.getVarType();
