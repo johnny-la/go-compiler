@@ -465,11 +465,12 @@ public class CodeGenerator extends DepthFirstAdapter
         printiln(" ) return true;");
 
         indentLevel--;
-        printiln("} else {");
-        indentLevel++;
-        printiln("return false;");
-        indentLevel--;
+        // printiln("} else {");
+        // indentLevel++;
         printiln("}");
+        printiln("return false;");
+        // indentLevel--;
+        // printiln("}");
         indentLevel--;
         printiln("}");
         indentLevel--;
