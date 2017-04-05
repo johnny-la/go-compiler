@@ -65,7 +65,7 @@ public class Main
     {
         printDebug("Code Generator:");
         File f = new File(inputFilename);
-        String baseFileName = f.getName();
+        String baseFileName = f.getName().replaceAll("-", "_");
         CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables, semanticAnalyzer, "GoLite" + baseFileName);
         String code = codeGenerator.generateCode();
 
