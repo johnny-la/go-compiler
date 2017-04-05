@@ -2162,7 +2162,7 @@ public class CodeGenerator extends DepthFirstAdapter
        String strValueWithoutRawQuotes = strValue.substring(1,strValue.length()-1);
        String newString = "";
        for(char c: strValueWithoutRawQuotes.toCharArray()){
-            if(c == '\\'){
+            if(c == '\\' || c == '\"'){
                 newString += "\\";
             }
             newString += c;
@@ -2173,8 +2173,10 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node)
     {
-       print(node.getInterpretedStringLiteral().getText()); 
-       printWithType(node);
+       String stringValue = node.getInterpretedStringLiteral().getText();
+       stringValue = stringValue.replaceAll("\\\\a", "\\\\\\\\a");
+       stringValue = stringValue.replaceAll("\\\\v", "\\\\\\\\v");
+       print(stringValue); 
     }
 
 }
