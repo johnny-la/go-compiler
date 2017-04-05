@@ -580,8 +580,7 @@ public class CodeGenerator extends DepthFirstAdapter
             print(" = " + defaultValue);
         }
     }
-
-    public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
+    public void outAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
         Node varType = node.getVarType();
         while (varType instanceof ASliceVarType || varType instanceof AArrayVarType) {
             if (varType instanceof ASliceVarType) {
@@ -604,6 +603,12 @@ public class CodeGenerator extends DepthFirstAdapter
             System.out.println("First time encountering struct: " + node.getIdType() + ". Creating the class");
         }
         declareVariable(node.getIdType(), true);
+        println(";");
+    }
+
+    public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
+        inAVarWithTypeVarDecl(node);
+        outAVarWithTypeVarDecl(node);
     }
 
     public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
@@ -698,13 +703,15 @@ public class CodeGenerator extends DepthFirstAdapter
         return "";
     }
 
-    public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
+    public void outAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
         if (isBlankId(node.getIdType())) { return; }
-
-        declareVariable(node.getIdType(),true);
-        println(";");
         printi("");
+        declareVariable(node.getIdType(),true);
+    }
+
+    public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
         node.getVarDecl().apply(this);
+        outAInlineListNoExpVarDecl(node);
     }
 
     public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
@@ -991,22 +998,24 @@ public class CodeGenerator extends DepthFirstAdapter
 
         // If the struct was declared using a type alias
         if (type.typeAliases.size() > 0)
-        {
+        {   
+            for (Node n : localStructs.keySet()) {
+                AStructVarType cur = (AStructVarType) n;
+                if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
+                return localStructs.get(n);
+                }
+            }
             // Index 0 stores the first type alias of the struct 
-            TypeAlias structAlias = type.typeAliases.get(0);
-
-            // System.out.println(node + " has type alias: " + structAlias + "[" + type.structNode + ", " + structAlias.node.getClass() + "]");
-
-            if (structAlias.node instanceof ATypeAliasTypeDecl)
-            {
-                ATypeAliasTypeDecl typeAlias = (ATypeAliasTypeDecl)structAlias.node;
-                String structName = getIdName(typeAlias.getIdType());
-                return structName;
+            for (Node n : staticStructs.keySet()) {
+                AStructVarType cur = (AStructVarType) n;
+                if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
+                    return staticStructs.get(n);
+                }
             }
         }
         else
         {   
-            // System.out.println(node + " has an anonymous struct type: " + type.structNode);
+            // System.out.println(" has an anonymous struct type: " + type.structNode);
             for (Node n : staticStructs.keySet()) {
                 AStructVarType cur = (AStructVarType) n;
                 if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
@@ -1312,12 +1321,18 @@ public class CodeGenerator extends DepthFirstAdapter
         return swappedLvalues;
     }
 
-    /** 
-     * Returns the default value for the node's type
-     */
     private String getDefaultValue(Node node)
     {
         TypeClass type = nodeTypes.get(node);
+        return getDefaultValue(type);
+    }
+
+    /** 
+     * Returns the default value for the node's type
+     */
+    private String getDefaultValue(TypeClass type)
+    {
+        //TypeClass type = nodeTypes.get(node);
         String defaultValue = "";
 
         if (type == null) 
@@ -1481,7 +1496,9 @@ public class CodeGenerator extends DepthFirstAdapter
         print(firstDimension.size + ",");
 
         TypeClass elementType = nodeTypes.get(node);
-        String defaultValue = getDefaultValue(node);
+        TypeClass temp = new TypeClass(elementType);
+        temp.decrementDimension();
+        String defaultValue = getDefaultValue(temp);
         // Cast the default value to a char
         if (defaultValue.equals("char"))
             print("(char)");

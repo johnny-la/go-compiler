@@ -935,7 +935,7 @@ public class TypeChecker extends DepthFirstAdapter
     // Struct selector
     // Ex: "x.y.z"
     //iterate through and find base type of current index
-    public void caseAArrayElementExp(AArrayElementExp node)
+    public void outAArrayElementExp(AArrayElementExp node)
     {
         int levels = 0;
         Node cur = node;
@@ -977,7 +977,7 @@ public class TypeChecker extends DepthFirstAdapter
                     if (levels <= 0) {
                         TypeClass indexType = symbolTable.get(prevNode).typeClass;
                         System.out.println("Type to insert is" + indexType);
-                        addType(node, new TypeClass(indexType));
+                        addType(node, indexType);
                         return;
                     }
                     prevNode = typeAliases.get(i).node;
@@ -985,7 +985,9 @@ public class TypeChecker extends DepthFirstAdapter
                 prevDim = curDim;
             }
             TypeClass indexType = symbolTable.get(typeAliases.get(0).node).typeClass;
-            addType(node, new TypeClass(indexType));
+            TypeClass copy = new TypeClass(indexType);
+            copy.totalArrayDimension = new LinkedList<Dimension>();
+            addType(node, copy);
             return; 
             //last alias is the one
             
