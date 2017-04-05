@@ -442,29 +442,31 @@ public class CodeGenerator extends DepthFirstAdapter
         indentLevel++;
         printiln(name + " " + "cur = ((" + name + ") object);");
 
-        printiln("if (");
-        indentLevel++;
-        for (int j = 0 ; j < node.getInnerFields().size(); j++) {
-            Node n = node.getInnerFields().get(j);
-            ASingleInnerFields cur = (ASingleInnerFields) n;
-            for (int i = 0; i < cur.getIdType().size(); i++) {
-                String curField = getIdName(cur.getIdType().get(i));
-                printi("");
-                print("this." + curField + " == ");
-                if (i == (cur.getIdType().size() - 1)) {
-                    print("cur." + curField);
-                } else {
-                    print("cur." + curField + " &&");
-                    println("");
-                }
-            }
-            if (j != (node.getInnerFields().size() - 1)) {
-                println(" &&");
-            }
-        }
-        println("");
-        indentLevel--;
-        printiln(" ) return true;");
+	if (node.getInnerFields.size() > 0) {
+		printiln("if (");
+		indentLevel++;
+		for (int j = 0 ; j < node.getInnerFields().size(); j++) {
+		    Node n = node.getInnerFields().get(j);
+		    ASingleInnerFields cur = (ASingleInnerFields) n;
+		    for (int i = 0; i < cur.getIdType().size(); i++) {
+			String curField = getIdName(cur.getIdType().get(i));
+			printi("");
+			print("this." + curField + " == ");
+			if (i == (cur.getIdType().size() - 1)) {
+			    print("cur." + curField);
+			} else {
+			    print("cur." + curField + " &&");
+			    println("");
+			}
+		    }
+		    if (j != (node.getInnerFields().size() - 1)) {
+			println(" &&");
+		    }
+		}
+		println("");
+		indentLevel--;
+		printiln(" ) return true;");
+	}
 
         indentLevel--;
         // printiln("} else {");
