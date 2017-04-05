@@ -199,7 +199,7 @@ public class Main
         catch (Exception e)
         {
             System.out.print("INVALID: " + e);
-            e.printStackTrace();
+            // e.printStackTrace();
             System.exit(1);
         }
     }
