@@ -1247,7 +1247,16 @@ public class CodeGenerator extends DepthFirstAdapter
                 else
                 {
                     lvalue.apply(this);
-                    print(" = ");
+                    if (!(node.getOp() instanceof AOpEqualsExp))
+                        print(" = ");
+                    else 
+                    {
+                        String op = node.getOp().toString().trim();
+                        if (!op.equals("&^="))
+                            node.getOp().apply(this);
+                        else
+                            print("&= ~");
+                    }
                     expression.apply(this);
                     // Use temporary variables for swapping
                     if (swappedExpressions.contains(expression))
@@ -1897,10 +1906,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") == 0");
+             print(")");
         }
         else{
             print("(");
@@ -1917,10 +1928,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") != 0");
+             print(")");
         }
         else{
             print("(");
@@ -1937,10 +1950,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") < 0");
+             print(")");
         }
         else{
             print("(");
@@ -1957,10 +1972,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") > 0");
+             print(")");
         }
         else{
             print("(");
@@ -1977,10 +1994,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") <= 0");
+             print(")");
         }
         else{
             print("(");
@@ -1997,10 +2016,12 @@ public class CodeGenerator extends DepthFirstAdapter
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
         if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
+             print("(");
              node.getL().apply(this);
              print(".compareTo(");
              node.getR().apply(this);
              print(") >= 0");
+             print(")");
         }
         else{
             print("(");
@@ -2152,8 +2173,9 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node)
     {
-       print(node.getInterpretedStringLiteral().getText()); 
-       printWithType(node);
+       String stringValue = node.getInterpretedStringLiteral().getText();
+       stringValue = stringValue.replaceAll("\\\\a", "\\\\\\\\a");
+       stringValue = stringValue.replaceAll("\\\\v", "\\\\\\\\v");
+       print(stringValue); 
     }
-
 }
