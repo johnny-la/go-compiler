@@ -370,15 +370,14 @@ public class CodeGenerator extends DepthFirstAdapter
         }
         
         Symbol symbol = semanticAnalyzer.symbolMap.get(node);
-        String symbolKind = new String(symbol.kind.toString().trim());
-        if(symbolKind.equals("FIELD")) {
+        if(symbol != null && symbol.kind != null && symbol.kind == Symbol.SymbolKind.FIELD) {
            print("static "); 
         }
 
         String variableName = getIdName(node);
         
         // If the variable wasn't declared in this function, declare it
-        //if (!declaredVariables.containsKey(variableName))
+        if (symbol == null || !symbol.alreadyDeclared)
         {
             // System.out.println("Declaring variable: " + node);
             String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);
@@ -883,7 +882,7 @@ public class CodeGenerator extends DepthFirstAdapter
                 }
                 node.getExp().get(i).apply(this);
                 if (i != node.getExp().size()-1) { 
-                    print(" + \"\" + "); 
+                    print(" + \" \" + "); 
                 }
             }
         }
@@ -1356,7 +1355,7 @@ public class CodeGenerator extends DepthFirstAdapter
         {
             printi("");
             node.getSimpleStmt().apply(this);
-            println("; ");
+            // println("; ");
         }
 
         printi("if (");
@@ -1461,7 +1460,7 @@ public class CodeGenerator extends DepthFirstAdapter
         {
             printi("");
             node.getSimpleStmt().apply(this);
-            println("; ");
+            //println("; ");
         }
 
         PExp switchExp = node.getExp();

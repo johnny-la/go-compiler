@@ -24,7 +24,7 @@ public class Symbol
     public Node node;
     public TypeClass typeClass;
     public SymbolKind kind;
-    public boolean alreadyDeclared;
+    public boolean alreadyDeclared = false;
 
     public ArrayList<Symbol> symbolsToInheritType = new ArrayList<Symbol>();
 
@@ -48,6 +48,7 @@ public class Symbol
         this.node = node;
         this.typeClass = typeClass;
         this.kind = kind;
+        alreadyDeclared = false;
     }
 
     // Sets the type of the symbol, along with all other symbols that

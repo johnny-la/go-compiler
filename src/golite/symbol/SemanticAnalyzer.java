@@ -452,6 +452,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         Symbol existingSymbol = symbolTable.get(idName);
         if (existingSymbol != null && existingSymbol.kind != SymbolKind.FIELD)
         {
+            System.out.println("Symbol is already declared: " + existingSymbol);
             symbol.alreadyDeclared = true;
         }
 
