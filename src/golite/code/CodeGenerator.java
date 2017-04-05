@@ -666,8 +666,8 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node) {
         // Return type
-        node.getVarType().apply(this);
-        print(" ");
+        TypeClass type = nodeTypes.get(node.getIdType());
+        print(getTypeName(type.functionSignature.returnType,node.getIdType()) + " ");
         // Function name
         node.getIdType().apply(this);
         // Signature
@@ -711,7 +711,12 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public String getTypeName(Node node)
     {
-        TypeClass type = nodeTypes.get(node);
+        return getTypeName(nodeTypes.get(node), node);
+    }
+
+    public String getTypeName(TypeClass type, Node node)
+    {
+        // TypeClass type = nodeTypes.get(node);
         String typeName = "";
 
         if (type == null) 
@@ -1306,9 +1311,9 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAFieldExp(AFieldExp node) {
 		print("(");
-		node.getIdType().apply(this);
-		print(").");
 		node.getExp().apply(this);
+		print(").");
+		node.getIdType().apply(this);
 	}
 
     public void caseABlockStmt(ABlockStmt node)
