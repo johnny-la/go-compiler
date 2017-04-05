@@ -33,6 +33,8 @@ public class CodeGenerator extends DepthFirstAdapter
     private StringBuffer output; 
 
     private Node root;
+    private TypeChecker typeChecker;
+    //structs
     private SemanticAnalyzer semanticAnalyzer;
 
     public static HashMap<Node, TypeClass> nodeTypes;
@@ -40,9 +42,11 @@ public class CodeGenerator extends DepthFirstAdapter
     public static boolean printType;
     private String leftBlock = "/*";
     private String rightBlock = "*/";
-
-    // The variables declared in this function
-    private HashMap<String,TypeClass> declaredVariables = new HashMap<String,TypeClass>();
+    private boolean inFunction = false;
+    private boolean inATypeDecl = false;
+    private boolean isInnerStruct = false;
+    private int levels = 0;
+    private String topLevelName = "";
 
     // The string buffer used for concatenating strings
     private String stringBuffer = "buffer";
@@ -123,7 +127,8 @@ public class CodeGenerator extends DepthFirstAdapter
 
     // The struct nodes which have already had their classes declared
     // Maps the struct node to its class text
-    private HashMap<Node,String> declaredStructs = new HashMap<Node,String>();
+    private HashMap<Node,String> staticStructs = new HashMap<Node,String>();
+    private HashMap<Node,String> localStructs = new HashMap<Node,String>();
 
     public CodeGenerator(Node root, HashMap<Node, TypeClass> nodeTypes, HashSet<Node> newShortDeclarationVariables, SemanticAnalyzer semanticAnalyzer, String fileName)
     {
@@ -256,7 +261,7 @@ public class CodeGenerator extends DepthFirstAdapter
             printi("");
             decl.apply(this);
             // Don't print newlines/semicolons for function declarations
-            if (!(decl instanceof AFuncDeclAstDecl)) 
+            if (!(decl instanceof AFuncDeclAstDecl) && !(decl instanceof ATypeDeclAstDecl)) 
                 println(";");
         }
 
@@ -304,15 +309,188 @@ public class CodeGenerator extends DepthFirstAdapter
         node.getVarType().apply(this);
     }
 
+
+    public boolean isSameIdType(PIdType left, PIdType right) {
+        if (left.getClass().equals(right.getClass())) {
+            if (left instanceof AIdIdType) {
+                AIdIdType lId = (AIdIdType) left, rId = (AIdIdType) right;
+                return lId.getId().getText().equals(rId.getId().getText());
+            } else {
+                ATypeIdType lId = (ATypeIdType) left, rId = (ATypeIdType) right;
+                return lId.getType().getText().equals(rId.getType().getText());
+            }
+        }
+        return false;
+    }
+
+    public boolean isSameInnerField(PInnerFields l, PInnerFields r) {
+        ASingleInnerFields left = (ASingleInnerFields) l, right = (ASingleInnerFields) r;        
+        List<PIdType> leftIds = left.getIdType(), rightIds = right.getIdType();
+        PVarType leftType = left.getVarType(), rightType = right.getVarType();
+
+        if (leftIds.size() != rightIds.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < leftIds.size(); i++) {
+            if (!isSameIdType(leftIds.get(i), rightIds.get(i))) {
+                return false;
+            }
+        }
+
+        return isSameVarType(leftType, rightType);
+    }
+
+    public boolean isSameVarType(PVarType left, PVarType right) {
+        if (left.getClass().equals(right.getClass())) {
+            if (left instanceof ATypeVarType) {
+                ATypeVarType lType = (ATypeVarType) left, rType = (ATypeVarType) right;
+                return lType.getType().getText().equals(rType.getType().getText());
+            } else if (left instanceof ASliceVarType) {
+                return isSameVarType(((ASliceVarType) left).getVarType(),
+                    ((ASliceVarType) right).getVarType());
+            } else if (left instanceof AArrayVarType) {
+                AArrayVarType lArray = (AArrayVarType) left, rArray = (AArrayVarType) right;
+                if (lArray.getInt().getText().equals(rArray.getInt().getText())) {
+                    return isSameVarType(lArray.getVarType(), rArray.getVarType());
+                }
+                return false;
+            } else if (left instanceof AStructVarType) {
+                AStructVarType lStruct = (AStructVarType) left, rStruct = (AStructVarType) right;
+                return isSameStruct(lStruct.getInnerFields(), rStruct.getInnerFields());
+            } else {
+                AIdVarType lId = (AIdVarType) left, rId = (AIdVarType) right;
+                return lId.getId().getText().equals(rId.getId().getText());
+            }
+        }
+
+        return false;
+    }
+
+
+    public boolean isSameStruct(List<PInnerFields> left, List<PInnerFields> right) {
+        if (left == null && right == null) {
+            return true;
+        }
+
+        if (left.size() != right.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < left.size(); i++) {
+            if (!isSameInnerField(left.get(i), right.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void outAStructVarType(AStructVarType node) {
+        String name = null;
+        for (Node n : staticStructs.keySet()) {
+            AStructVarType cur = (AStructVarType) n;
+            if (isSameStruct(cur.getInnerFields(), node.getInnerFields())) {
+                return;
+            }
+        }
+
+        for (Node n : localStructs.keySet()) {
+            AStructVarType cur = (AStructVarType) n;
+            if (isSameStruct(cur.getInnerFields(), node.getInnerFields())) {
+                return;
+            }
+        }
+
+        String className = "";
+        if (!inFunction) {
+            className += "static ";
+        }
+        if (levels == 1) {
+            printi(className + "class ");
+        } else {
+            print(className + "class ");
+        }
+
+        if (levels > 1) {
+            name = "AnonymousClass" + anonymousClassIndex;
+            print(name);
+            anonymousClassIndex++;
+        } else {
+            name = topLevelName;
+            print(name);
+        }
+
+        println(" {");
+        for (Node n : node.getInnerFields()) {
+            indentLevel++;
+            ASingleInnerFields cur = (ASingleInnerFields) n;
+            for (int i = 0; i < cur.getIdType().size(); i++) {
+                printi("");
+                declareVariable(cur.getIdType().get(i), true);
+                println(";");
+            }
+            indentLevel--;
+        }
+        indentLevel++;
+        printiln("public boolean equals(Object object) {");
+        indentLevel++;
+
+        printiln("if (object instanceof " + name + " ) {");
+        indentLevel++;
+        printiln(name + " " + "cur = ((" + name + ") object);");
+
+        printiln("if (");
+        indentLevel++;
+        for (int j = 0 ; j < node.getInnerFields().size(); j++) {
+            Node n = node.getInnerFields().get(j);
+            ASingleInnerFields cur = (ASingleInnerFields) n;
+            for (int i = 0; i < cur.getIdType().size(); i++) {
+                String curField = getIdName(cur.getIdType().get(i));
+                printi("");
+                print("this." + curField + " == ");
+                if (i == (cur.getIdType().size() - 1)) {
+                    print("cur." + curField);
+                } else {
+                    print("cur." + curField + " &&");
+                    println("");
+                }
+            }
+            if (j != (node.getInnerFields().size() - 1)) {
+                println(" &&");
+            }
+        }
+        println("");
+        indentLevel--;
+        printiln(" ) return true;");
+
+        indentLevel--;
+        printiln("} else {");
+        indentLevel++;
+        printiln("return false;");
+        indentLevel--;
+        printiln("}");
+        indentLevel--;
+        printiln("}");
+        indentLevel--;
+        printiln("}");
+        if (!inFunction) staticStructs.put(node, name);
+        else localStructs.put(node, name);
+    }
+
     public void caseAStructVarType(AStructVarType node) {
-    		println("struct {");
-    		indentLevel++;
-    		for (Node n : node.getInnerFields()) {
-    				printi("");
-    				n.apply(this);
-    				println("");
-    		}
-    		print("}");
+        inAStructVarType(node);
+        levels++;
+        {
+            List<PInnerFields> copy = new ArrayList<PInnerFields>(node.getInnerFields());
+            for(PInnerFields e : copy)
+            {
+                ASingleInnerFields cur = (ASingleInnerFields) e;
+                cur.getVarType().apply(this);
+            }
+        }
+        outAStructVarType(node);
+        levels--;
     }
 
     //base case idTypes
@@ -322,7 +500,7 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     public void caseATypeIdType(ATypeIdType node) {
-        print(node.getType().getText());
+        print("_" + node.getType().getText());
     }
 
     //package declarations
@@ -588,26 +766,74 @@ public class CodeGenerator extends DepthFirstAdapter
 
     //type declarations
     public void caseATypeDeclAstDecl(ATypeDeclAstDecl node) {
-        print("type ");
+        // print("type ");
         node.getTypeDecl().apply(this);
         //println("");
     }
 
-    public void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node) {
+    public void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node)
+    {
+        inATypeAliasTypeDecl(node);
+        // if(node.getIdType() != null)
+        // {
+        //     node.getIdType().apply(this);
+        // }
+        // if(node.getVarType() != null)
+        // {
+        //     node.getVarType().apply(this);
+        // }
+        // outATypeAliasTypeDecl(node);
+    }
+
+    public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node) {
         //node.getIdType().apply(this);
         //print(" ");
-        //node.getVarType().apply(this);
+        Node varType = node.getVarType();
+        while (varType instanceof ASliceVarType || varType instanceof AArrayVarType) {
+            if (varType instanceof ASliceVarType) {
+                varType = ((ASliceVarType) varType).getVarType();
+            } else {
+                varType = ((AArrayVarType) varType).getVarType();
+            }
+        }
 
         TypeClass type = nodeTypes.get(node.getIdType());
 
         if (type.baseType == Type.STRUCT && type.typeAliases.size() == 0)
         {
-            // TODO: Create the class
+            topLevelName = getIdName(node.getIdType());
+            if (varType instanceof AStructVarType) {
+                varType.apply(this);
+            }
+            // // TODO: Create thei class
+            // String name = null;
+            // for (Node n : declaredStructs.keys()) {
+            //     if (isAliasedCorrectly(getType(n), getType(node))) {
+            //         if (isSameStruct()) {
+            //             //print name
+            //             return;
+            //         }
+            //     }
+            // }
+            // if (!inFunction) print("static ");
+            //     println("class ");
+            //     indentLevel++;
+            //     for (Node n : node.getInnerFields()) {
+            //         printi("");
+            //         declareVariable(n, true);
+            //         println(";");
+            //     }
+            //     print("}");
             System.out.println("First time encountering struct: " + node.getIdType() + ". Creating the class");
         }
     } 
 
-    // public void caseAStructVarDeclTypeDecl(AStructVarDeclTypeDecl node)
+    // public void caseAStructVarDeclTypeDecl(AStructVarDeclTypeDecl node) {
+    //     inATypeDecl = true;
+    //     node.getVarType().apply(this);
+    //     outATypeAliasTypeDecl(node);
+    //     inATypeDecl = false;
+    // }
     // {
     //     printNodesWithComma(node.getIdList());
     //     print(" ");
@@ -644,9 +870,12 @@ public class CodeGenerator extends DepthFirstAdapter
 
     //function declarations
     public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node) {
+        inFunction = true;
         print("public static ");
         node.getFuncDecl().apply(this);
         println("\n");
+        inFunction = false;
+        localStructs = new HashMap<Node,String>();
     }
     
     public void caseANoReturnFuncDecl(ANoReturnFuncDecl node) {
@@ -800,51 +1029,63 @@ public class CodeGenerator extends DepthFirstAdapter
             if (structAlias.node instanceof ATypeAliasTypeDecl)
             {
                 ATypeAliasTypeDecl typeAlias = (ATypeAliasTypeDecl)structAlias.node;
-                String structName = typeAlias.getIdType().toString().trim();
-                declareStruct(structName, node);
+                String structName = getIdName(typeAlias.getIdType());
                 return structName;
             }
         }
         else
-        {
+        {   
             System.out.println(node + " has an anonymous struct type: " + type.structNode);
+            for (Node n : staticStructs.keySet()) {
+                AStructVarType cur = (AStructVarType) n;
+                if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
+                    return staticStructs.get(n);
+                }
+            }
+
+            for (Node n : localStructs.keySet()) {
+                AStructVarType cur = (AStructVarType) n;
+                if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
+                return localStructs.get(n);
+                }
+            }
         }
 
         return null;
     }
 
     // Declares a struct if it doens't yet exist
-    private void declareStruct(String structName, Node node)
-    {
-        TypeClass type = nodeTypes.get(node);
+    // private void declareStruct(String structName, Node node)
+    // {
+    //     TypeClass type = nodeTypes.get(node);
 
-        // Don't declare a struct that was already declared
-        if (declaredStructs.containsKey(type.structNode))
-        {
-            return;
-        }
+    //     // Don't declare a struct that was already declared
+    //     if (declaredStructs.containsKey(type.structNode))
+    //     {
+    //         return;
+    //     }
 
-        String classText = CLASS_MODIFIER;
+    //     String classText = CLASS_MODIFIER;
 
-        // The struct was created using a type alias
-        if (structName != null)
-        {
-            classText += structName;
-        }
-        // The struct is an anonymous struct
-        else
-        {
-            // Give the struct the next available name
-            classText += ANONYMOUS_CLASS_NAME + anonymousClassIndex;
-            anonymousClassIndex++;
-        }
+    //     // The struct was created using a type alias
+    //     if (structName != null)
+    //     {
+    //         classText += structName;
+    //     }
+    //     // The struct is an anonymous struct
+    //     else
+    //     {
+    //         // Give the struct the next available name
+    //         classText += ANONYMOUS_CLASS_NAME + anonymousClassIndex;
+    //         anonymousClassIndex++;
+    //     }
 
-        int indentLevel = 0;
-        classText += "{\n";
-        indentLevel++;
+    //     int indentLevel = 0;
+    //     classText += "{\n";
+    //     indentLevel++;
         
-        classText += "}\n";
-    }
+    //     classText += "}\n";
+    // }
 
     /** STATEMENTS */
     public void caseAPrintExp(APrintExp node)
@@ -1162,7 +1403,7 @@ public class CodeGenerator extends DepthFirstAdapter
                 case STRING:
                     return STRING_DEFAULT;
                 case STRUCT:
-                    return getStructName(node);
+                    return "new " + getStructName(node) + "()" ;
                 default:
                     ErrorManager.printError("CodeGenerator.getTypeName(): Invalid type: " + type);
             }
@@ -1328,7 +1569,7 @@ public class CodeGenerator extends DepthFirstAdapter
             printi("");
             stmt.apply(this);
             // Print a semicolon after every non-control statement (not if/for/switch stmts)
-            if (!isControlStatement(stmt) && !isEmptyMultilineList(stmt) && !isAssignList(stmt)) 
+            if (!isTypeDecl(stmt) && !isControlStatement(stmt) && !isEmptyMultilineList(stmt) && !isAssignList(stmt)) 
                 println(";");
             else
                 println("");
@@ -1337,6 +1578,12 @@ public class CodeGenerator extends DepthFirstAdapter
         printi("}");
     }
 
+    private boolean isTypeDecl(Node stmt) {
+        if (stmt instanceof ADeclStmt) {
+            return (((ADeclStmt) stmt).getDecl() instanceof ATypeDeclAstDecl);
+        }
+        return false;
+    }
     // Returns true if the node is an if/switch/for statement
     private boolean isControlStatement(Node node)
     {

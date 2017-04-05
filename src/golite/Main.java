@@ -66,11 +66,14 @@ public class Main
         printDebug("Code Generator:");
         File f = new File(inputFilename);
         String baseFileName = f.getName();
-        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables, semanticAnalyzer, baseFileName);
+        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables, semanticAnalyzer, "GoLite" + baseFileName);
         String code = codeGenerator.generateCode();
 
+        String absolutePath = f.getAbsolutePath();
+        String filePath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));
+        System.out.println("The path is: " + filePath);
         printDebug(code);
-        printToFile(inputFilename + CODE_GENERATOR_SUFFIX, code);
+        printToFile(filePath + "/GoLite" + baseFileName + CODE_GENERATOR_SUFFIX, code);
     }
 
     /**
