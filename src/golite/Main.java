@@ -15,7 +15,7 @@ public class Main
                                 PRETTY_PRINT_TYPE_SUFFIX = ".pptype.go",
                                 DUMP_SYMBOL_TABLE_SUFFIX = ".symtab",
                                 SYMBOL_TABLE_SUFFIX = ".symbol.txt",
-                                CODE_GENERATOR_SUFFIX = ".j";   
+                                CODE_GENERATOR_SUFFIX = ".java";   
                             
     private static final String DUMP_SYMBOL_TABLE_ARG = "-dumpsymtab",
                                 PRETTY_PRINT_TYPE_ARG = "-pptype";
