@@ -791,7 +791,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             return;
         }
 
-        if (symbol.kind != Symbol.SymbolKind.LOCAL) {
+        if (symbol.kind != Symbol.SymbolKind.LOCAL 
+            && symbol.kind != Symbol.SymbolKind.FIELD) {
              ErrorManager.printError("Using the . operator on a non-variable: " + node.getExp()
                 + ", symbol = " + symbol);
             return;

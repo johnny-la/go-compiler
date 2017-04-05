@@ -45,6 +45,7 @@ public class CodeGenerator extends DepthFirstAdapter
     private boolean inFunction = false;
     private boolean inATypeDecl = false;
     private boolean isInnerStruct = false;
+    private boolean isAnon = false;
     private int levels = 0;
     private String topLevelName = "";
 
@@ -412,7 +413,7 @@ public class CodeGenerator extends DepthFirstAdapter
             print(className + "class ");
         }
 
-        if (levels > 1) {
+        if (levels > 1 || isAnon) {
             name = "AnonymousClass" + anonymousClassIndex;
             print(name);
             anonymousClassIndex++;
@@ -579,9 +580,28 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
+        Node varType = node.getVarType();
+        while (varType instanceof ASliceVarType || varType instanceof AArrayVarType) {
+            if (varType instanceof ASliceVarType) {
+                varType = ((ASliceVarType) varType).getVarType();
+            } else {
+                varType = ((AArrayVarType) varType).getVarType();
+            }
+        }
+
+        TypeClass type = nodeTypes.get(node.getIdType());
+        if (type.baseType == Type.STRUCT && type.typeAliases.size() == 0)
+        {
+            isAnon = true;
+            topLevelName = getIdName(node.getIdType());
+            if (varType instanceof AStructVarType) {
+                varType.apply(this);
+            }
+            isAnon = false;
+            printi("");
+            System.out.println("First time encountering struct: " + node.getIdType() + ". Creating the class");
+        }
         declareVariable(node.getIdType(), true);
-        //print(" ");
-        //node.getVarType().apply(this);
     }
 
     public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
@@ -805,68 +825,9 @@ public class CodeGenerator extends DepthFirstAdapter
             if (varType instanceof AStructVarType) {
                 varType.apply(this);
             }
-            // // TODO: Create thei class
-            // String name = null;
-            // for (Node n : declaredStructs.keys()) {
-            //     if (isAliasedCorrectly(getType(n), getType(node))) {
-            //         if (isSameStruct()) {
-            //             //print name
-            //             return;
-            //         }
-            //     }
-            // }
-            // if (!inFunction) print("static ");
-            //     println("class ");
-            //     indentLevel++;
-            //     for (Node n : node.getInnerFields()) {
-            //         printi("");
-            //         declareVariable(n, true);
-            //         println(";");
-            //     }
-            //     print("}");
             System.out.println("First time encountering struct: " + node.getIdType() + ". Creating the class");
         }
     } 
-
-    // public void caseAStructVarDeclTypeDecl(AStructVarDeclTypeDecl node) {
-    //     inATypeDecl = true;
-    //     node.getVarType().apply(this);
-    //     outATypeAliasTypeDecl(node);
-    //     inATypeDecl = false;
-    // }
-    // {
-    //     printNodesWithComma(node.getIdList());
-    //     print(" ");
-    //     node.getVarType().apply(this);
-    // }
-    
-    // public void caseAStructWithIdTypeDecl(AStructWithIdTypeDecl node) {
-    //     node.getIdType().apply(this);
-    //     print(" struct {");
-    //     println("");
-
-    //     indentLevel++;
-    //     for (Node n: node.getTypeDecl()) {
-    //         printi("");
-    //         n.apply(this);
-    //         println("");
-    //     }
-        
-    //     indentLevel--;
-    //     printi("}");
-    // }
-
-    // public void caseAMultilineListTypeDecl(AMultilineListTypeDecl node) {
-    //     println("(");
-    //     indentLevel++;
-    //     for (Node n: node.getTypeDecl()) {
-    //         printi("");
-    //         n.apply(this);
-    //         println("");
-    //     }
-    //     indentLevel--;
-    //     printi(" )");
-    // }
 
     //function declarations
     public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node) {
@@ -1048,39 +1009,6 @@ public class CodeGenerator extends DepthFirstAdapter
 
         return null;
     }
-
-    // Declares a struct if it doens't yet exist
-    // private void declareStruct(String structName, Node node)
-    // {
-    //     TypeClass type = nodeTypes.get(node);
-
-    //     // Don't declare a struct that was already declared
-    //     if (declaredStructs.containsKey(type.structNode))
-    //     {
-    //         return;
-    //     }
-
-    //     String classText = CLASS_MODIFIER;
-
-    //     // The struct was created using a type alias
-    //     if (structName != null)
-    //     {
-    //         classText += structName;
-    //     }
-    //     // The struct is an anonymous struct
-    //     else
-    //     {
-    //         // Give the struct the next available name
-    //         classText += ANONYMOUS_CLASS_NAME + anonymousClassIndex;
-    //         anonymousClassIndex++;
-    //     }
-
-    //     int indentLevel = 0;
-    //     classText += "{\n";
-    //     indentLevel++;
-        
-    //     classText += "}\n";
-    // }
 
     /** STATEMENTS */
     public void caseAPrintExp(APrintExp node)
