@@ -2205,8 +2205,9 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node)
     {
-       print(node.getInterpretedStringLiteral().getText()); 
-       printWithType(node);
+       String stringValue = node.getInterpretedStringLiteral().getText();
+       stringValue = stringValue.replaceAll("\\\\a", "\\\\\\\\a");
+       stringValue = stringValue.replaceAll("\\\\v", "\\\\\\\\v");
+       print(stringValue); 
     }
-
 }
