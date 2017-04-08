@@ -8,6 +8,5 @@ grading/
 grading.sh
 *.pretty.min 
 *.symbol.txt 
-*.c
 .DS_Store
 src/.DS_Store
