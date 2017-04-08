@@ -80,7 +80,7 @@ int positive_increment(CODE **c)
       is_ldc_int(next(*c),&k) &&
       is_iadd(next(next(*c))) &&
       is_istore(next(next(next(*c))),&y) &&
-      x==y && 0<=k && k<=127) {
+      x==y && 0 <= k && k <= 127) {
      return replace(c,4,makeCODEiinc(x,k,NULL));
   }
   return 0;
@@ -96,8 +96,8 @@ int positive_increment(CODE **c)
 int positive_increment_left(CODE **c)
 {
   int x,y,k;
-  if (is_ldc_int(next(*c),&k) &&
-      is_iload(*c,&x) &&
+  if (is_ldc_int(*c,&k) &&
+      is_iload(next(*c),&x) &&
       is_iadd(next(next(*c))) &&
       is_istore(next(next(next(*c))),&y) &&
       x==y && 0 <= k && k <= 127)
