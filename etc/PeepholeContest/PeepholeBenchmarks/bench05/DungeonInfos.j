@@ -108,14 +108,10 @@
   ifeq stop_1
   aload_1
   invokevirtual joos/lib/JoosIO/readInt()I
-  dup
   istore_3
-  pop
   aload_1
   invokevirtual joos/lib/JoosIO/readInt()I
-  dup
   istore 4
-  pop
   aload_2
   ldc "Room"
   invokevirtual java/lang/String/equals(Ljava/lang/Object;)Z

@@ -44,9 +44,7 @@
   putfield Board/columns Ljava/util/Vector;
   pop
   iconst_0
-  dup
   istore_3
-  pop
   start_0:
   iload_3
   aload_0
@@ -65,9 +63,7 @@
   invokenonvirtual java/util/Vector/<init>(I)V
   astore 5
   iconst_0
-  dup
   istore 4
-  pop
   start_4:
   iload 4
   aload_0
@@ -83,24 +79,14 @@
   aload_0
   getfield Board/SPACE Ljava/lang/Character;
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  iload 4
-  iconst_1
-  iadd
-  dup
-  istore 4
-  pop
+  iinc 4 1
   goto start_4
   stop_5:
   aload_0
   getfield Board/columns Ljava/util/Vector;
   aload 5
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  iload_3
-  iconst_1
-  iadd
-  dup
-  istore_3
-  pop
+  iinc 3 1
   goto start_0
   stop_1:
   return
@@ -145,9 +131,7 @@
   .limit locals 3
   .limit stack 3
   iconst_0
-  dup
   istore_1
-  pop
   start_0:
   iload_1
   aload_0
@@ -160,9 +144,7 @@
   stop_3:
   ifeq stop_1
   iconst_0
-  dup
   istore_2
-  pop
   start_4:
   iload_2
   aload_0
@@ -190,20 +172,10 @@
   iconst_0
   ireturn
   stop_8:
-  iload_2
-  iconst_1
-  iadd
-  dup
-  istore_2
-  pop
+  iinc 2 1
   goto start_4
   stop_5:
-  iload_1
-  iconst_1
-  iadd
-  dup
-  istore_1
-  pop
+  iinc 1 1
   goto start_0
   stop_1:
   iconst_1
@@ -318,9 +290,7 @@
   .limit locals 4
   .limit stack 7
   iconst_0
-  dup
   istore_2
-  pop
   start_0:
   iload_2
   aload_0
@@ -333,9 +303,7 @@
   stop_3:
   ifeq stop_1
   iconst_0
-  dup
   istore_1
-  pop
   start_4:
   iload_1
   aload_0
@@ -350,9 +318,7 @@
   stop_7:
   ifeq stop_5
   iconst_0
-  dup
   istore_3
-  pop
   start_8:
   iload_3
   aload_0
@@ -414,28 +380,13 @@
   getfield Board/SPACE Ljava/lang/Character;
   invokevirtual Board/set(IILjava/lang/Character;)V
   stop_12:
-  iload_3
-  iconst_1
-  iadd
-  dup
-  istore_3
-  pop
+  iinc 3 1
   goto start_8
   stop_9:
-  iload_1
-  iconst_1
-  iadd
-  dup
-  istore_1
-  pop
+  iinc 1 1
   goto start_4
   stop_5:
-  iload_2
-  iconst_1
-  iadd
-  dup
-  istore_2
-  pop
+  iinc 2 1
   goto start_0
   stop_1:
   return
@@ -480,9 +431,7 @@
   getfield Board/height I
   iconst_1
   isub
-  dup
   istore_2
-  pop
   start_8:
   iload_2
   iconst_0
@@ -514,9 +463,7 @@
   iload_2
   iconst_1
   isub
-  dup
   istore_2
-  pop
   goto start_8
   stop_9:
   iconst_0
@@ -575,9 +522,7 @@
   invokenonvirtual joos/lib/JoosIO/<init>()V
   astore_1
   iconst_0
-  dup
   istore_3
-  pop
   start_0:
   iload_3
   aload_0
@@ -592,12 +537,7 @@
   aload_1
   ldc "|---"
   invokevirtual joos/lib/JoosIO/print(Ljava/lang/String;)V
-  iload_3
-  iconst_1
-  iadd
-  dup
-  istore_3
-  pop
+  iinc 3 1
   goto start_0
   stop_1:
   aload_1
@@ -607,9 +547,7 @@
   getfield Board/height I
   iconst_1
   isub
-  dup
   istore_2
-  pop
   start_4:
   iload_2
   iconst_0
@@ -621,9 +559,7 @@
   stop_7:
   ifeq stop_5
   iconst_0
-  dup
   istore_3
-  pop
   start_8:
   iload_3
   aload_0
@@ -648,21 +584,14 @@
   aload_1
   ldc " "
   invokevirtual joos/lib/JoosIO/print(Ljava/lang/String;)V
-  iload_3
-  iconst_1
-  iadd
-  dup
-  istore_3
-  pop
+  iinc 3 1
   goto start_8
   stop_9:
   aload_1
   ldc "|"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   iconst_0
-  dup
   istore_3
-  pop
   start_12:
   iload_3
   aload_0
@@ -677,12 +606,7 @@
   aload_1
   ldc "|---"
   invokevirtual joos/lib/JoosIO/print(Ljava/lang/String;)V
-  iload_3
-  iconst_1
-  iadd
-  dup
-  istore_3
-  pop
+  iinc 3 1
   goto start_12
   stop_13:
   aload_1
@@ -691,9 +615,7 @@
   iload_2
   iconst_1
   isub
-  dup
   istore_2
-  pop
   goto start_4
   stop_5:
   return
@@ -703,9 +625,7 @@
   .limit locals 5
   .limit stack 4
   iconst_0
-  dup
   istore_1
-  pop
   start_0:
   iload_1
   aload_0
@@ -718,9 +638,7 @@
   stop_3:
   ifeq stop_1
   iconst_0
-  dup
   istore_2
-  pop
   start_4:
   iload_2
   aload_0
@@ -735,15 +653,11 @@
   stop_7:
   ifeq stop_5
   iconst_0
-  dup
   istore_3
-  pop
   iload_2
   iconst_1
   iadd
-  dup
   istore 4
-  pop
   start_8:
   iload 4
   iload_2
@@ -774,16 +688,9 @@
   stop_14:
   ifeq stop_12
   iconst_1
-  dup
   istore_3
-  pop
   stop_12:
-  iload 4
-  iconst_1
-  iadd
-  dup
-  istore 4
-  pop
+  iinc 4 1
   goto start_8
   stop_9:
   iload_3
@@ -816,26 +723,14 @@
   invokevirtual Board/get(II)Ljava/lang/Character;
   areturn
   stop_15:
-  iload_2
-  iconst_1
-  iadd
-  dup
-  istore_2
-  pop
+  iinc 2 1
   goto start_4
   stop_5:
-  iload_1
-  iconst_1
-  iadd
-  dup
-  istore_1
-  pop
+  iinc 1 1
   goto start_0
   stop_1:
   iconst_0
-  dup
   istore_2
-  pop
   start_21:
   iload_2
   aload_0
@@ -848,9 +743,7 @@
   stop_24:
   ifeq stop_22
   iconst_0
-  dup
   istore_1
-  pop
   start_25:
   iload_1
   aload_0
@@ -865,15 +758,11 @@
   stop_28:
   ifeq stop_26
   iconst_0
-  dup
   istore_3
-  pop
   iload_1
   iconst_1
   iadd
-  dup
   istore 4
-  pop
   start_29:
   iload 4
   iload_1
@@ -904,16 +793,9 @@
   stop_35:
   ifeq stop_33
   iconst_1
-  dup
   istore_3
-  pop
   stop_33:
-  iload 4
-  iconst_1
-  iadd
-  dup
-  istore 4
-  pop
+  iinc 4 1
   goto start_29
   stop_30:
   iload_3
@@ -946,26 +828,14 @@
   invokevirtual Board/get(II)Ljava/lang/Character;
   areturn
   stop_36:
-  iload_1
-  iconst_1
-  iadd
-  dup
-  istore_1
-  pop
+  iinc 1 1
   goto start_25
   stop_26:
-  iload_2
-  iconst_1
-  iadd
-  dup
-  istore_2
-  pop
+  iinc 2 1
   goto start_21
   stop_22:
   iconst_0
-  dup
   istore_1
-  pop
   start_42:
   iload_1
   aload_0
@@ -980,9 +850,7 @@
   stop_45:
   ifeq stop_43
   iconst_0
-  dup
   istore_2
-  pop
   start_46:
   iload_2
   aload_0
@@ -997,13 +865,9 @@
   stop_49:
   ifeq stop_47
   iconst_0
-  dup
   istore_3
-  pop
   iconst_0
-  dup
   istore 4
-  pop
   start_50:
   iload 4
   iconst_4
@@ -1034,16 +898,9 @@
   stop_56:
   ifeq stop_54
   iconst_1
-  dup
   istore_3
-  pop
   stop_54:
-  iload 4
-  iconst_1
-  iadd
-  dup
-  istore 4
-  pop
+  iinc 4 1
   goto start_50
   stop_51:
   iload_3
@@ -1076,29 +933,17 @@
   invokevirtual Board/get(II)Ljava/lang/Character;
   areturn
   stop_57:
-  iload_2
-  iconst_1
-  iadd
-  dup
-  istore_2
-  pop
+  iinc 2 1
   goto start_46
   stop_47:
-  iload_1
-  iconst_1
-  iadd
-  dup
-  istore_1
-  pop
+  iinc 1 1
   goto start_42
   stop_43:
   aload_0
   getfield Board/height I
   iconst_1
   isub
-  dup
   istore_1
-  pop
   start_63:
   iload_1
   iconst_3
@@ -1110,9 +955,7 @@
   stop_66:
   ifeq stop_64
   iconst_0
-  dup
   istore_2
-  pop
   start_67:
   iload_2
   aload_0
@@ -1127,13 +970,9 @@
   stop_70:
   ifeq stop_68
   iconst_0
-  dup
   istore_3
-  pop
   iconst_0
-  dup
   istore 4
-  pop
   start_71:
   iload 4
   iconst_4
@@ -1164,16 +1003,9 @@
   stop_77:
   ifeq stop_75
   iconst_1
-  dup
   istore_3
-  pop
   stop_75:
-  iload 4
-  iconst_1
-  iadd
-  dup
-  istore 4
-  pop
+  iinc 4 1
   goto start_71
   stop_72:
   iload_3
@@ -1206,20 +1038,13 @@
   invokevirtual Board/get(II)Ljava/lang/Character;
   areturn
   stop_78:
-  iload_2
-  iconst_1
-  iadd
-  dup
-  istore_2
-  pop
+  iinc 2 1
   goto start_67
   stop_68:
   iload_1
   iconst_1
   isub
-  dup
   istore_1
-  pop
   goto start_63
   stop_64:
   aconst_null

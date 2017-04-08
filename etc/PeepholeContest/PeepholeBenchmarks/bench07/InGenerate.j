@@ -32,13 +32,9 @@
   invokenonvirtual joos/lib/JoosIO/<init>()V
   astore 4
   iconst_0
-  dup
   istore_1
-  pop
   iconst_0
-  dup
   istore_2
-  pop
   aload 4
   ldc "Dave"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
@@ -55,9 +51,7 @@
   aload_3
   iconst_4
   invokevirtual InGenerate/randRange(I)I
-  dup
   istore_2
-  pop
   iload_2
   iconst_0
   if_icmpeq true_6
@@ -176,12 +170,7 @@
   ldc "show coin"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   stop_28:
-  iload_1
-  iconst_1
-  iadd
-  dup
-  istore_1
-  pop
+  iinc 1 1
   goto start_0
   stop_1:
   return
@@ -193,9 +182,7 @@
   aload_0
   getfield InGenerate/rand Ljoos/lib/JoosRandom;
   invokevirtual joos/lib/JoosRandom/nextInt()I
-  dup
   istore_2
-  pop
   iload_2
   iconst_0
   if_icmplt true_1
@@ -207,9 +194,7 @@
   ifeq stop_0
   iload_2
   ineg
-  dup
   istore_2
-  pop
   stop_0:
   iload_2
   iload_1

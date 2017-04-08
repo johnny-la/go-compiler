@@ -26,9 +26,7 @@
   iload_3
   iconst_1
   isub
-  dup
   istore 5
-  pop
   aconst_null
   dup
   aload_0
@@ -210,9 +208,7 @@
   aload_0
   ldc 100
   invokevirtual Room/randomRange(I)I
-  dup
   istore 4
-  pop
   iload 4
   iconst_5
   if_icmplt true_25
@@ -231,9 +227,7 @@
   putfield Room/action LRoomAction;
   pop
   iconst_0
-  dup
   istore 4
-  pop
   goto stop_24
   else_23:
   iload 4
@@ -254,9 +248,7 @@
   putfield Room/action LRoomAction;
   pop
   iconst_1
-  dup
   istore 4
-  pop
   goto stop_28
   else_27:
   iload 4
@@ -277,9 +269,7 @@
   putfield Room/action LRoomAction;
   pop
   iconst_2
-  dup
   istore 4
-  pop
   goto stop_32
   else_31:
   iload 4
@@ -300,9 +290,7 @@
   putfield Room/action LRoomAction;
   pop
   iconst_3
-  dup
   istore 4
-  pop
   goto stop_36
   else_35:
   iload 4
@@ -323,9 +311,7 @@
   putfield Room/action LRoomAction;
   pop
   iconst_4
-  dup
   istore 4
-  pop
   goto stop_40
   else_39:
   iload 4
@@ -346,9 +332,7 @@
   putfield Room/action LRoomAction;
   pop
   iconst_5
-  dup
   istore 4
-  pop
   goto stop_44
   else_43:
   iload 4
@@ -369,9 +353,7 @@
   putfield Room/action LRoomAction;
   pop
   ldc 6
-  dup
   istore 4
-  pop
   goto stop_48
   else_47:
   iload 4
@@ -392,9 +374,7 @@
   putfield Room/action LRoomAction;
   pop
   ldc 7
-  dup
   istore 4
-  pop
   goto stop_52
   else_51:
   iload 4
@@ -415,9 +395,7 @@
   putfield Room/action LRoomAction;
   pop
   ldc 8
-  dup
   istore 4
-  pop
   goto stop_56
   else_55:
   new EmptyRoomAction
@@ -433,9 +411,7 @@
   invokevirtual Room/randomRange(I)I
   ldc 9
   iadd
-  dup
   istore 4
-  pop
   stop_56:
   stop_52:
   stop_48:
@@ -467,9 +443,7 @@
   invokevirtual joos/lib/JoosRandom/nextInt()I
   iload_1
   irem
-  dup
   istore_2
-  pop
   iload_2
   iconst_0
   if_icmpge true_1

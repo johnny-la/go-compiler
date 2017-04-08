@@ -40,27 +40,19 @@
   invokenonvirtual GrueHunt/<init>()V
   astore 14
   iconst_0
-  dup
   istore 8
-  pop
   ldc "╔═╝┏━┓╻ ╻┏━╸ ║ ║╻ ╻┏┓╻╺┳╸\n║ ║┣┳┛┃ ┃┣╸  ╔═║┃ ┃┃┗┫ ┃ \n══╝╹┗╸┗━┛┗━╸ ╝ ╝┗━┛╹ ╹ ╹ "
   astore 11
   ldc 20
-  dup
   istore 13
-  pop
   ldc 100
-  dup
   istore 7
-  pop
   new joos/lib/JoosIO
   dup
   invokenonvirtual joos/lib/JoosIO/<init>()V
   astore_1
   ldc 11
-  dup
   istore 6
-  pop
   new Room
   dup
   aconst_null
@@ -69,17 +61,11 @@
   invokenonvirtual Room/<init>(LRoom;Ljava/lang/String;I)V
   astore 12
   iconst_0
-  dup
   istore_2
-  pop
   iconst_0
-  dup
   istore_3
-  pop
   ldc 10
-  dup
   istore 4
-  pop
   aload_1
   ldc "\n"
   dup
@@ -201,9 +187,7 @@
   ldc "You spend the rest of your days wandering this bizarre world. Better luck next time!"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   iconst_1
-  dup
   istore 8
-  pop
   goto stop_13
   else_12:
   aload 10
@@ -358,9 +342,7 @@
   invokevirtual Room/getRoomAction()LRoomAction;
   aload 10
   invokevirtual RoomAction/performAction(Ljava/lang/String;)I
-  dup
   istore 5
-  pop
   iload 5
   iconst_0
   if_icmpeq true_58
@@ -382,9 +364,7 @@
   stop_63:
   ifeq else_60
   iconst_0
-  dup
   istore 4
-  pop
   goto stop_61
   else_60:
   iload 5
@@ -426,12 +406,7 @@
   iconst_1
   stop_75:
   ifeq else_72
-  iload_3
-  iconst_1
-  iadd
-  dup
-  istore_3
-  pop
+  iinc 3 1
   aload_1
   ldc "You have "
   dup
@@ -518,12 +493,7 @@
   iconst_1
   stop_99:
   ifeq else_96
-  iload_2
-  iconst_1
-  iadd
-  dup
-  istore_2
-  pop
+  iinc 2 1
   aload_1
   ldc "You have "
   dup
@@ -610,12 +580,7 @@
   iconst_1
   stop_123:
   ifeq else_120
-  iload 4
-  iconst_1
-  iadd
-  dup
-  istore 4
-  pop
+  iinc 4 1
   goto stop_121
   else_120:
   iload 5
@@ -627,12 +592,7 @@
   iconst_1
   stop_127:
   ifeq else_124
-  iload 4
-  iconst_2
-  iadd
-  dup
-  istore 4
-  pop
+  iinc 4 2
   goto stop_125
   else_124:
   iload 5
@@ -647,9 +607,7 @@
   iload 4
   iconst_1
   isub
-  dup
   istore 4
-  pop
   goto stop_129
   else_128:
   iload 5
@@ -664,9 +622,7 @@
   iload 4
   iconst_2
   isub
-  dup
   istore 4
-  pop
   goto stop_133
   else_132:
   iload 5
@@ -724,9 +680,7 @@
   aload 12
   ldc 100
   invokevirtual Room/randomRange(I)I
-  dup
   istore 7
-  pop
   iload 7
   iload 13
   if_icmplt true_153
@@ -744,9 +698,7 @@
   iload 6
   iconst_1
   isub
-  dup
   istore 6
-  pop
   iload 6
   iconst_5
   if_icmpeq true_156
@@ -757,9 +709,7 @@
   stop_157:
   ifeq stop_155
   ldc 11
-  dup
   istore 6
-  pop
   stop_155:
   new Room
   dup
@@ -795,9 +745,7 @@
   stop_160:
   ifeq stop_158
   ldc 15
-  dup
   istore 4
-  pop
   stop_158:
   iload 4
   iconst_1
@@ -844,13 +792,9 @@
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   iconst_0
-  dup
   istore 4
-  pop
   iconst_1
-  dup
   istore 8
-  pop
   stop_161:
   iload 7
   iload 13
@@ -862,9 +806,7 @@
   stop_174:
   ifeq stop_172
   iconst_1
-  dup
   istore 8
-  pop
   stop_172:
   stop_49:
   stop_41:

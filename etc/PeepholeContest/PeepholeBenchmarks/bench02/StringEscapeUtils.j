@@ -49,9 +49,7 @@
   aload_2
   iconst_0
   invokevirtual java/lang/String/indexOf(Ljava/lang/String;I)I
-  dup
   istore 5
-  pop
   iload 5
   iconst_0
   if_icmpge true_1
