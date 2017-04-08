@@ -50,6 +50,23 @@ int simplify_astore(CODE **c)
   return 0;
 }
 
+/* dup
+ * istore x
+ * pop
+ * -------->
+ *  istore x
+ */
+int simplify_istore(CODE **c)
+{
+  int x;
+  if (is_dup(*c) &&
+      is_istore(next(*c),&x) &&
+      is_pop(next(next(*c))))
+  return replace(c,3,makeCODEistore(x,NULL));
+
+  return 0;
+}
+
 /* iload x
  * ldc k   (0<=k<=127)
  * iadd
@@ -66,6 +83,26 @@ int positive_increment(CODE **c)
       x==y && 0<=k && k<=127) {
      return replace(c,4,makeCODEiinc(x,k,NULL));
   }
+  return 0;
+}
+
+/* ldc k   (0<=k<=127)
+ * iload x 
+ * iadd
+ * istore x
+ * --------->
+ * iinc x k
+ */
+int positive_increment_left(CODE **c)
+{
+  int x,y,k;
+  if (is_ldc_int(next(*c),&k) &&
+      is_iload(*c,&x) &&
+      is_iadd(next(next(*c))) &&
+      is_istore(next(next(next(*c))),&y) &&
+      x==y && 0 <= k && k <= 127)
+    return replace(c,4,makeCODEiinc(x,k,NULL));
+  
   return 0;
 }
 
@@ -92,9 +129,12 @@ int simplify_goto_goto(CODE **c)
   }
   return 0;
 }
+
 void init_patterns(void) {
 	ADD_PATTERN(simplify_multiplication_right);
 	ADD_PATTERN(simplify_astore);
 	ADD_PATTERN(positive_increment);
 	ADD_PATTERN(simplify_goto_goto);
+    ADD_PATTERN(simplify_istore);
+    ADD_PATTERN(positive_increment_left);
 }
