@@ -9,7 +9,7 @@ echo "====================================="
 echo -e -n "\033[0m"
 
 ./clean.sh
-make -C JOOSA-src
+make mac_main -C JOOSA-src
 
 for BENCH_DIR in PeepholeBenchmarks/*/; do
 	BENCH=$(basename $BENCH_DIR)
