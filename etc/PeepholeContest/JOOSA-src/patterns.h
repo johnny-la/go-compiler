@@ -199,6 +199,34 @@ int simplify_istore_iload(CODE **c)
   return 0;
 }
 
+/* ldc 0          ldc 1          ldc 2
+ * iload x        iload x        iload x
+ * imul           imul           imul
+ * ------>        ------>        ------>
+ * ldc 0          iload x        iload x
+ *                               dup
+ *                               iadd
+ *
+ * Reason: We can convert small multiplications to their
+ * with corresponding additions, omit multiplications
+ * by ones by removing the multiplication, and replace
+ * multiplications by 0 by the constant zero
+ */
+int simplify_multiplication_right(CODE **c)
+{ int x,k;
+  if (is_ldc_int(*c,&k) && 
+      is_iload(next(*c),&x) && 
+      is_imul(next(next(*c)))) {
+     if (k==0) return replace(c,3,makeCODEldc_int(0,NULL));
+     else if (k==1) return replace(c,3,makeCODEiload(x,NULL));
+     else if (k==2) return replace(c,3,makeCODEiload(x,
+                                       makeCODEdup(
+                                       makeCODEiadd(NULL))));
+     return 0;
+  }
+  return 0;
+}
+
 void init_patterns(void) {
   ADD_PATTERN(simplify_multiplication_right);
   ADD_PATTERN(simplify_astore);
