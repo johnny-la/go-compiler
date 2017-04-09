@@ -184,7 +184,7 @@ void init_patterns(void) {
   ADD_PATTERN(positive_increment);
   ADD_PATTERN(simplify_goto_goto);
   
-  // Custom patterns
+  /* Custom patterns */
   ADD_PATTERN(simplify_istore);
   ADD_PATTERN(positive_increment_left);
   ADD_PATTERN(positive_increment_0);
