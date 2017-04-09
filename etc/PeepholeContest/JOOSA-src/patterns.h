@@ -212,7 +212,7 @@ int simplify_istore_iload(CODE **c)
  * by ones by removing the multiplication, and replace
  * multiplications by 0 by the constant zero
  */
-int simplify_multiplication_right(CODE **c)
+int simplify_multiplication_left(CODE **c)
 { int x,k;
   if (is_ldc_int(*c,&k) && 
       is_iload(next(*c),&x) && 
@@ -239,4 +239,5 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_increment_0);
   ADD_PATTERN(simplify_astore_aload);
   ADD_PATTERN(simplify_istore_iload);
+  ADD_PATTERN(simplify_multiplication_left);
 }
