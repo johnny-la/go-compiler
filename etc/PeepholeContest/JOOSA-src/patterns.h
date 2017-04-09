@@ -284,6 +284,7 @@ void init_patterns(void) {
   ADD_PATTERN(positive_increment_left);
   ADD_PATTERN(simplify_increment_0);
   ADD_PATTERN(simplify_negative_increment);
+  ADD_PATTERN(simplify_negative_increment_left);
   ADD_PATTERN(simplify_astore_aload);
   ADD_PATTERN(simplify_istore_iload);
   ADD_PATTERN(simplify_multiplication_left);
