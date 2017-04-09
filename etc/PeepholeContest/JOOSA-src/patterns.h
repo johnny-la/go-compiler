@@ -219,7 +219,7 @@ int simplify_add_0(CODE **c)
   if (is_iload(*c, &x) &&
       is_ldc_int(next(*c), &k) &&
       (k == 0)) {
-     return makeCODEiload(x,NULL);
+     return replace(c,2,makeCODEiload(x,NULL));
   }
   return 0;
 }
@@ -239,7 +239,7 @@ int simplify_add_0_left(CODE **c)
   if (is_ldc_int(*c, &k) &&
       is_iload(next(*c), &x) &&
       (k == 0)) {
-     return makeCODEiload(x,NULL);
+     return replace(c,2,makeCODEiload(x,NULL));
   }
   return 0;
 }
