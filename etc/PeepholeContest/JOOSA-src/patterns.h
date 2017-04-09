@@ -96,7 +96,7 @@ int positive_increment(CODE **c)
 
 
 /*
-* ORIGINAL SHIT HERE
+* CUSTOM PATTERNS
 */
 
 /* dup
@@ -104,6 +104,9 @@ int positive_increment(CODE **c)
  * pop
  * -------->
  *  istore x
+ *
+ * Reason: Since the duplicated value will be popped off the stack
+ * anyways, we remove the dup and pop operations
  */
 int simplify_istore(CODE **c)
 {
@@ -122,6 +125,9 @@ int simplify_istore(CODE **c)
  * istore x
  * --------->
  * iinc x k
+ *
+ * Reason: We can condense the loading and addition of a constant and a local
+ * into a more lightweight "iinc" command
  */
 int positive_increment_left(CODE **c)
 {
@@ -139,7 +145,7 @@ int positive_increment_left(CODE **c)
 /* iinc x 0
  * --------->
  * null
- * Reason: an increment by zero is a non operation
+ * Reason: an increment by zero does not modify x's value (it is a noop)
  * 
  */ 
 int positive_increment_0(CODE **c)
@@ -172,11 +178,12 @@ int positive_increment_0(CODE **c)
 
 
 void init_patterns(void) {
-	ADD_PATTERN(simplify_multiplication_right);
-	ADD_PATTERN(simplify_astore);
-	ADD_PATTERN(positive_increment);
-	ADD_PATTERN(simplify_goto_goto);
+  ADD_PATTERN(simplify_multiplication_right);
+  ADD_PATTERN(simplify_astore);
+  ADD_PATTERN(positive_increment);
+  ADD_PATTERN(simplify_goto_goto);
   
+  // Custom patterns
   ADD_PATTERN(simplify_istore);
   ADD_PATTERN(positive_increment_left);
   ADD_PATTERN(positive_increment_0);
