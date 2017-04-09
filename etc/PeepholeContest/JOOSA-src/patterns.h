@@ -105,7 +105,7 @@ int positive_increment(CODE **c)
  * -------->
  * istore x
  *
- * Reason: Since the duplicated value will be popped off the stack
+ * Explanation: Since the duplicated value will be popped off the stack
  * anyways, we remove the dup and pop operations
  */
 int simplify_istore(CODE **c)
@@ -126,7 +126,7 @@ int simplify_istore(CODE **c)
  * --------->
  * iinc x k
  *
- * Reason: We can condense the loading and addition of a constant and a local
+ * Explanation: We can condense the loading and addition of a constant and a local
  * into the more lightweight "iinc" command
  */
 int positive_increment_left(CODE **c)
@@ -149,7 +149,7 @@ int positive_increment_left(CODE **c)
  * --------->
  * iinc x -k
  *
- * Reason: Same as above, except the constant is negative
+ * Explanation: Same as above, except the constant is negative
  */ 
 int simplify_negative_increment(CODE **c)
 { int x,y,k;
@@ -171,7 +171,7 @@ int simplify_negative_increment(CODE **c)
  * iinc x -k
  * ineg
  * 
- * Reason: Same as above, except the constant is loaded first. 
+ * Explanation: Same as above, except the constant is loaded first. 
  * The operation performs k - x = -(x-k), so we decrement x
  * by k, then we negate the result 
  */ 
@@ -191,7 +191,7 @@ int simplify_negative_increment_left(CODE **c)
 /* iinc x 0
  * --------->
  * null
- * Reason: an increment by zero does not modify x's value (it is a non-operation)
+ * Explanation: an increment by zero does not modify x's value (it is a non-operation)
  * 
  */ 
 int simplify_increment_0(CODE **c)
@@ -210,7 +210,7 @@ int simplify_increment_0(CODE **c)
  * --------->
  * iload x
  *
- * Reason: an increment by zero does not modify x's value (it is a non-operation)
+ * Explanation: an increment by zero does not modify x's value (it is a non-operation)
  * 
  */ 
 int simplify_add_0(CODE **c)
@@ -230,7 +230,7 @@ int simplify_add_0(CODE **c)
  * --------->
  * iload x
  *
- * Reason: an increment by zero does not modify x's value (it is a non-operation)
+ * Explanation: an increment by zero does not modify x's value (it is a non-operation)
  * 
  */ 
 int simplify_add_0_left(CODE **c)
@@ -251,7 +251,7 @@ int simplify_add_0_left(CODE **c)
  * dup
  * astore x
  *
- * Reason: Instead of storing a local and loading it back, we can
+ * Explanation: Instead of storing a local and loading it back, we can
  * duplicate the value on the stack and store that duplicate
  */
 int simplify_astore_aload(CODE **c)
@@ -272,7 +272,7 @@ int simplify_astore_aload(CODE **c)
  * dup
  * istore x
  *
- * Reason: Same as above
+ * Explanation: Same as above
  */
 int simplify_istore_iload(CODE **c)
 {
@@ -293,7 +293,7 @@ int simplify_istore_iload(CODE **c)
  *                               dup
  *                               iadd
  *
- * Reason: We can convert small multiplications to their
+ * Explanation: We can convert small multiplications to their
  * with corresponding additions, omit multiplications
  * by ones by removing the multiplication, and replace
  * multiplications by 0 by the constant zero
