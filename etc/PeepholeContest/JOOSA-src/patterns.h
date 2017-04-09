@@ -148,7 +148,7 @@ int positive_increment_left(CODE **c)
  * Reason: an increment by zero does not modify x's value (it is a non-operation)
  * 
  */ 
-int positive_increment_0(CODE **c)
+int simplify_increment_0(CODE **c)
 { 
   int x, k;
   if (is_iinc(*c, &x, &k) &&
@@ -208,7 +208,7 @@ void init_patterns(void) {
   /* Custom patterns */
   ADD_PATTERN(simplify_istore);
   ADD_PATTERN(positive_increment_left);
-  ADD_PATTERN(positive_increment_0);
+  ADD_PATTERN(simplify_increment_0);
   ADD_PATTERN(simplify_astore_aload);
   ADD_PATTERN(simplify_istore_iload);
 }
