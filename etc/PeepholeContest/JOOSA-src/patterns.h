@@ -148,6 +148,8 @@ int positive_increment_left(CODE **c)
  * istore x
  * --------->
  * iinc x -k
+ *
+ * Reason: Same as above, except the constant is negative
  */ 
 int simplify_negative_increment(CODE **c)
 { int x,y,k;
@@ -157,6 +159,30 @@ int simplify_negative_increment(CODE **c)
       is_istore(next(next(next(*c))),&y) &&
       x==y && 0 <= k && k <= 127) {
      return replace(c,4,makeCODEiinc(x,-k,NULL));
+  }
+  return 0;
+}
+
+/* ldc k   (0<=k<=127)
+ * iload x
+ * isub
+ * istore x
+ * --------->
+ * iinc x -k
+ * ineg
+ * 
+ * Reason: Same as above, except the constant is loaded first. 
+ * The operation performs k - x = -(x-k), so we decrement x
+ * by k, then we negate the result 
+ */ 
+int simplify_negative_increment_left(CODE **c)
+{ int x,y,k;
+  if (is_ldc_int(*c,&k) &&
+      is_iload(next(*c),&x) &&
+      is_isub(next(next(*c))) &&
+      is_istore(next(next(next(*c))),&y) &&
+      x==y && 0 <= k && k <= 127) {
+     return replace(c,4,makeCODEineg(makeCODEiinc(x,-k,NULL)));
   }
   return 0;
 }
