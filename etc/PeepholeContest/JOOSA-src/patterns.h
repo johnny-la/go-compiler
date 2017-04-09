@@ -171,8 +171,9 @@ int positive_increment_0(CODE **c)
 int simplify_astore_aload(CODE **c)
 {
   int x, y;
-  if (is_astore(*c,&x)) &&
-      is_aload(next(*c),&y))
+  if (is_astore(*c,&x) &&
+      is_aload(next(*c),&y) &&
+      x == y)
       return replace(c, 2, makeCODEdup(
                 makeCODEastore(x,NULL)));
   return 0;
@@ -188,5 +189,5 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_istore);
   ADD_PATTERN(positive_increment_left);
   ADD_PATTERN(positive_increment_0);
-
+  ADD_PATTERN(simplify_astore_aload);
 }
