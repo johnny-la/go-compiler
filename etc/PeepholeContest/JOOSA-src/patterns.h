@@ -179,6 +179,26 @@ int simplify_astore_aload(CODE **c)
   return 0;
 }
 
+/* istore x
+ * iload x
+ * 
+ * --------->
+ * dup
+ * istore x
+ *
+ * Reason: Same as above
+ */
+int simplify_istore_iload(CODE **c)
+{
+  int x, y;
+  if (is_istore(*c,&x) &&
+      is_iload(next(*c),&y) &&
+      x == y)
+      return replace(c, 2, makeCODEdup(
+                makeCODEistore(x,NULL)));
+  return 0;
+}
+
 void init_patterns(void) {
   ADD_PATTERN(simplify_multiplication_right);
   ADD_PATTERN(simplify_astore);
