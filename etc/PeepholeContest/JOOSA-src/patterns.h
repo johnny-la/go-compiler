@@ -142,6 +142,26 @@ int positive_increment_left(CODE **c)
   return 0;
 }
 
+/* iload x
+ * ldc k   (0<=k<=127)
+ * isub
+ * istore x
+ * --------->
+ * iinc x -k
+ */ 
+int simplify_negative_increment(CODE **c)
+{ int x,y,k;
+  if (is_iload(*c,&x) &&
+      is_ldc_int(next(*c),&k) &&
+      is_isub(next(next(*c))) &&
+      is_istore(next(next(next(*c))),&y) &&
+      x==y && 0 <= k && k <= 127) {
+     return replace(c,4,makeCODEiinc(x,-k,NULL));
+  }
+  return 0;
+}
+
+
 /* iinc x 0
  * --------->
  * null
@@ -237,6 +257,7 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_istore);
   ADD_PATTERN(positive_increment_left);
   ADD_PATTERN(simplify_increment_0);
+  ADD_PATTERN(simplify_negative_increment);
   ADD_PATTERN(simplify_astore_aload);
   ADD_PATTERN(simplify_istore_iload);
   ADD_PATTERN(simplify_multiplication_left);
