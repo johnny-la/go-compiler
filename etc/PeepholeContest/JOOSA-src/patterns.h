@@ -204,6 +204,46 @@ int simplify_increment_0(CODE **c)
   return 0;
 }
 
+/* iload x
+ * ldc 0
+ * iadd
+ * --------->
+ * iload x
+ *
+ * Reason: an increment by zero does not modify x's value (it is a non-operation)
+ * 
+ */ 
+int simplify_add_0(CODE **c)
+{ 
+  int x, k;
+  if (is_iload(*c, &x) &&
+      is_ldc_int(next(*c), &k) &&
+      (k == 0)) {
+     return makeCODEiload(x,NULL);
+  }
+  return 0;
+}
+
+/* ldc 0
+ * iload x
+ * iadd
+ * --------->
+ * iload x
+ *
+ * Reason: an increment by zero does not modify x's value (it is a non-operation)
+ * 
+ */ 
+int simplify_add_0_left(CODE **c)
+{ 
+  int x, k;
+  if (is_ldc_int(*c, &k) &&
+      is_iload(next(*c), &x) &&
+      (k == 0)) {
+     return makeCODEiload(x,NULL);
+  }
+  return 0;
+}
+
 /* astore x
  * aload x
  * 
@@ -288,4 +328,6 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_astore_aload);
   ADD_PATTERN(simplify_istore_iload);
   ADD_PATTERN(simplify_multiplication_left);
+  ADD_PATTERN(simplify_add_0);
+  ADD_PATTERN(simplify_add_0_left);
 }
