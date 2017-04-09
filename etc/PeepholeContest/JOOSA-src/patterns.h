@@ -158,7 +158,7 @@ int positive_increment_0(CODE **c)
  * Reason: an increment by zero is a non operation
  * 
  */
-// int positive_increment_0(CODE **c)
+/* int positive_increment_0(CODE **c)
 // { 
 //   int x, k;
 //   if (is_iinc(*c, &x, &k) &&
@@ -166,7 +166,7 @@ int positive_increment_0(CODE **c)
 //      return kill_line(c);
 //   }
 //   return 0;
-// }
+// }*/
 
 
 
