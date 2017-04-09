@@ -103,7 +103,7 @@ int positive_increment(CODE **c)
  * istore x
  * pop
  * -------->
- *  istore x
+ * istore x
  *
  * Reason: Since the duplicated value will be popped off the stack
  * anyways, we remove the dup and pop operations
@@ -127,7 +127,7 @@ int simplify_istore(CODE **c)
  * iinc x k
  *
  * Reason: We can condense the loading and addition of a constant and a local
- * into a more lightweight "iinc" command
+ * into the more lightweight "iinc" command
  */
 int positive_increment_left(CODE **c)
 {
@@ -145,7 +145,7 @@ int positive_increment_left(CODE **c)
 /* iinc x 0
  * --------->
  * null
- * Reason: an increment by zero does not modify x's value (it is a noop)
+ * Reason: an increment by zero does not modify x's value (it is a non-operation)
  * 
  */ 
 int positive_increment_0(CODE **c)
@@ -158,24 +158,25 @@ int positive_increment_0(CODE **c)
   return 0;
 }
 
-/* iinc x 0
- * --------->
- * null
- * Reason: an increment by zero is a non operation
+/* astore x
+ * aload x
  * 
+ * --------->
+ * dup
+ * astore x
+ *
+ * Reason: Instead of storing a local and loading it back, we can
+ * duplicate the value on the stack and store that duplicate
  */
-/* int positive_increment_0(CODE **c)
-// { 
-//   int x, k;
-//   if (is_iinc(*c, &x, &k) &&
-//       (k == 0)) {
-//      return kill_line(c);
-//   }
-//   return 0;
-// }*/
-
-
-
+int simplify_astore_aload(CODE **c)
+{
+  int x, y;
+  if (is_astore(*c,&x)) &&
+      is_aload(next(*c),&y))
+      return replace(c, 2, makeCODEdup(
+                makeCODEastore(x,NULL)));
+  return 0;
+}
 
 void init_patterns(void) {
   ADD_PATTERN(simplify_multiplication_right);
