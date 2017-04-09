@@ -15,14 +15,10 @@
   .limit stack 6
   aload_3
   invokevirtual Board/getWidth()I
-  dup
   istore 7
-  pop
   aload_3
   invokevirtual Board/getHeight()I
-  dup
   istore 8
-  pop
   new Board
   dup
   iload 7
@@ -30,9 +26,7 @@
   invokenonvirtual Board/<init>(II)V
   astore 10
   iconst_0
-  dup
   istore 5
-  pop
   start_0:
   iload 5
   iload 7
@@ -46,9 +40,7 @@
   iload 8
   iconst_1
   isub
-  dup
   istore 6
-  pop
   start_4:
   iload 6
   iconst_0
@@ -71,23 +63,14 @@
   iload 6
   iconst_1
   isub
-  dup
   istore 6
-  pop
   goto start_4
   stop_5:
-  iload 5
-  iconst_1
-  iadd
-  dup
-  istore 5
-  pop
+  iinc 5 1
   goto start_0
   stop_1:
   iconst_0
-  dup
   istore 5
-  pop
   start_8:
   iload 5
   iload 7
@@ -99,9 +82,7 @@
   stop_11:
   ifeq stop_9
   iconst_0
-  dup
   istore 6
-  pop
   start_12:
   iload 6
   iload 8
@@ -120,20 +101,10 @@
   iload 6
   invokevirtual Board/get(II)Ljava/lang/Character;
   invokevirtual Board/set(IILjava/lang/Character;)V
-  iload 6
-  iconst_1
-  iadd
-  dup
-  istore 6
-  pop
+  iinc 6 1
   goto start_12
   stop_13:
-  iload 5
-  iconst_1
-  iadd
-  dup
-  istore 5
-  pop
+  iinc 5 1
   goto start_8
   stop_9:
   return

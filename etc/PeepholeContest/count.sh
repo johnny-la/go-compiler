@@ -55,3 +55,6 @@ echo -e "\e[41m\033[1mNormal:\033[0m\e[41m $NORMAL\e[49m"
 
 OPT=$(grep -a code_length PeepholeBenchmarks/bench*/*.optdump | awk '{sum += $3} END {print sum}')
 echo -e "\e[41m\033[1mOptimized:\033[0m\e[41m $OPT\e[49m"
+
+TEMP=$(bc -l <<< "$OPT/$NORMAL")
+echo -e "Optimized code size is $TEMP of non-optimized code"

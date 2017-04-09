@@ -159,9 +159,7 @@
   invokenonvirtual java/util/Vector/<init>()V
   astore 5
   iconst_0
-  dup
   istore_3
-  pop
   aload_1
   new ClassicMove
   dup
@@ -171,9 +169,7 @@
   aload 5
   invokevirtual Game/fillMoves(Ljava/util/Vector;)V
   iconst_0
-  dup
   istore_2
-  pop
   start_0:
   iload_2
   aload_0
@@ -199,9 +195,7 @@
   aload 5
   invokevirtual java/util/Vector/size()I
   invokevirtual java/util/Random/nextInt(I)I
-  dup
   istore_3
-  pop
   goto start_4
   stop_5:
   aload_1
@@ -213,15 +207,8 @@
   iload_3
   invokevirtual java/util/Vector/removeElementAt(I)V
   iconst_0
-  dup
   istore_3
-  pop
-  iload_2
-  iconst_1
-  iadd
-  dup
-  istore_2
-  pop
+  iinc 2 1
   goto start_0
   stop_1:
   return
@@ -370,9 +357,7 @@
   invokevirtual Game/getCurrPlayerMoves()Ljava/util/Vector;
   astore 4
   iconst_0
-  dup
   istore_2
-  pop
   start_0:
   iload_2
   aload 4
@@ -387,9 +372,7 @@
   iload_2
   iconst_1
   iadd
-  dup
   istore_3
-  pop
   aload_1
   new java/lang/Integer
   dup
@@ -425,12 +408,7 @@
   stop_11:
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  iload_2
-  iconst_1
-  iadd
-  dup
-  istore_2
-  pop
+  iinc 2 1
   goto start_0
   stop_1:
   return
@@ -447,13 +425,9 @@
   invokenonvirtual joos/lib/JoosIO/<init>()V
   astore_2
   iconst_0
-  dup
   istore 4
-  pop
   iconst_0
-  dup
   istore 5
-  pop
   aload_2
   ldc "Player "
   dup
@@ -504,9 +478,7 @@
   ifeq stop_9
   aload_2
   invokevirtual joos/lib/JoosIO/readInt()I
-  dup
   istore 5
-  pop
   iload 5
   iconst_0
   if_icmpgt true_15
@@ -530,9 +502,7 @@
   false_14:
   ifeq else_12
   iconst_1
-  dup
   istore 4
-  pop
   goto start_8
   else_12:
   aload_2
@@ -561,17 +531,11 @@
   aload_0
   getfield Game/board LBoard;
   invokevirtual Board/getWidth()I
-  dup
   istore_3
-  pop
   iconst_0
-  dup
   istore 4
-  pop
   iconst_0
-  dup
   istore_2
-  pop
   aload_1
   ldc "Please choose a column between 1 and "
   dup
@@ -599,9 +563,7 @@
   ifeq stop_5
   aload_1
   invokevirtual joos/lib/JoosIO/readInt()I
-  dup
   istore_2
-  pop
   iload_2
   iconst_0
   if_icmpgt true_12
@@ -681,9 +643,7 @@
   goto start_4
   else_24:
   iconst_1
-  dup
   istore 4
-  pop
   stop_25:
   goto start_4
   stop_5:
@@ -699,16 +659,12 @@
   .limit stack 5
   aload_0
   invokevirtual Game/getColumnChoice()I
-  dup
   istore_2
-  pop
   aload_0
   getfield Game/board LBoard;
   iload_2
   invokevirtual Board/expectedRow(I)I
-  dup
   istore_3
-  pop
   aload_0
   invokevirtual Game/getCurrPlayerMoves()Ljava/util/Vector;
   astore 4
@@ -766,13 +722,9 @@
   invokenonvirtual joos/lib/JoosIO/<init>()V
   astore_1
   iconst_0
-  dup
   istore_3
-  pop
   iconst_0
-  dup
   istore_2
-  pop
   aload_1
   ldc "\nThank you for playing BATTLE CONNECT FOUR!\n"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
@@ -792,9 +744,7 @@
   ifeq stop_1
   aload_1
   invokevirtual joos/lib/JoosIO/readInt()I
-  dup
   istore_2
-  pop
   iload_2
   iconst_1
   if_icmpeq true_7
@@ -817,9 +767,7 @@
   true_6:
   ifeq else_4
   iconst_1
-  dup
   istore_3
-  pop
   goto start_0
   else_4:
   aload_1

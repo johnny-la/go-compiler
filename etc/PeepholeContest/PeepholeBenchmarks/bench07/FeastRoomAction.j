@@ -88,9 +88,7 @@
   invokevirtual joos/lib/JoosRandom/nextInt()I
   ldc 100
   irem
-  dup
   istore_3
-  pop
   iload_3
   iconst_0
   if_icmplt true_14
@@ -102,9 +100,7 @@
   ifeq stop_13
   iload_3
   ineg
-  dup
   istore_3
-  pop
   stop_13:
   iload_3
   ldc 40

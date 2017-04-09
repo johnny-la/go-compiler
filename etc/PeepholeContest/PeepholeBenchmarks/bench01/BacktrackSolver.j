@@ -61,9 +61,7 @@
   .limit locals 4
   .limit stack 3
   iconst_0
-  dup
   istore_3
-  pop
   start_0:
   iload_3
   ldc 9
@@ -89,12 +87,7 @@
   iconst_0
   ireturn
   stop_4:
-  iload_3
-  iconst_1
-  iadd
-  dup
-  istore_3
-  pop
+  iinc 3 1
   goto start_0
   stop_1:
   iconst_1
@@ -106,9 +99,7 @@
   .limit locals 4
   .limit stack 3
   iconst_0
-  dup
   istore_3
-  pop
   start_0:
   iload_3
   ldc 9
@@ -134,12 +125,7 @@
   iconst_0
   ireturn
   stop_4:
-  iload_3
-  iconst_1
-  iadd
-  dup
-  istore_3
-  pop
+  iinc 3 1
   goto start_0
   stop_1:
   iconst_1
@@ -155,21 +141,15 @@
   idiv
   iconst_3
   imul
-  dup
   istore_1
-  pop
   iload_2
   iconst_3
   idiv
   iconst_3
   imul
-  dup
   istore_2
-  pop
   iconst_0
-  dup
   istore 4
-  pop
   start_0:
   iload 4
   iconst_3
@@ -181,9 +161,7 @@
   stop_3:
   ifeq stop_1
   iconst_0
-  dup
   istore 5
-  pop
   start_4:
   iload 5
   iconst_3
@@ -213,20 +191,10 @@
   iconst_0
   ireturn
   stop_8:
-  iload 5
-  iconst_1
-  iadd
-  dup
-  istore 5
-  pop
+  iinc 5 1
   goto start_4
   stop_5:
-  iload 4
-  iconst_1
-  iadd
-  dup
-  istore 4
-  pop
+  iinc 4 1
   goto start_0
   stop_1:
   iconst_1
@@ -238,9 +206,7 @@
   .limit locals 3
   .limit stack 3
   iconst_0
-  dup
   istore_1
-  pop
   start_0:
   iload_1
   ldc 9
@@ -252,9 +218,7 @@
   stop_3:
   ifeq stop_1
   iconst_0
-  dup
   istore_2
-  pop
   start_4:
   iload_2
   ldc 9
@@ -280,20 +244,10 @@
   iconst_0
   ireturn
   stop_8:
-  iload_2
-  iconst_1
-  iadd
-  dup
-  istore_2
-  pop
+  iinc 2 1
   goto start_4
   stop_5:
-  iload_1
-  iconst_1
-  iadd
-  dup
-  istore_1
-  pop
+  iinc 1 1
   goto start_0
   stop_1:
   iconst_1
@@ -328,9 +282,7 @@
   goto stop_2
   else_1:
   iconst_1
-  dup
   istore_3
-  pop
   start_5:
   iload_3
   ldc 10
@@ -383,12 +335,7 @@
   iload_2
   invokevirtual BacktrackSolver/next(II)V
   stop_9:
-  iload_3
-  iconst_1
-  iadd
-  dup
-  istore_3
-  pop
+  iinc 3 1
   goto start_5
   stop_6:
   aload_0

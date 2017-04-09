@@ -118,9 +118,7 @@
   invokevirtual joos/lib/JoosRandom/nextInt()I
   ldc 13
   irem
-  dup
   istore_3
-  pop
   iload_3
   iconst_0
   if_icmplt true_20
@@ -132,9 +130,7 @@
   ifeq stop_19
   iload_3
   ineg
-  dup
   istore_3
-  pop
   stop_19:
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;

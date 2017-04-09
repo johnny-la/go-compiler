@@ -14,9 +14,7 @@
   .limit locals 6
   .limit stack 3
   iconst_0
-  dup
   istore 5
-  pop
   start_0:
   iload 5
   aload_3
@@ -32,12 +30,7 @@
   iload_1
   iload 5
   invokevirtual Board/clear(II)V
-  iload 5
-  iconst_1
-  iadd
-  dup
-  istore 5
-  pop
+  iinc 5 1
   goto start_0
   stop_1:
   return

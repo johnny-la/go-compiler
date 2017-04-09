@@ -35,24 +35,16 @@
   ldc ""
   astore 6
   iconst_0
-  dup
   istore_2
-  pop
   aload_1
   invokevirtual java/lang/String/length()I
-  dup
   istore_3
-  pop
   iload_3
   iconst_3
   irem
-  dup
   istore 4
-  pop
   iconst_0
-  dup
   istore 5
-  pop
   start_0:
   iload 5
   iload_3
@@ -64,9 +56,7 @@
   stop_3:
   ifeq stop_1
   iconst_0
-  dup
   istore_2
-  pop
   iload_3
   iload 5
   isub
@@ -100,9 +90,7 @@
   ldc 8
   invokevirtual lib/JoosBitwise/shl(II)I
   invokevirtual lib/JoosBitwise/or(II)I
-  dup
   istore_2
-  pop
   stop_8:
   aload_0
   getfield Encoder/uti Llib/JoosBitwise;
@@ -115,9 +103,7 @@
   ldc 16
   invokevirtual lib/JoosBitwise/shl(II)I
   invokevirtual lib/JoosBitwise/or(II)I
-  dup
   istore_2
-  pop
   aload 6
   dup
   ifnull null_11
@@ -241,9 +227,7 @@
   iload 5
   iload 4
   iadd
-  dup
   istore 5
-  pop
   goto start_0
   else_4:
   aload_0
@@ -257,15 +241,8 @@
   ldc 16
   invokevirtual lib/JoosBitwise/shl(II)I
   invokevirtual lib/JoosBitwise/or(II)I
-  dup
   istore_2
-  pop
-  iload 5
-  iconst_1
-  iadd
-  dup
-  istore 5
-  pop
+  iinc 5 1
   aload_0
   getfield Encoder/uti Llib/JoosBitwise;
   iload_2
@@ -277,15 +254,8 @@
   ldc 8
   invokevirtual lib/JoosBitwise/shl(II)I
   invokevirtual lib/JoosBitwise/or(II)I
-  dup
   istore_2
-  pop
-  iload 5
-  iconst_1
-  iadd
-  dup
-  istore 5
-  pop
+  iinc 5 1
   aload_0
   getfield Encoder/uti Llib/JoosBitwise;
   iload_2
@@ -293,15 +263,8 @@
   iload 5
   invokevirtual java/lang/String/charAt(I)C
   invokevirtual lib/JoosBitwise/or(II)I
-  dup
   istore_2
-  pop
-  iload 5
-  iconst_1
-  iadd
-  dup
-  istore 5
-  pop
+  iinc 5 1
   aload 6
   dup
   ifnull null_35
