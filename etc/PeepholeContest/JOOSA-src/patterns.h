@@ -433,6 +433,123 @@ int simplify_if_icmplt(CODE **c)
   return 0;
 }
 
+/* if_icmple true
+ * iconst_0
+ * goto false_1
+ * true:
+ * iconst_1 
+ * false_1: 
+ * ifeq false_2 ---
+ * ...
+ * false_2:
+ * --------->
+ * if_icmpgt false_2
+ * ...
+ *
+ * Explanation: Same as above, but for if_icmple
+ */
+int simplify_if_icmple(CODE **c)
+{
+  int true_label_1, true_label_2, false_label_1, false_label_2, false_label_3;
+  int x,y;
+  if (is_if_icmple(*c,&true_label_1) &&
+      is_ldc_int(next(*c),&x) &&
+      x == 0 &&
+      is_goto(next(next(*c)), &false_label_1) &&
+      is_label(next(next(next(*c))),&true_label_2) &&
+      true_label_1 == true_label_2 &&
+      is_ldc_int(next(next(next(next(*c)))),&y) &&
+      y == 1 &&
+      is_label(next(next(next(next(next(*c))))), &false_label_2) &&
+      false_label_1 == false_label_2 &&
+      is_ifeq(next(next(next(next(next(next(*c)))))), &false_label_3)) 
+  {
+    droplabel(true_label_1);
+    droplabel(false_label_1);
+    return replace(c, 7, makeCODEdup(
+              makeCODEif_icmpgt(false_label_3,NULL)));
+  }
+  return 0;
+}
+
+/* if_icmpgt true
+ * iconst_0
+ * goto false_1
+ * true:
+ * iconst_1 
+ * false_1: 
+ * ifeq false_2 ---
+ * ...
+ * false_2:
+ * --------->
+ * if_icmple false_2
+ * ...
+ *
+ * Explanation: Same as above, but for if_icmpgt
+ */
+int simplify_if_icmpgt(CODE **c)
+{
+  int true_label_1, true_label_2, false_label_1, false_label_2, false_label_3;
+  int x,y;
+  if (is_if_icmpgt(*c,&true_label_1) &&
+      is_ldc_int(next(*c),&x) &&
+      x == 0 &&
+      is_goto(next(next(*c)), &false_label_1) &&
+      is_label(next(next(next(*c))),&true_label_2) &&
+      true_label_1 == true_label_2 &&
+      is_ldc_int(next(next(next(next(*c)))),&y) &&
+      y == 1 &&
+      is_label(next(next(next(next(next(*c))))), &false_label_2) &&
+      false_label_1 == false_label_2 &&
+      is_ifeq(next(next(next(next(next(next(*c)))))), &false_label_3)) 
+  {
+    droplabel(true_label_1);
+    droplabel(false_label_1);
+    return replace(c, 7, makeCODEdup(
+              makeCODEif_icmple(false_label_3,NULL)));
+  }
+  return 0;
+}
+
+/* if_icmpge true
+ * iconst_0
+ * goto false_1
+ * true:
+ * iconst_1 
+ * false_1: 
+ * ifeq false_2 ---
+ * ...
+ * false_2:
+ * --------->
+ * if_icmplt false_2
+ * ...
+ *
+ * Explanation: Same as above, but for if_icmpge
+ */
+int simplify_if_icmpge(CODE **c)
+{
+  int true_label_1, true_label_2, false_label_1, false_label_2, false_label_3;
+  int x,y;
+  if (is_if_icmpge(*c,&true_label_1) &&
+      is_ldc_int(next(*c),&x) &&
+      x == 0 &&
+      is_goto(next(next(*c)), &false_label_1) &&
+      is_label(next(next(next(*c))),&true_label_2) &&
+      true_label_1 == true_label_2 &&
+      is_ldc_int(next(next(next(next(*c)))),&y) &&
+      y == 1 &&
+      is_label(next(next(next(next(next(*c))))), &false_label_2) &&
+      false_label_1 == false_label_2 &&
+      is_ifeq(next(next(next(next(next(next(*c)))))), &false_label_3)) 
+  {
+    droplabel(true_label_1);
+    droplabel(false_label_1);
+    return replace(c, 7, makeCODEdup(
+              makeCODEif_icmplt(false_label_3,NULL)));
+  }
+  return 0;
+}
+
 void init_patterns(void) {
   ADD_PATTERN(simplify_multiplication_right);
   ADD_PATTERN(simplify_astore);
@@ -453,4 +570,7 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_if_icmpeq);
   ADD_PATTERN(simplify_if_icmpne);
   ADD_PATTERN(simplify_if_icmplt);
+  ADD_PATTERN(simplify_if_icmple);
+  ADD_PATTERN(simplify_if_icmpgt);
+  ADD_PATTERN(simplify_if_icmpge);
 }
