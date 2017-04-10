@@ -642,6 +642,26 @@ int simplify_if_icmpge(CODE **c)
   return 0;
 }
 
+/* aload x
+ * aload y
+ * swap
+ * ------->
+ * aload y
+ * aload x
+ *
+ * Explanation: The swap is useless since we can simply
+ * reverse the loading order
+ */
+int simplify_swap_1(CODE **c)
+{
+  int x,y;
+  if (is_aload(*c,&x) &&
+      is_aload(next(*c),&y) &&
+      is_swap(next(next(*c))))
+      return replace(c, 3, makeCODEaload(y,makeCODEaload(x,NULL)));
+  return 0;
+}
+
 void init_patterns(void) {
   ADD_PATTERN(simplify_multiplication_right);
   ADD_PATTERN(simplify_astore);
@@ -670,4 +690,7 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_if_icmple);
   ADD_PATTERN(simplify_if_icmpgt);
   ADD_PATTERN(simplify_if_icmpge);
+
+  /* Swaps */
+  ADD_PATTERN(simplify_swap_1);
 }
