@@ -662,6 +662,25 @@ int simplify_swap_1(CODE **c)
   return 0;
 }
 
+/* iload x
+ * iload y
+ * swap
+ * ------->
+ * iload y
+ * iload x
+ *
+ * Explanation: Same as above, except for iload
+ */
+int simplify_swap_2(CODE **c)
+{
+  int x,y;
+  if (is_iload(*c,&x) &&
+      is_iload(next(*c),&y) &&
+      is_swap(next(next(*c))))
+      return replace(c, 3, makeCODEiload(y,makeCODEiload(x,NULL)));
+  return 0;
+}
+
 void init_patterns(void) {
   ADD_PATTERN(simplify_multiplication_right);
   ADD_PATTERN(simplify_astore);
@@ -693,4 +712,5 @@ void init_patterns(void) {
 
   /* Swaps */
   ADD_PATTERN(simplify_swap_1);
+  ADD_PATTERN(simplify_swap_2);
 }
