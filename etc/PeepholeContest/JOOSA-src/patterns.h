@@ -355,6 +355,45 @@ int simplify_if_icmpeq(CODE **c)
   return 0;
 }
 
+/* if_icmpne true
+ * iconst_0
+ * goto false_1
+ * true:
+ * iconst_1 
+ * false_1: 
+ * ifeq false_2 ---
+ * ...
+ * false_2:
+ * --------->
+ * if_icmpeq false_2
+ * ...
+ *
+ * Explanation: Same as above, but for if_icmpne
+ */
+int simplify_if_icmpne(CODE **c)
+{
+  int true_label_1, true_label_2, false_label_1, false_label_2, false_label_3;
+  int x,y;
+  if (is_if_icmpne(*c,&true_label_1) &&
+      is_ldc_int(next(*c),&x) &&
+      x == 0 &&
+      is_goto(next(next(*c)), &false_label_1) &&
+      is_label(next(next(next(*c))),&true_label_2) &&
+      true_label_1 == true_label_2 &&
+      is_ldc_int(next(next(next(next(*c)))),&y) &&
+      y == 1 &&
+      is_label(next(next(next(next(next(*c))))), &false_label_2) &&
+      false_label_1 == false_label_2 &&
+      is_ifeq(next(next(next(next(next(next(*c)))))), &false_label_3)) 
+  {
+    droplabel(true_label_1);
+    droplabel(false_label_1);
+    return replace(c, 7, makeCODEdup(
+              makeCODEif_icmpeq(false_label_3,NULL)));
+  }
+  return 0;
+}
+
 void init_patterns(void) {
   ADD_PATTERN(simplify_multiplication_right);
   ADD_PATTERN(simplify_astore);
@@ -373,4 +412,5 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_add_0);
   ADD_PATTERN(simplify_add_0_left);
   ADD_PATTERN(simplify_if_icmpeq);
+  ADD_PATTERN(simplify_if_icmpne);
 }
