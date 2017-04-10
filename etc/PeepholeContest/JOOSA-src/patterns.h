@@ -389,6 +389,23 @@ int simplify_swaps(CODE **c)
   return 0;
 }
 
+/* goto L 
+ * non-label
+ * ----------->
+ * goto L
+ *
+ * Explanation: Since the operation following the goto is not a label,
+ * it will never be reached, and can be removed
+ */
+int simplify_goto_label(CODE **c)
+{
+  int x,y;
+  if (is_goto(*c,&x) &&
+      !is_label(next(*c),&y))
+      return replace(c, 2, makeCODEgoto(x,NULL));
+  return 0;
+}
+
 /* if_icmpeq true
  * iconst_0
  * goto false_1
@@ -753,6 +770,7 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_add_0_left);
   ADD_PATTERN(simplify_noop);
   ADD_PATTERN(simplify_swaps);
+  ADD_PATTERN(simplify_goto_label);
 
   /* Conditional branches */
   ADD_PATTERN(simplify_if_icmpeq);
