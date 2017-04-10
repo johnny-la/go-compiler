@@ -313,6 +313,20 @@ int simplify_multiplication_left(CODE **c)
   return 0;
 }
 
+/* nop
+ * ----->
+ * {empty}
+ *
+ * Explanation: Nops perform no operations. Thus, they can be
+ * safely removed from the program 
+ */
+int simplify_noop(CODE **c)
+{
+  if (is_nop(*c))
+    return replace(c,1,NULL);
+  return 0;
+}
+
 /* if_icmpeq true
  * iconst_0
  * goto false_1
