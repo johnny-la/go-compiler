@@ -34,6 +34,26 @@ int simplify_multiplication_right(CODE **c)
   return 0;
 }
 
+/* iload x
+ * ldc 1
+ * idiv
+ * -------->
+ * iload x
+ *
+ * Explanation: Dividing by 1 does not modify x's value. Thus,
+ * the division can be omitted
+ */
+int simplify_division(CODE **c)
+{
+  int x,k;
+  if (is_iload(*c,&x) &&
+      is_ldc_int(next(*c),&k) &&
+      is_idiv(next(next(*c))) &&
+      k == 1)
+      return replace(c,3,makeCODEiload(x,NULL));
+  return 0;
+}
+
 /* dup
  * astore x
  * pop
@@ -766,6 +786,7 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_astore_aload);
   ADD_PATTERN(simplify_istore_iload);
   ADD_PATTERN(simplify_multiplication_left);
+  ADD_PATTERN(simplify_division);
   ADD_PATTERN(simplify_add_0);
   ADD_PATTERN(simplify_add_0_left);
   ADD_PATTERN(simplify_noop);
