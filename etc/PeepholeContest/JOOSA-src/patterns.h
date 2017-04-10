@@ -752,7 +752,7 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_add_0);
   ADD_PATTERN(simplify_add_0_left);
   ADD_PATTERN(simplify_noop);
-  ADD_PATTERN(simplify_swaps)
+  ADD_PATTERN(simplify_swaps);
 
   /* Conditional branches */
   ADD_PATTERN(simplify_if_icmpeq);
