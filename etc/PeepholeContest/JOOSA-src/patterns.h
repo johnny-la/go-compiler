@@ -763,4 +763,5 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_if_icmple);
   ADD_PATTERN(simplify_if_icmpgt);
   ADD_PATTERN(simplify_if_icmpge);
+  ADD_PATTERN(simplify_ifnull);
 }
