@@ -335,12 +335,12 @@ int simplify_if_icmpeq(CODE **c)
 {
   int true_label_1, true_label_2, false_label_1, false_label_2, false_label_3;
   int x,y;
-  if (is_ificmpeq(*c,&true_label_1) &&
+  if (is_if_icmpeq(*c,&true_label_1) &&
       is_ldc_int(next(*c),&x) &&
       x == 0 &&
       is_goto(next(next(*c)), &false_label_1) &&
       is_label(next(next(next(*c))),&true_label_2) &&
-      true_label_1 == true_label2 &&
+      true_label_1 == true_label_2 &&
       is_ldc_int(next(next(next(next(*c)))),&y) &&
       y == 1 &&
       is_label(next(next(next(next(next(*c))))), &false_label_2) &&
