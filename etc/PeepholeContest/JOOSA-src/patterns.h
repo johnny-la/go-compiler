@@ -345,11 +345,13 @@ int simplify_if_icmpeq(CODE **c)
       y == 1 &&
       is_label(next(next(next(next(next(*c))))), &false_label_2) &&
       false_label_1 == false_label_2 &&
-      is_ifeq(next(next(next(next(next(next(*c)))))), &false_label_3)) {
-      droplabel(true_label_1);
-      droplabel(false_label_1);
-      return replace(c, 7, makeCODEdup(
-                makeCODEif_icmpne(false_label_3,NULL)));
+      is_ifeq(next(next(next(next(next(next(*c)))))), &false_label_3)) 
+  {
+    droplabel(true_label_1);
+    droplabel(false_label_1);
+    return replace(c, 7, makeCODEdup(
+              makeCODEif_icmpne(false_label_3,NULL)));
+  }
   return 0;
 }
 
