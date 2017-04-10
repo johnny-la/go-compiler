@@ -659,6 +659,9 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_multiplication_left);
   ADD_PATTERN(simplify_add_0);
   ADD_PATTERN(simplify_add_0_left);
+  ADD_PATTERN(simplify_noop);
+
+  /* Conditional branches */
   ADD_PATTERN(simplify_if_icmpeq);
   ADD_PATTERN(simplify_if_acmpeq);
   ADD_PATTERN(simplify_if_icmpne);
