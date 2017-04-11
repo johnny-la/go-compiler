@@ -785,8 +785,8 @@
   iload_1
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
   checkcast java/lang/String
+  dup
   astore_2
-  aload_2
   iconst_0
   invokevirtual java/lang/String/charAt(I)C
   ireturn
@@ -804,8 +804,8 @@
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
   checkcast java/lang/String
   invokenonvirtual java/lang/Integer/<init>(Ljava/lang/String;)V
+  dup
   astore_2
-  aload_2
   invokevirtual java/lang/Integer/intValue()I
   i2c
   ireturn

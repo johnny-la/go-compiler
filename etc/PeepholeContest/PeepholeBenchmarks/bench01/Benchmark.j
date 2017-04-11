@@ -16,11 +16,11 @@
   new joos/lib/JoosIO
   dup
   invokenonvirtual joos/lib/JoosIO/<init>()V
+  dup
   astore_1
-  aload_1
   invokevirtual joos/lib/JoosIO/readLine()Ljava/lang/String;
+  dup
   astore_2
-  aload_2
   ldc "backtrack"
   if_acmpeq true_2
   iconst_0

@@ -79,8 +79,8 @@
   new joos/lib/JoosIO
   dup
   invokenonvirtual joos/lib/JoosIO/<init>()V
+  dup
   astore_1
-  aload_1
   invokevirtual joos/lib/JoosIO/readLine()Ljava/lang/String;
   astore_2
   start_0:

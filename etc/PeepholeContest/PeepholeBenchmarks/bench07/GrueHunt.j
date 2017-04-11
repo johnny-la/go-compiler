@@ -96,8 +96,8 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   aload_1
   invokevirtual joos/lib/JoosIO/readLine()Ljava/lang/String;
+  dup
   astore 9
-  aload 9
   aconst_null
   if_acmpeq true_6
   iconst_0
@@ -204,8 +204,8 @@
   ifeq else_24
   aload 12
   invokevirtual Room/getNorth()LRoom;
+  dup
   astore 15
-  aload 15
   aconst_null
   if_acmpeq true_30
   iconst_0
@@ -241,8 +241,8 @@
   ifeq else_32
   aload 12
   invokevirtual Room/getSouth()LRoom;
+  dup
   astore 15
-  aload 15
   aconst_null
   if_acmpeq true_38
   iconst_0
@@ -278,8 +278,8 @@
   ifeq else_40
   aload 12
   invokevirtual Room/getWest()LRoom;
+  dup
   astore 15
-  aload 15
   aconst_null
   if_acmpeq true_46
   iconst_0
@@ -315,8 +315,8 @@
   ifeq else_48
   aload 12
   invokevirtual Room/getEast()LRoom;
+  dup
   astore 15
-  aload 15
   aconst_null
   if_acmpeq true_54
   iconst_0
@@ -342,8 +342,8 @@
   invokevirtual Room/getRoomAction()LRoomAction;
   aload 10
   invokevirtual RoomAction/performAction(Ljava/lang/String;)I
+  dup
   istore 5
-  iload 5
   iconst_0
   if_icmpeq true_58
   iconst_0
@@ -604,11 +604,16 @@
   iconst_1
   stop_131:
   ifeq else_128
+<<<<<<< HEAD
   iload 4
   iconst_1
   isub
   istore 4
   goto stop_57
+=======
+  iinc 4 -1
+  goto stop_129
+>>>>>>> c4fc01a85a7e4fc6a2abac0bf7e7a96125b971a5
   else_128:
   iload 5
   ldc 10
@@ -619,11 +624,16 @@
   iconst_1
   stop_135:
   ifeq else_132
+<<<<<<< HEAD
   iload 4
   iconst_2
   isub
   istore 4
   goto stop_57
+=======
+  iinc 4 -2
+  goto stop_133
+>>>>>>> c4fc01a85a7e4fc6a2abac0bf7e7a96125b971a5
   else_132:
   iload 5
   ldc 11
@@ -680,8 +690,8 @@
   aload 12
   ldc 100
   invokevirtual Room/randomRange(I)I
+  dup
   istore 7
-  iload 7
   iload 13
   if_icmplt true_153
   iconst_0
@@ -698,8 +708,8 @@
   iload 6
   iconst_1
   isub
+  dup
   istore 6
-  iload 6
   iconst_5
   if_icmpeq true_156
   iconst_0

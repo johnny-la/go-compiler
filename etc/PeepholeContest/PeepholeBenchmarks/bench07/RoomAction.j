@@ -163,8 +163,8 @@
   aload_0
   getfield RoomAction/R Ljoos/lib/JoosRandom;
   invokevirtual joos/lib/JoosRandom/nextInt()I
+  dup
   istore_2
-  iload_2
   iconst_0
   if_icmplt true_1
   iconst_0

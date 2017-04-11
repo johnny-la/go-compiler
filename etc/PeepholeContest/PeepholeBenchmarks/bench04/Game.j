@@ -183,7 +183,6 @@
   ifeq stop_1
   start_4:
   iload_3
-  iconst_0
   if_icmpeq true_6
   iconst_0
   goto stop_7
@@ -478,8 +477,8 @@
   ifeq stop_9
   aload_2
   invokevirtual joos/lib/JoosIO/readInt()I
+  dup
   istore 5
-  iload 5
   iconst_0
   if_icmpgt true_15
   iconst_0
@@ -563,8 +562,8 @@
   ifeq stop_5
   aload_1
   invokevirtual joos/lib/JoosIO/readInt()I
+  dup
   istore_2
-  iload_2
   iconst_0
   if_icmpgt true_12
   iconst_0
@@ -667,13 +666,13 @@
   istore_3
   aload_0
   invokevirtual Game/getCurrPlayerMoves()Ljava/util/Vector;
+  dup
   astore 4
-  aload 4
   iload_1
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
   checkcast Move
+  dup
   astore 5
-  aload 5
   iload_2
   iload_3
   aload_0
@@ -682,7 +681,6 @@
   invokevirtual Game/getCurrentPlayer()Ljava/lang/Character;
   invokevirtual Move/apply(IILBoard;Ljava/lang/Character;)V
   iload_1
-  iconst_0
   if_icmpne true_1
   iconst_0
   goto stop_2
@@ -707,8 +705,8 @@
   new joos/lib/JoosIO
   dup
   invokenonvirtual joos/lib/JoosIO/<init>()V
+  dup
   astore_1
-  aload_1
   ldc "1 - with fixed specialty moves\n2 - with random specialty moves"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   return
@@ -744,8 +742,8 @@
   ifeq stop_1
   aload_1
   invokevirtual joos/lib/JoosIO/readInt()I
+  dup
   istore_2
-  iload_2
   iconst_1
   if_icmpeq true_7
   iconst_0
@@ -886,11 +884,11 @@
   ldc 7
   invokenonvirtual Board/<init>(II)V
   invokenonvirtual Game/<init>(LBoard;)V
+  dup
   astore_2
-  aload_2
   invokevirtual Game/play()Ljava/lang/Character;
+  dup
   astore_3
-  aload_3
   aconst_null
   if_acmpeq true_2
   iconst_0

@@ -269,7 +269,6 @@
   stop_7:
   ifeq stop_5
   iload_1
-  iconst_0
   if_icmpeq true_14
   iconst_0
   goto stop_15
@@ -280,7 +279,6 @@
   ifeq false_13
   pop
   iload_2
-  iconst_0
   if_icmpeq true_16
   iconst_0
   goto false_13
@@ -306,7 +304,6 @@
   ifeq false_18
   pop
   iload_2
-  iconst_0
   if_icmpeq true_21
   iconst_0
   goto true_12
@@ -319,7 +316,6 @@
   ifne true_11
   pop
   iload_1
-  iconst_0
   if_icmpeq true_24
   iconst_0
   goto stop_25
@@ -379,7 +375,6 @@
   goto stop_9
   else_8:
   iload_1
-  iconst_0
   if_icmpeq true_36
   iconst_0
   goto stop_37
@@ -408,7 +403,6 @@
   goto stop_9
   else_33:
   iload_2
-  iconst_0
   if_icmpeq true_43
   iconst_0
   goto stop_44
@@ -464,8 +458,8 @@
   invokevirtual CustomPoint/getY()I
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
   checkcast java/util/Vector
+  dup
   astore_3
-  aload_3
   aload_1
   aload_2
   invokevirtual CustomPoint/getX()I

@@ -17,18 +17,18 @@
   getfield SudokuSolver/grid Ljava/util/Vector;
   iload_1
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
+  dup
   astore_3
-  aload_3
   checkcast java/util/Vector
+  dup
   astore 5
-  aload 5
   iload_2
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
+  dup
   astore 4
-  aload 4
   checkcast java/lang/Integer
+  dup
   astore 6
-  aload 6
   invokevirtual java/lang/Integer/intValue()I
   ireturn
   nop
@@ -41,8 +41,8 @@
   getfield SudokuSolver/grid Ljava/util/Vector;
   iload_1
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
+  dup
   astore 4
-  aload 4
   checkcast java/util/Vector
   astore 7
   new java/lang/Integer
@@ -350,7 +350,6 @@
   aload_0
   iload_1
   iload_2
-  iconst_0
   invokevirtual BacktrackSolver/setVal(III)V
   stop_15:
   stop_2:

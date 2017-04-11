@@ -113,13 +113,13 @@
   new joos/lib/JoosRandom
   dup
   invokenonvirtual joos/lib/JoosRandom/<init>()V
+  dup
   astore_2
-  aload_2
   invokevirtual joos/lib/JoosRandom/nextInt()I
   ldc 13
   irem
+  dup
   istore_3
-  iload_3
   iconst_0
   if_icmplt true_20
   iconst_0
@@ -190,9 +190,8 @@
 
 .method public f(I)I
   .limit locals 2
-  .limit stack 4
+  .limit stack 3
   iload_1
-  iconst_0
   if_icmpeq true_3
   iconst_0
   goto stop_4

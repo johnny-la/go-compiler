@@ -118,8 +118,8 @@
   iload_1
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
   checkcast java/util/Vector
+  dup
   astore_3
-  aload_3
   iload_2
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
   checkcast java/lang/Character
@@ -185,8 +185,7 @@
 
 .method public inRange(II)Z
   .limit locals 3
-  .limit stack 2
-  iconst_0
+  .limit stack 1
   iload_1
   if_icmple true_3
   iconst_0
@@ -210,7 +209,6 @@
   dup
   ifeq false_1
   pop
-  iconst_0
   iload_2
   if_icmple true_7
   iconst_0
@@ -394,8 +392,7 @@
 
 .method public expectedRow(I)I
   .limit locals 3
-  .limit stack 3
-  iconst_0
+  .limit stack 1
   iload_1
   if_icmple true_4
   iconst_0
@@ -434,7 +431,6 @@
   istore_2
   start_8:
   iload_2
-  iconst_0
   if_icmpge true_10
   iconst_0
   goto stop_11
@@ -460,10 +456,7 @@
   iadd
   ireturn
   stop_12:
-  iload_2
-  iconst_1
-  isub
-  istore_2
+  iinc 2 -1
   goto start_8
   stop_9:
   iconst_0
@@ -473,8 +466,7 @@
 
 .method public isValidColumn(I)Z
   .limit locals 2
-  .limit stack 2
-  iconst_0
+  .limit stack 1
   iload_1
   if_icmple true_2
   iconst_0
@@ -516,7 +508,7 @@
 
 .method public print()V
   .limit locals 4
-  .limit stack 4
+  .limit stack 3
   new joos/lib/JoosIO
   dup
   invokenonvirtual joos/lib/JoosIO/<init>()V
@@ -550,7 +542,6 @@
   istore_2
   start_4:
   iload_2
-  iconst_0
   if_icmpge true_6
   iconst_0
   goto stop_7
@@ -612,10 +603,7 @@
   aload_1
   ldc "|"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  iload_2
-  iconst_1
-  isub
-  istore_2
+  iinc 2 -1
   goto start_4
   stop_5:
   return
@@ -1041,10 +1029,7 @@
   iinc 2 1
   goto start_67
   stop_68:
-  iload_1
-  iconst_1
-  isub
-  istore_1
+  iinc 1 -1
   goto start_63
   stop_64:
   aconst_null
@@ -1064,8 +1049,8 @@
   ldc 7
   ldc 7
   invokenonvirtual Board/<init>(II)V
+  dup
   astore_1
-  aload_1
   invokevirtual Board/print()V
   aload_1
   ldc 6

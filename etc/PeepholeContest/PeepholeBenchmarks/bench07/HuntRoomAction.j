@@ -13,8 +13,8 @@
   aload_0
   iconst_4
   invokevirtual RoomAction/rand(I)I
+  dup
   istore_1
-  iload_1
   iconst_0
   if_icmpeq true_2
   iconst_0

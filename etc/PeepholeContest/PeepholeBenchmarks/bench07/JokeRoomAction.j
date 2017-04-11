@@ -148,13 +148,13 @@
   new joos/lib/JoosRandom
   dup
   invokenonvirtual joos/lib/JoosRandom/<init>()V
+  dup
   astore_1
-  aload_1
   invokevirtual joos/lib/JoosRandom/nextInt()I
   ldc 10
   irem
+  dup
   istore_2
-  iload_2
   iconst_0
   if_icmplt true_1
   iconst_0
@@ -168,7 +168,6 @@
   istore_2
   stop_0:
   iload_2
-  iconst_0
   if_icmpeq true_5
   iconst_0
   goto stop_6

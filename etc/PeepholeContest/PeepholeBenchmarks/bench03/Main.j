@@ -24,8 +24,8 @@
   new joos/lib/JoosIO
   dup
   invokenonvirtual joos/lib/JoosIO/<init>()V
+  dup
   astore_3
-  aload_3
   invokevirtual joos/lib/JoosIO/readLine()Ljava/lang/String;
   astore 4
   start_0:

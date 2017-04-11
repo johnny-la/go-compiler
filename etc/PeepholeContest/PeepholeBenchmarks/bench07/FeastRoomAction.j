@@ -83,13 +83,13 @@
   new joos/lib/JoosRandom
   dup
   invokenonvirtual joos/lib/JoosRandom/<init>()V
+  dup
   astore_2
-  aload_2
   invokevirtual joos/lib/JoosRandom/nextInt()I
   ldc 100
   irem
+  dup
   istore_3
-  iload_3
   iconst_0
   if_icmplt true_14
   iconst_0

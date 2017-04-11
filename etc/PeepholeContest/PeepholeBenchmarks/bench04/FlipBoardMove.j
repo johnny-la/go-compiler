@@ -43,7 +43,6 @@
   istore 6
   start_4:
   iload 6
-  iconst_0
   if_icmpge true_6
   iconst_0
   goto stop_7
@@ -60,10 +59,7 @@
   iload 5
   aload 9
   invokevirtual Board/place(ILjava/lang/Character;)V
-  iload 6
-  iconst_1
-  isub
-  istore 6
+  iinc 6 -1
   goto start_4
   stop_5:
   iinc 5 1

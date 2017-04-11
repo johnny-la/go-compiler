@@ -12,7 +12,7 @@
 
 .method public <init>(LRoom;Ljava/lang/String;I)V
   .limit locals 6
-  .limit stack 5
+  .limit stack 4
   aload_0
   invokenonvirtual java/lang/Object/<init>()V
   new joos/lib/JoosIO
@@ -52,7 +52,6 @@
   putfield Room/east LRoom;
   pop
   iload_3
-  iconst_0
   if_icmpgt true_1
   iconst_0
   goto stop_2
@@ -208,8 +207,8 @@
   aload_0
   ldc 100
   invokevirtual Room/randomRange(I)I
+  dup
   istore 4
-  iload 4
   iconst_5
   if_icmplt true_25
   iconst_0
@@ -438,13 +437,13 @@
   new joos/lib/JoosRandom
   dup
   invokenonvirtual joos/lib/JoosRandom/<init>()V
+  dup
   astore_3
-  aload_3
   invokevirtual joos/lib/JoosRandom/nextInt()I
   iload_1
   irem
+  dup
   istore_2
-  iload_2
   iconst_0
   if_icmpge true_1
   iconst_0
@@ -603,9 +602,8 @@
 
 .method public generateDescription(I)Ljava/lang/String;
   .limit locals 2
-  .limit stack 2
+  .limit stack 1
   iload_1
-  iconst_0
   if_icmpeq true_2
   iconst_0
   goto stop_3

@@ -40,8 +40,8 @@
   istore 5
   aload_1
   invokevirtual java/lang/String/length()I
+  dup
   istore_3
-  iload_3
   iconst_1
   isub
   istore 4
@@ -58,10 +58,7 @@
   stop_3:
   ifeq stop_1
   iinc 5 1
-  iload 4
-  iconst_1
-  isub
-  istore 4
+  iinc 4 -1
   goto start_0
   stop_1:
   iconst_0
@@ -92,7 +89,6 @@
   ifeq false_10
   pop
   iload 5
-  iconst_0
   if_icmpgt true_13
   iconst_0
   goto false_10
@@ -230,8 +226,8 @@
   invokenonvirtual java/lang/Character/<init>(C)V
   invokevirtual java/lang/Character/toString()Ljava/lang/String;
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
+  dup
   astore 6
-  aload 6
   dup
   ifnull null_30
   goto stop_31
@@ -344,8 +340,8 @@
   invokenonvirtual java/lang/Character/<init>(C)V
   invokevirtual java/lang/Character/toString()Ljava/lang/String;
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
+  dup
   astore 6
-  aload 6
   dup
   ifnull null_38
   goto stop_39
@@ -368,8 +364,8 @@
   invokenonvirtual java/lang/Character/<init>(C)V
   invokevirtual java/lang/Character/toString()Ljava/lang/String;
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
+  dup
   astore 6
-  aload 6
   dup
   ifnull null_42
   goto stop_43

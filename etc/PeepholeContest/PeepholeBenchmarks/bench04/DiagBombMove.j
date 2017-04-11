@@ -12,7 +12,7 @@
 
 .method public apply(IILBoard;Ljava/lang/Character;)V
   .limit locals 9
-  .limit stack 3
+  .limit stack 2
   aload_3
   invokevirtual Board/getWidth()I
   istore 7
@@ -29,7 +29,6 @@
   istore 5
   start_0:
   iload 5
-  iconst_0
   if_icmpge true_2
   iconst_0
   goto stop_3
@@ -47,14 +46,8 @@
   iload 6
   invokevirtual Board/clear(II)V
   stop_4:
-  iload 6
-  iconst_1
-  isub
-  istore 6
-  iload 5
-  iconst_1
-  isub
-  istore 5
+  iinc 6 -1
+  iinc 5 -1
   goto start_0
   stop_1:
   iload_2
@@ -85,10 +78,7 @@
   iload 6
   invokevirtual Board/clear(II)V
   stop_9:
-  iload 6
-  iconst_1
-  isub
-  istore 6
+  iinc 6 -1
   iinc 5 1
   goto start_5
   stop_6:
@@ -102,7 +92,6 @@
   istore 5
   start_10:
   iload 5
-  iconst_0
   if_icmpge true_12
   iconst_0
   goto stop_13
@@ -121,10 +110,7 @@
   invokevirtual Board/clear(II)V
   stop_14:
   iinc 6 1
-  iload 5
-  iconst_1
-  isub
-  istore 5
+  iinc 5 -1
   goto start_10
   stop_11:
   iload_2

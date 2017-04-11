@@ -36,21 +36,21 @@
   ldc ":>"
   ldc "\t"
   invokevirtual StringEscapeUtils/replace(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+  dup
   astore_2
-  aload_2
   areturn
   nop
 .end method
 
 .method public replace(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
   .limit locals 8
-  .limit stack 5
+  .limit stack 4
   aload_1
   aload_2
   iconst_0
   invokevirtual java/lang/String/indexOf(Ljava/lang/String;I)I
+  dup
   istore 5
-  iload 5
   iconst_0
   if_icmpge true_1
   iconst_0
@@ -60,7 +60,6 @@
   stop_2:
   ifeq stop_0
   aload_1
-  iconst_0
   iload 5
   invokevirtual java/lang/String/substring(II)Ljava/lang/String;
   astore 6

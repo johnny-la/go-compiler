@@ -16,8 +16,8 @@
   new DungeonInfos
   dup
   invokenonvirtual DungeonInfos/<init>()V
+  dup
   astore_1
-  aload_1
   invokevirtual DungeonInfos/initializeFromStdIn()V
   new Dungeon
   dup

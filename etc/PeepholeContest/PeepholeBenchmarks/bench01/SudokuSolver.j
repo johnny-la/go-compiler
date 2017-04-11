@@ -59,8 +59,8 @@
   getfield SudokuSolver/grid Ljava/util/Vector;
   iload_2
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
+  dup
   astore 4
-  aload 4
   checkcast java/util/Vector
   astore 5
   aload_1
@@ -88,7 +88,7 @@
 
 .method public print(Ljoos/lib/JoosIO;)V
   .limit locals 12
-  .limit stack 3
+  .limit stack 2
   iconst_0
   istore 4
   iconst_0
@@ -118,7 +118,6 @@
   stop_7:
   ifeq stop_5
   iload_2
-  iconst_0
   if_icmpeq true_12
   iconst_0
   goto stop_13
@@ -156,7 +155,6 @@
   goto stop_9
   else_8:
   iload_3
-  iconst_0
   if_icmpeq true_23
   iconst_0
   goto stop_24
@@ -209,11 +207,11 @@
   getfield SudokuSolver/grid Ljava/util/Vector;
   iload 4
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
+  dup
   astore 10
-  aload 10
   checkcast java/util/Vector
+  dup
   astore 11
-  aload 11
   iload 5
   invokevirtual java/util/Vector/elementAt(I)Ljava/lang/Object;
   astore 6
@@ -225,8 +223,8 @@
   astore 8
   aload 6
   checkcast java/lang/Integer
+  dup
   astore 7
-  aload 7
   aload 8
   if_acmpne true_33
   iconst_0
@@ -253,7 +251,6 @@
   goto start_4
   stop_5:
   iload_2
-  iconst_0
   if_icmpne true_38
   iconst_0
   goto stop_39
