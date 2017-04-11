@@ -44,7 +44,7 @@
   iconst_0
   if_icmpge true_8
   iconst_0
-  goto stop_9
+  goto true_5
   true_8:
   iconst_1
   stop_9:
@@ -59,7 +59,7 @@
   iconst_0
   if_icmpge true_10
   iconst_0
-  goto stop_11
+  goto true_4
   true_10:
   iconst_1
   stop_11:
@@ -74,7 +74,7 @@
   iconst_0
   if_icmpge true_12
   iconst_0
-  goto stop_13
+  goto true_3
   true_12:
   iconst_1
   stop_13:
@@ -89,7 +89,7 @@
   iconst_0
   if_icmpge true_14
   iconst_0
-  goto stop_15
+  goto true_2
   true_14:
   iconst_1
   stop_15:

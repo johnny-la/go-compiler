@@ -74,7 +74,7 @@
   ifeq else_4
   ldc 11
   ireturn
-  goto stop_5
+  goto stop_1
   else_4:
   aload_1
   ldc "show treasure"
@@ -90,7 +90,7 @@
   ifeq else_8
   iconst_4
   ireturn
-  goto stop_9
+  goto stop_1
   else_8:
   aload_1
   ldc "show coin"
@@ -106,7 +106,7 @@
   ifeq else_12
   ldc 6
   ireturn
-  goto stop_13
+  goto stop_1
   else_12:
   aload_1
   ldc "leave"
@@ -129,7 +129,7 @@
   iconst_0
   if_icmpge true_21
   iconst_0
-  goto stop_22
+  goto true_18
   true_21:
   iconst_1
   stop_22:
@@ -139,7 +139,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "Which direction?"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_17
+  goto stop_1
   else_16:
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;

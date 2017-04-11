@@ -48,7 +48,7 @@
   dup
   invokenonvirtual BacktrackSolver/<init>()V
   astore_3
-  goto stop_5
+  goto stop_1
   else_4:
   new BacktrackSolver
   dup

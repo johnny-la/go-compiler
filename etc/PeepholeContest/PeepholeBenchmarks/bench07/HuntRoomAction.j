@@ -46,7 +46,7 @@
   swap
   putfield HuntRoomAction/target Ljava/lang/String;
   pop
-  goto stop_5
+  goto stop_1
   else_4:
   iload_1
   iconst_2
@@ -63,7 +63,7 @@
   swap
   putfield HuntRoomAction/target Ljava/lang/String;
   pop
-  goto stop_9
+  goto stop_1
   else_8:
   iload_1
   iconst_3
@@ -80,7 +80,7 @@
   swap
   putfield HuntRoomAction/target Ljava/lang/String;
   pop
-  goto stop_13
+  goto stop_1
   else_12:
   ldc "wtf"
   dup
@@ -217,7 +217,7 @@
   iconst_0
   if_icmpge true_17
   iconst_0
-  goto stop_18
+  goto true_14
   true_17:
   iconst_1
   stop_18:
@@ -232,7 +232,7 @@
   iconst_0
   if_icmpge true_19
   iconst_0
-  goto stop_20
+  goto true_13
   true_19:
   iconst_1
   stop_20:
@@ -247,7 +247,7 @@
   iconst_0
   if_icmpge true_21
   iconst_0
-  goto stop_22
+  goto true_12
   true_21:
   iconst_1
   stop_22:
@@ -262,7 +262,7 @@
   iconst_0
   if_icmpge true_23
   iconst_0
-  goto stop_24
+  goto true_11
   true_23:
   iconst_1
   stop_24:
@@ -277,7 +277,7 @@
   iconst_0
   if_icmpge true_25
   iconst_0
-  goto stop_26
+  goto true_10
   true_25:
   iconst_1
   stop_26:
@@ -292,7 +292,7 @@
   iconst_0
   if_icmpge true_27
   iconst_0
-  goto stop_28
+  goto true_9
   true_27:
   iconst_1
   stop_28:
@@ -307,7 +307,7 @@
   iconst_0
   if_icmpge true_29
   iconst_0
-  goto stop_30
+  goto true_8
   true_29:
   iconst_1
   stop_30:
@@ -322,7 +322,7 @@
   iconst_0
   if_icmpge true_31
   iconst_0
-  goto stop_32
+  goto true_7
   true_31:
   iconst_1
   stop_32:
@@ -337,7 +337,7 @@
   iconst_0
   if_icmpge true_33
   iconst_0
-  goto stop_34
+  goto true_6
   true_33:
   iconst_1
   stop_34:
@@ -352,7 +352,7 @@
   iconst_0
   if_icmpge true_35
   iconst_0
-  goto stop_36
+  goto true_5
   true_35:
   iconst_1
   stop_36:
@@ -367,7 +367,7 @@
   iconst_0
   if_icmpge true_37
   iconst_0
-  goto stop_38
+  goto true_4
   true_37:
   iconst_1
   stop_38:
@@ -382,7 +382,7 @@
   iconst_0
   if_icmpge true_39
   iconst_0
-  goto stop_40
+  goto true_3
   true_39:
   iconst_1
   stop_40:
@@ -397,7 +397,7 @@
   iconst_0
   if_icmpge true_41
   iconst_0
-  goto stop_42
+  goto true_2
   true_41:
   iconst_1
   stop_42:
@@ -490,7 +490,7 @@
   pop
   ldc 8
   ireturn
-  goto stop_54
+  goto stop_1
   else_53:
   aload_0
   ldc 100
@@ -542,7 +542,7 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   iconst_0
   ireturn
-  goto stop_60
+  goto stop_1
   else_59:
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;
@@ -609,7 +609,7 @@
   iconst_0
   if_icmpge true_85
   iconst_0
-  goto stop_86
+  goto true_82
   true_85:
   iconst_1
   stop_86:
@@ -624,7 +624,7 @@
   iconst_0
   if_icmpge true_87
   iconst_0
-  goto stop_88
+  goto true_81
   true_87:
   iconst_1
   stop_88:
@@ -647,7 +647,7 @@
   getfield HuntRoomAction/taken Z
   ifeq true_93
   iconst_0
-  goto stop_94
+  goto false_90
   true_93:
   iconst_1
   stop_94:
@@ -703,7 +703,7 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   iconst_0
   ireturn
-  goto stop_80
+  goto stop_1
   else_79:
   aload_0
   aload_1

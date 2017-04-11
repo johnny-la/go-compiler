@@ -283,7 +283,7 @@
   iconst_0
   if_icmpeq true_16
   iconst_0
-  goto stop_17
+  goto false_13
   true_16:
   iconst_1
   stop_17:
@@ -309,7 +309,7 @@
   iconst_0
   if_icmpeq true_21
   iconst_0
-  goto stop_22
+  goto true_12
   true_21:
   iconst_1
   stop_22:
@@ -336,7 +336,7 @@
   iadd
   if_icmpeq true_26
   iconst_0
-  goto stop_27
+  goto true_11
   true_26:
   iconst_1
   stop_27:
@@ -366,7 +366,7 @@
   iadd
   if_icmpeq true_31
   iconst_0
-  goto stop_32
+  goto true_10
   true_31:
   iconst_1
   stop_32:
@@ -396,7 +396,7 @@
   iadd
   if_icmpeq true_38
   iconst_0
-  goto stop_39
+  goto true_35
   true_38:
   iconst_1
   stop_39:
@@ -405,7 +405,7 @@
   aload 4
   ldc "-"
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  goto stop_34
+  goto stop_9
   else_33:
   iload_2
   iconst_0
@@ -425,7 +425,7 @@
   iadd
   if_icmpeq true_45
   iconst_0
-  goto stop_46
+  goto true_42
   true_45:
   iconst_1
   stop_46:
@@ -434,7 +434,7 @@
   aload 4
   ldc "|"
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  goto stop_41
+  goto stop_9
   else_40:
   aload 4
   ldc " "

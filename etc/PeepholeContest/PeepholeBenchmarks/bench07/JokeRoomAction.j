@@ -44,7 +44,7 @@
   iconst_0
   if_icmpge true_5
   iconst_0
-  goto stop_6
+  goto true_2
   true_5:
   iconst_1
   stop_6:
@@ -81,7 +81,7 @@
   iconst_0
   if_icmpge true_13
   iconst_0
-  goto stop_14
+  goto true_10
   true_13:
   iconst_1
   stop_14:
@@ -96,7 +96,7 @@
   iconst_0
   if_icmpge true_15
   iconst_0
-  goto stop_16
+  goto true_9
   true_15:
   iconst_1
   stop_16:
@@ -110,7 +110,7 @@
   invokevirtual JokeRoomAction/printJoke()V
   iconst_0
   ireturn
-  goto stop_8
+  goto stop_1
   else_7:
   aload_1
   ldc "ignore"
@@ -130,7 +130,7 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   ldc 9
   ireturn
-  goto stop_18
+  goto stop_1
   else_17:
   aload_0
   aload_1
@@ -195,7 +195,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "Two peanuts were walking down the street, and one was assaulted."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_8
+  goto stop_4
   else_7:
   iload_2
   iconst_2
@@ -210,7 +210,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "A sausage is sitting in a frying pan. Another sausage gets dropped in, and says 'holy crap, it's hot in here!' To which the first sausage replies 'holy crap, a talking sausage!'"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_12
+  goto stop_4
   else_11:
   iload_2
   iconst_3
@@ -225,7 +225,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "Have you heard about that new movie Constipation?\n\nIt hasn't come out yet."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_16
+  goto stop_4
   else_15:
   iload_2
   iconst_4
@@ -240,7 +240,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "What's a foot long and slippery?\n\nA slipper!"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_20
+  goto stop_4
   else_19:
   iload_2
   iconst_5
@@ -255,7 +255,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "If H2O is on the inside of a fire hydrant, what's on the outside? \n\nK9P"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_24
+  goto stop_4
   else_23:
   iload_2
   ldc 6
@@ -270,7 +270,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "Two silk worms were in a race.\n\nIt ended in a tie."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_28
+  goto stop_4
   else_27:
   iload_2
   ldc 7
@@ -285,7 +285,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "Werner Heisenberg is driving down the highway. Cop stops him and says, 'Sir, do you know how fast you were going?' Heisenberg says, 'No, but I know exactly where I am!'"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_32
+  goto stop_4
   else_31:
   iload_2
   ldc 8
@@ -300,7 +300,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "What's the difference between roast beef and pea soup?\n\nAnyone can roast beef."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_36
+  goto stop_4
   else_35:
   iload_2
   ldc 9
@@ -315,7 +315,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "What do you get when you cross an elephant with a banana?\n\nElephant banana sine theta."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_40
+  goto stop_4
   else_39:
   iload_2
   ldc 10

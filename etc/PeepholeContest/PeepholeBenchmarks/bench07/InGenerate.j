@@ -78,7 +78,7 @@
   aload 4
   ldc "go south"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_9
+  goto stop_5
   else_8:
   iload_2
   iconst_2
@@ -92,7 +92,7 @@
   aload 4
   ldc "go east"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_13
+  goto stop_5
   else_12:
   iload_2
   iconst_3

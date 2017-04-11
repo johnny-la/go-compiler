@@ -178,7 +178,7 @@
   swap
   putfield Room/west LRoom;
   pop
-  goto stop_19
+  goto stop_0
   else_18:
   aload_0
   ldc 10
@@ -249,7 +249,7 @@
   pop
   iconst_1
   istore 4
-  goto stop_28
+  goto stop_24
   else_27:
   iload 4
   ldc 23
@@ -270,7 +270,7 @@
   pop
   iconst_2
   istore 4
-  goto stop_32
+  goto stop_24
   else_31:
   iload 4
   ldc 31
@@ -291,7 +291,7 @@
   pop
   iconst_3
   istore 4
-  goto stop_36
+  goto stop_24
   else_35:
   iload 4
   ldc 40
@@ -312,7 +312,7 @@
   pop
   iconst_4
   istore 4
-  goto stop_40
+  goto stop_24
   else_39:
   iload 4
   ldc 50
@@ -333,7 +333,7 @@
   pop
   iconst_5
   istore 4
-  goto stop_44
+  goto stop_24
   else_43:
   iload 4
   ldc 62
@@ -354,7 +354,7 @@
   pop
   ldc 6
   istore 4
-  goto stop_48
+  goto stop_24
   else_47:
   iload 4
   ldc 72
@@ -375,7 +375,7 @@
   pop
   ldc 7
   istore 4
-  goto stop_52
+  goto stop_24
   else_51:
   iload 4
   ldc 85
@@ -396,7 +396,7 @@
   pop
   ldc 8
   istore 4
-  goto stop_56
+  goto stop_24
   else_55:
   new EmptyRoomAction
   dup
@@ -628,7 +628,7 @@
   ifeq else_4
   ldc "You are in a large hall. Centered in this otherwise empty and silent room is an alabaster pedestal."
   areturn
-  goto stop_5
+  goto stop_1
   else_4:
   iload_1
   iconst_2
@@ -641,7 +641,7 @@
   ifeq else_8
   ldc "You are in a small room. On the east wall, there is a large rusty panel. At the top, two numbered dials spin rapidly, followed by an exclamation point. Below, there are 9 numbered dials spinning."
   areturn
-  goto stop_9
+  goto stop_1
   else_8:
   iload_1
   iconst_3
@@ -654,7 +654,7 @@
   ifeq else_12
   ldc "You are in a dusty padded room. On a simple desk in the middle of the room, a terminal displays '++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.'."
   areturn
-  goto stop_13
+  goto stop_1
   else_12:
   iload_1
   iconst_4
@@ -667,7 +667,7 @@
   ifeq else_16
   ldc "You are in into a delapidated theater. The seats are empty and broken, the banners all ripped to shreds. Yet standing behind a splintered podium at the center of the stage, a lanky, bald man stands patiently."
   areturn
-  goto stop_17
+  goto stop_1
   else_16:
   iload_1
   iconst_5
@@ -680,7 +680,7 @@
   ifeq else_20
   ldc "You are in a large banquet hall. Spread before you on a table long enough to seat a hundred people is a feast of unimaginable bounty, but there is nobody here. As you walk along it, you see your favorite foods nestled in between delicious-looking foods that you cannot even name."
   areturn
-  goto stop_21
+  goto stop_1
   else_20:
   iload_1
   ldc 6
@@ -693,7 +693,7 @@
   ifeq else_24
   ldc "You are in a dark cave through which a small bubbling creek passes. There are a dozen skeletons, all resting alongside this stream. You search them for valuables."
   areturn
-  goto stop_25
+  goto stop_1
   else_24:
   iload_1
   ldc 7
@@ -706,7 +706,7 @@
   ifeq else_28
   ldc "You are in a hall with nothing of note other than a lone stone staircase rising up into the air before you. It does not appear to be supported by anything."
   areturn
-  goto stop_29
+  goto stop_1
   else_28:
   iload_1
   ldc 8
@@ -719,7 +719,7 @@
   ifeq else_32
   ldc "You are in a forest. You hear the leaves rustling in the wind."
   areturn
-  goto stop_33
+  goto stop_1
   else_32:
   iload_1
   ldc 9
@@ -732,7 +732,7 @@
   ifeq else_36
   ldc "You see before you a vast desert. High overhead, vultures are circling above."
   areturn
-  goto stop_37
+  goto stop_1
   else_36:
   iload_1
   ldc 10
@@ -745,7 +745,7 @@
   ifeq else_40
   ldc "You are in a small cottage. It looks like nobody's lived here for a long time, and a thick layer of dust covers everything."
   areturn
-  goto stop_41
+  goto stop_1
   else_40:
   iload_1
   ldc 11
@@ -758,7 +758,7 @@
   ifeq else_44
   ldc "You find yourself in a completely white room with no features other than the exits. You cannot tell whether the white ceiling is nearby or far away, and it's too far away to reach."
   areturn
-  goto stop_45
+  goto stop_1
   else_44:
   iload_1
   ldc 12
@@ -771,7 +771,7 @@
   ifeq else_48
   ldc "You are in a large underground cavern."
   areturn
-  goto stop_49
+  goto stop_1
   else_48:
   ldc "You are in a non-descript room. How did you get here?"
   areturn

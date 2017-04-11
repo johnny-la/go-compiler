@@ -44,7 +44,7 @@
   iconst_0
   if_icmpge true_7
   iconst_0
-  goto stop_8
+  goto true_4
   true_7:
   iconst_1
   stop_8:
@@ -59,7 +59,7 @@
   iconst_0
   if_icmpge true_9
   iconst_0
-  goto stop_10
+  goto true_3
   true_9:
   iconst_1
   stop_10:
@@ -74,7 +74,7 @@
   iconst_0
   if_icmpge true_11
   iconst_0
-  goto stop_12
+  goto true_2
   true_11:
   iconst_1
   stop_12:
@@ -146,7 +146,7 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   ldc 9
   ireturn
-  goto stop_21
+  goto stop_1
   else_20:
   aload_0
   aload_1

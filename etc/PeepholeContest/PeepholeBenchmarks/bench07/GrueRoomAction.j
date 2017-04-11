@@ -47,7 +47,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "You die from lack of sustenance."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_5
+  goto stop_1
   else_4:
   aload_1
   ldc "light"
@@ -65,7 +65,7 @@
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "You have nothing with which to lighten up the room."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_9
+  goto stop_1
   else_8:
   aload_1
   ldc "run"

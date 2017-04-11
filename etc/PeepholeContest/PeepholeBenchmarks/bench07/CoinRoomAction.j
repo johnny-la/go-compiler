@@ -68,7 +68,7 @@
   iconst_0
   if_icmpge true_7
   iconst_0
-  goto stop_8
+  goto true_4
   true_7:
   iconst_1
   stop_8:
@@ -83,7 +83,7 @@
   iconst_0
   if_icmpge true_9
   iconst_0
-  goto stop_10
+  goto true_3
   true_9:
   iconst_1
   stop_10:
@@ -98,7 +98,7 @@
   iconst_0
   if_icmpge true_11
   iconst_0
-  goto stop_12
+  goto true_2
   true_11:
   iconst_1
   stop_12:
@@ -151,7 +151,7 @@
   iconst_0
   if_icmpge true_21
   iconst_0
-  goto stop_22
+  goto true_18
   true_21:
   iconst_1
   stop_22:
@@ -166,7 +166,7 @@
   iconst_0
   if_icmpge true_23
   iconst_0
-  goto stop_24
+  goto true_17
   true_23:
   iconst_1
   stop_24:
@@ -178,7 +178,7 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   iconst_0
   ireturn
-  goto stop_16
+  goto stop_1
   else_15:
   aload_1
   ldc "drink"
@@ -198,7 +198,7 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   iconst_1
   ireturn
-  goto stop_26
+  goto stop_1
   else_25:
   aload_0
   aload_1

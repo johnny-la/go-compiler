@@ -202,7 +202,7 @@
   getfield Board/width I
   if_icmplt true_5
   iconst_0
-  goto stop_6
+  goto false_2
   true_5:
   iconst_1
   stop_6:
@@ -214,7 +214,7 @@
   iload_2
   if_icmple true_7
   iconst_0
-  goto stop_8
+  goto false_1
   true_7:
   iconst_1
   stop_8:
@@ -227,7 +227,7 @@
   getfield Board/height I
   if_icmplt true_9
   iconst_0
-  goto stop_10
+  goto false_0
   true_9:
   iconst_1
   stop_10:
@@ -355,7 +355,7 @@
   getfield Board/SPACE Ljava/lang/Character;
   if_acmpne true_16
   iconst_0
-  goto stop_17
+  goto false_13
   true_16:
   iconst_1
   stop_17:
@@ -411,7 +411,7 @@
   getfield Board/width I
   if_icmplt true_6
   iconst_0
-  goto stop_7
+  goto false_3
   true_6:
   iconst_1
   stop_7:
@@ -490,7 +490,7 @@
   getfield Board/width I
   if_icmplt true_4
   iconst_0
-  goto stop_5
+  goto false_1
   true_4:
   iconst_1
   stop_5:
@@ -505,7 +505,7 @@
   getfield Board/height I
   if_icmpne true_6
   iconst_0
-  goto stop_7
+  goto false_0
   true_6:
   iconst_1
   stop_7:
@@ -711,7 +711,7 @@
   getfield Board/SPACE Ljava/lang/Character;
   if_acmpne true_19
   iconst_0
-  goto stop_20
+  goto false_16
   true_19:
   iconst_1
   stop_20:
@@ -816,7 +816,7 @@
   getfield Board/SPACE Ljava/lang/Character;
   if_acmpne true_40
   iconst_0
-  goto stop_41
+  goto false_37
   true_40:
   iconst_1
   stop_41:
@@ -921,7 +921,7 @@
   getfield Board/SPACE Ljava/lang/Character;
   if_acmpne true_61
   iconst_0
-  goto stop_62
+  goto false_58
   true_61:
   iconst_1
   stop_62:
@@ -1026,7 +1026,7 @@
   getfield Board/SPACE Ljava/lang/Character;
   if_acmpne true_82
   iconst_0
-  goto stop_83
+  goto false_79
   true_82:
   iconst_1
   stop_83:

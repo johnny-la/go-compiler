@@ -100,7 +100,7 @@
   invokevirtual java/lang/String/equals(Ljava/lang/Object;)Z
   ifeq true_5
   iconst_0
-  goto stop_6
+  goto false_2
   true_5:
   iconst_1
   stop_6:
@@ -153,7 +153,7 @@
   iload 4
   invokenonvirtual CustomPoint/<init>(II)V
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  goto stop_11
+  goto stop_9
   else_10:
   aload_2
   ldc "Downstairs"
@@ -167,7 +167,7 @@
   iload 4
   invokenonvirtual CustomPoint/<init>(II)V
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  goto stop_13
+  goto stop_9
   else_12:
   aload_2
   ldc "Treasure"
@@ -181,7 +181,7 @@
   iload 4
   invokenonvirtual CustomPoint/<init>(II)V
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  goto stop_15
+  goto stop_9
   else_14:
   aload_2
   ldc "Hero"

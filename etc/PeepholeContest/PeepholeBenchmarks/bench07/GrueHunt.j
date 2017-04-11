@@ -217,7 +217,7 @@
   aload_1
   ldc "There is no exit that way."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_25
+  goto stop_13
   else_28:
   aload 15
   astore 12
@@ -225,7 +225,7 @@
   ldc "You go north."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   stop_29:
-  goto stop_25
+  goto stop_13
   else_24:
   aload 10
   ldc "south"
@@ -254,7 +254,7 @@
   aload_1
   ldc "There is no exit that way."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_33
+  goto stop_13
   else_36:
   aload 15
   astore 12
@@ -262,7 +262,7 @@
   ldc "You go south."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   stop_37:
-  goto stop_33
+  goto stop_13
   else_32:
   aload 10
   ldc "west"
@@ -291,7 +291,7 @@
   aload_1
   ldc "There is no exit that way."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_41
+  goto stop_13
   else_44:
   aload 15
   astore 12
@@ -299,7 +299,7 @@
   ldc "You go west."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   stop_45:
-  goto stop_41
+  goto stop_13
   else_40:
   aload 10
   ldc "east"
@@ -328,7 +328,7 @@
   aload_1
   ldc "There is no exit that way."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_49
+  goto stop_13
   else_52:
   aload 15
   astore 12
@@ -336,7 +336,7 @@
   ldc "You go east."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   stop_53:
-  goto stop_49
+  goto stop_13
   else_48:
   aload 12
   invokevirtual Room/getRoomAction()LRoomAction;
@@ -365,7 +365,7 @@
   ifeq else_60
   iconst_0
   istore 4
-  goto stop_61
+  goto stop_57
   else_60:
   iload 5
   iconst_2
@@ -395,7 +395,7 @@
   stop_71:
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   invokevirtual joos/lib/JoosIO/print(Ljava/lang/String;)V
-  goto stop_65
+  goto stop_57
   else_64:
   iload 5
   iconst_3
@@ -439,7 +439,7 @@
   stop_83:
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_73
+  goto stop_57
   else_72:
   iload 5
   iconst_4
@@ -482,7 +482,7 @@
   stop_95:
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_85
+  goto stop_57
   else_84:
   iload 5
   iconst_5
@@ -526,7 +526,7 @@
   stop_107:
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_97
+  goto stop_57
   else_96:
   iload 5
   ldc 6
@@ -569,7 +569,7 @@
   stop_119:
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_109
+  goto stop_57
   else_108:
   iload 5
   ldc 7
@@ -581,7 +581,7 @@
   stop_123:
   ifeq else_120
   iinc 4 1
-  goto stop_121
+  goto stop_57
   else_120:
   iload 5
   ldc 8
@@ -593,7 +593,7 @@
   stop_127:
   ifeq else_124
   iinc 4 2
-  goto stop_125
+  goto stop_57
   else_124:
   iload 5
   ldc 9
@@ -608,7 +608,7 @@
   iconst_1
   isub
   istore 4
-  goto stop_129
+  goto stop_57
   else_128:
   iload 5
   ldc 10
@@ -623,7 +623,7 @@
   iconst_2
   isub
   istore 4
-  goto stop_133
+  goto stop_57
   else_132:
   iload 5
   ldc 11
@@ -666,7 +666,7 @@
   stop_147:
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_137
+  goto stop_57
   else_136:
   iload 5
   ldc 12
@@ -693,7 +693,7 @@
   aload_1
   ldc "You've escaped this bizarre world! You are now free."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_152
+  goto stop_57
   else_151:
   iload 6
   iconst_1

@@ -589,7 +589,7 @@
 ;              442: pop 
 ;              443: ldc 37 (8) 
 ;              445: ireturn 
-;              446: goto 152 
+;              446: goto 341 
 ;              449: aload_0 
 ;              450: ldc 75 (100) 
 ;              452: invokevirtual 89 (RoomAction/rand (I)I) 
@@ -630,7 +630,7 @@
 ;              526: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
 ;              529: iconst_0 
 ;              530: ireturn 
-;              531: goto 67 
+;              531: goto 256 
 ;              534: aload_0 
 ;              535: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
 ;              538: ldc 41 ("Your attack failed. The counter attack from the ") 

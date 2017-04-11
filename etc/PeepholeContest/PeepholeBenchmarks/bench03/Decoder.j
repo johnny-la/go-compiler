@@ -95,7 +95,7 @@
   iconst_0
   if_icmpgt true_13
   iconst_0
-  goto stop_14
+  goto false_10
   true_13:
   iconst_1
   stop_14:

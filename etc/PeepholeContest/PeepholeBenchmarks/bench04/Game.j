@@ -495,7 +495,7 @@
   invokevirtual java/util/Vector/size()I
   if_icmple true_17
   iconst_0
-  goto stop_18
+  goto false_14
   true_17:
   iconst_1
   stop_18:
@@ -579,7 +579,7 @@
   iload_3
   if_icmple true_14
   iconst_0
-  goto stop_15
+  goto false_11
   true_14:
   iconst_1
   stop_15:
@@ -760,7 +760,7 @@
   iconst_2
   if_icmpeq true_9
   iconst_0
-  goto stop_10
+  goto true_6
   true_9:
   iconst_1
   stop_10:
@@ -841,7 +841,7 @@
   invokevirtual Board/full()Z
   ifeq true_5
   iconst_0
-  goto stop_6
+  goto false_2
   true_5:
   iconst_1
   stop_6:

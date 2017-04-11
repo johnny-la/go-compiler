@@ -152,21 +152,26 @@ int positive_increment_0(CODE **c)
   return 0;
 }
 
-/* iinc x 0
+/* goto L1
+ * ...
+ * L1: (refrence count equals 1)
+ * L2:
  * --------->
- * null
- * Reason: an increment by zero is a non operation
- * 
+ * goto L2
+ * ....
+ * L1:
+ * L2:    (reference count increased by 1) 
  */
-// int positive_increment_0(CODE **c)
-// { 
-//   int x, k;
-//   if (is_iinc(*c, &x, &k) &&
-//       (k == 0)) {
-//      return kill_line(c);
-//   }
-//   return 0;
-// }
+int simplify_goto_label(CODE **c)
+{ 
+  int l1, l2;
+  if (is_goto(*c, &l1) && is_label(next(destination(l1)), &l2) && l1 > l2) {
+     droplabel(l1);
+     copylabel(l2);
+     return replace(c, 1, makeCODEgoto(l2, NULL));
+  }
+  return 0;
+}
 
 
 
@@ -180,5 +185,5 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_istore);
   ADD_PATTERN(positive_increment_left);
   ADD_PATTERN(positive_increment_0);
-
+  ADD_PATTERN(simplify_goto_label);
 }

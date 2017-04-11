@@ -132,7 +132,7 @@
   iconst_4
   if_icmpeq true_14
   iconst_0
-  goto stop_15
+  goto true_11
   true_14:
   iconst_1
   stop_15:
@@ -144,7 +144,7 @@
   ldc 8
   if_icmpeq true_16
   iconst_0
-  goto stop_17
+  goto true_10
   true_16:
   iconst_1
   stop_17:
@@ -170,7 +170,7 @@
   iconst_4
   if_icmpeq true_25
   iconst_0
-  goto stop_26
+  goto true_22
   true_25:
   iconst_1
   stop_26:
@@ -182,7 +182,7 @@
   ldc 8
   if_icmpeq true_27
   iconst_0
-  goto stop_28
+  goto true_21
   true_27:
   iconst_1
   stop_28:
@@ -194,7 +194,7 @@
   ldc 12
   if_icmpeq true_29
   iconst_0
-  goto stop_30
+  goto true_20
   true_29:
   iconst_1
   stop_30:
@@ -203,7 +203,7 @@
   aload_1
   ldc "|"
   invokevirtual joos/lib/JoosIO/print(Ljava/lang/String;)V
-  goto stop_19
+  goto stop_9
   else_18:
   aload_0
   getfield SudokuSolver/grid Ljava/util/Vector;
@@ -241,7 +241,7 @@
   aload_1
   aload 9
   invokevirtual joos/lib/JoosIO/print(Ljava/lang/String;)V
-  goto stop_32
+  goto stop_9
   else_31:
   aload_1
   ldc " "
@@ -267,7 +267,7 @@
   iconst_4
   if_icmpne true_40
   iconst_0
-  goto stop_41
+  goto false_37
   true_40:
   iconst_1
   stop_41:
@@ -279,7 +279,7 @@
   ldc 8
   if_icmpne true_42
   iconst_0
-  goto stop_43
+  goto false_36
   true_42:
   iconst_1
   stop_43:
