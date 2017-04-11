@@ -269,7 +269,6 @@ public class TypeChecker extends DepthFirstAdapter
     public void outALessExp(ALessExp node) {
         TypeClass leftType = getType(node.getL());
         TypeClass rightType = getType(node.getR());
-
         if (isComparable(leftType, rightType, BinaryOps.ORDERED)) {
             addType(node, Type.BOOL);
         } else {
@@ -624,6 +623,7 @@ public class TypeChecker extends DepthFirstAdapter
         if (isBlankId(node.getIdType())) {
             return;
         }
+
         TypeClass temp = new TypeClass(getType(right));
         if (temp != null && temp.baseType == Type.VOID) {
             ErrorManager.printError("Assigning to a void value");
@@ -637,6 +637,7 @@ public class TypeChecker extends DepthFirstAdapter
         }
         Symbol lhsSymbol = symbolTable.get(left);
         lhsSymbol.setType(temp);
+        System.out.println("Setting type of " + lhsSymbol + " to " + temp);
         nodeTypes.put(left, lhsSymbol.typeClass);
     }
 
@@ -813,7 +814,8 @@ public class TypeChecker extends DepthFirstAdapter
                         }
                     }
                     if (right != null) {
-                        if (right.baseType == Type.VOID) {
+                        if (right.functionSignature != null 
+                            && right.functionSignature.returnType.baseType == Type.VOID) {
                             ErrorManager.printError("assigning to a void value");
                         }
                     }
@@ -828,7 +830,7 @@ public class TypeChecker extends DepthFirstAdapter
                         newDecl = true;
                         Symbol s = symbolTable.get(rightArgs.get(i));
                             if (s != null) {
-                                if (s.kind != Symbol.SymbolKind.LOCAL) {
+                                if (s.kind == Symbol.SymbolKind.TYPE) {
                                 ErrorManager.printError("Assignment of only local variable or primitive allowed");
                             }
                         }
@@ -901,12 +903,13 @@ public class TypeChecker extends DepthFirstAdapter
     {
         // System.out.println("Traversing ID: " + node);
 
-        if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
+        if (getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
             addType(node, Type.BOOL);
             return;
         }
 
         TypeClass type = symbolTable.get(node).typeClass;
+        System.out.println(getIdName(node.getIdType()) + " type is " + type);
         if (type.baseType == Type.INVALID)
         {
             ErrorManager.printError("Identifier \"" + node.getIdType() + "\"has"
@@ -914,10 +917,7 @@ public class TypeChecker extends DepthFirstAdapter
             return;
         }
 
-        if(getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
-            addType(node, Type.BOOL);
-            return;
-        }
+
 
         addType(node, new TypeClass(type));        
     }
@@ -1493,7 +1493,7 @@ public class TypeChecker extends DepthFirstAdapter
      * Returns the type of the given node
      */
     public TypeClass getType(Node node)
-    {
+    {   
         return nodeTypes.get(node);
     }
 

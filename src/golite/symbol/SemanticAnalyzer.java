@@ -18,7 +18,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     private SymbolTable symbolTable;
 
     // Mapping between nodes and symbols, used later for type checking
-    public HashMap<Node,Symbol> symbolMap;
+    public HashMap<Node, Symbol> symbolMap;
     // The lvalues that were declared in short declaration statements
     public HashSet<Node> newShortDeclarationVariables;
     // Maps every struct declaration node to a symbol table which contains
@@ -670,8 +670,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 alias.node = symbol.node;
                 newSymbol.typeClass.typeAliases.add(alias);
             }
-            // If this is a symbol for a dynamically-typed variable
-            else if (symbol.kind == SymbolKind.LOCAL && symbol.typeClass.isNull())
+            // If this is a symbol for a implicitly-typed variable
+            else if ((symbol.kind == SymbolKind.FIELD || symbol.kind == SymbolKind.LOCAL) && symbol.typeClass.isNull())
             {
                 //System.out.println(id + " references a dynamically-typed variable: " + symbol);
                 symbol.symbolsToInheritType.add(newSymbol);
@@ -679,11 +679,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 {
                     newSymbol = symbol;
                 }   
+                System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap 1");
+
             }
             // Add a node->symbol mapping for future type checking
             symbolMap.put(node, newSymbol);
 
-            //System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
+            System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap 2");
         }
     }
 
