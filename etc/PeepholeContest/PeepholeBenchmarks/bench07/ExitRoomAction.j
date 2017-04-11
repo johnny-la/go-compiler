@@ -44,7 +44,7 @@
   iconst_0
   if_icmpge true_6
   iconst_0
-  goto true_3
+  goto stop_7
   true_6:
   iconst_1
   stop_7:
@@ -59,7 +59,7 @@
   iconst_0
   if_icmpge true_8
   iconst_0
-  goto true_2
+  goto stop_9
   true_8:
   iconst_1
   stop_9:
@@ -78,6 +78,5 @@
   invokevirtual RoomAction/performBaseAction(Ljava/lang/String;)I
   ireturn
   stop_1:
-  nop
 .end method
 

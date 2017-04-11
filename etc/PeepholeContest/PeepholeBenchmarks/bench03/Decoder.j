@@ -7,25 +7,21 @@
 
 .method public <init>()V
   .limit locals 1
-  .limit stack 3
+  .limit stack 2
   aload_0
   invokenonvirtual java/lang/Object/<init>()V
   new Conversion
   dup
   invokenonvirtual Conversion/<init>()V
-  dup
   aload_0
   swap
   putfield Decoder/con LConversion;
-  pop
   new lib/JoosBitwise
   dup
   invokenonvirtual lib/JoosBitwise/<init>()V
-  dup
   aload_0
   swap
   putfield Decoder/uti Llib/JoosBitwise;
-  pop
   return
 .end method
 
@@ -50,13 +46,7 @@
   iload 4
   invokevirtual java/lang/String/charAt(I)C
   ldc 61
-  if_icmpeq true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpne stop_1
   iinc 5 1
   iinc 4 -1
   goto start_0
@@ -66,13 +56,7 @@
   start_4:
   iload 4
   iload_3
-  if_icmplt true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq stop_5
+  if_icmpge stop_5
   iconst_0
   istore_2
   iload_3
@@ -91,7 +75,7 @@
   iload 5
   if_icmpgt true_13
   iconst_0
-  goto false_10
+  goto stop_14
   true_13:
   iconst_1
   stop_14:
@@ -99,13 +83,7 @@
   ifeq else_8
   iload 5
   iconst_2
-  if_icmpeq true_17
-  iconst_0
-  goto stop_18
-  true_17:
-  iconst_1
-  stop_18:
-  ifeq else_15
+  if_icmpne else_15
   aload_0
   getfield Decoder/uti Llib/JoosBitwise;
   iload_2
@@ -149,13 +127,7 @@
   else_15:
   iload 5
   iconst_1
-  if_icmpeq true_24
-  iconst_0
-  goto stop_25
-  true_24:
-  iconst_1
-  stop_25:
-  ifeq stop_23
+  if_icmpne stop_23
   aload_0
   getfield Decoder/uti Llib/JoosBitwise;
   iload_2
@@ -385,11 +357,9 @@
   invokevirtual java/lang/Character/toString()Ljava/lang/String;
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   astore 6
-  stop_9:
   goto start_4
   stop_5:
   aload 6
   areturn
-  nop
 .end method
 

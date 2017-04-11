@@ -771,6 +771,50 @@ int simplify_ifnull(CODE **c)
   return 0;
 }
 
+/*
+* dup 
+* aload_x
+* swap
+* putfield X Y
+* pop
+* ----->
+* aload_x
+* ldc x
+* putfield X Y
+* Explanation: dup and pop are redundant
+*/
+int simplify_pop_after_dup_putfield(CODE **c) {
+  int x;
+  char *y;
+  if (is_dup(*c) &&
+      is_aload(next(*c),&x)   &&
+      is_swap(next(next(*c))) &&
+      is_putfield(next(next(next(*c))), &y) &&
+      is_pop(next(next(next(next(*c)))))) {
+      return replace(c,5,makeCODEaload(x, makeCODEswap(makeCODEputfield(y , NULL))));
+  }
+  return 0;
+}
+
+/*
+* goto L1: 
+* ...
+* L1:
+* L2:
+* ---->
+* goto L2:
+* ...
+* L2:
+*/
+
+int delete_goto_deadlabel(CODE **c)
+{ int label;
+  if (is_label(*c, &label) && deadlabel(label)) {
+     return kill_line(c);
+  }
+  return 0;
+}
+
 void init_patterns(void) {
   ADD_PATTERN(simplify_multiplication_right);
   ADD_PATTERN(simplify_astore);
@@ -792,6 +836,8 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_noop);
   ADD_PATTERN(simplify_swaps);
   ADD_PATTERN(simplify_goto_label);
+  ADD_PATTERN(simplify_pop_after_dup_putfield);
+  ADD_PATTERN(delete_goto_deadlabel);
 
   /* Conditional branches */
   ADD_PATTERN(simplify_if_icmpeq);
@@ -803,4 +849,5 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_if_icmpgt);
   ADD_PATTERN(simplify_if_icmpge);
   ADD_PATTERN(simplify_ifnull);
+
 }

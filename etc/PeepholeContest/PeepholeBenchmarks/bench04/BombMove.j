@@ -22,13 +22,7 @@
   iload_1
   iconst_1
   iadd
-  if_icmple true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpgt stop_1
   iload_2
   iconst_1
   isub
@@ -38,13 +32,7 @@
   iload_2
   iconst_1
   iadd
-  if_icmple true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq stop_5
+  if_icmpgt stop_5
   aload_3
   iload 5
   iload 6
@@ -63,6 +51,5 @@
   .limit stack 1
   ldc "Bomb: eliminates the contents of all surrounding cells."
   areturn
-  nop
 .end method
 

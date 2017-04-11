@@ -19,13 +19,7 @@
   iload 5
   aload_3
   invokevirtual Board/getWidth()I
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   aload_3
   iload 5
   iload_2
@@ -39,13 +33,7 @@
   iload 6
   aload_3
   invokevirtual Board/getHeight()I
-  if_icmplt true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq stop_5
+  if_icmpge stop_5
   aload_3
   iload_1
   iload 6
@@ -61,6 +49,5 @@
   .limit stack 1
   ldc "Kill Row & Column: clears the row and column where the token lands."
   areturn
-  nop
 .end method
 

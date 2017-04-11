@@ -25,6 +25,5 @@
   .limit stack 1
   ldc "Classic: drops a token in a chosen column."
   areturn
-  nop
 .end method
 

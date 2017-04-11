@@ -7,7 +7,7 @@
 
 .method public <init>()V
   .limit locals 2
-  .limit stack 3
+  .limit stack 2
   aload_0
   invokenonvirtual RoomAction/<init>()V
   aload_0
@@ -16,88 +16,52 @@
   dup
   istore_1
   iconst_0
-  if_icmpeq true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq else_0
+  if_icmpne else_0
   ldc "fierce ogre"
-  dup
   aload_0
   swap
   putfield HuntRoomAction/target Ljava/lang/String;
-  pop
   goto stop_1
   else_0:
   iload_1
   iconst_1
-  if_icmpeq true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq else_4
+  if_icmpne else_4
   ldc "rabbit"
-  dup
   aload_0
   swap
   putfield HuntRoomAction/target Ljava/lang/String;
-  pop
-  goto stop_1
+  goto stop_5
   else_4:
   iload_1
   iconst_2
-  if_icmpeq true_10
-  iconst_0
-  goto stop_11
-  true_10:
-  iconst_1
-  stop_11:
-  ifeq else_8
+  if_icmpne else_8
   ldc "dark demon"
-  dup
   aload_0
   swap
   putfield HuntRoomAction/target Ljava/lang/String;
-  pop
-  goto stop_1
+  goto stop_9
   else_8:
   iload_1
   iconst_3
-  if_icmpeq true_14
-  iconst_0
-  goto stop_15
-  true_14:
-  iconst_1
-  stop_15:
-  ifeq else_12
+  if_icmpne else_12
   ldc "puppy"
-  dup
   aload_0
   swap
   putfield HuntRoomAction/target Ljava/lang/String;
-  pop
-  goto stop_1
+  goto stop_13
   else_12:
   ldc "wtf"
-  dup
   aload_0
   swap
   putfield HuntRoomAction/target Ljava/lang/String;
-  pop
   stop_13:
   stop_9:
   stop_5:
   stop_1:
   iconst_0
-  dup
   aload_0
   swap
   putfield HuntRoomAction/taken Z
-  pop
   return
 .end method
 
@@ -217,7 +181,7 @@
   iconst_0
   if_icmpge true_17
   iconst_0
-  goto true_14
+  goto stop_18
   true_17:
   iconst_1
   stop_18:
@@ -232,7 +196,7 @@
   iconst_0
   if_icmpge true_19
   iconst_0
-  goto true_13
+  goto stop_20
   true_19:
   iconst_1
   stop_20:
@@ -247,7 +211,7 @@
   iconst_0
   if_icmpge true_21
   iconst_0
-  goto true_12
+  goto stop_22
   true_21:
   iconst_1
   stop_22:
@@ -262,7 +226,7 @@
   iconst_0
   if_icmpge true_23
   iconst_0
-  goto true_11
+  goto stop_24
   true_23:
   iconst_1
   stop_24:
@@ -277,7 +241,7 @@
   iconst_0
   if_icmpge true_25
   iconst_0
-  goto true_10
+  goto stop_26
   true_25:
   iconst_1
   stop_26:
@@ -292,7 +256,7 @@
   iconst_0
   if_icmpge true_27
   iconst_0
-  goto true_9
+  goto stop_28
   true_27:
   iconst_1
   stop_28:
@@ -307,7 +271,7 @@
   iconst_0
   if_icmpge true_29
   iconst_0
-  goto true_8
+  goto stop_30
   true_29:
   iconst_1
   stop_30:
@@ -322,7 +286,7 @@
   iconst_0
   if_icmpge true_31
   iconst_0
-  goto true_7
+  goto stop_32
   true_31:
   iconst_1
   stop_32:
@@ -337,7 +301,7 @@
   iconst_0
   if_icmpge true_33
   iconst_0
-  goto true_6
+  goto stop_34
   true_33:
   iconst_1
   stop_34:
@@ -352,7 +316,7 @@
   iconst_0
   if_icmpge true_35
   iconst_0
-  goto true_5
+  goto stop_36
   true_35:
   iconst_1
   stop_36:
@@ -367,7 +331,7 @@
   iconst_0
   if_icmpge true_37
   iconst_0
-  goto true_4
+  goto stop_38
   true_37:
   iconst_1
   stop_38:
@@ -382,7 +346,7 @@
   iconst_0
   if_icmpge true_39
   iconst_0
-  goto true_3
+  goto stop_40
   true_39:
   iconst_1
   stop_40:
@@ -397,7 +361,7 @@
   iconst_0
   if_icmpge true_41
   iconst_0
-  goto true_2
+  goto stop_42
   true_41:
   iconst_1
   stop_42:
@@ -451,13 +415,7 @@
   ldc 100
   invokevirtual RoomAction/rand(I)I
   ldc 60
-  if_icmpgt true_55
-  iconst_0
-  goto stop_56
-  true_55:
-  iconst_1
-  stop_56:
-  ifeq else_53
+  if_icmple else_53
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "Your attack succeeded!"
@@ -483,11 +441,9 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   stop_58:
   iconst_1
-  dup
   aload_0
   swap
   putfield HuntRoomAction/taken Z
-  pop
   ldc 8
   ireturn
   goto stop_1
@@ -496,13 +452,7 @@
   ldc 100
   invokevirtual RoomAction/rand(I)I
   ldc 80
-  if_icmpgt true_61
-  iconst_0
-  goto stop_62
-  true_61:
-  iconst_1
-  stop_62:
-  ifeq else_59
+  if_icmple else_59
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "Your attack failed. But you managed to dodge the "
@@ -583,9 +533,6 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   ldc 10
   ireturn
-  stop_60:
-  stop_54:
-  stop_44:
   goto stop_1
   else_0:
   aload_1
@@ -609,7 +556,7 @@
   iconst_0
   if_icmpge true_85
   iconst_0
-  goto true_82
+  goto stop_86
   true_85:
   iconst_1
   stop_86:
@@ -624,7 +571,7 @@
   iconst_0
   if_icmpge true_87
   iconst_0
-  goto true_81
+  goto stop_88
   true_87:
   iconst_1
   stop_88:
@@ -647,7 +594,7 @@
   getfield HuntRoomAction/taken Z
   ifeq true_93
   iconst_0
-  goto false_90
+  goto stop_94
   true_93:
   iconst_1
   stop_94:
@@ -691,11 +638,9 @@
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   iconst_1
-  dup
   aload_0
   swap
   putfield HuntRoomAction/taken Z
-  pop
   stop_89:
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;
@@ -703,7 +648,7 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   iconst_0
   ireturn
-  goto stop_1
+  goto stop_80
   else_79:
   aload_0
   aload_1
@@ -711,6 +656,5 @@
   ireturn
   stop_80:
   stop_1:
-  nop
 .end method
 

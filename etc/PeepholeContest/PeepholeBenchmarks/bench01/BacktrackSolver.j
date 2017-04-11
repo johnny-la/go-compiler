@@ -31,7 +31,6 @@
   astore 6
   invokevirtual java/lang/Integer/intValue()I
   ireturn
-  nop
 .end method
 
 .method public setVal(III)V
@@ -65,25 +64,13 @@
   start_0:
   iload_3
   ldc 9
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   aload_0
   iload_1
   iload_3
   invokevirtual BacktrackSolver/getVal(II)I
   iload_2
-  if_icmpeq true_5
-  iconst_0
-  goto stop_6
-  true_5:
-  iconst_1
-  stop_6:
-  ifeq stop_4
+  if_icmpne stop_4
   iconst_0
   ireturn
   stop_4:
@@ -92,7 +79,6 @@
   stop_1:
   iconst_1
   ireturn
-  nop
 .end method
 
 .method public checkCol(II)Z
@@ -103,25 +89,13 @@
   start_0:
   iload_3
   ldc 9
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   aload_0
   iload_3
   iload_1
   invokevirtual BacktrackSolver/getVal(II)I
   iload_2
-  if_icmpeq true_5
-  iconst_0
-  goto stop_6
-  true_5:
-  iconst_1
-  stop_6:
-  ifeq stop_4
+  if_icmpne stop_4
   iconst_0
   ireturn
   stop_4:
@@ -130,7 +104,6 @@
   stop_1:
   iconst_1
   ireturn
-  nop
 .end method
 
 .method public checkBox(III)Z
@@ -153,25 +126,13 @@
   start_0:
   iload 4
   iconst_3
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   iconst_0
   istore 5
   start_4:
   iload 5
   iconst_3
-  if_icmplt true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq stop_5
+  if_icmpge stop_5
   aload_0
   iload_1
   iload 4
@@ -181,13 +142,7 @@
   iadd
   invokevirtual BacktrackSolver/getVal(II)I
   iload_3
-  if_icmpeq true_9
-  iconst_0
-  goto stop_10
-  true_9:
-  iconst_1
-  stop_10:
-  ifeq stop_8
+  if_icmpne stop_8
   iconst_0
   ireturn
   stop_8:
@@ -199,7 +154,6 @@
   stop_1:
   iconst_1
   ireturn
-  nop
 .end method
 
 .method public checkFinish()Z
@@ -210,37 +164,19 @@
   start_0:
   iload_1
   ldc 9
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   iconst_0
   istore_2
   start_4:
   iload_2
   ldc 9
-  if_icmplt true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq stop_5
+  if_icmpge stop_5
   aload_0
   iload_1
   iload_2
   invokevirtual BacktrackSolver/getVal(II)I
   iconst_0
-  if_icmpeq true_9
-  iconst_0
-  goto stop_10
-  true_9:
-  iconst_1
-  stop_10:
-  ifeq stop_8
+  if_icmpne stop_8
   iconst_0
   ireturn
   stop_8:
@@ -252,7 +188,6 @@
   stop_1:
   iconst_1
   ireturn
-  nop
 .end method
 
 .method public solveCell(II)V
@@ -268,13 +203,7 @@
   iload_2
   invokevirtual BacktrackSolver/getVal(II)I
   iconst_0
-  if_icmpne true_3
-  iconst_0
-  goto stop_4
-  true_3:
-  iconst_1
-  stop_4:
-  ifeq else_1
+  if_icmpeq else_1
   aload_0
   iload_1
   iload_2
@@ -286,13 +215,7 @@
   start_5:
   iload_3
   ldc 10
-  if_icmplt true_7
-  iconst_0
-  goto stop_8
-  true_7:
-  iconst_1
-  stop_8:
-  ifeq stop_6
+  if_icmpge stop_6
   aload_0
   iload_1
   iload_3
@@ -361,13 +284,7 @@
   .limit stack 4
   iload_2
   ldc 8
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq else_0
+  if_icmpge else_0
   aload_0
   iload_1
   iload_2

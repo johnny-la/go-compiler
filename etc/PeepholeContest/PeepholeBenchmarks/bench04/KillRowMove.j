@@ -19,13 +19,7 @@
   iload 5
   aload_3
   invokevirtual Board/getWidth()I
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   aload_3
   iload 5
   iload_2
@@ -41,6 +35,5 @@
   .limit stack 1
   ldc "Kill Row: clears the row where the token lands."
   areturn
-  nop
 .end method
 

@@ -7,25 +7,21 @@
 
 .method public <init>()V
   .limit locals 1
-  .limit stack 3
+  .limit stack 2
   aload_0
   invokenonvirtual java/lang/Object/<init>()V
   new Conversion
   dup
   invokenonvirtual Conversion/<init>()V
-  dup
   aload_0
   swap
   putfield Encoder/con LConversion;
-  pop
   new lib/JoosBitwise
   dup
   invokenonvirtual lib/JoosBitwise/<init>()V
-  dup
   aload_0
   swap
   putfield Encoder/uti Llib/JoosBitwise;
-  pop
   return
 .end method
 
@@ -48,35 +44,17 @@
   start_0:
   iload 5
   iload_3
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   iconst_0
   istore_2
   iload_3
   iload 5
   isub
   iload 4
-  if_icmpeq true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq else_4
+  if_icmpne else_4
   iload 4
   iconst_2
-  if_icmpeq true_9
-  iconst_0
-  goto stop_10
-  true_9:
-  iconst_1
-  stop_10:
-  ifeq stop_8
+  if_icmpne stop_8
   aload_0
   getfield Encoder/uti Llib/JoosBitwise;
   iload_2
@@ -158,13 +136,7 @@
   astore 6
   iload 4
   iconst_2
-  if_icmpeq true_21
-  iconst_0
-  goto stop_22
-  true_21:
-  iconst_1
-  stop_22:
-  ifeq else_19
+  if_icmpne else_19
   aload 6
   dup
   ifnull null_23
@@ -365,11 +337,9 @@
   invokevirtual java/lang/Character/toString()Ljava/lang/String;
   invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String;
   astore 6
-  stop_5:
   goto start_0
   stop_1:
   aload 6
   areturn
-  nop
 .end method
 

@@ -39,7 +39,6 @@
   dup
   astore_2
   areturn
-  nop
 .end method
 
 .method public replace(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
@@ -52,13 +51,7 @@
   dup
   istore 5
   iconst_0
-  if_icmpge true_1
-  iconst_0
-  goto stop_2
-  true_1:
-  iconst_1
-  stop_2:
-  ifeq stop_0
+  if_icmplt stop_0
   aload_1
   iload 5
   invokevirtual java/lang/String/substring(II)Ljava/lang/String;
@@ -113,6 +106,5 @@
   stop_0:
   aload_1
   areturn
-  nop
 .end method
 

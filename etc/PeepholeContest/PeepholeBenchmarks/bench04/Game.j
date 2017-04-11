@@ -16,67 +16,50 @@
   .limit stack 3
   aload_0
   invokenonvirtual java/lang/Object/<init>()V
-  aload_1
-  dup
   aload_0
-  swap
+  aload_1
   putfield Game/board LBoard;
-  pop
   new java/lang/Character
   dup
   ldc 88
   invokenonvirtual java/lang/Character/<init>(C)V
-  dup
   aload_0
   swap
   putfield Game/X Ljava/lang/Character;
-  pop
   new java/lang/Character
   dup
   ldc 79
   invokenonvirtual java/lang/Character/<init>(C)V
-  dup
   aload_0
   swap
   putfield Game/O Ljava/lang/Character;
-  pop
   aload_0
   getfield Game/X Ljava/lang/Character;
-  dup
   aload_0
   swap
   putfield Game/currentPlayer Ljava/lang/Character;
-  pop
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield Game/moves Ljava/util/Vector;
-  pop
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield Game/playerXMoves Ljava/util/Vector;
-  pop
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield Game/playerOMoves Ljava/util/Vector;
-  pop
   iconst_3
-  dup
   aload_0
   swap
   putfield Game/maxSpecialtyMoves I
-  pop
   return
 .end method
 
@@ -174,22 +157,10 @@
   iload_2
   aload_0
   getfield Game/maxSpecialtyMoves I
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   start_4:
   iload_3
-  if_icmpeq true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq stop_5
+  if_icmpne stop_5
   aload 4
   aload 5
   invokevirtual java/util/Vector/size()I
@@ -219,7 +190,6 @@
   aload_0
   getfield Game/X Ljava/lang/Character;
   areturn
-  nop
 .end method
 
 .method public getO()Ljava/lang/Character;
@@ -228,7 +198,6 @@
   aload_0
   getfield Game/O Ljava/lang/Character;
   areturn
-  nop
 .end method
 
 .method public getCurrentPlayer()Ljava/lang/Character;
@@ -237,7 +206,6 @@
   aload_0
   getfield Game/currentPlayer Ljava/lang/Character;
   areturn
-  nop
 .end method
 
 .method public getOtherPlayer()Ljava/lang/Character;
@@ -247,13 +215,7 @@
   getfield Game/currentPlayer Ljava/lang/Character;
   aload_0
   getfield Game/X Ljava/lang/Character;
-  if_acmpeq true_1
-  iconst_0
-  goto stop_2
-  true_1:
-  iconst_1
-  stop_2:
-  ifeq stop_0
+  if_acmpne stop_0
   aload_0
   getfield Game/O Ljava/lang/Character;
   areturn
@@ -261,7 +223,6 @@
   aload_0
   getfield Game/X Ljava/lang/Character;
   areturn
-  nop
 .end method
 
 .method public getOpponent(Ljava/lang/Character;)Ljava/lang/Character;
@@ -270,13 +231,7 @@
   aload_1
   aload_0
   getfield Game/X Ljava/lang/Character;
-  if_acmpeq true_1
-  iconst_0
-  goto stop_2
-  true_1:
-  iconst_1
-  stop_2:
-  ifeq stop_0
+  if_acmpne stop_0
   aload_0
   getfield Game/O Ljava/lang/Character;
   areturn
@@ -284,39 +239,28 @@
   aload_0
   getfield Game/X Ljava/lang/Character;
   areturn
-  nop
 .end method
 
 .method public togglePlayer()V
   .limit locals 1
-  .limit stack 3
+  .limit stack 2
   aload_0
   getfield Game/currentPlayer Ljava/lang/Character;
   aload_0
   getfield Game/X Ljava/lang/Character;
-  if_acmpeq true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq else_0
+  if_acmpne else_0
   aload_0
   getfield Game/O Ljava/lang/Character;
-  dup
   aload_0
   swap
   putfield Game/currentPlayer Ljava/lang/Character;
-  pop
   goto stop_1
   else_0:
   aload_0
   getfield Game/X Ljava/lang/Character;
-  dup
   aload_0
   swap
   putfield Game/currentPlayer Ljava/lang/Character;
-  pop
   stop_1:
   return
 .end method
@@ -328,13 +272,7 @@
   invokevirtual Game/getCurrentPlayer()Ljava/lang/Character;
   aload_0
   invokevirtual Game/getX()Ljava/lang/Character;
-  if_acmpeq true_1
-  iconst_0
-  goto stop_2
-  true_1:
-  iconst_1
-  stop_2:
-  ifeq stop_0
+  if_acmpne stop_0
   aload_0
   getfield Game/playerXMoves Ljava/util/Vector;
   areturn
@@ -342,7 +280,6 @@
   aload_0
   getfield Game/playerOMoves Ljava/util/Vector;
   areturn
-  nop
 .end method
 
 .method public printMenu()V
@@ -361,13 +298,7 @@
   iload_2
   aload 4
   invokevirtual java/util/Vector/size()I
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   iload_2
   iconst_1
   iadd
@@ -494,7 +425,7 @@
   invokevirtual java/util/Vector/size()I
   if_icmple true_17
   iconst_0
-  goto false_14
+  goto stop_18
   true_17:
   iconst_1
   stop_18:
@@ -509,7 +440,6 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   aload_0
   invokevirtual Game/printMenu()V
-  stop_13:
   goto start_8
   stop_9:
   aload_0
@@ -578,7 +508,7 @@
   iload_3
   if_icmple true_14
   iconst_0
-  goto false_11
+  goto stop_15
   true_14:
   iconst_1
   stop_15:
@@ -643,14 +573,12 @@
   else_24:
   iconst_1
   istore 4
-  stop_25:
   goto start_4
   stop_5:
   iload_2
   iconst_1
   isub
   ireturn
-  nop
 .end method
 
 .method public applyMove(I)V
@@ -681,13 +609,7 @@
   invokevirtual Game/getCurrentPlayer()Ljava/lang/Character;
   invokevirtual Move/apply(IILBoard;Ljava/lang/Character;)V
   iload_1
-  if_icmpne true_1
-  iconst_0
-  goto stop_2
-  true_1:
-  iconst_1
-  stop_2:
-  ifeq stop_0
+  if_icmpeq stop_0
   aload_0
   invokevirtual Game/getCurrPlayerMoves()Ljava/util/Vector;
   iload_1
@@ -758,7 +680,7 @@
   iconst_2
   if_icmpeq true_9
   iconst_0
-  goto true_6
+  goto stop_10
   true_9:
   iconst_1
   stop_10:
@@ -773,7 +695,6 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   aload_0
   invokevirtual Game/printGameModeMenu()V
-  stop_5:
   goto start_0
   stop_1:
   aload_0
@@ -782,13 +703,7 @@
   invokevirtual Game/fillMoves(Ljava/util/Vector;)V
   iload_2
   iconst_1
-  if_icmpeq true_13
-  iconst_0
-  goto stop_14
-  true_13:
-  iconst_1
-  stop_14:
-  ifeq else_11
+  if_icmpne else_11
   aload_0
   aload_0
   getfield Game/playerXMoves Ljava/util/Vector;
@@ -839,7 +754,7 @@
   invokevirtual Board/full()Z
   ifeq true_5
   iconst_0
-  goto false_2
+  goto stop_6
   true_5:
   iconst_1
   stop_6:
@@ -866,7 +781,6 @@
   invokevirtual Board/print()V
   aload_2
   areturn
-  nop
 .end method
 
 .method public static main([Ljava/lang/String;)V
@@ -890,13 +804,7 @@
   dup
   astore_3
   aconst_null
-  if_acmpeq true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq else_0
+  if_acmpne else_0
   aload_1
   ldc "Stalemate!"
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V

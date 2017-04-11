@@ -170,91 +170,63 @@
 ;     attributes_count 1
 ;     method_attributes[0] :
 ;         name_index 64 (Code)
-;         attribute_length 140
-;         max_stack 3
+;         attribute_length 96
+;         max_stack 2
 ;         max_locals 2
-;         code_length 128
+;         code_length 84
 ;         code :
 ;                0: aload_0 
 ;                1: invokespecial 22 (RoomAction/<init> ()V) 
 ;                4: aload_0 
 ;                5: iconst_4 
 ;                6: invokevirtual 89 (RoomAction/rand (I)I) 
-;                9: istore_1 
-;               10: iload_1 
+;                9: dup 
+;               10: istore_1 
 ;               11: iconst_0 
-;               12: if_icmpeq 7 
-;               15: iconst_0 
-;               16: goto 4 
-;               19: iconst_1 
-;               20: ifeq 15 
-;               23: ldc 36 ("fierce ogre") 
-;               25: dup 
-;               26: aload_0 
-;               27: swap 
-;               28: putfield 111 (HuntRoomAction/target Ljava/lang/String;) 
-;               31: pop 
-;               32: goto 87 
-;               35: iload_1 
-;               36: iconst_1 
-;               37: if_icmpeq 7 
-;               40: iconst_0 
-;               41: goto 4 
-;               44: iconst_1 
-;               45: ifeq 15 
-;               48: ldc 79 ("rabbit") 
-;               50: dup 
-;               51: aload_0 
-;               52: swap 
-;               53: putfield 111 (HuntRoomAction/target Ljava/lang/String;) 
-;               56: pop 
-;               57: goto 62 
-;               60: iload_1 
-;               61: iconst_2 
-;               62: if_icmpeq 7 
-;               65: iconst_0 
-;               66: goto 4 
-;               69: iconst_1 
-;               70: ifeq 15 
-;               73: ldc 2 ("dark demon") 
-;               75: dup 
-;               76: aload_0 
-;               77: swap 
-;               78: putfield 111 (HuntRoomAction/target Ljava/lang/String;) 
-;               81: pop 
-;               82: goto 37 
-;               85: iload_1 
-;               86: iconst_3 
-;               87: if_icmpeq 7 
-;               90: iconst_0 
-;               91: goto 4 
-;               94: iconst_1 
-;               95: ifeq 15 
-;               98: ldc 34 ("puppy") 
-;              100: dup 
-;              101: aload_0 
-;              102: swap 
-;              103: putfield 111 (HuntRoomAction/target Ljava/lang/String;) 
-;              106: pop 
-;              107: goto 12 
-;              110: ldc 1 ("wtf") 
-;              112: dup 
-;              113: aload_0 
-;              114: swap 
-;              115: putfield 111 (HuntRoomAction/target Ljava/lang/String;) 
-;              118: pop 
-;              119: iconst_0 
-;              120: dup 
-;              121: aload_0 
-;              122: swap 
-;              123: putfield 4 (HuntRoomAction/taken Z) 
-;              126: pop 
-;              127: return 
+;               12: if_icmpne 13 
+;               15: ldc 36 ("fierce ogre") 
+;               17: aload_0 
+;               18: swap 
+;               19: putfield 111 (HuntRoomAction/target Ljava/lang/String;) 
+;               22: goto 55 
+;               25: iload_1 
+;               26: iconst_1 
+;               27: if_icmpne 13 
+;               30: ldc 79 ("rabbit") 
+;               32: aload_0 
+;               33: swap 
+;               34: putfield 111 (HuntRoomAction/target Ljava/lang/String;) 
+;               37: goto 40 
+;               40: iload_1 
+;               41: iconst_2 
+;               42: if_icmpne 13 
+;               45: ldc 2 ("dark demon") 
+;               47: aload_0 
+;               48: swap 
+;               49: putfield 111 (HuntRoomAction/target Ljava/lang/String;) 
+;               52: goto 25 
+;               55: iload_1 
+;               56: iconst_3 
+;               57: if_icmpne 13 
+;               60: ldc 34 ("puppy") 
+;               62: aload_0 
+;               63: swap 
+;               64: putfield 111 (HuntRoomAction/target Ljava/lang/String;) 
+;               67: goto 10 
+;               70: ldc 1 ("wtf") 
+;               72: aload_0 
+;               73: swap 
+;               74: putfield 111 (HuntRoomAction/target Ljava/lang/String;) 
+;               77: iconst_0 
+;               78: aload_0 
+;               79: swap 
+;               80: putfield 4 (HuntRoomAction/taken Z) 
+;               83: return 
 ;         exception_table_length 0
 ;         attributes_count 0
 
 
-; methods[1] (offset 0x5dc) :
+; methods[1] (offset 0x5b0) :
 ;     access_flags 0x1 [ ACC_PUBLIC ]
 ;     name_index 26 (describe)
 ;     descriptor_index 90 (()V)
@@ -337,17 +309,17 @@
 ;         attributes_count 0
 
 
-; methods[2] (offset 0x683) :
+; methods[2] (offset 0x657) :
 ;     access_flags 0x1 [ ACC_PUBLIC ]
 ;     name_index 109 (performAction)
 ;     descriptor_index 51 ((Ljava/lang/String;)I)
 ;     attributes_count 1
 ;     method_attributes[0] :
 ;         name_index 64 (Code)
-;         attribute_length 800
+;         attribute_length 779
 ;         max_stack 4
 ;         max_locals 2
-;         code_length 788
+;         code_length 767
 ;         code :
 ;                0: aload_1 
 ;                1: ldc 16 ("strike") 
@@ -514,7 +486,7 @@
 ;              284: iconst_0 
 ;              285: goto 4 
 ;              288: iconst_1 
-;              289: ifeq 312 
+;              289: ifeq 294 
 ;              292: aload_0 
 ;              293: getfield 4 (HuntRoomAction/taken Z) 
 ;              296: ifeq 69 
@@ -549,219 +521,206 @@
 ;              357: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
 ;              360: iconst_0 
 ;              361: ireturn 
-;              362: goto 425 
+;              362: goto 405 
 ;              365: aload_0 
 ;              366: ldc 75 (100) 
 ;              368: invokevirtual 89 (RoomAction/rand (I)I) 
 ;              371: ldc 85 (60) 
-;              373: if_icmpgt 7 
-;              376: iconst_0 
-;              377: goto 4 
-;              380: iconst_1 
-;              381: ifeq 68 
-;              384: aload_0 
-;              385: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
-;              388: ldc 126 ("Your attack succeeded!") 
-;              390: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
-;              393: aload_0 
-;              394: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
-;              397: ldc 132 ("You rip out the heart of your prey and takes a bite.") 
-;              399: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
-;              402: aload_0 
-;              403: getfield 111 (HuntRoomAction/target Ljava/lang/String;) 
-;              406: ldc 34 ("puppy") 
-;              408: invokevirtual 83 (java/lang/String/equals (Ljava/lang/Object;)Z) 
-;              411: ifeq 15 
-;              414: aload_0 
-;              415: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
-;              418: ldc 12 ("You monster!") 
-;              420: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
-;              423: goto 12 
-;              426: aload_0 
-;              427: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
-;              430: ldc 103 ("You feel energized.") 
-;              432: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
-;              435: iconst_1 
-;              436: dup 
-;              437: aload_0 
-;              438: swap 
-;              439: putfield 4 (HuntRoomAction/taken Z) 
-;              442: pop 
-;              443: ldc 37 (8) 
-;              445: ireturn 
-;              446: goto 341 
-;              449: aload_0 
-;              450: ldc 75 (100) 
-;              452: invokevirtual 89 (RoomAction/rand (I)I) 
-;              455: ldc 42 (80) 
-;              457: if_icmpgt 7 
-;              460: iconst_0 
-;              461: goto 4 
-;              464: iconst_1 
-;              465: ifeq 69 
-;              468: aload_0 
-;              469: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
-;              472: ldc 135 ("Your attack failed. But you managed to dodge the ") 
-;              474: dup 
-;              475: ifnull 6 
-;              478: goto 6 
-;              481: pop 
-;              482: ldc 67 ("null") 
-;              484: aload_0 
-;              485: getfield 111 (HuntRoomAction/target Ljava/lang/String;) 
-;              488: dup 
-;              489: ifnull 6 
-;              492: goto 6 
-;              495: pop 
-;              496: ldc 67 ("null") 
-;              498: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
-;              501: dup 
-;              502: ifnull 6 
-;              505: goto 6 
-;              508: pop 
-;              509: ldc 67 ("null") 
-;              511: ldc 28 ("'s attack and avoid taking damage.") 
-;              513: dup 
-;              514: ifnull 6 
-;              517: goto 6 
-;              520: pop 
-;              521: ldc 67 ("null") 
-;              523: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
-;              526: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
-;              529: iconst_0 
-;              530: ireturn 
-;              531: goto 256 
-;              534: aload_0 
-;              535: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
-;              538: ldc 41 ("Your attack failed. The counter attack from the ") 
-;              540: dup 
-;              541: ifnull 6 
-;              544: goto 6 
-;              547: pop 
-;              548: ldc 67 ("null") 
-;              550: aload_0 
-;              551: getfield 111 (HuntRoomAction/target Ljava/lang/String;) 
-;              554: dup 
-;              555: ifnull 6 
-;              558: goto 6 
-;              561: pop 
-;              562: ldc 67 ("null") 
-;              564: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
-;              567: dup 
-;              568: ifnull 6 
-;              571: goto 6 
-;              574: pop 
-;              575: ldc 67 ("null") 
-;              577: ldc 25 (" left you wounded.") 
-;              579: dup 
-;              580: ifnull 6 
-;              583: goto 6 
-;              586: pop 
-;              587: ldc 67 ("null") 
-;              589: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
-;              592: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
-;              595: ldc 60 (10) 
-;              597: ireturn 
-;              598: goto 189 
-;              601: aload_1 
-;              602: ldc 134 ("run") 
-;              604: iconst_0 
-;              605: invokevirtual 88 (java/lang/String/indexOf (Ljava/lang/String;I)I) 
-;              608: iconst_0 
-;              609: if_icmpge 7 
-;              612: iconst_0 
-;              613: goto 4 
-;              616: iconst_1 
-;              617: dup 
-;              618: ifne 20 
-;              621: pop 
-;              622: aload_1 
-;              623: ldc 21 ("escape") 
-;              625: iconst_0 
-;              626: invokevirtual 88 (java/lang/String/indexOf (Ljava/lang/String;I)I) 
-;              629: iconst_0 
-;              630: if_icmpge 7 
-;              633: iconst_0 
-;              634: goto 4 
-;              637: iconst_1 
-;              638: dup 
-;              639: ifne 20 
-;              642: pop 
-;              643: aload_1 
-;              644: ldc 29 ("leave") 
-;              646: iconst_0 
-;              647: invokevirtual 88 (java/lang/String/indexOf (Ljava/lang/String;I)I) 
-;              650: iconst_0 
-;              651: if_icmpge 7 
-;              654: iconst_0 
-;              655: goto 4 
-;              658: iconst_1 
-;              659: ifeq 122 
-;              662: aload_0 
-;              663: ldc 75 (100) 
-;              665: invokevirtual 89 (RoomAction/rand (I)I) 
-;              668: ldc 19 (90) 
-;              670: if_icmpgt 7 
-;              673: iconst_0 
-;              674: goto 4 
-;              677: iconst_1 
-;              678: dup 
-;              679: ifeq 16 
-;              682: pop 
-;              683: aload_0 
-;              684: getfield 4 (HuntRoomAction/taken Z) 
-;              687: ifeq 7 
-;              690: iconst_0 
-;              691: goto 4 
-;              694: iconst_1 
-;              695: ifeq 72 
-;              698: aload_0 
-;              699: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
-;              702: ldc 102 ("The ") 
-;              704: dup 
-;              705: ifnull 6 
-;              708: goto 6 
-;              711: pop 
-;              712: ldc 67 ("null") 
-;              714: aload_0 
-;              715: getfield 111 (HuntRoomAction/target Ljava/lang/String;) 
-;              718: dup 
-;              719: ifnull 6 
-;              722: goto 6 
-;              725: pop 
-;              726: ldc 67 ("null") 
-;              728: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
-;              731: dup 
-;              732: ifnull 6 
-;              735: goto 6 
-;              738: pop 
-;              739: ldc 67 ("null") 
-;              741: ldc 32 (" was startled by your indecision. It ran away.") 
-;              743: dup 
-;              744: ifnull 6 
-;              747: goto 6 
-;              750: pop 
-;              751: ldc 67 ("null") 
-;              753: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
-;              756: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
-;              759: iconst_1 
-;              760: dup 
+;              373: if_icmple 66 
+;              376: aload_0 
+;              377: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
+;              380: ldc 126 ("Your attack succeeded!") 
+;              382: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;              385: aload_0 
+;              386: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
+;              389: ldc 132 ("You rip out the heart of your prey and takes a bite.") 
+;              391: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;              394: aload_0 
+;              395: getfield 111 (HuntRoomAction/target Ljava/lang/String;) 
+;              398: ldc 34 ("puppy") 
+;              400: invokevirtual 83 (java/lang/String/equals (Ljava/lang/Object;)Z) 
+;              403: ifeq 15 
+;              406: aload_0 
+;              407: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
+;              410: ldc 12 ("You monster!") 
+;              412: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;              415: goto 12 
+;              418: aload_0 
+;              419: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
+;              422: ldc 103 ("You feel energized.") 
+;              424: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;              427: iconst_1 
+;              428: aload_0 
+;              429: swap 
+;              430: putfield 4 (HuntRoomAction/taken Z) 
+;              433: ldc 37 (8) 
+;              435: ireturn 
+;              436: goto 331 
+;              439: aload_0 
+;              440: ldc 75 (100) 
+;              442: invokevirtual 89 (RoomAction/rand (I)I) 
+;              445: ldc 42 (80) 
+;              447: if_icmple 69 
+;              450: aload_0 
+;              451: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
+;              454: ldc 135 ("Your attack failed. But you managed to dodge the ") 
+;              456: dup 
+;              457: ifnull 6 
+;              460: goto 6 
+;              463: pop 
+;              464: ldc 67 ("null") 
+;              466: aload_0 
+;              467: getfield 111 (HuntRoomAction/target Ljava/lang/String;) 
+;              470: dup 
+;              471: ifnull 6 
+;              474: goto 6 
+;              477: pop 
+;              478: ldc 67 ("null") 
+;              480: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
+;              483: dup 
+;              484: ifnull 6 
+;              487: goto 6 
+;              490: pop 
+;              491: ldc 67 ("null") 
+;              493: ldc 28 ("'s attack and avoid taking damage.") 
+;              495: dup 
+;              496: ifnull 6 
+;              499: goto 6 
+;              502: pop 
+;              503: ldc 67 ("null") 
+;              505: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
+;              508: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;              511: iconst_0 
+;              512: ireturn 
+;              513: goto 254 
+;              516: aload_0 
+;              517: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
+;              520: ldc 41 ("Your attack failed. The counter attack from the ") 
+;              522: dup 
+;              523: ifnull 6 
+;              526: goto 6 
+;              529: pop 
+;              530: ldc 67 ("null") 
+;              532: aload_0 
+;              533: getfield 111 (HuntRoomAction/target Ljava/lang/String;) 
+;              536: dup 
+;              537: ifnull 6 
+;              540: goto 6 
+;              543: pop 
+;              544: ldc 67 ("null") 
+;              546: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
+;              549: dup 
+;              550: ifnull 6 
+;              553: goto 6 
+;              556: pop 
+;              557: ldc 67 ("null") 
+;              559: ldc 25 (" left you wounded.") 
+;              561: dup 
+;              562: ifnull 6 
+;              565: goto 6 
+;              568: pop 
+;              569: ldc 67 ("null") 
+;              571: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
+;              574: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;              577: ldc 60 (10) 
+;              579: ireturn 
+;              580: goto 187 
+;              583: aload_1 
+;              584: ldc 134 ("run") 
+;              586: iconst_0 
+;              587: invokevirtual 88 (java/lang/String/indexOf (Ljava/lang/String;I)I) 
+;              590: iconst_0 
+;              591: if_icmpge 7 
+;              594: iconst_0 
+;              595: goto 4 
+;              598: iconst_1 
+;              599: dup 
+;              600: ifne 20 
+;              603: pop 
+;              604: aload_1 
+;              605: ldc 21 ("escape") 
+;              607: iconst_0 
+;              608: invokevirtual 88 (java/lang/String/indexOf (Ljava/lang/String;I)I) 
+;              611: iconst_0 
+;              612: if_icmpge 7 
+;              615: iconst_0 
+;              616: goto 4 
+;              619: iconst_1 
+;              620: dup 
+;              621: ifne 20 
+;              624: pop 
+;              625: aload_1 
+;              626: ldc 29 ("leave") 
+;              628: iconst_0 
+;              629: invokevirtual 88 (java/lang/String/indexOf (Ljava/lang/String;I)I) 
+;              632: iconst_0 
+;              633: if_icmpge 7 
+;              636: iconst_0 
+;              637: goto 4 
+;              640: iconst_1 
+;              641: ifeq 120 
+;              644: aload_0 
+;              645: ldc 75 (100) 
+;              647: invokevirtual 89 (RoomAction/rand (I)I) 
+;              650: ldc 19 (90) 
+;              652: if_icmpgt 7 
+;              655: iconst_0 
+;              656: goto 4 
+;              659: iconst_1 
+;              660: dup 
+;              661: ifeq 16 
+;              664: pop 
+;              665: aload_0 
+;              666: getfield 4 (HuntRoomAction/taken Z) 
+;              669: ifeq 7 
+;              672: iconst_0 
+;              673: goto 4 
+;              676: iconst_1 
+;              677: ifeq 70 
+;              680: aload_0 
+;              681: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
+;              684: ldc 102 ("The ") 
+;              686: dup 
+;              687: ifnull 6 
+;              690: goto 6 
+;              693: pop 
+;              694: ldc 67 ("null") 
+;              696: aload_0 
+;              697: getfield 111 (HuntRoomAction/target Ljava/lang/String;) 
+;              700: dup 
+;              701: ifnull 6 
+;              704: goto 6 
+;              707: pop 
+;              708: ldc 67 ("null") 
+;              710: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
+;              713: dup 
+;              714: ifnull 6 
+;              717: goto 6 
+;              720: pop 
+;              721: ldc 67 ("null") 
+;              723: ldc 32 (" was startled by your indecision. It ran away.") 
+;              725: dup 
+;              726: ifnull 6 
+;              729: goto 6 
+;              732: pop 
+;              733: ldc 67 ("null") 
+;              735: invokevirtual 57 (java/lang/String/concat (Ljava/lang/String;)Ljava/lang/String;) 
+;              738: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;              741: iconst_1 
+;              742: aload_0 
+;              743: swap 
+;              744: putfield 4 (HuntRoomAction/taken Z) 
+;              747: aload_0 
+;              748: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
+;              751: ldc 69 ("Which direction?") 
+;              753: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;              756: iconst_0 
+;              757: ireturn 
+;              758: goto 9 
 ;              761: aload_0 
-;              762: swap 
-;              763: putfield 4 (HuntRoomAction/taken Z) 
-;              766: pop 
-;              767: aload_0 
-;              768: getfield 66 (RoomAction/O Ljoos/lib/JoosIO;) 
-;              771: ldc 69 ("Which direction?") 
-;              773: invokevirtual 86 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
-;              776: iconst_0 
-;              777: ireturn 
-;              778: goto 9 
-;              781: aload_0 
-;              782: aload_1 
-;              783: invokevirtual 24 (RoomAction/performBaseAction (Ljava/lang/String;)I) 
-;              786: ireturn 
-;              787: nop 
+;              762: aload_1 
+;              763: invokevirtual 24 (RoomAction/performBaseAction (Ljava/lang/String;)I) 
+;              766: ireturn 
 ;         exception_table_length 0
 ;         attributes_count 0
 
@@ -769,7 +728,7 @@
 
 ; attributes_count 1
 
-; class_attributes[0] (offset 0x9b3) :
+; class_attributes[0] (offset 0x972) :
 ;     name_index 6 (SourceFile)
 ;     attribute_length 2
 ;     sourcefile_index 127

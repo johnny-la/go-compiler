@@ -29,13 +29,7 @@
   istore 5
   start_0:
   iload 5
-  if_icmpge true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmplt stop_1
   aload_3
   iload 5
   iload 6
@@ -61,13 +55,7 @@
   start_5:
   iload 5
   iload 7
-  if_icmplt true_7
-  iconst_0
-  goto stop_8
-  true_7:
-  iconst_1
-  stop_8:
-  ifeq stop_6
+  if_icmpge stop_6
   aload_3
   iload 5
   iload 6
@@ -92,13 +80,7 @@
   istore 5
   start_10:
   iload 5
-  if_icmpge true_12
-  iconst_0
-  goto stop_13
-  true_12:
-  iconst_1
-  stop_13:
-  ifeq stop_11
+  if_icmplt stop_11
   aload_3
   iload 5
   iload 6
@@ -124,13 +106,7 @@
   start_15:
   iload 5
   iload 7
-  if_icmplt true_17
-  iconst_0
-  goto stop_18
-  true_17:
-  iconst_1
-  stop_18:
-  ifeq stop_16
+  if_icmpge stop_16
   aload_3
   iload 5
   iload 6
@@ -153,6 +129,5 @@
   .limit stack 1
   ldc "Diagonal Bomb: clears the contents of diagonal cells."
   areturn
-  nop
 .end method
 

@@ -30,26 +30,14 @@
   start_0:
   iload 5
   iload 7
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   iload 8
   iconst_1
   isub
   istore 6
   start_4:
   iload 6
-  if_icmpge true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq stop_5
+  if_icmplt stop_5
   aload_3
   iload 5
   iload 6
@@ -70,25 +58,13 @@
   start_8:
   iload 5
   iload 7
-  if_icmplt true_10
-  iconst_0
-  goto stop_11
-  true_10:
-  iconst_1
-  stop_11:
-  ifeq stop_9
+  if_icmpge stop_9
   iconst_0
   istore 6
   start_12:
   iload 6
   iload 8
-  if_icmplt true_14
-  iconst_0
-  goto stop_15
-  true_14:
-  iconst_1
-  stop_15:
-  ifeq stop_13
+  if_icmpge stop_13
   aload_3
   iload 5
   iload 6
@@ -111,6 +87,5 @@
   .limit stack 1
   ldc "Flip Board: flips the board upside down."
   areturn
-  nop
 .end method
 

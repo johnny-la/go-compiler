@@ -6,15 +6,13 @@
 
 .method public <init>()V
   .limit locals 1
-  .limit stack 3
+  .limit stack 2
   aload_0
   invokenonvirtual RoomAction/<init>()V
   iconst_0
-  dup
   aload_0
   swap
   putfield TreasureRoomAction/taken Z
-  pop
   return
 .end method
 
@@ -68,7 +66,7 @@
   iconst_0
   if_icmpge true_8
   iconst_0
-  goto true_5
+  goto stop_9
   true_8:
   iconst_1
   stop_9:
@@ -83,7 +81,7 @@
   iconst_0
   if_icmpge true_10
   iconst_0
-  goto true_4
+  goto stop_11
   true_10:
   iconst_1
   stop_11:
@@ -98,7 +96,7 @@
   iconst_0
   if_icmpge true_12
   iconst_0
-  goto true_3
+  goto stop_13
   true_12:
   iconst_1
   stop_13:
@@ -113,7 +111,7 @@
   iconst_0
   if_icmpge true_14
   iconst_0
-  goto true_2
+  goto stop_15
   true_14:
   iconst_1
   stop_15:
@@ -135,14 +133,11 @@
   ldc "You open the treasure box and finds a treasure! Your treasure count: "
   invokevirtual joos/lib/JoosIO/print(Ljava/lang/String;)V
   iconst_1
-  dup
   aload_0
   swap
   putfield TreasureRoomAction/taken Z
-  pop
   iconst_3
   ireturn
-  stop_17:
   goto stop_1
   else_0:
   aload_0
@@ -150,6 +145,5 @@
   invokevirtual RoomAction/performBaseAction(Ljava/lang/String;)I
   ireturn
   stop_1:
-  nop
 .end method
 

@@ -7,17 +7,15 @@
 
 .method public <init>()V
   .limit locals 1
-  .limit stack 3
+  .limit stack 2
   aload_0
   invokenonvirtual java/lang/Object/<init>()V
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield Conversion/base64_key Ljava/util/Vector;
-  pop
   aload_0
   getfield Conversion/base64_key Ljava/util/Vector;
   ldc "A"
@@ -277,11 +275,9 @@
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield Conversion/base64_to10 Ljava/util/Vector;
-  pop
   aload_0
   getfield Conversion/base64_to10 Ljava/util/Vector;
   ldc "0"
@@ -790,7 +786,6 @@
   iconst_0
   invokevirtual java/lang/String/charAt(I)C
   ireturn
-  nop
 .end method
 
 .method public get10(I)C
@@ -809,6 +804,5 @@
   invokevirtual java/lang/Integer/intValue()I
   i2c
   ireturn
-  nop
 .end method
 

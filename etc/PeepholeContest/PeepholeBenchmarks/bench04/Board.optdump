@@ -1,0 +1,1088 @@
+; magic number 0xCAFEBABE
+; bytecode version 45.3
+
+; constant pool count 116
+; cp[1] (offset 0xf) -> CONSTANT_Methodref 85, 26
+; cp[2] (offset 0x14) -> CONSTANT_Fieldref 85, 20
+; cp[3] (offset 0x1f) -> CONSTANT_Utf8 "getWidth"
+; cp[4] (offset 0x2c) -> CONSTANT_Utf8 "SourceFile"
+; cp[5] (offset 0x31) -> CONSTANT_NameAndType 15, 35
+; cp[6] (offset 0x3a) -> CONSTANT_Utf8 "<init>"
+; cp[7] (offset 0x56) -> CONSTANT_Utf8 "(II)Ljava/lang/Character;"
+; cp[8] (offset 0x5e) -> CONSTANT_Utf8 "place"
+; cp[9] (offset 0x63) -> CONSTANT_NameAndType 104, 64
+; cp[10] (offset 0x7a) -> CONSTANT_Utf8 "()Ljava/lang/String;"
+; cp[11] (offset 0x7f) -> CONSTANT_Integer 32
+; cp[12] (offset 0x89) -> CONSTANT_Utf8 "Board.j"
+; cp[13] (offset 0x91) -> CONSTANT_Utf8 "print"
+; cp[14] (offset 0x96) -> CONSTANT_NameAndType 6, 66
+; cp[15] (offset 0xa0) -> CONSTANT_Utf8 "println"
+; cp[16] (offset 0xa8) -> CONSTANT_Utf8 "SPACE"
+; cp[17] (offset 0xaf) -> CONSTANT_Utf8 "main"
+; cp[18] (offset 0xb4) -> CONSTANT_Methodref 77, 83
+; cp[19] (offset 0xb9) -> CONSTANT_Methodref 85, 89
+; cp[20] (offset 0xbe) -> CONSTANT_NameAndType 16, 113
+; cp[21] (offset 0xc3) -> CONSTANT_NameAndType 13, 35
+; cp[22] (offset 0xc8) -> CONSTANT_Methodref 101, 21
+; cp[23] (offset 0xcb) -> CONSTANT_Class 46
+; cp[24] (offset 0xd0) -> CONSTANT_Methodref 79, 58
+; cp[25] (offset 0xd9) -> CONSTANT_Utf8 "height"
+; cp[26] (offset 0xde) -> CONSTANT_NameAndType 6, 115
+; cp[27] (offset 0xe3) -> CONSTANT_Methodref 85, 81
+; cp[28] (offset 0xe8) -> CONSTANT_Methodref 85, 112
+; cp[29] (offset 0x104) -> CONSTANT_Utf8 "(ILjava/lang/Character;)V"
+; cp[30] (offset 0x109) -> CONSTANT_Integer 88
+; cp[31] (offset 0x10c) -> CONSTANT_String 40
+; cp[32] (offset 0x124) -> CONSTANT_Utf8 "(Ljava/lang/Object;)V"
+; cp[33] (offset 0x129) -> CONSTANT_Integer 7
+; cp[34] (offset 0x12e) -> CONSTANT_Integer 6
+; cp[35] (offset 0x146) -> CONSTANT_Utf8 "(Ljava/lang/String;)V"
+; cp[36] (offset 0x14b) -> CONSTANT_Methodref 85, 9
+; cp[37] (offset 0x152) -> CONSTANT_Utf8 "|---"
+; cp[38] (offset 0x155) -> CONSTANT_String 74
+; cp[39] (offset 0x15a) -> CONSTANT_NameAndType 6, 99
+; cp[40] (offset 0x15e) -> CONSTANT_Utf8 "|"
+; cp[41] (offset 0x16e) -> CONSTANT_Utf8 "isValidColumn"
+; cp[42] (offset 0x173) -> CONSTANT_NameAndType 55, 32
+; cp[43] (offset 0x179) -> CONSTANT_Utf8 "set"
+; cp[44] (offset 0x181) -> CONSTANT_Utf8 "Board"
+; cp[45] (offset 0x186) -> CONSTANT_Methodref 101, 102
+; cp[46] (offset 0x199) -> CONSTANT_Utf8 "java/lang/Object"
+; cp[47] (offset 0x19e) -> CONSTANT_Integer 79
+; cp[48] (offset 0x1a3) -> CONSTANT_NameAndType 25, 59
+; cp[49] (offset 0x1ad) -> CONSTANT_Utf8 "columns"
+; cp[50] (offset 0x1ca) -> CONSTANT_Utf8 "(IILjava/lang/Character;)V"
+; cp[51] (offset 0x1cf) -> CONSTANT_Methodref 85, 52
+; cp[52] (offset 0x1d4) -> CONSTANT_NameAndType 84, 7
+; cp[53] (offset 0x1e3) -> CONSTANT_Utf8 "setElementAt"
+; cp[54] (offset 0x1ea) -> CONSTANT_Utf8 "Code"
+; cp[55] (offset 0x1f7) -> CONSTANT_Utf8 "addElement"
+; cp[56] (offset 0x20f) -> CONSTANT_Utf8 "(I)Ljava/lang/Object;"
+; cp[57] (offset 0x228) -> CONSTANT_Utf8 "(Ljava/lang/Object;I)V"
+; cp[58] (offset 0x22d) -> CONSTANT_NameAndType 93, 56
+; cp[59] (offset 0x231) -> CONSTANT_Utf8 "I"
+; cp[60] (offset 0x237) -> CONSTANT_Utf8 "()Z"
+; cp[61] (offset 0x23c) -> CONSTANT_Methodref 85, 103
+; cp[62] (offset 0x241) -> CONSTANT_Methodref 101, 5
+; cp[63] (offset 0x248) -> CONSTANT_Utf8 "(I)Z"
+; cp[64] (offset 0x24e) -> CONSTANT_Utf8 "()V"
+; cp[65] (offset 0x268) -> CONSTANT_Utf8 "()Ljava/lang/Character;"
+; cp[66] (offset 0x26f) -> CONSTANT_Utf8 "(I)V"
+; cp[67] (offset 0x288) -> CONSTANT_Utf8 "([Ljava/lang/String;)V"
+; cp[68] (offset 0x290) -> CONSTANT_Utf8 "clear"
+; cp[69] (offset 0x29b) -> CONSTANT_Utf8 "toString"
+; cp[70] (offset 0x2a0) -> CONSTANT_Fieldref 85, 48
+; cp[71] (offset 0x2a5) -> CONSTANT_Methodref 79, 82
+; cp[72] (offset 0x2a8) -> CONSTANT_String 37
+; cp[73] (offset 0x2ad) -> CONSTANT_Fieldref 85, 105
+; cp[74] (offset 0x2b2) -> CONSTANT_Utf8 "| "
+; cp[75] (offset 0x2b8) -> CONSTANT_Utf8 "()I"
+; cp[76] (offset 0x2bf) -> CONSTANT_Utf8 "(I)I"
+; cp[77] (offset 0x2c2) -> CONSTANT_Class 92
+; cp[78] (offset 0x2c7) -> CONSTANT_Methodref 77, 39
+; cp[79] (offset 0x2ca) -> CONSTANT_Class 97
+; cp[80] (offset 0x2cd) -> CONSTANT_String 98
+; cp[81] (offset 0x2d2) -> CONSTANT_NameAndType 41, 63
+; cp[82] (offset 0x2d7) -> CONSTANT_NameAndType 53, 57
+; cp[83] (offset 0x2dc) -> CONSTANT_NameAndType 69, 10
+; cp[84] (offset 0x2e2) -> CONSTANT_Utf8 "get"
+; cp[85] (offset 0x2e5) -> CONSTANT_Class 44
+; cp[86] (offset 0x2f3) -> CONSTANT_Utf8 "expectedRow"
+; cp[87] (offset 0x2f8) -> CONSTANT_Methodref 79, 42
+; cp[88] (offset 0x2fd) -> CONSTANT_Methodref 79, 14
+; cp[89] (offset 0x302) -> CONSTANT_NameAndType 43, 50
+; cp[90] (offset 0x314) -> CONSTANT_Utf8 "joos/lib/JoosIO"
+; cp[91] (offset 0x319) -> CONSTANT_Methodref 85, 114
+; cp[92] (offset 0x32f) -> CONSTANT_Utf8 "java/lang/Character"
+; cp[93] (offset 0x33b) -> CONSTANT_Utf8 "elementAt"
+; cp[94] (offset 0x343) -> CONSTANT_Utf8 "width"
+; cp[95] (offset 0x358) -> CONSTANT_Utf8 "Ljava/util/Vector;"
+; cp[96] (offset 0x35d) -> CONSTANT_Fieldref 85, 109
+; cp[97] (offset 0x370) -> CONSTANT_Utf8 "java/util/Vector"
+; cp[98] (offset 0x374) -> CONSTANT_Utf8 " "
+; cp[99] (offset 0x37b) -> CONSTANT_Utf8 "(C)V"
+; cp[100] (offset 0x385) -> CONSTANT_Utf8 "inRange"
+; cp[101] (offset 0x388) -> CONSTANT_Class 90
+; cp[102] (offset 0x38d) -> CONSTANT_NameAndType 6, 64
+; cp[103] (offset 0x392) -> CONSTANT_NameAndType 13, 64
+; cp[104] (offset 0x39e) -> CONSTANT_Utf8 "normalize"
+; cp[105] (offset 0x3a3) -> CONSTANT_NameAndType 49, 95
+; cp[106] (offset 0x3aa) -> CONSTANT_Utf8 "full"
+; cp[107] (offset 0x3b6) -> CONSTANT_Utf8 "getHeight"
+; cp[108] (offset 0x3c2) -> CONSTANT_Utf8 "getWinner"
+; cp[109] (offset 0x3c7) -> CONSTANT_NameAndType 94, 59
+; cp[110] (offset 0x3cf) -> CONSTANT_Utf8 "(II)Z"
+; cp[111] (offset 0x3d4) -> CONSTANT_Methodref 23, 102
+; cp[112] (offset 0x3d9) -> CONSTANT_NameAndType 100, 110
+; cp[113] (offset 0x3f1) -> CONSTANT_Utf8 "Ljava/lang/Character;"
+; cp[114] (offset 0x3f6) -> CONSTANT_NameAndType 86, 76
+; cp[115] (offset 0x3fe) -> CONSTANT_Utf8 "(II)V"
+
+; access flags = 0x21 [ ACC_SUPER ACC_PUBLIC ]
+; this_class index = 85
+; super_class index = 23
+
+; interfaces_count = 0
+
+
+; fields_count = 4
+
+; fields[0] (offset 0x408) :
+;     access_flags 0x4 [ ACC_PROTECTED ]
+;     name_index 49 (columns)
+;     descriptor_index 95 (Ljava/util/Vector;)
+;     attributes_count 0
+
+; fields[1] (offset 0x410) :
+;     access_flags 0x4 [ ACC_PROTECTED ]
+;     name_index 94 (width)
+;     descriptor_index 59 (I)
+;     attributes_count 0
+
+; fields[2] (offset 0x418) :
+;     access_flags 0x4 [ ACC_PROTECTED ]
+;     name_index 25 (height)
+;     descriptor_index 59 (I)
+;     attributes_count 0
+
+; fields[3] (offset 0x420) :
+;     access_flags 0x4 [ ACC_PROTECTED ]
+;     name_index 16 (SPACE)
+;     descriptor_index 113 (Ljava/lang/Character;)
+;     attributes_count 0
+
+; methods_count 15
+
+; methods[0] (offset 0x42a) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 6 (<init>)
+;     descriptor_index 115 ((II)V)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 128
+;         max_stack 3
+;         max_locals 6
+;         code_length 116
+;         code :
+;                0: aload_0 
+;                1: invokespecial 111 (java/lang/Object/<init> ()V) 
+;                4: new 77 (java/lang/Character) 
+;                7: dup 
+;                8: ldc 11 (32) 
+;               10: invokespecial 78 (java/lang/Character/<init> (C)V) 
+;               13: aload_0 
+;               14: swap 
+;               15: putfield 2 (Board/SPACE Ljava/lang/Character;) 
+;               18: aload_0 
+;               19: iload_1 
+;               20: putfield 96 (Board/width I) 
+;               23: aload_0 
+;               24: iload_2 
+;               25: putfield 70 (Board/height I) 
+;               28: new 79 (java/util/Vector) 
+;               31: dup 
+;               32: aload_0 
+;               33: getfield 96 (Board/width I) 
+;               36: invokespecial 88 (java/util/Vector/<init> (I)V) 
+;               39: aload_0 
+;               40: swap 
+;               41: putfield 73 (Board/columns Ljava/util/Vector;) 
+;               44: iconst_0 
+;               45: istore_3 
+;               46: iload_3 
+;               47: aload_0 
+;               48: getfield 96 (Board/width I) 
+;               51: if_icmpge 64 
+;               54: new 79 (java/util/Vector) 
+;               57: dup 
+;               58: aload_0 
+;               59: getfield 70 (Board/height I) 
+;               62: invokespecial 88 (java/util/Vector/<init> (I)V) 
+;               65: astore 5 
+;               67: iconst_0 
+;               68: istore 4 
+;               70: iload 4 
+;               72: aload_0 
+;               73: getfield 70 (Board/height I) 
+;               76: if_icmpge 21 
+;               79: aload 5 
+;               81: aload_0 
+;               82: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;               85: invokevirtual 87 (java/util/Vector/addElement (Ljava/lang/Object;)V) 
+;               88: wide iinc 4 1 
+;               94: goto -24 
+;               97: aload_0 
+;               98: getfield 73 (Board/columns Ljava/util/Vector;) 
+;              101: aload 5 
+;              103: invokevirtual 87 (java/util/Vector/addElement (Ljava/lang/Object;)V) 
+;              106: wide iinc 3 1 
+;              112: goto -66 
+;              115: return 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[1] (offset 0x4b8) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 3 (getWidth)
+;     descriptor_index 75 (()I)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 17
+;         max_stack 1
+;         max_locals 1
+;         code_length 5
+;         code :
+;                0: aload_0 
+;                1: getfield 96 (Board/width I) 
+;                4: ireturn 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[2] (offset 0x4d7) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 107 (getHeight)
+;     descriptor_index 75 (()I)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 17
+;         max_stack 1
+;         max_locals 1
+;         code_length 5
+;         code :
+;                0: aload_0 
+;                1: getfield 70 (Board/height I) 
+;                4: ireturn 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[3] (offset 0x4f6) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 84 (get)
+;     descriptor_index 7 ((II)Ljava/lang/Character;)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 33
+;         max_stack 2
+;         max_locals 4
+;         code_length 21
+;         code :
+;                0: aload_0 
+;                1: getfield 73 (Board/columns Ljava/util/Vector;) 
+;                4: iload_1 
+;                5: invokevirtual 24 (java/util/Vector/elementAt (I)Ljava/lang/Object;) 
+;                8: checkcast 79 (java/util/Vector) 
+;               11: dup 
+;               12: astore_3 
+;               13: iload_2 
+;               14: invokevirtual 24 (java/util/Vector/elementAt (I)Ljava/lang/Object;) 
+;               17: checkcast 77 (java/lang/Character) 
+;               20: areturn 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[4] (offset 0x525) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 106 (full)
+;     descriptor_index 60 (()Z)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 67
+;         max_stack 3
+;         max_locals 3
+;         code_length 55
+;         code :
+;                0: iconst_0 
+;                1: istore_1 
+;                2: iload_1 
+;                3: aload_0 
+;                4: getfield 70 (Board/height I) 
+;                7: if_icmpge 46 
+;               10: iconst_0 
+;               11: istore_2 
+;               12: iload_2 
+;               13: aload_0 
+;               14: getfield 96 (Board/width I) 
+;               17: if_icmpge 27 
+;               20: aload_0 
+;               21: iload_2 
+;               22: iload_1 
+;               23: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;               26: aload_0 
+;               27: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;               30: if_acmpne 5 
+;               33: iconst_0 
+;               34: ireturn 
+;               35: wide iinc 2 1 
+;               41: goto -29 
+;               44: wide iinc 1 1 
+;               50: goto -48 
+;               53: iconst_1 
+;               54: ireturn 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[5] (offset 0x576) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 100 (inRange)
+;     descriptor_index 110 ((II)Z)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 72
+;         max_stack 1
+;         max_locals 3
+;         code_length 60
+;         code :
+;                0: iload_1 
+;                1: if_icmple 7 
+;                4: iconst_0 
+;                5: goto 4 
+;                8: iconst_1 
+;                9: dup 
+;               10: ifeq 17 
+;               13: pop 
+;               14: iload_1 
+;               15: aload_0 
+;               16: getfield 96 (Board/width I) 
+;               19: if_icmplt 7 
+;               22: iconst_0 
+;               23: goto 4 
+;               26: iconst_1 
+;               27: dup 
+;               28: ifeq 13 
+;               31: pop 
+;               32: iload_2 
+;               33: if_icmple 7 
+;               36: iconst_0 
+;               37: goto 4 
+;               40: iconst_1 
+;               41: dup 
+;               42: ifeq 17 
+;               45: pop 
+;               46: iload_2 
+;               47: aload_0 
+;               48: getfield 70 (Board/height I) 
+;               51: if_icmplt 7 
+;               54: iconst_0 
+;               55: goto 4 
+;               58: iconst_1 
+;               59: ireturn 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[6] (offset 0x5cc) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 43 (set)
+;     descriptor_index 50 ((IILjava/lang/Character;)V)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 38
+;         max_stack 3
+;         max_locals 4
+;         code_length 26
+;         code :
+;                0: aload_0 
+;                1: iload_1 
+;                2: iload_2 
+;                3: invokevirtual 28 (Board/inRange (II)Z) 
+;                6: ifeq 19 
+;                9: aload_0 
+;               10: getfield 73 (Board/columns Ljava/util/Vector;) 
+;               13: iload_1 
+;               14: invokevirtual 24 (java/util/Vector/elementAt (I)Ljava/lang/Object;) 
+;               17: checkcast 79 (java/util/Vector) 
+;               20: aload_3 
+;               21: iload_2 
+;               22: invokevirtual 71 (java/util/Vector/setElementAt (Ljava/lang/Object;I)V) 
+;               25: return 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[7] (offset 0x600) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 8 (place)
+;     descriptor_index 29 ((ILjava/lang/Character;)V)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 32
+;         max_stack 4
+;         max_locals 3
+;         code_length 20
+;         code :
+;                0: aload_0 
+;                1: iload_1 
+;                2: invokevirtual 27 (Board/isValidColumn (I)Z) 
+;                5: ifeq 14 
+;                8: aload_0 
+;                9: iload_1 
+;               10: aload_0 
+;               11: iload_1 
+;               12: invokevirtual 91 (Board/expectedRow (I)I) 
+;               15: aload_2 
+;               16: invokevirtual 19 (Board/set (IILjava/lang/Character;)V) 
+;               19: return 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[8] (offset 0x62e) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 68 (clear)
+;     descriptor_index 115 ((II)V)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 23
+;         max_stack 4
+;         max_locals 3
+;         code_length 11
+;         code :
+;                0: aload_0 
+;                1: iload_1 
+;                2: iload_2 
+;                3: aload_0 
+;                4: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;                7: invokevirtual 19 (Board/set (IILjava/lang/Character;)V) 
+;               10: return 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[9] (offset 0x653) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 104 (normalize)
+;     descriptor_index 64 (()V)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 144
+;         max_stack 7
+;         max_locals 4
+;         code_length 132
+;         code :
+;                0: iconst_0 
+;                1: istore_2 
+;                2: iload_2 
+;                3: aload_0 
+;                4: getfield 70 (Board/height I) 
+;                7: if_icmpge 124 
+;               10: iconst_0 
+;               11: istore_1 
+;               12: iload_1 
+;               13: aload_0 
+;               14: getfield 70 (Board/height I) 
+;               17: iconst_1 
+;               18: isub 
+;               19: if_icmpge 103 
+;               22: iconst_0 
+;               23: istore_3 
+;               24: iload_3 
+;               25: aload_0 
+;               26: getfield 96 (Board/width I) 
+;               29: if_icmpge 84 
+;               32: aload_0 
+;               33: iload_3 
+;               34: iload_1 
+;               35: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;               38: aload_0 
+;               39: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;               42: if_acmpeq 7 
+;               45: iconst_0 
+;               46: goto 4 
+;               49: iconst_1 
+;               50: dup 
+;               51: ifeq 24 
+;               54: pop 
+;               55: aload_0 
+;               56: iload_3 
+;               57: iload_1 
+;               58: iconst_1 
+;               59: iadd 
+;               60: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;               63: aload_0 
+;               64: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;               67: if_acmpne 7 
+;               70: iconst_0 
+;               71: goto 4 
+;               74: iconst_1 
+;               75: ifeq 29 
+;               78: aload_0 
+;               79: iload_3 
+;               80: iload_1 
+;               81: aload_0 
+;               82: iload_3 
+;               83: iload_1 
+;               84: iconst_1 
+;               85: iadd 
+;               86: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;               89: invokevirtual 19 (Board/set (IILjava/lang/Character;)V) 
+;               92: aload_0 
+;               93: iload_3 
+;               94: iload_1 
+;               95: iconst_1 
+;               96: iadd 
+;               97: aload_0 
+;               98: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;              101: invokevirtual 19 (Board/set (IILjava/lang/Character;)V) 
+;              104: wide iinc 3 1 
+;              110: goto -86 
+;              113: wide iinc 1 1 
+;              119: goto -107 
+;              122: wide iinc 2 1 
+;              128: goto -126 
+;              131: return 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[10] (offset 0x6f1) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 86 (expectedRow)
+;     descriptor_index 76 ((I)I)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 94
+;         max_stack 1
+;         max_locals 3
+;         code_length 82
+;         code :
+;                0: iload_1 
+;                1: if_icmple 7 
+;                4: iconst_0 
+;                5: goto 4 
+;                8: iconst_1 
+;                9: dup 
+;               10: ifeq 17 
+;               13: pop 
+;               14: iload_1 
+;               15: aload_0 
+;               16: getfield 96 (Board/width I) 
+;               19: if_icmplt 7 
+;               22: iconst_0 
+;               23: goto 4 
+;               26: iconst_1 
+;               27: ifeq 7 
+;               30: iconst_0 
+;               31: goto 4 
+;               34: iconst_1 
+;               35: ifeq 8 
+;               38: aload_0 
+;               39: getfield 70 (Board/height I) 
+;               42: ireturn 
+;               43: aload_0 
+;               44: getfield 70 (Board/height I) 
+;               47: iconst_1 
+;               48: isub 
+;               49: istore_2 
+;               50: iload_2 
+;               51: if_icmplt 29 
+;               54: aload_0 
+;               55: iload_1 
+;               56: iload_2 
+;               57: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;               60: aload_0 
+;               61: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;               64: if_acmpeq 7 
+;               67: iload_2 
+;               68: iconst_1 
+;               69: iadd 
+;               70: ireturn 
+;               71: wide iinc 2 -1 
+;               77: goto -27 
+;               80: iconst_0 
+;               81: ireturn 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[11] (offset 0x75d) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 41 (isValidColumn)
+;     descriptor_index 63 ((I)Z)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 62
+;         max_stack 1
+;         max_locals 2
+;         code_length 50
+;         code :
+;                0: iload_1 
+;                1: if_icmple 7 
+;                4: iconst_0 
+;                5: goto 4 
+;                8: iconst_1 
+;                9: dup 
+;               10: ifeq 17 
+;               13: pop 
+;               14: iload_1 
+;               15: aload_0 
+;               16: getfield 96 (Board/width I) 
+;               19: if_icmplt 7 
+;               22: iconst_0 
+;               23: goto 4 
+;               26: iconst_1 
+;               27: dup 
+;               28: ifeq 21 
+;               31: pop 
+;               32: aload_0 
+;               33: iload_1 
+;               34: invokevirtual 91 (Board/expectedRow (I)I) 
+;               37: aload_0 
+;               38: getfield 70 (Board/height I) 
+;               41: if_icmpne 7 
+;               44: iconst_0 
+;               45: goto 4 
+;               48: iconst_1 
+;               49: ireturn 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[12] (offset 0x7a9) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 13 (print)
+;     descriptor_index 64 (()V)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 153
+;         max_stack 3
+;         max_locals 4
+;         code_length 141
+;         code :
+;                0: new 101 (joos/lib/JoosIO) 
+;                3: dup 
+;                4: invokespecial 45 (joos/lib/JoosIO/<init> ()V) 
+;                7: astore_1 
+;                8: iconst_0 
+;                9: istore_3 
+;               10: iload_3 
+;               11: aload_0 
+;               12: getfield 96 (Board/width I) 
+;               15: if_icmpge 18 
+;               18: aload_1 
+;               19: ldc 72 ("|---") 
+;               21: invokevirtual 22 (joos/lib/JoosIO/print (Ljava/lang/String;)V) 
+;               24: wide iinc 3 1 
+;               30: goto -20 
+;               33: aload_1 
+;               34: ldc 31 ("|") 
+;               36: invokevirtual 62 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;               39: aload_0 
+;               40: getfield 70 (Board/height I) 
+;               43: iconst_1 
+;               44: isub 
+;               45: istore_2 
+;               46: iload_2 
+;               47: if_icmplt 93 
+;               50: iconst_0 
+;               51: istore_3 
+;               52: iload_3 
+;               53: aload_0 
+;               54: getfield 96 (Board/width I) 
+;               57: if_icmpge 37 
+;               60: aload_1 
+;               61: ldc 38 ("| ") 
+;               63: invokevirtual 22 (joos/lib/JoosIO/print (Ljava/lang/String;)V) 
+;               66: aload_1 
+;               67: aload_0 
+;               68: iload_3 
+;               69: iload_2 
+;               70: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;               73: invokevirtual 18 (java/lang/Character/toString ()Ljava/lang/String;) 
+;               76: invokevirtual 22 (joos/lib/JoosIO/print (Ljava/lang/String;)V) 
+;               79: aload_1 
+;               80: ldc 80 (" ") 
+;               82: invokevirtual 22 (joos/lib/JoosIO/print (Ljava/lang/String;)V) 
+;               85: wide iinc 3 1 
+;               91: goto -39 
+;               94: aload_1 
+;               95: ldc 31 ("|") 
+;               97: invokevirtual 62 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;              100: iconst_0 
+;              101: istore_3 
+;              102: iload_3 
+;              103: aload_0 
+;              104: getfield 96 (Board/width I) 
+;              107: if_icmpge 18 
+;              110: aload_1 
+;              111: ldc 72 ("|---") 
+;              113: invokevirtual 22 (joos/lib/JoosIO/print (Ljava/lang/String;)V) 
+;              116: wide iinc 3 1 
+;              122: goto -20 
+;              125: aload_1 
+;              126: ldc 31 ("|") 
+;              128: invokevirtual 62 (joos/lib/JoosIO/println (Ljava/lang/String;)V) 
+;              131: wide iinc 2 -1 
+;              137: goto -91 
+;              140: return 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[13] (offset 0x850) :
+;     access_flags 0x1 [ ACC_PUBLIC ]
+;     name_index 108 (getWinner)
+;     descriptor_index 65 (()Ljava/lang/Character;)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 522
+;         max_stack 4
+;         max_locals 5
+;         code_length 510
+;         code :
+;                0: iconst_0 
+;                1: istore_1 
+;                2: iload_1 
+;                3: aload_0 
+;                4: getfield 70 (Board/height I) 
+;                7: if_icmpge 120 
+;               10: iconst_0 
+;               11: istore_2 
+;               12: iload_2 
+;               13: aload_0 
+;               14: getfield 96 (Board/width I) 
+;               17: iconst_4 
+;               18: isub 
+;               19: if_icmpge 99 
+;               22: iconst_0 
+;               23: istore_3 
+;               24: iload_2 
+;               25: iconst_1 
+;               26: iadd 
+;               27: istore 4 
+;               29: iload 4 
+;               31: iload_2 
+;               32: iconst_4 
+;               33: iadd 
+;               34: if_icmpge 33 
+;               37: aload_0 
+;               38: iload 4 
+;               40: iconst_1 
+;               41: isub 
+;               42: iload_1 
+;               43: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;               46: aload_0 
+;               47: iload 4 
+;               49: iload_1 
+;               50: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;               53: if_acmpeq 5 
+;               56: iconst_1 
+;               57: istore_3 
+;               58: wide iinc 4 1 
+;               64: goto -35 
+;               67: iload_3 
+;               68: ifeq 7 
+;               71: iconst_0 
+;               72: goto 4 
+;               75: iconst_1 
+;               76: dup 
+;               77: ifeq 22 
+;               80: pop 
+;               81: aload_0 
+;               82: iload_2 
+;               83: iload_1 
+;               84: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;               87: aload_0 
+;               88: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;               91: if_acmpne 7 
+;               94: iconst_0 
+;               95: goto 4 
+;               98: iconst_1 
+;               99: ifeq 10 
+;              102: aload_0 
+;              103: iload_2 
+;              104: iload_1 
+;              105: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              108: areturn 
+;              109: wide iinc 2 1 
+;              115: goto -103 
+;              118: wide iinc 1 1 
+;              124: goto -122 
+;              127: iconst_0 
+;              128: istore_2 
+;              129: iload_2 
+;              130: aload_0 
+;              131: getfield 96 (Board/width I) 
+;              134: if_icmpge 120 
+;              137: iconst_0 
+;              138: istore_1 
+;              139: iload_1 
+;              140: aload_0 
+;              141: getfield 70 (Board/height I) 
+;              144: iconst_4 
+;              145: isub 
+;              146: if_icmpge 99 
+;              149: iconst_0 
+;              150: istore_3 
+;              151: iload_1 
+;              152: iconst_1 
+;              153: iadd 
+;              154: istore 4 
+;              156: iload 4 
+;              158: iload_1 
+;              159: iconst_4 
+;              160: iadd 
+;              161: if_icmpge 33 
+;              164: aload_0 
+;              165: iload_2 
+;              166: iload 4 
+;              168: iconst_1 
+;              169: isub 
+;              170: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              173: aload_0 
+;              174: iload_2 
+;              175: iload 4 
+;              177: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              180: if_acmpeq 5 
+;              183: iconst_1 
+;              184: istore_3 
+;              185: wide iinc 4 1 
+;              191: goto -35 
+;              194: iload_3 
+;              195: ifeq 7 
+;              198: iconst_0 
+;              199: goto 4 
+;              202: iconst_1 
+;              203: dup 
+;              204: ifeq 22 
+;              207: pop 
+;              208: aload_0 
+;              209: iload_2 
+;              210: iload_1 
+;              211: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              214: aload_0 
+;              215: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;              218: if_acmpne 7 
+;              221: iconst_0 
+;              222: goto 4 
+;              225: iconst_1 
+;              226: ifeq 10 
+;              229: aload_0 
+;              230: iload_2 
+;              231: iload_1 
+;              232: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              235: areturn 
+;              236: wide iinc 1 1 
+;              242: goto -103 
+;              245: wide iinc 2 1 
+;              251: goto -122 
+;              254: iconst_0 
+;              255: istore_1 
+;              256: iload_1 
+;              257: aload_0 
+;              258: getfield 70 (Board/height I) 
+;              261: iconst_3 
+;              262: isub 
+;              263: if_icmpge 118 
+;              266: iconst_0 
+;              267: istore_2 
+;              268: iload_2 
+;              269: aload_0 
+;              270: getfield 70 (Board/height I) 
+;              273: iconst_3 
+;              274: isub 
+;              275: if_icmpge 97 
+;              278: iconst_0 
+;              279: istore_3 
+;              280: iconst_0 
+;              281: istore 4 
+;              283: iload 4 
+;              285: iconst_4 
+;              286: if_icmpge 35 
+;              289: aload_0 
+;              290: iload_2 
+;              291: iload 4 
+;              293: iadd 
+;              294: iload_1 
+;              295: iload 4 
+;              297: iadd 
+;              298: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              301: aload_0 
+;              302: iload_2 
+;              303: iload_1 
+;              304: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              307: if_acmpeq 5 
+;              310: iconst_1 
+;              311: istore_3 
+;              312: wide iinc 4 1 
+;              318: goto -35 
+;              321: iload_3 
+;              322: ifeq 7 
+;              325: iconst_0 
+;              326: goto 4 
+;              329: iconst_1 
+;              330: dup 
+;              331: ifeq 22 
+;              334: pop 
+;              335: aload_0 
+;              336: iload_2 
+;              337: iload_1 
+;              338: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              341: aload_0 
+;              342: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;              345: if_acmpne 7 
+;              348: iconst_0 
+;              349: goto 4 
+;              352: iconst_1 
+;              353: ifeq 10 
+;              356: aload_0 
+;              357: iload_2 
+;              358: iload_1 
+;              359: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              362: areturn 
+;              363: wide iinc 2 1 
+;              369: goto -101 
+;              372: wide iinc 1 1 
+;              378: goto -122 
+;              381: aload_0 
+;              382: getfield 70 (Board/height I) 
+;              385: iconst_1 
+;              386: isub 
+;              387: istore_1 
+;              388: iload_1 
+;              389: iconst_3 
+;              390: if_icmplt 118 
+;              393: iconst_0 
+;              394: istore_2 
+;              395: iload_2 
+;              396: aload_0 
+;              397: getfield 96 (Board/width I) 
+;              400: iconst_4 
+;              401: isub 
+;              402: if_icmpge 97 
+;              405: iconst_0 
+;              406: istore_3 
+;              407: iconst_0 
+;              408: istore 4 
+;              410: iload 4 
+;              412: iconst_4 
+;              413: if_icmpge 35 
+;              416: aload_0 
+;              417: iload_2 
+;              418: iload 4 
+;              420: iadd 
+;              421: iload_1 
+;              422: iload 4 
+;              424: isub 
+;              425: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              428: aload_0 
+;              429: iload_2 
+;              430: iload_1 
+;              431: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              434: if_acmpeq 5 
+;              437: iconst_1 
+;              438: istore_3 
+;              439: wide iinc 4 1 
+;              445: goto -35 
+;              448: iload_3 
+;              449: ifeq 7 
+;              452: iconst_0 
+;              453: goto 4 
+;              456: iconst_1 
+;              457: dup 
+;              458: ifeq 22 
+;              461: pop 
+;              462: aload_0 
+;              463: iload_2 
+;              464: iload_1 
+;              465: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              468: aload_0 
+;              469: getfield 2 (Board/SPACE Ljava/lang/Character;) 
+;              472: if_acmpne 7 
+;              475: iconst_0 
+;              476: goto 4 
+;              479: iconst_1 
+;              480: ifeq 10 
+;              483: aload_0 
+;              484: iload_2 
+;              485: iload_1 
+;              486: invokevirtual 51 (Board/get (II)Ljava/lang/Character;) 
+;              489: areturn 
+;              490: wide iinc 2 1 
+;              496: goto -101 
+;              499: wide iinc 1 -1 
+;              505: goto -117 
+;              508: aconst_null 
+;              509: areturn 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+; methods[14] (offset 0xa68) :
+;     access_flags 0x9 [ ACC_STATIC ACC_PUBLIC ]
+;     name_index 17 (main)
+;     descriptor_index 67 (([Ljava/lang/String;)V)
+;     attributes_count 1
+;     method_attributes[0] :
+;         name_index 54 (Code)
+;         attribute_length 82
+;         max_stack 6
+;         max_locals 3
+;         code_length 70
+;         code :
+;                0: new 101 (joos/lib/JoosIO) 
+;                3: dup 
+;                4: invokespecial 45 (joos/lib/JoosIO/<init> ()V) 
+;                7: astore_2 
+;                8: new 85 (Board) 
+;               11: dup 
+;               12: ldc 33 (7) 
+;               14: ldc 33 (7) 
+;               16: invokespecial 1 (Board/<init> (II)V) 
+;               19: dup 
+;               20: astore_1 
+;               21: invokevirtual 61 (Board/print ()V) 
+;               24: aload_1 
+;               25: ldc 34 (6) 
+;               27: ldc 34 (6) 
+;               29: new 77 (java/lang/Character) 
+;               32: dup 
+;               33: ldc 30 (88) 
+;               35: invokespecial 78 (java/lang/Character/<init> (C)V) 
+;               38: invokevirtual 19 (Board/set (IILjava/lang/Character;)V) 
+;               41: aload_1 
+;               42: ldc 34 (6) 
+;               44: iconst_5 
+;               45: new 77 (java/lang/Character) 
+;               48: dup 
+;               49: ldc 47 (79) 
+;               51: invokespecial 78 (java/lang/Character/<init> (C)V) 
+;               54: invokevirtual 19 (Board/set (IILjava/lang/Character;)V) 
+;               57: aload_1 
+;               58: invokevirtual 61 (Board/print ()V) 
+;               61: aload_1 
+;               62: invokevirtual 36 (Board/normalize ()V) 
+;               65: aload_1 
+;               66: invokevirtual 61 (Board/print ()V) 
+;               69: return 
+;         exception_table_length 0
+;         attributes_count 0
+
+
+
+; attributes_count 1
+
+; class_attributes[0] (offset 0xaca) :
+;     name_index 4 (SourceFile)
+;     attribute_length 2
+;     sourcefile_index 12
+
+; End of file reached successfully. Enjoy :)

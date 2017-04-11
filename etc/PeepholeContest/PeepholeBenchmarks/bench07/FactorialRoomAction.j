@@ -44,7 +44,7 @@
   iconst_0
   if_icmpge true_9
   iconst_0
-  goto true_6
+  goto stop_10
   true_9:
   iconst_1
   stop_10:
@@ -59,7 +59,7 @@
   iconst_0
   if_icmpge true_11
   iconst_0
-  goto true_5
+  goto stop_12
   true_11:
   iconst_1
   stop_12:
@@ -74,7 +74,7 @@
   iconst_0
   if_icmpge true_13
   iconst_0
-  goto true_4
+  goto stop_14
   true_13:
   iconst_1
   stop_14:
@@ -89,7 +89,7 @@
   iconst_0
   if_icmpge true_15
   iconst_0
-  goto true_3
+  goto stop_16
   true_15:
   iconst_1
   stop_16:
@@ -104,7 +104,7 @@
   iconst_0
   if_icmpge true_17
   iconst_0
-  goto true_2
+  goto stop_18
   true_17:
   iconst_1
   stop_18:
@@ -121,13 +121,7 @@
   dup
   istore_3
   iconst_0
-  if_icmplt true_20
-  iconst_0
-  goto stop_21
-  true_20:
-  iconst_1
-  stop_21:
-  ifeq stop_19
+  if_icmpge stop_19
   iload_3
   ineg
   istore_3
@@ -185,7 +179,6 @@
   invokevirtual RoomAction/performBaseAction(Ljava/lang/String;)I
   ireturn
   stop_1:
-  nop
 .end method
 
 .method public f(I)I
@@ -205,7 +198,7 @@
   iconst_1
   if_icmpeq true_5
   iconst_0
-  goto true_2
+  goto stop_6
   true_5:
   iconst_1
   stop_6:
@@ -224,6 +217,5 @@
   imul
   ireturn
   stop_1:
-  nop
 .end method
 

@@ -18,13 +18,7 @@
   iconst_0
   invokevirtual java/lang/String/indexOf(Ljava/lang/String;I)I
   iconst_0
-  if_icmpge true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq else_0
+  if_icmplt else_0
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "You are ambushed."
@@ -36,49 +30,31 @@
   iconst_0
   invokevirtual java/lang/String/indexOf(Ljava/lang/String;I)I
   iconst_0
-  if_icmpge true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq else_4
+  if_icmplt else_4
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "You die from lack of sustenance."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_1
+  goto stop_5
   else_4:
   aload_1
   ldc "light"
   iconst_0
   invokevirtual java/lang/String/indexOf(Ljava/lang/String;I)I
   iconst_0
-  if_icmpge true_10
-  iconst_0
-  goto stop_11
-  true_10:
-  iconst_1
-  stop_11:
-  ifeq else_8
+  if_icmplt else_8
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "You have nothing with which to lighten up the room."
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
-  goto stop_1
+  goto stop_9
   else_8:
   aload_1
   ldc "run"
   iconst_0
   invokevirtual java/lang/String/indexOf(Ljava/lang/String;I)I
   iconst_0
-  if_icmpge true_13
-  iconst_0
-  goto stop_14
-  true_13:
-  iconst_1
-  stop_14:
-  ifeq stop_12
+  if_icmplt stop_12
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "You are too slow."
@@ -93,6 +69,5 @@
   invokevirtual joos/lib/JoosIO/print(Ljava/lang/String;)V
   iconst_1
   ireturn
-  nop
 .end method
 

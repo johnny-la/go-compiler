@@ -44,7 +44,7 @@
   iconst_0
   if_icmpge true_7
   iconst_0
-  goto true_4
+  goto stop_8
   true_7:
   iconst_1
   stop_8:
@@ -59,7 +59,7 @@
   iconst_0
   if_icmpge true_9
   iconst_0
-  goto true_3
+  goto stop_10
   true_9:
   iconst_1
   stop_10:
@@ -74,7 +74,7 @@
   iconst_0
   if_icmpge true_11
   iconst_0
-  goto true_2
+  goto stop_12
   true_11:
   iconst_1
   stop_12:
@@ -91,26 +91,14 @@
   dup
   istore_3
   iconst_0
-  if_icmplt true_14
-  iconst_0
-  goto stop_15
-  true_14:
-  iconst_1
-  stop_15:
-  ifeq stop_13
+  if_icmpge stop_13
   iload_3
   ineg
   istore_3
   stop_13:
   iload_3
   ldc 40
-  if_icmplt true_18
-  iconst_0
-  goto stop_19
-  true_18:
-  iconst_1
-  stop_19:
-  ifeq else_16
+  if_icmpge else_16
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "The food leaves a bitter aftertaste. You feel weakened."
@@ -125,7 +113,6 @@
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   ldc 7
   ireturn
-  stop_17:
   goto stop_1
   else_0:
   aload_1
@@ -133,20 +120,14 @@
   iconst_0
   invokevirtual java/lang/String/indexOf(Ljava/lang/String;I)I
   iconst_0
-  if_icmpge true_22
-  iconst_0
-  goto stop_23
-  true_22:
-  iconst_1
-  stop_23:
-  ifeq else_20
+  if_icmplt else_20
   aload_0
   getfield RoomAction/O Ljoos/lib/JoosIO;
   ldc "You hurt yourself in the process. A new table appears. "
   invokevirtual joos/lib/JoosIO/println(Ljava/lang/String;)V
   ldc 9
   ireturn
-  goto stop_1
+  goto stop_21
   else_20:
   aload_0
   aload_1
@@ -154,6 +135,5 @@
   ireturn
   stop_21:
   stop_1:
-  nop
 .end method
 

@@ -9,37 +9,29 @@
 
 .method public <init>()V
   .limit locals 1
-  .limit stack 3
+  .limit stack 2
   aload_0
   invokenonvirtual java/lang/Object/<init>()V
   ldc "init"
-  dup
   aload_0
   swap
   putfield Interpretor/state Ljava/lang/String;
-  pop
   new joos/lib/JoosIO
   dup
   invokenonvirtual joos/lib/JoosIO/<init>()V
-  dup
   aload_0
   swap
   putfield Interpretor/f Ljoos/lib/JoosIO;
-  pop
   iconst_0
-  dup
   aload_0
   swap
   putfield Interpretor/ioImported Z
-  pop
   new StringEscapeUtils
   dup
   invokenonvirtual StringEscapeUtils/<init>()V
-  dup
   aload_0
   swap
   putfield Interpretor/escape LStringEscapeUtils;
-  pop
   return
 .end method
 
@@ -71,7 +63,7 @@
 
 .method public init(Ljava/lang/String;)V
   .limit locals 2
-  .limit stack 3
+  .limit stack 2
   aload_1
   ldc "HAI"
   invokevirtual java/lang/String/equals(Ljava/lang/Object;)Z
@@ -88,11 +80,9 @@
   goto stop_1
   else_0:
   ldc "running"
-  dup
   aload_0
   swap
   putfield Interpretor/state Ljava/lang/String;
-  pop
   stop_1:
   return
 .end method
@@ -111,13 +101,11 @@
 
 .method public exit()V
   .limit locals 1
-  .limit stack 3
+  .limit stack 2
   ldc "exit"
-  dup
   aload_0
   swap
   putfield Interpretor/state Ljava/lang/String;
-  pop
   return
 .end method
 
@@ -142,7 +130,7 @@
   aload_0
   aload_1
   invokevirtual Interpretor/visible(Ljava/lang/String;)V
-  goto stop_1
+  goto stop_3
   else_2:
   aload_1
   ldc "KTHXBYE"
@@ -150,7 +138,7 @@
   ifeq else_4
   aload_0
   invokevirtual Interpretor/exit()V
-  goto stop_1
+  goto stop_5
   else_4:
   aload_0
   ldc "'"
@@ -229,7 +217,7 @@
 
 .method public openMod(Ljava/lang/String;)V
   .limit locals 2
-  .limit stack 3
+  .limit stack 2
   aload_1
   ldc "CAN HAS STDIO?"
   invokevirtual java/lang/String/equals(Ljava/lang/Object;)Z
@@ -245,11 +233,9 @@
   invokevirtual Interpretor/crashed(Ljava/lang/String;)V
   stop_0:
   iconst_1
-  dup
   aload_0
   swap
   putfield Interpretor/ioImported Z
-  pop
   return
 .end method
 

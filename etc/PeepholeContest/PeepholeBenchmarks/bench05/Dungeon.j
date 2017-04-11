@@ -7,23 +7,18 @@
 
 .method public <init>(LDungeonInfos;)V
   .limit locals 2
-  .limit stack 3
+  .limit stack 2
   aload_0
   invokenonvirtual java/lang/Object/<init>()V
-  aload_1
-  dup
   aload_0
-  swap
+  aload_1
   putfield Dungeon/infos LDungeonInfos;
-  pop
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield Dungeon/output Ljava/util/Vector;
-  pop
   return
 .end method
 
@@ -42,13 +37,7 @@
   iload_2
   aload 5
   invokevirtual java/util/Vector/size()I
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   aload_0
   ldc "M"
   aload 5
@@ -69,13 +58,7 @@
   iload_2
   aload 5
   invokevirtual java/util/Vector/size()I
-  if_icmplt true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq stop_5
+  if_icmpge stop_5
   aload_0
   ldc "U"
   aload 5
@@ -96,13 +79,7 @@
   iload_2
   aload 5
   invokevirtual java/util/Vector/size()I
-  if_icmplt true_10
-  iconst_0
-  goto stop_11
-  true_10:
-  iconst_1
-  stop_11:
-  ifeq stop_9
+  if_icmpge stop_9
   aload_0
   ldc "D"
   aload 5
@@ -123,13 +100,7 @@
   iload_2
   aload 5
   invokevirtual java/util/Vector/size()I
-  if_icmplt true_14
-  iconst_0
-  goto stop_15
-  true_14:
-  iconst_1
-  stop_15:
-  ifeq stop_13
+  if_icmpge stop_13
   aload_0
   ldc "T"
   aload 5
@@ -150,13 +121,7 @@
   iload_2
   aload 5
   invokevirtual java/util/Vector/size()I
-  if_icmplt true_18
-  iconst_0
-  goto stop_19
-  true_18:
-  iconst_1
-  stop_19:
-  ifeq stop_17
+  if_icmpge stop_17
   aload_0
   ldc "H"
   aload 5
@@ -183,13 +148,7 @@
   invokevirtual CustomPoint/getY()I
   iconst_2
   iadd
-  if_icmplt true_22
-  iconst_0
-  goto stop_23
-  true_22:
-  iconst_1
-  stop_23:
-  ifeq stop_21
+  if_icmpge stop_21
   iconst_0
   istore_3
   start_24:
@@ -198,13 +157,7 @@
   invokevirtual CustomPoint/getX()I
   iconst_2
   iadd
-  if_icmplt true_26
-  iconst_0
-  goto stop_27
-  true_26:
-  iconst_1
-  stop_27:
-  ifeq stop_25
+  if_icmpge stop_25
   aload_1
   aload_0
   getfield Dungeon/output Ljava/util/Vector;
@@ -242,13 +195,7 @@
   invokevirtual CustomPoint/getY()I
   iconst_2
   iadd
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
@@ -261,13 +208,7 @@
   invokevirtual CustomPoint/getX()I
   iconst_2
   iadd
-  if_icmplt true_6
-  iconst_0
-  goto stop_7
-  true_6:
-  iconst_1
-  stop_7:
-  ifeq stop_5
+  if_icmpge stop_5
   iload_1
   if_icmpeq true_14
   iconst_0
@@ -281,7 +222,7 @@
   iload_2
   if_icmpeq true_16
   iconst_0
-  goto false_13
+  goto stop_17
   true_16:
   iconst_1
   stop_17:
@@ -306,7 +247,7 @@
   iload_2
   if_icmpeq true_21
   iconst_0
-  goto true_12
+  goto stop_22
   true_21:
   iconst_1
   stop_22:
@@ -332,7 +273,7 @@
   iadd
   if_icmpeq true_26
   iconst_0
-  goto true_11
+  goto stop_27
   true_26:
   iconst_1
   stop_27:
@@ -362,7 +303,7 @@
   iadd
   if_icmpeq true_31
   iconst_0
-  goto true_10
+  goto stop_32
   true_31:
   iconst_1
   stop_32:
@@ -391,7 +332,7 @@
   iadd
   if_icmpeq true_38
   iconst_0
-  goto true_35
+  goto stop_39
   true_38:
   iconst_1
   stop_39:
@@ -400,7 +341,7 @@
   aload 4
   ldc "-"
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  goto stop_9
+  goto stop_34
   else_33:
   iload_2
   if_icmpeq true_43
@@ -419,7 +360,7 @@
   iadd
   if_icmpeq true_45
   iconst_0
-  goto true_42
+  goto stop_46
   true_45:
   iconst_1
   stop_46:
@@ -428,7 +369,7 @@
   aload 4
   ldc "|"
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  goto stop_9
+  goto stop_41
   else_40:
   aload 4
   ldc " "

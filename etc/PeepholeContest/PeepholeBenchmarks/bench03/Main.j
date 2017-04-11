@@ -31,13 +31,7 @@
   start_0:
   aload 4
   aconst_null
-  if_acmpne true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_acmpeq stop_1
   aload_2
   aload 4
   invokevirtual java/lang/String/trim()Ljava/lang/String;

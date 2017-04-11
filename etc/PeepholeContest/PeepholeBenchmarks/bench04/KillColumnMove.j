@@ -19,13 +19,7 @@
   iload 5
   aload_3
   invokevirtual Board/getHeight()I
-  if_icmplt true_2
-  iconst_0
-  goto stop_3
-  true_2:
-  iconst_1
-  stop_3:
-  ifeq stop_1
+  if_icmpge stop_1
   aload_3
   iload_1
   iload 5
@@ -41,6 +35,5 @@
   .limit stack 1
   ldc "Kill Column: clears the column where the token lands."
   areturn
-  nop
 .end method
 

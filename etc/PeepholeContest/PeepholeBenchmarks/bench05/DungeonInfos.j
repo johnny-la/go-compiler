@@ -21,55 +21,43 @@
 
 .method public initializeTo0()V
   .limit locals 1
-  .limit stack 3
+  .limit stack 2
   new CustomPoint
   dup
   invokenonvirtual CustomPoint/<init>()V
-  dup
   aload_0
   swap
   putfield DungeonInfos/dimension LCustomPoint;
-  pop
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield DungeonInfos/monsters Ljava/util/Vector;
-  pop
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield DungeonInfos/upstairs Ljava/util/Vector;
-  pop
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield DungeonInfos/downstairs Ljava/util/Vector;
-  pop
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield DungeonInfos/treasures Ljava/util/Vector;
-  pop
   new java/util/Vector
   dup
   invokenonvirtual java/util/Vector/<init>()V
-  dup
   aload_0
   swap
   putfield DungeonInfos/heros Ljava/util/Vector;
-  pop
   return
 .end method
 
@@ -100,7 +88,7 @@
   invokevirtual java/lang/String/equals(Ljava/lang/Object;)Z
   ifeq true_5
   iconst_0
-  goto false_2
+  goto stop_6
   true_5:
   iconst_1
   stop_6:
@@ -121,11 +109,9 @@
   iload_3
   iload 4
   invokenonvirtual CustomPoint/<init>(II)V
-  dup
   aload_0
   swap
   putfield DungeonInfos/dimension LCustomPoint;
-  pop
   stop_7:
   aload_2
   ldc "Monster"
@@ -153,7 +139,7 @@
   iload 4
   invokenonvirtual CustomPoint/<init>(II)V
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  goto stop_9
+  goto stop_11
   else_10:
   aload_2
   ldc "Downstairs"
@@ -167,7 +153,7 @@
   iload 4
   invokenonvirtual CustomPoint/<init>(II)V
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  goto stop_9
+  goto stop_13
   else_12:
   aload_2
   ldc "Treasure"
@@ -181,7 +167,7 @@
   iload 4
   invokenonvirtual CustomPoint/<init>(II)V
   invokevirtual java/util/Vector/addElement(Ljava/lang/Object;)V
-  goto stop_9
+  goto stop_15
   else_14:
   aload_2
   ldc "Hero"
@@ -214,7 +200,6 @@
   aload_0
   getfield DungeonInfos/dimension LCustomPoint;
   areturn
-  nop
 .end method
 
 .method public getMonsters()Ljava/util/Vector;
@@ -223,7 +208,6 @@
   aload_0
   getfield DungeonInfos/monsters Ljava/util/Vector;
   areturn
-  nop
 .end method
 
 .method public getUpstairs()Ljava/util/Vector;
@@ -232,7 +216,6 @@
   aload_0
   getfield DungeonInfos/upstairs Ljava/util/Vector;
   areturn
-  nop
 .end method
 
 .method public getDownstairs()Ljava/util/Vector;
@@ -241,7 +224,6 @@
   aload_0
   getfield DungeonInfos/downstairs Ljava/util/Vector;
   areturn
-  nop
 .end method
 
 .method public getTreasures()Ljava/util/Vector;
@@ -250,7 +232,6 @@
   aload_0
   getfield DungeonInfos/treasures Ljava/util/Vector;
   areturn
-  nop
 .end method
 
 .method public getHeros()Ljava/util/Vector;
@@ -259,6 +240,5 @@
   aload_0
   getfield DungeonInfos/heros Ljava/util/Vector;
   areturn
-  nop
 .end method
 
