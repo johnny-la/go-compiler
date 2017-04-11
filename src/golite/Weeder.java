@@ -7,6 +7,9 @@ import java.util.*;
 
 public class Weeder extends DepthFirstAdapter
 {
+    // The number of switch statements/loops enterred
+    private int inALoop, inASwitchStmt;
+
     //short decls
     public void inAAssignListStmt(AAssignListStmt node)
     {
@@ -80,6 +83,8 @@ public class Weeder extends DepthFirstAdapter
 
     public void inASwitchStmt(ASwitchStmt node)
     {
+        inASwitchStmt++;
+
         // Check for multiple default statements
         boolean hasDefaultStatement = false;
         for (int i = 0; i < node.getCaseStmts().size(); i++)
@@ -100,9 +105,40 @@ public class Weeder extends DepthFirstAdapter
         }
     }
 
+    public void outASwitchStmt(ASwitchStmt node)
+    {
+        inASwitchStmt--;
+    }
+
+    public void inAForStmt(AForStmt node)
+    {
+        inALoop++;
+    }
+
+    public void outAForStmt(AForStmt node)
+    {
+        inALoop--;
+    }
+
+    public void inABreakStmt(ABreakStmt node)
+    {
+        if (inALoop <= 0 && inASwitchStmt <= 0)
+        {
+            throwBreakError();
+        }
+    }
+
+    public void inAContinueStmt(AContinueStmt node)
+    {
+        if (inALoop <= 0)
+        {
+            throwContinueError();
+        }
+    }
+
     public void inANoReturnFuncDecl(ANoReturnFuncDecl node)
     {
-        if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
+        /*if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
         {
             throwContinueError();
         }
@@ -110,12 +146,12 @@ public class Weeder extends DepthFirstAdapter
         if (hasBreak(((ABlockStmt)node.getBlock()).getStmt()))
         {
             throwBreakError();
-        }
+        }*/
     }
 
     public void inASingleReturnFuncDecl(ASingleReturnFuncDecl node)
     {
-        if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
+        /*if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
         {
             throwContinueError();
         }
@@ -123,13 +159,12 @@ public class Weeder extends DepthFirstAdapter
         if (hasBreak(((ABlockStmt)node.getBlock()).getStmt()))
         {
             throwBreakError();
-        }
-
+        }*/
     } 
 
     public void inAIfStmt(AIfStmt node)
     {
-        if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
+        /*if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
         {
             throwContinueError();
         }
@@ -137,12 +172,12 @@ public class Weeder extends DepthFirstAdapter
         if (hasBreak(((ABlockStmt)node.getBlock()).getStmt()))
         {
             throwBreakError();
-        }
+        }*/
     }
 
     public void inAElseStmt(AElseStmt node)
     {
-        if (hasContinue(((ABlockStmt)node.getStmt()).getStmt()))
+        /*if (hasContinue(((ABlockStmt)node.getStmt()).getStmt()))
         {
             throwContinueError();
         }
@@ -150,15 +185,15 @@ public class Weeder extends DepthFirstAdapter
         if (hasBreak(((ABlockStmt)node.getStmt()).getStmt()))
         {
             throwBreakError();
-        }
+        }*/
     }
 
     public void inACaseStmt(ACaseStmt node)
     {
-        if (hasContinue(node.getStmtList()))
+        /*if (hasContinue(node.getStmtList()))
         {
             throwContinueError();
-        }
+        }*/
     }
     public void inAFieldExp(AFieldExp node) {
         Node id = node.getIdType();

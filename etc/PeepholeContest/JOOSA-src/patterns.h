@@ -34,6 +34,26 @@ int simplify_multiplication_right(CODE **c)
   return 0;
 }
 
+/* iload x
+ * ldc 1
+ * idiv
+ * -------->
+ * iload x
+ *
+ * Explanation: Dividing by 1 does not modify x's value. Thus,
+ * the division can be omitted
+ */
+int simplify_division(CODE **c)
+{
+  int x,k;
+  if (is_iload(*c,&x) &&
+      is_ldc_int(next(*c),&k) &&
+      is_idiv(next(next(*c))) &&
+      k == 1)
+      return replace(c,3,makeCODEiload(x,NULL));
+  return 0;
+}
+
 /* dup
  * astore x
  * pop
@@ -327,6 +347,85 @@ int simplify_noop(CODE **c)
   return 0;
 }
 
+int simplify_swaps(CODE **c)
+{
+  /* aload x
+   * aload y
+   * swap
+   * ------->
+   * aload y
+   * aload x
+   *
+   * Explanation: The swap is useless since we can simply
+   * reverse the loading order
+   */
+  int x,y;
+  if (is_aload(*c,&x) &&
+      is_aload(next(*c),&y) &&
+      is_swap(next(next(*c))))
+      return replace(c, 3, makeCODEaload(y,makeCODEaload(x,NULL)));
+
+  /* iload x
+   * iload y
+   * swap
+   * ------->
+   * iload y
+   * iload x
+   *
+   * Explanation: Same as above, except for iload
+   */
+  if (is_iload(*c,&x) &&
+      is_iload(next(*c),&y) &&
+      is_swap(next(next(*c))))
+      return replace(c, 3, makeCODEiload(y,makeCODEiload(x,NULL)));
+
+  /* iload x
+   * aload y
+   * swap
+   * ------->
+   * aload y
+   * iload x
+   *
+   * Explanation: Same as above, except for a combination of iload and aload
+   */
+  if (is_iload(*c,&x) &&
+      is_aload(next(*c),&y) &&
+      is_swap(next(next(*c))))
+      return replace(c, 3, makeCODEaload(y,makeCODEiload(x,NULL)));
+
+  /* aload x
+   * iload y
+   * swap
+   * ------->
+   * iload y
+   * aload x
+   *
+   * Explanation: Same as above, except with iload and aload swapped
+   */
+  if (is_aload(*c,&x) &&
+      is_iload(next(*c),&y) &&
+      is_swap(next(next(*c))))
+      return replace(c, 3, makeCODEiload(y,makeCODEaload(x,NULL)));
+  return 0;
+}
+
+/* goto L 
+ * non-label
+ * ----------->
+ * goto L
+ *
+ * Explanation: Since the operation following the goto is not a label,
+ * it will never be reached, and can be removed
+ */
+int simplify_goto_label(CODE **c)
+{
+  int x,y;
+  if (is_goto(*c,&x) &&
+      !is_label(next(*c),&y))
+      return replace(c, 2, makeCODEgoto(x,NULL));
+  return 0;
+}
+
 /* if_icmpeq true
  * iconst_0
  * goto false_1
@@ -363,8 +462,7 @@ int simplify_if_icmpeq(CODE **c)
   {
     droplabel(true_label_1);
     droplabel(false_label_1);
-    return replace(c, 7, makeCODEdup(
-              makeCODEif_icmpne(false_label_3,NULL)));
+    return replace(c, 7, makeCODEif_icmpne(false_label_3,NULL));
   }
   return 0;
 }
@@ -402,8 +500,7 @@ int simplify_if_acmpeq(CODE **c)
   {
     droplabel(true_label_1);
     droplabel(false_label_1);
-    return replace(c, 7, makeCODEdup(
-              makeCODEif_acmpne(false_label_3,NULL)));
+    return replace(c, 7, makeCODEif_acmpne(false_label_3,NULL));
   }
   return 0;
 }
@@ -441,8 +538,7 @@ int simplify_if_icmpne(CODE **c)
   {
     droplabel(true_label_1);
     droplabel(false_label_1);
-    return replace(c, 7, makeCODEdup(
-              makeCODEif_icmpeq(false_label_3,NULL)));
+    return replace(c, 7, makeCODEif_icmpeq(false_label_3,NULL));
   }
   return 0;
 }
@@ -480,8 +576,7 @@ int simplify_if_acmpne(CODE **c)
   {
     droplabel(true_label_1);
     droplabel(false_label_1);
-    return replace(c, 7, makeCODEdup(
-              makeCODEif_acmpeq(false_label_3,NULL)));
+    return replace(c, 7, makeCODEif_acmpeq(false_label_3,NULL));
   }
   return 0;
 }
@@ -519,8 +614,7 @@ int simplify_if_icmplt(CODE **c)
   {
     droplabel(true_label_1);
     droplabel(false_label_1);
-    return replace(c, 7, makeCODEdup(
-              makeCODEif_icmpge(false_label_3,NULL)));
+    return replace(c, 7, makeCODEif_icmpge(false_label_3,NULL));
   }
   return 0;
 }
@@ -558,8 +652,7 @@ int simplify_if_icmple(CODE **c)
   {
     droplabel(true_label_1);
     droplabel(false_label_1);
-    return replace(c, 7, makeCODEdup(
-              makeCODEif_icmpgt(false_label_3,NULL)));
+    return replace(c, 7, makeCODEif_icmpgt(false_label_3,NULL));
   }
   return 0;
 }
@@ -597,8 +690,7 @@ int simplify_if_icmpgt(CODE **c)
   {
     droplabel(true_label_1);
     droplabel(false_label_1);
-    return replace(c, 7, makeCODEdup(
-              makeCODEif_icmple(false_label_3,NULL)));
+    return replace(c, 7, makeCODEif_icmple(false_label_3,NULL));
   }
   return 0;
 }
@@ -636,8 +728,45 @@ int simplify_if_icmpge(CODE **c)
   {
     droplabel(true_label_1);
     droplabel(false_label_1);
-    return replace(c, 7, makeCODEdup(
-              makeCODEif_icmplt(false_label_3,NULL)));
+    return replace(c, 7, makeCODEif_icmplt(false_label_3,NULL));
+  }
+  return 0;
+}
+
+/* ifnull true
+ * iconst_0
+ * goto false_1
+ * true:
+ * iconst_1 
+ * false_1: 
+ * ifeq false_2 ---
+ * ...
+ * false_2:
+ * --------->
+ * ifnonnull false_2
+ * ...
+ *
+ * Explanation: Same as above, but for ifnull
+ */
+int simplify_ifnull(CODE **c)
+{
+  int true_label_1, true_label_2, false_label_1, false_label_2, false_label_3;
+  int x,y;
+  if (is_ifnull(*c,&true_label_1) &&
+      is_ldc_int(next(*c),&x) &&
+      x == 0 &&
+      is_goto(next(next(*c)), &false_label_1) &&
+      is_label(next(next(next(*c))),&true_label_2) &&
+      true_label_1 == true_label_2 &&
+      is_ldc_int(next(next(next(next(*c)))),&y) &&
+      y == 1 &&
+      is_label(next(next(next(next(next(*c))))), &false_label_2) &&
+      false_label_1 == false_label_2 &&
+      is_ifeq(next(next(next(next(next(next(*c)))))), &false_label_3)) 
+  {
+    droplabel(true_label_1);
+    droplabel(false_label_1);
+    return replace(c, 7, makeCODEifnonnull(false_label_3,NULL));
   }
   return 0;
 }
@@ -651,19 +780,18 @@ void init_patterns(void) {
   /* Custom patterns */
   ADD_PATTERN(simplify_istore);
   ADD_PATTERN(positive_increment_left);
-// <<<<<<< HEAD
-  ADD_PATTERN(positive_increment_0);
-  ADD_PATTERN(simplify_goto_label);
-// =======
   ADD_PATTERN(simplify_increment_0);
   ADD_PATTERN(simplify_negative_increment);
   ADD_PATTERN(simplify_negative_increment_left);
   ADD_PATTERN(simplify_astore_aload);
   ADD_PATTERN(simplify_istore_iload);
   ADD_PATTERN(simplify_multiplication_left);
+  ADD_PATTERN(simplify_division);
   ADD_PATTERN(simplify_add_0);
   ADD_PATTERN(simplify_add_0_left);
   ADD_PATTERN(simplify_noop);
+  ADD_PATTERN(simplify_swaps);
+  ADD_PATTERN(simplify_goto_label);
 
   /* Conditional branches */
   ADD_PATTERN(simplify_if_icmpeq);
@@ -674,5 +802,5 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_if_icmple);
   ADD_PATTERN(simplify_if_icmpgt);
   ADD_PATTERN(simplify_if_icmpge);
-// >>>>>>> c4fc01a85a7e4fc6a2abac0bf7e7a96125b971a5
+  ADD_PATTERN(simplify_ifnull);
 }
