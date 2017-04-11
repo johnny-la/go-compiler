@@ -196,7 +196,7 @@ cst_type {-> var_type} =
   {identifier} id {-> New var_type.id(id)} |
   {array} l_brack int r_brack cst_type {-> New var_type.array(int, cst_type.var_type)} |
   {slice} l_brack r_brack cst_type {-> New var_type.slice(cst_type.var_type)} |
-  {struct} struct l_brace semicolon field_dec* r_brace {-> New var_type.struct([field_dec.inner_fields])}
+  {struct} struct l_brace semicolon? field_dec* r_brace {-> New var_type.struct([field_dec.inner_fields])}
   ;
 
 field_dec {-> inner_fields} = cst_id_list cst_type semicolon
