@@ -28,6 +28,8 @@ public class Weeder extends DepthFirstAdapter
         List<PExp> lvalues = (List<PExp>)node.getL();
         for (int i = 0; i < lvalues.size(); i++)
         {   
+            // Expressions cannot be print statements
+            weedPrintStatement(node.getR().get(i));
 
             if (!(lvalues.get(i) instanceof AIdExp)) {
                 allIds = false;
@@ -59,6 +61,29 @@ public class Weeder extends DepthFirstAdapter
 
     }
 
+    public void weedPrintStatement(Node node)
+    {
+        if (node == null) 
+            return;
+
+        if (node instanceof AExpStmt)
+        {
+            PExp exp = ((AExpStmt)node).getExp();
+
+            if (exp instanceof APrintExp || exp instanceof APrintlnExp)
+                ErrorManager.printError("Invalid print/println statement found");
+        }
+    }
+
+    public void weedForLoopPost(Node node)
+    {
+        if (node == null) 
+            return;
+
+        if (node instanceof AAssignListStmt)
+            ErrorManager.printError("Post condition in for-loop cannot be an assignment statement");
+    }
+
     //check expr is id or arraySelector
     public void inAIncrementStmt(AIncrementStmt node) {
         if (!(node.getExp() instanceof AIdExp || node.getExp() instanceof AArrayElementExp)) {
@@ -84,6 +109,8 @@ public class Weeder extends DepthFirstAdapter
     public void inASwitchStmt(ASwitchStmt node)
     {
         inASwitchStmt++;
+
+        weedPrintStatement(node.getSimpleStmt());
 
         // Check for multiple default statements
         boolean hasDefaultStatement = false;
@@ -113,6 +140,15 @@ public class Weeder extends DepthFirstAdapter
     public void inAForStmt(AForStmt node)
     {
         inALoop++;
+
+        // Simple statement cannot be a print statement
+        if (node.getCondition() != null && node.getCondition() instanceof AForCondExp)
+        {
+            System.out.println("Weeding a for stmt. Condition = " + ((AForCondExp)node.getCondition()).getFirst());
+            weedPrintStatement(((AForCondExp)node.getCondition()).getFirst());
+            weedPrintStatement(((AForCondExp)node.getCondition()).getThird());
+            weedForLoopPost(((AForCondExp)node.getCondition()).getThird());
+        }
     }
 
     public void outAForStmt(AForStmt node)
@@ -164,6 +200,7 @@ public class Weeder extends DepthFirstAdapter
 
     public void inAIfStmt(AIfStmt node)
     {
+        weedPrintStatement(node.getSimpleStmt());
         /*if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
         {
             throwContinueError();
