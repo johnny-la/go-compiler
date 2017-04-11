@@ -1103,14 +1103,48 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAIncrementStmt(AIncrementStmt node)
     {
+        if (node.getExp() instanceof AArrayElementExp)
+        {
+            incrementArray((AArrayElementExp)node.getExp(),1);
+            return;
+        }
+        
         node.getExp().apply(this);
         print("++");
     }
 
     public void caseADecrementStmt(ADecrementStmt node)
     {
+        if (node.getExp() instanceof AArrayElementExp)
+        {
+            incrementArray((AArrayElementExp)node.getExp(),-1);
+            return;
+        }
+
         node.getExp().apply(this);
         print("--");
+    }
+
+    private void incrementArray(AArrayElementExp arrayElementExp, int value)
+    {
+        PExp array = arrayElementExp.getArray();
+        print("_set_(");
+        array.apply(this);
+        print(",");
+        arrayElementExp.getIndex().apply(this);
+        print(",");
+
+        // Increment current value
+        print("_get_(");
+        arrayElementExp.getArray().apply(this);
+        print(",");
+        arrayElementExp.getIndex().apply(this);
+        print(",");
+        printLastArrayArguments(arrayElementExp,true);
+        print("+" + value);
+
+        print(",");
+        printLastArrayArguments(arrayElementExp, false);
     }
 
     public void caseADeclStmt(ADeclStmt node)
