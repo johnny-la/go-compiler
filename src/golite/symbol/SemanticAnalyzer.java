@@ -325,15 +325,15 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         String idName;
         String typeName;
 
-        if (type instanceof ATypeIdType) {
-            idName = ((ATypeIdType) type).getType().getText();
-            if (varType instanceof ATypeVarType) {
-                typeName = ((ATypeVarType) varType).getType().getText();
-                if (idName != null && typeName != null && idName.equals(typeName)) {
-                    ErrorManager.printError("can't alias like that bro");
-                }
-            }
-        }
+        // if (type instanceof ATypeIdType) {
+        //     idName = ((ATypeIdType) type).getType().getText();
+        //     if (varType instanceof ATypeVarType) {
+        //         typeName = ((ATypeVarType) varType).getType().getText();
+        //         if (idName != null && typeName != null && idName.equals(typeName)) {
+        //             ErrorManager.printError("can't alias like that bro");
+        //         }
+        //     }
+        // }
 
 
         declareVariable(node.getIdType(), node.getVarType(), SymbolKind.LOCAL, node);

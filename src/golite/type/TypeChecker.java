@@ -88,10 +88,10 @@ public class TypeChecker extends DepthFirstAdapter
 
     public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
 
-        if (left.totalArrayDimension.size() > 0 || right.totalArrayDimension.size() > 0) {
-            ErrorManager.printError("Unable to perform binary operations on array type");
-            return false;
-        }
+        // if (left.totalArrayDimension.size() > 0 || right.totalArrayDimension.size() > 0) {
+        //     ErrorManager.printError("Unable to perform binary operations on array type");
+        //     return false;
+        // }
 
         if (!isAliasedCorrectly(left, right)) {
             return false;
@@ -954,7 +954,6 @@ public class TypeChecker extends DepthFirstAdapter
         if (levels > arrayType.totalArrayDimension.size()) {
             ErrorManager.printError("Index doesn't exist");
         }
-        System.out.println("Array element type is " + arrayType);
         //iterate through aliases
         List<TypeAlias> typeAliases = arrayType.typeAliases;
         //return basetype in this case
@@ -963,6 +962,7 @@ public class TypeChecker extends DepthFirstAdapter
             for (int i = 0; i < levels; i++) {
                 temp.decrementDimension();
             }
+            System.out.println("Array element is " + temp);
             addType(node, temp);
             return;
         } else {
@@ -973,9 +973,12 @@ public class TypeChecker extends DepthFirstAdapter
             for (int i = typeAliases.size() - 1; i >= 0; i--) {
                 int curDim = typeAliases.get(i).arrayDimensions.size();
                 if (prevDim != curDim) {
-                    levels = levels - (totalDim - curDim);
+                    levels = levels - (prevDim - curDim);
                     if (levels <= 0) {
-                        TypeClass indexType = symbolTable.get(prevNode).typeClass;
+                        TypeClass indexType = new TypeClass(symbolTable.get(prevNode).typeClass);
+                        for (int k = 0; k < (levels + (prevDim - curDim)); k++) {
+                            indexType.totalArrayDimension.remove(0);
+                        }
                         System.out.println("Type to insert is" + indexType);
                         addType(node, indexType);
                         return;
@@ -1004,6 +1007,11 @@ public class TypeChecker extends DepthFirstAdapter
     // These are IDs inside declarations
     // Ex: function parameters
     public void outAIdIdType(AIdIdType node)
+    {
+        declareNodeType(node);
+    }
+
+     public void outATypeIdType(ATypeIdType node)
     {
         declareNodeType(node);
     }

@@ -595,8 +595,9 @@ public class CodeGenerator extends DepthFirstAdapter
                 varType = ((AArrayVarType) varType).getVarType();
             }
         }
-
+        
         TypeClass type = nodeTypes.get(node.getIdType());
+        System.out.println("type is " + type);
         if (type.baseType == Type.STRUCT && type.typeAliases.size() == 0)
         {
             isAnon = true;
