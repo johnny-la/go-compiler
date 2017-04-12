@@ -98,6 +98,50 @@ int positive_increment(CODE **c)
 * CUSTOM PATTERNS
 */
 
+
+/* iload x
+ * ldc 0
+ * iadd
+ * --------->
+ * iload x
+ *
+ * Explanation: an increment by zero does not modify x's value (it is a non-operation)
+ * 
+ BUGGY - NOT ADDED TO PATTERNS
+ */ 
+int simplify_add_0(CODE **c)
+{ 
+  int x, k;
+  if (is_iload(*c, &x) &&
+      is_ldc_int(next(*c), &k) &&
+      (k == 0)) {
+     return replace(c,2,makeCODEiload(x,NULL));
+  }
+  return 0;
+}
+
+/* ldc 0
+ * iload x
+ * iadd
+ * --------->
+ * iload x
+ *
+ * Explanation: an increment by zero does not modify x's value (it is a non-operation)
+ * 
+ * BUGGY - NOT ADDED TO PATTERNS
+ */ 
+int simplify_add_0_left(CODE **c)
+{ 
+  int x, k;
+  if (is_ldc_int(*c, &k) &&
+      is_iload(next(*c), &x) &&
+      (k == 0)) {
+     return replace(c,2,makeCODEiload(x,NULL));
+  }
+  return 0;
+}
+
+
 /* dup
  * istore x
  * pop
@@ -221,46 +265,6 @@ int simplify_increment_0(CODE **c)
   if (is_iinc(*c, &x, &k) &&
       (k == 0)) {
      return kill_line(c);
-  }
-  return 0;
-}
-
-/* iload x
- * ldc 0
- * iadd
- * --------->
- * iload x
- *
- * Explanation: an increment by zero does not modify x's value (it is a non-operation)
- * 
- */ 
-int simplify_add_0(CODE **c)
-{ 
-  int x, k;
-  if (is_iload(*c, &x) &&
-      is_ldc_int(next(*c), &k) &&
-      (k == 0)) {
-     return replace(c,2,makeCODEiload(x,NULL));
-  }
-  return 0;
-}
-
-/* ldc 0
- * iload x
- * iadd
- * --------->
- * iload x
- *
- * Explanation: an increment by zero does not modify x's value (it is a non-operation)
- * 
- */ 
-int simplify_add_0_left(CODE **c)
-{ 
-  int x, k;
-  if (is_ldc_int(*c, &k) &&
-      is_iload(next(*c), &x) &&
-      (k == 0)) {
-     return replace(c,2,makeCODEiload(x,NULL));
   }
   return 0;
 }
@@ -1023,6 +1027,8 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_goto_goto);
 
   /* Custom patterns */
+  // ADD_PATTERN(simplify_add_0);
+  // ADD_PATTERN(simplify_add_0_left);
   ADD_PATTERN(simplify_istore);
   ADD_PATTERN(positive_increment_left);
   ADD_PATTERN(simplify_increment_0);
@@ -1032,8 +1038,6 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_istore_iload);
   ADD_PATTERN(simplify_multiplication_left);
   ADD_PATTERN(simplify_division);
-  ADD_PATTERN(simplify_add_0);
-  ADD_PATTERN(simplify_add_0_left);
   ADD_PATTERN(simplify_noop);
   ADD_PATTERN(simplify_swaps);
   ADD_PATTERN(simplify_goto_label);
@@ -1044,8 +1048,6 @@ void init_patterns(void) {
   ADD_PATTERN(delete_unreachable_code_return);
   ADD_PATTERN(delete_unreachable_code_areturn);
   ADD_PATTERN(delete_unreachable_code_ireturn);
-  ADD_PATTERN(invert_branch_null);
-  ADD_PATTERN(invert_branch_nonnull);
 
   /* Conditional branches */
   ADD_PATTERN(simplify_if_icmpeq);
@@ -1059,4 +1061,6 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_ifnull);
   ADD_PATTERN(simplify_ifnull_constant_integer);
   ADD_PATTERN(simplify_ifnull_constant_string);
+  ADD_PATTERN(invert_branch_null);
+  ADD_PATTERN(invert_branch_nonnull);
 }
