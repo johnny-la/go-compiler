@@ -34,26 +34,6 @@ int simplify_multiplication_right(CODE **c)
   return 0;
 }
 
-/* iload x
- * ldc 1
- * idiv
- * -------->
- * iload x
- *
- * Explanation: Dividing by 1 does not modify x's value. Thus,
- * the division can be omitted
- */
-int simplify_division(CODE **c)
-{
-  int x,k;
-  if (is_iload(*c,&x) &&
-      is_ldc_int(next(*c),&k) &&
-      is_idiv(next(next(*c))) &&
-      k == 1)
-      return replace(c,3,makeCODEiload(x,NULL));
-  return 0;
-}
-
 /* dup
  * astore x
  * pop
@@ -114,7 +94,6 @@ int positive_increment(CODE **c)
   return 0;
 }
 
-
 /*
 * CUSTOM PATTERNS
 */
@@ -128,6 +107,28 @@ int positive_increment(CODE **c)
  * Explanation: Since the duplicated value will be popped off the stack
  * anyways, we remove the dup and pop operations
  */
+
+
+/* iload x
+ * ldc 1
+ * idiv
+ * -------->
+ * iload x
+ *
+ * Explanation: Dividing by 1 does not modify x's value. Thus,
+ * the division can be omitted
+ */
+int simplify_division(CODE **c)
+{
+  int x,k;
+  if (is_iload(*c,&x) &&
+      is_ldc_int(next(*c),&k) &&
+      is_idiv(next(next(*c))) &&
+      k == 1)
+      return replace(c,3,makeCODEiload(x,NULL));
+  return 0;
+}
+
 int simplify_istore(CODE **c)
 {
   int x;
@@ -423,6 +424,158 @@ int simplify_goto_label(CODE **c)
   if (is_goto(*c,&x) &&
       !is_label(next(*c),&y))
       return replace(c, 2, makeCODEgoto(x,NULL));
+  return 0;
+}
+
+/* goto label
+ * ...
+ * label:
+ * return
+ * --------->
+ * return
+ * ...
+ * label:  
+ * return
+ * Explanation: The number of instructions are not decreased but the 
+ * reference count is reduced by 1 since by removing the goto to a label, 
+ * we are decreasing the reference to that label by 1
+ */
+int simplify_goto_label_return(CODE **c)
+{ int label;
+  if (is_goto(*c,&label) &&
+      is_return(next(destination(label)))) {
+    droplabel(label);
+    return replace(c,1,makeCODEreturn(NULL));
+  }
+  return 0;
+}
+
+/*
+ * goto label
+ * label:
+ * --------->
+ * label:
+ * Explanation: If the goto is branching to a label that is the same as the label 
+ * right after the goto instruction, this is redundant and
+ * the labels could be condensed to a single label.
+ */
+int delete_unnecessary_goto(CODE **c)
+{ int label1, label2;
+  if (is_goto(*c, &label1) &&
+      is_label(next(*c), &label2) &&
+      label1 == label2) {
+    return replace(c, 2, makeCODElabel(label1, NULL));
+  }
+  return 0;
+}
+
+/*
+ * return 
+ * ...
+ * label
+ * --------->
+ * return 
+ * label
+ * Explanation: code after a return instruction that is not a label cannot be reached and therefore
+ * could be completely neglected
+ */
+
+int delete_unreachable_code_return(CODE **c)
+{ int label1, label2;
+  /* return. */
+  if (is_return(*c) &&
+      !is_label(next(*c), &label1) &&
+      is_label(nextby(*c, 2), &label2)) {
+    return replace_modified(c, 3, makeCODEreturn(makeCODElabel(label2, NULL)));
+  }
+  return 0;
+}
+
+/*
+ * areturn 
+ * ...
+ * label
+ * --------->
+ * return 
+ * label
+ * Explanation: code after an areturn instruction that is not a label cannot be reached and therefore
+ * could be completely neglected
+ */
+
+int delete_unreachable_code_areturn(CODE **c)
+{ int label1, label2;
+  /* areturn. */
+  if (is_areturn(*c) &&
+      !is_label(next(*c), &label1) &&
+      is_label(nextby(*c, 2), &label2)) {
+    return replace_modified(c, 3, makeCODEareturn(makeCODElabel(label2, NULL)));
+  }
+  return 0;
+}
+
+/*
+ * ireturn 
+ * ...
+ * label
+ * --------->
+ * return 
+ * label
+ * Explanation: code after an ireturn instruction that is not a label cannot be reached and therefore
+ * could be completely neglected
+ */
+int delete_unreachable_code_ireturn(CODE **c)
+{ int label1, label2;
+  if (is_ireturn(*c) &&
+      !is_label(next(*c), &label1) &&
+      is_label(nextby(*c, 2), &label2)) {
+    return replace_modified(c, 3, makeCODEireturn(makeCODElabel(label2, NULL)));
+  }
+  return 0;
+}
+
+/* 
+ * ldc x 
+ * dup
+ * ifnull L
+ * --------->
+ * ldc_int x
+ * Explanation: constants(integers) cannot be null, only objects. So we can eliminate the loading, duplication,
+ * and then the popping and checking of null by just loading.
+ */
+
+int simplify_ifnull_constant_integer(CODE **c)
+{ int x, label;
+  char* s;
+
+  if (is_ldc_int(*c, &x) && 
+    is_dup(next(*c)) && 
+    is_ifnull(nextby(*c, 2), &label)) {
+    droplabel(label);
+    return replace(c, 3, makeCODEldc_int(x, NULL));
+  }
+
+  return 0;
+}
+
+/* 
+ * ldc x
+ * dup
+ * ifnull L
+ * --------->
+ * ldc_string x
+ * Explanation: constants(strings) cannot be null, only objects. So we can eliminate the loading, duplication,
+ * and then the popping and checking of null by just loading.
+ */
+int simplify_ifnull_constant_string(CODE **c)
+{ int x, label;
+  char* s;
+
+  if (is_ldc_string(*c, &s) &&
+   is_dup(next(*c)) &&
+    is_ifnull(nextby(*c, 2), &label)) {
+    droplabel(label);
+    return replace(c, 3, makeCODEldc_string(s, NULL));
+  }
   return 0;
 }
 
@@ -815,12 +968,44 @@ int delete_goto_deadlabel(CODE **c)
   return 0;
 }
 
+/*
+ * branch1 label1     
+ *
+ * goto label2
+ * label1:
+ * --------->
+ * branch2 label2  
+ * Explanation:      
+ */
+
+int collapse_branch(CODE **c)
+{ int label1, label2, label3;
+  /* ifnull, ldc integer */
+  if (is_ifnull(*c, &label1) &&
+      uniquelabel(label1) &&
+      is_goto(next(*c), &label2) &&
+      is_label(nextby(*c, 2), &label3) &&
+       label3 == label1) {
+    return replace(c, 3, makeCODEifnonnull(label2, NULL));
+  }
+
+  /* ifnonnull, ldc integer */
+  if (is_ifnonnull(*c, &label1) &&
+      uniquelabel(label1) &&
+      is_goto(next(*c), &label2) &&
+      is_label(nextby(*c, 2), &label3) &&
+       label3 == label1) {
+    return replace(c, 3, makeCODEifnull(label2, NULL));
+  }
+  return 0;
+}
+
 void init_patterns(void) {
   ADD_PATTERN(simplify_multiplication_right);
   ADD_PATTERN(simplify_astore);
   ADD_PATTERN(positive_increment);
   ADD_PATTERN(simplify_goto_goto);
-  
+
   /* Custom patterns */
   ADD_PATTERN(simplify_istore);
   ADD_PATTERN(positive_increment_left);
@@ -838,6 +1023,12 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_goto_label);
   ADD_PATTERN(simplify_pop_after_dup_putfield);
   ADD_PATTERN(delete_goto_deadlabel);
+  ADD_PATTERN(delete_unnecessary_goto);
+  ADD_PATTERN(simplify_goto_label_return);
+  ADD_PATTERN(delete_unreachable_code_return);
+  ADD_PATTERN(delete_unreachable_code_areturn);
+  ADD_PATTERN(delete_unreachable_code_ireturn);
+  ADD_PATTERN(collapse_branch);
 
   /* Conditional branches */
   ADD_PATTERN(simplify_if_icmpeq);
@@ -849,5 +1040,6 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_if_icmpgt);
   ADD_PATTERN(simplify_if_icmpge);
   ADD_PATTERN(simplify_ifnull);
-
+  ADD_PATTERN(simplify_ifnull_constant_integer);
+  ADD_PATTERN(simplify_ifnull_constant_string);
 }
