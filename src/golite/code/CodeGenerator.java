@@ -49,10 +49,10 @@ public class CodeGenerator extends DepthFirstAdapter
     private int levels = 0;
     private String topLevelName = "";
 
+
     public static final String[] KEYWORDS_ARRAY = new String[] { "abstract", "assert", "try", "catch",
      "finally", "char", "float", "double", "extends", "final", "public", "private", "enum", "instanceOf" };
-     public static final Set<String> JAVA_KEYWORDS = new HashSet<String>(Arrays.asList(KEYWORDS_ARRAY));
-
+    public static final Set<String> JAVA_KEYWORDS = new HashSet<String>(Arrays.asList(KEYWORDS_ARRAY));
 
     // The string buffer used for concatenating strings
     private String stringBuffer = "buffer";
@@ -504,7 +504,6 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     //base case idTypes
-
     public void caseAIdIdType(AIdIdType node) {
         String id = node.getId().getText();
         if (JAVA_KEYWORDS.contains(id)) {
@@ -1113,14 +1112,48 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAIncrementStmt(AIncrementStmt node)
     {
+        if (node.getExp() instanceof AArrayElementExp)
+        {
+            incrementArray((AArrayElementExp)node.getExp(),1);
+            return;
+        }
+        
         node.getExp().apply(this);
         print("++");
     }
 
     public void caseADecrementStmt(ADecrementStmt node)
     {
+        if (node.getExp() instanceof AArrayElementExp)
+        {
+            incrementArray((AArrayElementExp)node.getExp(),-1);
+            return;
+        }
+
         node.getExp().apply(this);
         print("--");
+    }
+
+    private void incrementArray(AArrayElementExp arrayElementExp, int value)
+    {
+        PExp array = arrayElementExp.getArray();
+        print("_set_(");
+        array.apply(this);
+        print(",");
+        arrayElementExp.getIndex().apply(this);
+        print(",");
+
+        // Increment current value
+        print("_get_(");
+        arrayElementExp.getArray().apply(this);
+        print(",");
+        arrayElementExp.getIndex().apply(this);
+        print(",");
+        printLastArrayArguments(arrayElementExp,true);
+        print("+" + value);
+
+        print(",");
+        printLastArrayArguments(arrayElementExp, false);
     }
 
     public void caseADeclStmt(ADeclStmt node)
@@ -1266,7 +1299,10 @@ public class CodeGenerator extends DepthFirstAdapter
                 else
                 {
                     lvalue.apply(this);
-                    print(" = ");
+                    if (node.getOp() instanceof AOpEqualsExp)
+                        node.getOp().apply(this);
+                    else
+                        print("=");
                     expression.apply(this);
                     // Use temporary variables for swapping
                     if (swappedExpressions.contains(expression))
