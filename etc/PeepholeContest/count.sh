@@ -31,7 +31,7 @@ for BENCH_DIR in PeepholeBenchmarks/*/; do
 	echo "-------------"
 	echo -e -n "\033[0m"
 	make -C $BENCH_DIR opt
-
+	make diff
 	echo
 	echo -e "\033[32m-------------"
 	echo "  Size"

@@ -98,15 +98,6 @@ int positive_increment(CODE **c)
 * CUSTOM PATTERNS
 */
 
-/* dup
- * istore x
- * pop
- * -------->
- * istore x
- *
- * Explanation: Since the duplicated value will be popped off the stack
- * anyways, we remove the dup and pop operations
- */
 
 
 /* iload x
@@ -950,17 +941,15 @@ int simplify_pop_after_dup_putfield(CODE **c) {
 }
 
 /*
-* goto L1: 
-* ...
-* L1:
-* L2:
+* stuff
+* L1: (Dead label)
+* stuff
 * ---->
-* goto L2:
-* ...
-* L2:
+* stuff
+* Explanation: dead labels are not used, can just delete
 */
 
-int delete_goto_deadlabel(CODE **c)
+int delete_deadlabel(CODE **c)
 { int label;
   if (is_label(*c, &label) && deadlabel(label)) {
      return kill_line(c);
@@ -1016,8 +1005,9 @@ void init_patterns(void) {
   ADD_PATTERN(simplify_istore_iload);
   ADD_PATTERN(simplify_multiplication_left);
   ADD_PATTERN(simplify_division);
-  ADD_PATTERN(simplify_add_0);
-  ADD_PATTERN(simplify_add_0_left);
+
+  // ADD_PATTERN(simplify_add_0);
+  // ADD_PATTERN(simplify_add_0_left);
   ADD_PATTERN(simplify_noop);
   ADD_PATTERN(simplify_swaps);
   ADD_PATTERN(simplify_goto_label);
