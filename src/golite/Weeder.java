@@ -27,13 +27,14 @@ public class Weeder extends DepthFirstAdapter
         // Checks if all lvalues are identifiers or array elements 
         List<PExp> lvalues = (List<PExp>)node.getL();
         for (int i = 0; i < lvalues.size(); i++)
-        {   
+        { 
             // Expressions cannot be print statements
             weedPrintStatement(node.getR().get(i));
 
             if (!(lvalues.get(i) instanceof AIdExp)) {
                 allIds = false;
-                if (!(lvalues.get(i) instanceof AArrayElementExp)) {
+                if (!(lvalues.get(i) instanceof AArrayElementExp) &&
+                    !(lvalues.get(i) instanceof AFieldExp)) {
                     allLValues = false;
                 }
             }
@@ -53,12 +54,34 @@ public class Weeder extends DepthFirstAdapter
                 "be used with one identifier");
         }
 
-        if (node.getOp() instanceof AOpEqualsExp && !allLValues)
+        if ((node.getOp() instanceof AOpEqualsExp || node.getOp() instanceof AEqualsExp) 
+            && !allLValues)
         {
-            throw new RuntimeException("Operation assignment (+=,-=,etc) can only " +
-                "be used with proper LValues ");
+            throw new RuntimeException("Assignment (=,+=,-=,etc) can only " +
+                "be used with LValues ");
         }
 
+    }
+
+    public void inAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node)
+    {
+        weedPrintExpression(node.getExp());
+    }
+
+    public void inAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node)
+    {   
+        weedPrintExpression(node.getExp());
+    }
+
+    public void inAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node)
+    {
+        weedPrintExpression(node.getExp());
+    }
+
+    public void weedPrintExpression(Node node)
+    {
+        if (node instanceof APrintExp || node instanceof APrintlnExp)
+                ErrorManager.printError("Invalid print/println expression found");
     }
 
     public void weedPrintStatement(Node node)
@@ -198,6 +221,12 @@ public class Weeder extends DepthFirstAdapter
         }*/
     } 
 
+    public void inAExpStmt(AExpStmt node)
+    {
+        if (node.getExp() instanceof AAppendedExprExp)
+            ErrorManager.printError("Cannot have append() as a statement");
+    }
+
     public void inAIfStmt(AIfStmt node)
     {
         weedPrintStatement(node.getSimpleStmt());
@@ -246,7 +275,8 @@ public class Weeder extends DepthFirstAdapter
         inAAssignListStmt(node);
         {
             List<PExp> copy = new ArrayList<PExp>(node.getL());
-                for(PExp e : copy) {   
+                for(PExp e : copy) { 
+                    System.out.println("The id in assign list is: ");  
                     if (e instanceof AIdExp) {
                         AIdExp temp = (AIdExp) e;
                         if (temp.getIdType() instanceof AIdIdType) {
