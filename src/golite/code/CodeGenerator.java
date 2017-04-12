@@ -49,6 +49,11 @@ public class CodeGenerator extends DepthFirstAdapter
     private int levels = 0;
     private String topLevelName = "";
 
+    public static final String[] KEYWORDS_ARRAY = new String[] { "abstract", "assert", "try", "catch",
+     "finally", "char", "float", "double", "extends", "final", "public", "private", "enum", "instanceOf" };
+     public static final Set<String> JAVA_KEYWORDS = new HashSet<String>(Arrays.asList(KEYWORDS_ARRAY));
+
+
     // The string buffer used for concatenating strings
     private String stringBuffer = "buffer";
 
@@ -501,7 +506,12 @@ public class CodeGenerator extends DepthFirstAdapter
     //base case idTypes
 
     public void caseAIdIdType(AIdIdType node) {
-        print(node.getId().getText());
+        String id = node.getId().getText();
+        if (JAVA_KEYWORDS.contains(id)) {
+            print("_" + id);
+        } else {
+            print(id);
+        }
     }
 
     public void caseATypeIdType(ATypeIdType node) {

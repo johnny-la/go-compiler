@@ -88,10 +88,10 @@ public class TypeChecker extends DepthFirstAdapter
 
     public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) {
 
-        // if (left.totalArrayDimension.size() > 0 || right.totalArrayDimension.size() > 0) {
-        //     ErrorManager.printError("Unable to perform binary operations on array type");
-        //     return false;
-        // }
+        if (left.totalArrayDimension.size() != right.totalArrayDimension.size()) {
+            ErrorManager.printError("Array of different sizes");
+            return false;
+        }
 
         if (!isAliasedCorrectly(left, right)) {
             return false;

@@ -566,6 +566,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         // Determine the base type of the variable
         if (current instanceof ATypeVarType)
         {
+            Symbol s = symbolTable.get(((ATypeVarType)current).getType().getText());
+            if (s != null && s.kind != Symbol.SymbolKind.TYPE) {
+                ErrorManager.printError(s + " is already declared as a variable");
+            }
+
             typeClass.baseType = Type.stringToType(((ATypeVarType)current).getType().getText());
         }
 
