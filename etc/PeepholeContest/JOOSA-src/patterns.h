@@ -962,7 +962,8 @@ int simplify_pop_after_dup_putfield(CODE **c) {
 
 int delete_goto_deadlabel(CODE **c)
 { int label;
-  if (is_label(*c, &label) && deadlabel(label)) {
+  if (is_label(*c, &label) &&
+      deadlabel(label)) {
      return kill_line(c);
   }
   return 0;
@@ -975,12 +976,15 @@ int delete_goto_deadlabel(CODE **c)
  * label1:
  * --------->
  * branch2 label2  
- * Explanation:      
+ *
+ * Explanation: Replace by the opposite logic(if null -> if nonnull) then branch to the label within the goto directly 
+ * and eliminate the goto branching.
+ * This is possible because label1 has only a reference count of 1 and we know branch1 is the only
+ * branching to label1
  */
 
-int collapse_branch(CODE **c)
+int invert_branch_null(CODE **c)
 { int label1, label2, label3;
-  /* ifnull, ldc integer */
   if (is_ifnull(*c, &label1) &&
       uniquelabel(label1) &&
       is_goto(next(*c), &label2) &&
@@ -988,8 +992,20 @@ int collapse_branch(CODE **c)
        label3 == label1) {
     return replace(c, 3, makeCODEifnonnull(label2, NULL));
   }
+  return 0;
+}
 
-  /* ifnonnull, ldc integer */
+/*
+  * branch1 label1     
+ *
+ * goto label2
+ * label1:
+ * --------->
+ * branch2 label2  
+ * Explanation: Same as previous explanation but for non null
+*/
+int invert_branch_nonnull(CODE **c)
+{ int label1, label2, label3;
   if (is_ifnonnull(*c, &label1) &&
       uniquelabel(label1) &&
       is_goto(next(*c), &label2) &&
@@ -1028,7 +1044,8 @@ void init_patterns(void) {
   ADD_PATTERN(delete_unreachable_code_return);
   ADD_PATTERN(delete_unreachable_code_areturn);
   ADD_PATTERN(delete_unreachable_code_ireturn);
-  ADD_PATTERN(collapse_branch);
+  ADD_PATTERN(invert_branch_null);
+  ADD_PATTERN(invert_branch_nonnull);
 
   /* Conditional branches */
   ADD_PATTERN(simplify_if_icmpeq);
