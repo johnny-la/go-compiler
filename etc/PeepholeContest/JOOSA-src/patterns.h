@@ -942,11 +942,11 @@ int simplify_pop_after_dup_putfield(CODE **c) {
 
 /*
 * stuff
-* L1: (Dead label)
+* L1:
 * stuff
 * ---->
 * stuff
-* Explanation: dead labels are not used, can just delete
+* Explanation:
 */
 
 int delete_deadlabel(CODE **c)
@@ -995,41 +995,41 @@ void init_patterns(void) {
   ADD_PATTERN(positive_increment);
   ADD_PATTERN(simplify_goto_goto);
 
-  /* Custom patterns */
-  ADD_PATTERN(simplify_istore);
-  ADD_PATTERN(positive_increment_left);
-  ADD_PATTERN(simplify_increment_0);
-  ADD_PATTERN(simplify_negative_increment);
-  ADD_PATTERN(simplify_negative_increment_left);
-  ADD_PATTERN(simplify_astore_aload);
-  ADD_PATTERN(simplify_istore_iload);
-  ADD_PATTERN(simplify_multiplication_left);
-  ADD_PATTERN(simplify_division);
+  // /* Custom patterns */
+  // ADD_PATTERN(simplify_istore);
+  // ADD_PATTERN(positive_increment_left);
+  // ADD_PATTERN(simplify_increment_0);
+  // ADD_PATTERN(simplify_negative_increment);
+  // ADD_PATTERN(simplify_negative_increment_left);
+  // ADD_PATTERN(simplify_astore_aload);
+  // ADD_PATTERN(simplify_istore_iload);
+  // ADD_PATTERN(simplify_multiplication_left);
+  // ADD_PATTERN(simplify_division);
 
-  // ADD_PATTERN(simplify_add_0);
-  // ADD_PATTERN(simplify_add_0_left);
-  ADD_PATTERN(simplify_noop);
-  ADD_PATTERN(simplify_swaps);
-  ADD_PATTERN(simplify_goto_label);
-  ADD_PATTERN(simplify_pop_after_dup_putfield);
-  ADD_PATTERN(delete_goto_deadlabel);
-  ADD_PATTERN(delete_unnecessary_goto);
-  ADD_PATTERN(simplify_goto_label_return);
-  ADD_PATTERN(delete_unreachable_code_return);
-  ADD_PATTERN(delete_unreachable_code_areturn);
-  ADD_PATTERN(delete_unreachable_code_ireturn);
-  ADD_PATTERN(collapse_branch);
+  // // ADD_PATTERN(simplify_add_0);
+  // // ADD_PATTERN(simplify_add_0_left);
+  // ADD_PATTERN(simplify_noop);
+  // ADD_PATTERN(simplify_swaps);
+  // ADD_PATTERN(simplify_goto_label);
+  // ADD_PATTERN(simplify_pop_after_dup_putfield);
+  // ADD_PATTERN(delete_goto_deadlabel);
+  // ADD_PATTERN(delete_unnecessary_goto);
+  // ADD_PATTERN(simplify_goto_label_return);
+  // ADD_PATTERN(delete_unreachable_code_return);
+  // ADD_PATTERN(delete_unreachable_code_areturn);
+  // ADD_PATTERN(delete_unreachable_code_ireturn);
+  // ADD_PATTERN(collapse_branch);
 
-  /* Conditional branches */
-  ADD_PATTERN(simplify_if_icmpeq);
-  ADD_PATTERN(simplify_if_acmpeq);
-  ADD_PATTERN(simplify_if_icmpne);
-  ADD_PATTERN(simplify_if_acmpne);
-  ADD_PATTERN(simplify_if_icmplt);
-  ADD_PATTERN(simplify_if_icmple);
-  ADD_PATTERN(simplify_if_icmpgt);
-  ADD_PATTERN(simplify_if_icmpge);
-  ADD_PATTERN(simplify_ifnull);
-  ADD_PATTERN(simplify_ifnull_constant_integer);
-  ADD_PATTERN(simplify_ifnull_constant_string);
+  // /* Conditional branches */
+  // ADD_PATTERN(simplify_if_icmpeq);
+  // ADD_PATTERN(simplify_if_acmpeq);
+  // ADD_PATTERN(simplify_if_icmpne);
+  // ADD_PATTERN(simplify_if_acmpne);
+  // ADD_PATTERN(simplify_if_icmplt);
+  // ADD_PATTERN(simplify_if_icmple);
+  // ADD_PATTERN(simplify_if_icmpgt);
+  // ADD_PATTERN(simplify_if_icmpge);
+  // ADD_PATTERN(simplify_ifnull);
+  // ADD_PATTERN(simplify_ifnull_constant_integer);
+  // ADD_PATTERN(simplify_ifnull_constant_string);
 }
