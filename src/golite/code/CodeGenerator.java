@@ -1290,7 +1290,10 @@ public class CodeGenerator extends DepthFirstAdapter
                 else
                 {
                     lvalue.apply(this);
-                    print(" = ");
+                    if (node.getOp() instanceof AOpEqualsExp)
+                        node.getOp().apply(this);
+                    else
+                        print("=");
                     expression.apply(this);
                     // Use temporary variables for swapping
                     if (swappedExpressions.contains(expression))
