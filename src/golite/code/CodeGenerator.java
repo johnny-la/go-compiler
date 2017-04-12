@@ -9,7 +9,6 @@ import golite.type.*;
 import java.math.*;
 import golite.symbol.*;
 import golite.*;
-import java.security.spec.EllipticCurve;
 import java.util.*;
 
 public class CodeGenerator extends DepthFirstAdapter
