@@ -8,8 +8,7 @@ Compiler which translates Golang to Java, built using SableCC.
 
 ## Requirements
 - **Java 8 or higher**
-- **SableCC 3**
-  - Download SableCC 3: http://www.sablecc.org/
+- **SableCC 3** [(Download)](http://www.sablecc.org/)
   - [Setup Tutorial](http://www.cs.mcgill.ca/~cs520/2009/howtosablecc.html) 
 
 ## How to Biuld and Run:
