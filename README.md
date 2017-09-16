@@ -30,7 +30,7 @@ Then, run the compiler on a Golang program:
 
 ## Testing the compiler 
 
-To test the compiler, the repository includes a series of Golang test programs. To run the compiler on these programs, execute the following:
+To test the compiler, a series of Golang test programs are included. To run the compiler on these programs, execute the following:
 
 ```
 ./test.sh
