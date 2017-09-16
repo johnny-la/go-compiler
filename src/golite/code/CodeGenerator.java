@@ -11,6 +11,9 @@ import golite.symbol.*;
 import golite.*;
 import java.util.*;
 
+/**
+ * Generates a Java file from the given Golang program
+ */
 public class CodeGenerator extends DepthFirstAdapter
 {
     private int indentLevel;
@@ -18,7 +21,6 @@ public class CodeGenerator extends DepthFirstAdapter
 
     private Node root;
     private TypeChecker typeChecker;
-    //structs
     private SemanticAnalyzer semanticAnalyzer;
 
     public static HashMap<Node, TypeClass> nodeTypes;
@@ -46,6 +48,7 @@ public class CodeGenerator extends DepthFirstAdapter
     // The start of the file (import statements, etc.)
     private String fileHeader;
 
+    // Printed at the end of the file
     private static final String fileFooter =
         	"    public static <T> T _get_(ArrayList<T> list, int index, boolean isArray, int maxSize, T defaultValue) {\n" +
 		    "        _ensureCapacity_(list,isArray,maxSize,defaultValue);\n" +
@@ -176,14 +179,18 @@ public class CodeGenerator extends DepthFirstAdapter
         printi(s + "\n");
     }
 
-    // Prints the given string, along with a newline
+    /**
+     *  Prints the given string, along with a newline
+     */
     private void println(String s)
     {
         output.append(s);
         output.append("\n");
     }
 
-    // Pretty prints the list of nodes
+    /**
+     *  Pretty prints the list of nodes
+     */
     private void printNodes(LinkedList<? extends Node> nodes)
     {
         for (Node node : nodes) { node.apply(this); }
@@ -207,7 +214,9 @@ public class CodeGenerator extends DepthFirstAdapter
         }
     }  
 
-    // Pretty prints the list of nodes, separating each element by the given delimiter
+    /** 
+     * Pretty prints the list of nodes, separating each element by the given delimiter
+     */
     private void printNodes(LinkedList<? extends Node> nodes, String delimiter)
     {
         for (int i = 0; i < nodes.size(); i++)
@@ -217,7 +226,9 @@ public class CodeGenerator extends DepthFirstAdapter
         }
     }
 
-    // Pretty prints the list of nodes, separating each element by a comma
+    /** 
+     * Pretty prints the list of nodes, separating each element by a comma
+     */
     private void printNodesWithComma(LinkedList<? extends Node> nodes)
     {
         for (int i = 0; i < nodes.size(); i++)
@@ -227,7 +238,6 @@ public class CodeGenerator extends DepthFirstAdapter
         }
     }
 
-    /** PROGRAM */
     public void caseAProgram(AProgram node)
     {
         // Print declarations
@@ -398,31 +408,31 @@ public class CodeGenerator extends DepthFirstAdapter
         return true;
     }
 
-    public void outAStructVarType(AStructVarType node) {
+    public void outAStructVarType(AStructVarType node) 
+    {
         String name = null;
-        for (Node n : staticStructs.keySet()) {
+        for (Node n : staticStructs.keySet()) 
+        {
             AStructVarType cur = (AStructVarType) n;
-            if (isSameStruct(cur.getInnerFields(), node.getInnerFields())) {
+            if (isSameStruct(cur.getInnerFields(), node.getInnerFields())) 
                 return;
-            }
         }
 
-        for (Node n : localStructs.keySet()) {
+        for (Node n : localStructs.keySet()) 
+        {
             AStructVarType cur = (AStructVarType) n;
-            if (isSameStruct(cur.getInnerFields(), node.getInnerFields())) {
+            if (isSameStruct(cur.getInnerFields(), node.getInnerFields())) 
                 return;
-            }
         }
 
         String className = "";
-        if (!inFunction) {
+        if (!inFunction) 
             className += "static ";
-        }
-        if (levels == 1) {
+
+        if (levels == 1) 
             printi(className + "class ");
-        } else {
+        else 
             print(className + "class ");
-        }
 
         if (levels > 1 || isAnon) {
             name = "AnonymousClass" + anonymousClassIndex;
@@ -453,39 +463,38 @@ public class CodeGenerator extends DepthFirstAdapter
         indentLevel++;
         printiln(name + " " + "cur = ((" + name + ") object);");
 
-	if (node.getInnerFields().size() > 0) {
-		printiln("if (");
-		indentLevel++;
-		for (int j = 0 ; j < node.getInnerFields().size(); j++) {
-		    Node n = node.getInnerFields().get(j);
-		    ASingleInnerFields cur = (ASingleInnerFields) n;
-		    for (int i = 0; i < cur.getIdType().size(); i++) {
-			String curField = getIdName(cur.getIdType().get(i));
-			printi("");
-			print("this." + curField + " == ");
-			if (i == (cur.getIdType().size() - 1)) {
-			    print("cur." + curField);
-			} else {
-			    print("cur." + curField + " &&");
-			    println("");
-			}
-		    }
-		    if (j != (node.getInnerFields().size() - 1)) {
-			println(" &&");
-		    }
-		}
-		println("");
-		indentLevel--;
-		printiln(" ) return true;");
-	}
+        if (node.getInnerFields().size() > 0) 
+        {
+            printiln("if (");
+            indentLevel++;
+            for (int j = 0 ; j < node.getInnerFields().size(); j++) {
+                Node n = node.getInnerFields().get(j);
+                ASingleInnerFields cur = (ASingleInnerFields) n;
+                for (int i = 0; i < cur.getIdType().size(); i++) {
+                String curField = getIdName(cur.getIdType().get(i));
+                printi("");
+                print("this." + curField + " == ");
+                if (i == (cur.getIdType().size() - 1)) {
+                    print("cur." + curField);
+                } else {
+                    print("cur." + curField + " &&");
+                    println("");
+                }
+                }
+                if (j != (node.getInnerFields().size() - 1)) {
+                println(" &&");
+                }
+            }
+            println("");
+            indentLevel--;
+            printiln(" ) return true;");
+        }
 
         indentLevel--;
-        // printiln("} else {");
-        // indentLevel++;
+
         printiln("}");
         printiln("return false;");
-        // indentLevel--;
-        // printiln("}");
+
         indentLevel--;
         printiln("}");
         indentLevel--;
@@ -494,7 +503,8 @@ public class CodeGenerator extends DepthFirstAdapter
         else localStructs.put(node, name);
     }
 
-    public void caseAStructVarType(AStructVarType node) {
+    public void caseAStructVarType(AStructVarType node) 
+    {
         inAStructVarType(node);
         levels++;
         {
@@ -510,27 +520,30 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     //base case idTypes
-    public void caseAIdIdType(AIdIdType node) {
+    public void caseAIdIdType(AIdIdType node) 
+    {
         String id = node.getId().getText();
-        if (JAVA_KEYWORDS.contains(id)) {
+        if (JAVA_KEYWORDS.contains(id))
             print("_" + id);
-        } else {
+        else 
             print(id);
-        }
     }
 
-    public void caseATypeIdType(ATypeIdType node) {
+    public void caseATypeIdType(ATypeIdType node) 
+    {
         print("_" + node.getType().getText());
     }
 
     //package declarations
-    public void caseAPackageDecl(APackageDecl node) {
+    public void caseAPackageDecl(APackageDecl node) 
+    {
         print("package ");
         node.getIdType().apply(this);
         print("; \n");
     }
     //var declarations
-    public void caseAVarDeclAstDecl(AVarDeclAstDecl node) {
+    public void caseAVarDeclAstDecl(AVarDeclAstDecl node) 
+    {
         //print("int ");
         node.getVarDecl().apply(this);
         //println("");
@@ -572,9 +585,9 @@ public class CodeGenerator extends DepthFirstAdapter
             symbol = semanticAnalyzer.symbolMap.get(node);
         else
             symbol = semanticAnalyzer.symbolMap.get(expNode);
-        if(symbol != null && symbol.kind != null && symbol.kind == Symbol.SymbolKind.FIELD) {
+
+        if(symbol != null && symbol.kind != null && symbol.kind == Symbol.SymbolKind.FIELD) 
            print("static "); 
-        }
 
         String variableName = getIdName(node);
         
@@ -584,12 +597,8 @@ public class CodeGenerator extends DepthFirstAdapter
             System.out.println("Declaring variable: " + node);
             String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);
             print(typeName + " ");
-
-            // Insert id into HashMap so we don't redeclare it
-            //declaredVariables.put(variableName, nodeTypes.get(node));
         }
-
-        
+ 
         if (node != null)
             node.apply(this);
         else if (expNode != null)
@@ -603,38 +612,44 @@ public class CodeGenerator extends DepthFirstAdapter
     }
     public void outAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
         Node varType = node.getVarType();
-        while (varType instanceof ASliceVarType || varType instanceof AArrayVarType) {
-            if (varType instanceof ASliceVarType) {
+        while (varType instanceof ASliceVarType || varType instanceof AArrayVarType) 
+        {
+            if (varType instanceof ASliceVarType) 
                 varType = ((ASliceVarType) varType).getVarType();
-            } else {
+            else 
                 varType = ((AArrayVarType) varType).getVarType();
-            }
         }
         
         TypeClass type = nodeTypes.get(node.getIdType());
         System.out.println("type is " + type);
+
         if (type.baseType == Type.STRUCT && type.typeAliases.size() == 0)
         {
             isAnon = true;
             topLevelName = getIdName(node.getIdType());
-            if (varType instanceof AStructVarType) {
+            if (varType instanceof AStructVarType) 
+            {
                 varType.apply(this);
             }
             isAnon = false;
             printi("");
             System.out.println("First time encountering struct: " + node.getIdType() + ". Creating the class");
         }
+
         declareVariable(node.getIdType(), true);
         println(";");
     }
 
-    public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node) {
+    public void caseAVarWithTypeVarDecl(AVarWithTypeVarDecl node) 
+    {
         inAVarWithTypeVarDecl(node);
         outAVarWithTypeVarDecl(node);
     }
 
-    public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) {
-        if (isBlankId(node.getIdType())) { return; }
+    public void caseAVarWithOnlyExpVarDecl(AVarWithOnlyExpVarDecl node) 
+    {
+        if (isBlankId(node.getIdType())) 
+            return; 
         
         declareVariable(node.getIdType());
         print(" = ");
@@ -643,7 +658,6 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAVarWithTypeAndExpVarDecl(AVarWithTypeAndExpVarDecl node) {
         declareVariable(node.getIdType());
-        //node.getVarType().apply(this);
         print(" = ");
         node.getExp().apply(this);
     }
@@ -725,33 +739,31 @@ public class CodeGenerator extends DepthFirstAdapter
         return "";
     }
 
-    public void outAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
-        if (isBlankId(node.getIdType())) { return; }
+    public void outAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) 
+    {
+        if (isBlankId(node.getIdType()))
+            return; 
+
         printi("");
         declareVariable(node.getIdType(),true);
 
     }
 
-    public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) {
+    public void caseAInlineListNoExpVarDecl(AInlineListNoExpVarDecl node) 
+    {
         node.getVarDecl().apply(this);
         println(";");
         outAInlineListNoExpVarDecl(node);
     }
 
-    public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) {
-        // declareVariable(node.getIdType());
-        // // node.getIdType().apply(this);
-        // // print(", ");
-        // // node.getVarDecl().apply(this);
-        // // print(", ");
-        // print(" = ");
-        // node.getExp().apply(this);
-
+    public void caseAInlineListWithExpVarDecl(AInlineListWithExpVarDecl node) 
+    {
         List<PIdType> leftArgs = new ArrayList<PIdType>();
         LinkedList<PExp> rightArgs = new LinkedList<PExp>();
         PVarDecl current = node;
 
-        while (current instanceof AInlineListWithExpVarDecl) {
+        while (current instanceof AInlineListWithExpVarDecl) 
+        {
             AInlineListWithExpVarDecl temp = (AInlineListWithExpVarDecl) current;
             leftArgs.add(temp.getIdType());
             rightArgs.addFirst(temp.getExp());
@@ -759,18 +771,21 @@ public class CodeGenerator extends DepthFirstAdapter
         }
 
         //finished recursion
-        if (current instanceof AVarWithOnlyExpVarDecl) {
+        if (current instanceof AVarWithOnlyExpVarDecl) 
+        {
             AVarWithOnlyExpVarDecl varDecl = (AVarWithOnlyExpVarDecl)current;
             leftArgs.add(varDecl.getIdType());
             rightArgs.addFirst(varDecl.getExp());
-        } else if (current instanceof AVarWithTypeAndExpVarDecl) {
+        } else if (current instanceof AVarWithTypeAndExpVarDecl) 
+        {
             AVarWithTypeAndExpVarDecl varDecl = (AVarWithTypeAndExpVarDecl)current;
             leftArgs.add(varDecl.getIdType());
             rightArgs.addFirst(varDecl.getExp());
         }
 
         int idsPrinted = 0;
-        for (int i = 0; i < leftArgs.size(); i++) {
+        for (int i = 0; i < leftArgs.size(); i++) 
+        {
             // Skip blank ids
             if (isBlankId(leftArgs.get(i)))
                 continue;
@@ -778,7 +793,8 @@ public class CodeGenerator extends DepthFirstAdapter
             if (idsPrinted != 0)
                 println(";");
 
-            if (idsPrinted != 0) { printi(""); }
+            if (idsPrinted != 0) 
+                printi(""); 
 
             declareVariable(leftArgs.get(i));
             print(" = ");
@@ -788,13 +804,13 @@ public class CodeGenerator extends DepthFirstAdapter
         }
     }
 
-    public void caseAMultilineListVarDecl(AMultilineListVarDecl node) {
-        //println("(");
-        //indentLevel++;
-        
+    public void caseAMultilineListVarDecl(AMultilineListVarDecl node) 
+    {
+
         int idsPrinted = 0;
         // Print all the variable declarations in the multiline list
-        for (int i = 0; i < node.getVarDecl().size(); i++) {
+        for (int i = 0; i < node.getVarDecl().size(); i++) 
+        {
             // Ignore blank identifiers
             if (isBlankId(node.getVarDecl().get(i))) 
                 continue; 
@@ -810,32 +826,18 @@ public class CodeGenerator extends DepthFirstAdapter
 
             idsPrinted++;
         }
-
-        //if (idsPrinted > 0)
-        //    println(";");
-        //indentLevel--;
-        //printi(")");
     }
 
-    //type declarations
-    public void caseATypeDeclAstDecl(ATypeDeclAstDecl node) {
-        // print("type ");
+    /** Type Declarations */
+
+    public void caseATypeDeclAstDecl(ATypeDeclAstDecl node) 
+    {
         node.getTypeDecl().apply(this);
-        //println("");
     }
 
     public void caseATypeAliasTypeDecl(ATypeAliasTypeDecl node)
     {
         inATypeAliasTypeDecl(node);
-        // if(node.getIdType() != null)
-        // {
-        //     node.getIdType().apply(this);
-        // }
-        // if(node.getVarType() != null)
-        // {
-        //     node.getVarType().apply(this);
-        // }
-        // outATypeAliasTypeDecl(node);
     }
 
     public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node) {
@@ -904,8 +906,6 @@ public class CodeGenerator extends DepthFirstAdapter
     public void caseAMultipleTypesSignature(AMultipleTypesSignature node)
     {
         printMethodParameters(node.getIdList());
-        //print("");
-        //node.getVarType().apply(this);
         print(", ");
         node.getSignature().apply(this);
     }
@@ -913,8 +913,6 @@ public class CodeGenerator extends DepthFirstAdapter
     public void caseASingleTypeSignature(ASingleTypeSignature node)
     {
         printMethodParameters(node.getIdList());
-        //print(" ");
-        //node.getVarType().apply(this);
     }
 
     private void printMethodParameters(LinkedList<PIdType> parameters)
@@ -1167,8 +1165,10 @@ public class CodeGenerator extends DepthFirstAdapter
         node.getDecl().apply(this);
     }
 
-    // Returns true if the given node is a function call or 
-    // an append expression
+    /** 
+     * Returns true if the given node is a function call or 
+     * an append expression
+     */
     private boolean isFunctionCall(PExp node)
     {
         return node instanceof AFunctionCallExp || node instanceof AAppendedExprExp;
@@ -1178,6 +1178,7 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         ArrayList<PExp> lvalues = new ArrayList<PExp>();
         ArrayList<PExp> expressions = new ArrayList<PExp>();
+
         // Mapping from expression ID name to index in expressions array 
         HashMap<String,ArrayList<Integer>> expressionIndexMap = new HashMap<String,ArrayList<Integer>>();
         HashMap<String,ArrayList<Integer>> lvalueIndexMap = new HashMap<String,ArrayList<Integer>>();
@@ -1229,12 +1230,7 @@ public class CodeGenerator extends DepthFirstAdapter
             {
                 if (newVariablesDeclared)
                     printi("");
-                // String typeName = getTypeName(lvalue);
-                // print(typeName + " ");
-                // lvalue.apply(this);
-                // print(" = ");
-                // String defaultValue = getDefaultValue(lvalue);
-                // println(defaultValue + ";");
+
                 declareVariable(lvalue, true);
                 println(";");
 
@@ -1316,8 +1312,7 @@ public class CodeGenerator extends DepthFirstAdapter
                 }
             }
 
-            //if (i != lvalues.size()-1)
-                println(";");
+            println(";");
         }
 
         // End the temporary block
@@ -1326,10 +1321,6 @@ public class CodeGenerator extends DepthFirstAdapter
             indentLevel--;
             printiln("}");
         }
-
-        // printNodesWithComma(node.getL());
-        // node.getOp().apply(this);
-        // printNodesWithComma(node.getR()); 
     } 
 
     // Returns a hashset of all lvalues that were swapped in the assignment list
@@ -1869,97 +1860,58 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAPlusExp(APlusExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("+");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
-
+        printBinaryExpression(node, node.getL(), node.getR(), "+");
     }
 
     public void caseAMinusExp(AMinusExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("-");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
-
+        printBinaryExpression(node, node.getL(), node.getR(), "-");
     }
 
     public void caseAMultExp(AMultExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("*");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
-
+        printBinaryExpression(node, node.getL(), node.getR(), "*");
     }
 
     public void caseADivideExp(ADivideExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("/");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        printBinaryExpression(node, node.getL(), node.getR(), "/");
     }
 
     public void caseAModuloExp(AModuloExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("%");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        printBinaryExpression(node, node.getL(), node.getR(), "%");
     }
 
     public void caseALogicalOrExp(ALogicalOrExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("||");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        printBinaryExpression(node, node.getL(), node.getR(), "||");
     }
 
     public void caseALogicalAndExp(ALogicalAndExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("&&");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        printBinaryExpression(node, node.getL(), node.getR(), "&&");
     }
 
     public void caseAPipeExp(APipeExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("|");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        printBinaryExpression(node, node.getL(), node.getR(), "|");
     }
 
     public void caseACaretExp(ACaretExp node)
     {
+        printBinaryExpression(node, node.getL(), node.getR(), "^");
+    }
+
+    private void printBinaryExpression(PExp node, PExp leftExp, PExp rightExp, String operator)
+    {
         print("(");
-        node.getL().apply(this);
-        print("^");
-        node.getR().apply(this);
+        leftExp.apply(this);
+        print(operator);
+        rightExp.apply(this);
         print(")");
         printWithType(node);
     }
-
 
     public void caseAEqualsEqualsExp(AEqualsEqualsExp node)
     {
