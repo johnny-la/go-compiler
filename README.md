@@ -1,20 +1,25 @@
 # GoLite Compiler
-Compiler built in SableCC which translates Golang to Java 
+Compiler which translates Golang to Java, built using SableCC. 
 
 ## Authors 
 - Ralph Bou Samra 
 - Jonathan Lucuix-André 
-- Yan Qing Zhang 260520930
+- Yan Qing Zhang
 
-# To build:
+## Requirements
+- **SableCC 3**
+  - Download SableCC 3: http://www.sablecc.org/
+  - [Setup Tutorial](http://www.cs.mcgill.ca/~cs520/2009/howtosablecc.html) 
+
+## To build:
 
 `./build.sh`
 
-# To run dumpsymtab:
+## To run dumpsymtab:
 
 `java golite.Main -dumpsymtab <filename>`
 
-# To run pptype:
+## To run pptype:
 
 `java golite.Main -pptype <filename>`
 
