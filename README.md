@@ -1,4 +1,4 @@
-# GoLite Compiler
+# GoLite Compiler <img src="https://user-images.githubusercontent.com/10332234/30514818-68895c98-9aea-11e7-8a6f-122bab4691e5.png" width="5%" height="5%">
 Compiler for a subset of Golang, built using SableCC. 
 
 Translates Golang to Java. 
