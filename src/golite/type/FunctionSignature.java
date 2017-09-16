@@ -3,6 +3,9 @@ package golite.type;
 import golite.node.*;
 import java.util.*;
 
+/**
+ * Stores information about a function signature (return type, argument types, etc.)
+ */
 public class FunctionSignature 
 {
     public TypeClass returnType = new TypeClass();
@@ -11,7 +14,7 @@ public class FunctionSignature
 
     public FunctionSignature() {}
 
-    // Deep copy of a function signature
+    /** Deep copy of a function signature */
     public FunctionSignature(FunctionSignature other)
     {
         if (other == null) { return; }

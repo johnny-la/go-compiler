@@ -13,21 +13,6 @@ import java.util.*;
 
 public class CodeGenerator extends DepthFirstAdapter
 {
-    // TODO:
-    // * Print for-loop init statement
-    //   in code block above for-loop
-    //   (Also: print post-for-loop statement at end
-    //   of loop body?) 
-    // * Print characters as integers
-    // * Print fields as "static"
-    // * Add "String[] args" to main method
-    // * Handle array capacity (var x [3]int)
-    // * Structs are instantiated upon declaration
-    // * Slices and arrays are instantiated as arraylists.
-    //   slices start empty, arrays start with n values populated,
-    //   where n is the size of the array (each element populated
-    //   with that element's default value)
-
     private int indentLevel;
     private StringBuffer output; 
 
@@ -37,27 +22,29 @@ public class CodeGenerator extends DepthFirstAdapter
     private SemanticAnalyzer semanticAnalyzer;
 
     public static HashMap<Node, TypeClass> nodeTypes;
-    private HashSet<Node> newShortDeclarationVariables; // The lvalues that were declared in short declaration statements
+    // The lvalues that were declared in short declaration statements
+    private HashSet<Node> newShortDeclarationVariables; 
     public static boolean printType;
-    private String leftBlock = "/*";
-    private String rightBlock = "*/";
+
     private boolean inFunction = false;
     private boolean inATypeDecl = false;
     private boolean isInnerStruct = false;
     private boolean isAnon = false;
+
     private int levels = 0;
     private String topLevelName = "";
 
-
-    public static final String[] KEYWORDS_ARRAY = new String[] { "abstract", "assert", "try", "catch",
-     "finally", "char", "float", "double", "extends", "final", "public", "private", "enum", "instanceOf" };
+    public static final String[] KEYWORDS_ARRAY = new String[] { 
+        "abstract", "assert", "try", "catch", "finally", "char", "float", "double", 
+        "extends", "final", "public", "private", "enum", "instanceOf" 
+    };
     public static final Set<String> JAVA_KEYWORDS = new HashSet<String>(Arrays.asList(KEYWORDS_ARRAY));
 
-    // The string buffer used for concatenating strings
+    // The string buffer used to concatenate strings
     private String stringBuffer = "buffer";
 
-    // File name
-    private String fileHeader = "";
+    // The start of the file (import statements, etc.)
+    private String fileHeader;
 
     private static final String fileFooter =
         	"    public static <T> T _get_(ArrayList<T> list, int index, boolean isArray, int maxSize, T defaultValue) {\n" +
@@ -273,8 +260,6 @@ public class CodeGenerator extends DepthFirstAdapter
         // Close the main class
         indentLevel--;
         println("\n}"); 
-
-        // Print the classes
     }
 
     private boolean isEmptyMultilineList(PStmt node)
@@ -298,29 +283,31 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     /** DECLARATIONS */
-    //base case varTypes
 
-    // public void caseABaseTypeVarType(ABaseTypeVarType node) {
-    //     print(node.getType().getText());
-    // }
-
-    public void caseASliceVarType(ASliceVarType node) {
+    public void caseASliceVarType(ASliceVarType node) 
+    {
         print("[]");
         node.getVarType().apply(this);
     }
 
-    public void caseAArrayVarType(AArrayVarType node) {
+    public void caseAArrayVarType(AArrayVarType node) 
+    {
         print("[" + node.getInt().getText() + "]");
         node.getVarType().apply(this);
     }
 
 
-    public boolean isSameIdType(PIdType left, PIdType right) {
-        if (left.getClass().equals(right.getClass())) {
-            if (left instanceof AIdIdType) {
+    public boolean isSameIdType(PIdType left, PIdType right) 
+    {
+        if (left.getClass().equals(right.getClass())) 
+        {
+            if (left instanceof AIdIdType) 
+            {
                 AIdIdType lId = (AIdIdType) left, rId = (AIdIdType) right;
                 return lId.getId().getText().equals(rId.getId().getText());
-            } else {
+            } 
+            else 
+            {
                 ATypeIdType lId = (ATypeIdType) left, rId = (ATypeIdType) right;
                 return lId.getType().getText().equals(rId.getType().getText());
             }
@@ -328,17 +315,21 @@ public class CodeGenerator extends DepthFirstAdapter
         return false;
     }
 
-    public boolean isSameInnerField(PInnerFields l, PInnerFields r) {
+    public boolean isSameInnerField(PInnerFields l, PInnerFields r) 
+    {
         ASingleInnerFields left = (ASingleInnerFields) l, right = (ASingleInnerFields) r;        
         List<PIdType> leftIds = left.getIdType(), rightIds = right.getIdType();
         PVarType leftType = left.getVarType(), rightType = right.getVarType();
 
-        if (leftIds.size() != rightIds.size()) {
+        if (leftIds.size() != rightIds.size()) 
+        {
             return false;
         }
 
-        for (int i = 0; i < leftIds.size(); i++) {
-            if (!isSameIdType(leftIds.get(i), rightIds.get(i))) {
+        for (int i = 0; i < leftIds.size(); i++) 
+        {
+            if (!isSameIdType(leftIds.get(i), rightIds.get(i))) 
+            {
                 return false;
             }
         }
@@ -346,24 +337,35 @@ public class CodeGenerator extends DepthFirstAdapter
         return isSameVarType(leftType, rightType);
     }
 
-    public boolean isSameVarType(PVarType left, PVarType right) {
-        if (left.getClass().equals(right.getClass())) {
-            if (left instanceof ATypeVarType) {
+    public boolean isSameVarType(PVarType left, PVarType right) 
+    {
+        if (left.getClass().equals(right.getClass())) 
+        {
+            if (left instanceof ATypeVarType) 
+            {
                 ATypeVarType lType = (ATypeVarType) left, rType = (ATypeVarType) right;
                 return lType.getType().getText().equals(rType.getType().getText());
-            } else if (left instanceof ASliceVarType) {
+            } 
+            else if (left instanceof ASliceVarType) 
+            {
                 return isSameVarType(((ASliceVarType) left).getVarType(),
                     ((ASliceVarType) right).getVarType());
-            } else if (left instanceof AArrayVarType) {
+            } 
+            else if (left instanceof AArrayVarType) 
+            {
                 AArrayVarType lArray = (AArrayVarType) left, rArray = (AArrayVarType) right;
-                if (lArray.getInt().getText().equals(rArray.getInt().getText())) {
+                if (lArray.getInt().getText().equals(rArray.getInt().getText())) 
+                {
                     return isSameVarType(lArray.getVarType(), rArray.getVarType());
                 }
                 return false;
-            } else if (left instanceof AStructVarType) {
+            } else if (left instanceof AStructVarType) 
+            {
                 AStructVarType lStruct = (AStructVarType) left, rStruct = (AStructVarType) right;
                 return isSameStruct(lStruct.getInnerFields(), rStruct.getInnerFields());
-            } else {
+            } 
+            else 
+            {
                 AIdVarType lId = (AIdVarType) left, rId = (AIdVarType) right;
                 return lId.getId().getText().equals(rId.getId().getText());
             }
@@ -373,17 +375,22 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
 
-    public boolean isSameStruct(List<PInnerFields> left, List<PInnerFields> right) {
-        if (left == null && right == null) {
+    public boolean isSameStruct(List<PInnerFields> left, List<PInnerFields> right) 
+    {
+        if (left == null && right == null) 
+        {
             return true;
         }
 
-        if (left.size() != right.size()) {
+        if (left.size() != right.size()) 
+        {
             return false;
         }
 
-        for (int i = 0; i < left.size(); i++) {
-            if (!isSameInnerField(left.get(i), right.get(i))) {
+        for (int i = 0; i < left.size(); i++)
+        {
+            if (!isSameInnerField(left.get(i), right.get(i))) 
+            {
                 return false;
             }
         }
@@ -1579,8 +1586,10 @@ public class CodeGenerator extends DepthFirstAdapter
         printi("}");
     }
 
-    private boolean isTypeDecl(Node stmt) {
-        if (stmt instanceof ADeclStmt) {
+    private boolean isTypeDecl(Node stmt) 
+    {
+        if (stmt instanceof ADeclStmt) 
+        {
             return (((ADeclStmt) stmt).getDecl() instanceof ATypeDeclAstDecl);
         }
         return false;
@@ -1823,12 +1832,15 @@ public class CodeGenerator extends DepthFirstAdapter
         print("break");
     }
 
-    public void printWithType(Node node) {
-        if (printType) {
-            if (nodeTypes.containsKey(node)) {
-                print(leftBlock);
+    public void printWithType(Node node) 
+    {
+        if (printType) 
+        {
+            if (nodeTypes.containsKey(node)) 
+            {
+                print("/*");
                 print("" + nodeTypes.get(node));
-                print(rightBlock);
+                print("*/");
             }
         }
     }
@@ -1953,15 +1965,17 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
-        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-	     print("(");
-             node.getL().apply(this);
-             print(".compareTo(");
-             node.getR().apply(this);
-             print(") == 0");
-	     print(")");
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING)
+        {
+            print("(");
+                node.getL().apply(this);
+                print(".compareTo(");
+                node.getR().apply(this);
+                print(") == 0");
+            print(")");
         }
-        else{
+        else
+        {
             print("(");
             node.getL().apply(this);
             print("==");
@@ -1975,15 +1989,18 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
-        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-	     print("(");
-             node.getL().apply(this);
-             print(".compareTo(");
-             node.getR().apply(this);
-             print(") != 0");
-	     print(")");
+
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING)
+        {
+            print("(");
+            node.getL().apply(this);
+            print(".compareTo(");
+            node.getR().apply(this);
+            print(") != 0");
+            print(")");
         }
-        else{
+        else
+        {
             print("(");
             node.getL().apply(this);
             print("!=");
@@ -1997,15 +2014,18 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
-        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-	     print("(");
-             node.getL().apply(this);
-             print(".compareTo(");
-             node.getR().apply(this);
-             print(") < 0");
-	     print(")");
+
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING)
+        {
+            print("(");
+            node.getL().apply(this);
+            print(".compareTo(");
+            node.getR().apply(this);
+            print(") < 0");
+            print(")");
         }
-        else{
+        else
+        {
             print("(");
             node.getL().apply(this);
             print("<");
@@ -2019,15 +2039,18 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
-        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-	     print("(");
-             node.getL().apply(this);
-             print(".compareTo(");
-             node.getR().apply(this);
-             print(") > 0");
-	     print(")");
+
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING)
+        {
+            print("(");
+            node.getL().apply(this);
+            print(".compareTo(");
+            node.getR().apply(this);
+            print(") > 0");
+            print(")");
         }
-        else{
+        else
+        {
             print("(");
             node.getL().apply(this);
             print(">");
@@ -2041,15 +2064,17 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
-        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-	     print("(");
-             node.getL().apply(this);
-             print(".compareTo(");
-             node.getR().apply(this);
-             print(") <= 0");
-	     print(")");
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING)
+        {
+            print("(");
+            node.getL().apply(this);
+            print(".compareTo(");
+            node.getR().apply(this);
+            print(") <= 0");
+            print(")");
         }
-        else{
+        else
+        {
             print("(");
             node.getL().apply(this);
             print("<=");
@@ -2063,15 +2088,18 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         TypeClass type1 = nodeTypes.get(node.getL());
         TypeClass type2 = nodeTypes.get(node.getR());
-        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING){
-	     print("(");
-             node.getL().apply(this);
-             print(".compareTo(");
-             node.getR().apply(this);
-             print(") >= 0");
-	     print(")");
+
+        if(type1.baseType == Type.STRING && type2.baseType == Type.STRING)
+        {
+            print("(");
+            node.getL().apply(this);
+            print(".compareTo(");
+            node.getR().apply(this);
+            print(") >= 0");
+            print(")");
         }
-        else{
+        else
+        {
             print("(");
             node.getL().apply(this);
             print(">=");
@@ -2209,14 +2237,16 @@ public class CodeGenerator extends DepthFirstAdapter
        String strValue = node.getRawStringLit().getText();
        String strValueWithoutRawQuotes = strValue.substring(1,strValue.length()-1);
        String newString = "";
-       for(char c: strValueWithoutRawQuotes.toCharArray()){
-            if(c == '\\' || c == '\"'){
+       for(char c: strValueWithoutRawQuotes.toCharArray())
+       {
+            if(c == '\\' || c == '\"')
+            {
                 newString += "\\";
             }
             newString += c;
         }
-       print("\"" + newString + "\""); 
-       printWithType(node);
+        print("\"" + newString + "\""); 
+        printWithType(node);
     }
 
     public void caseAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node)
@@ -2226,5 +2256,4 @@ public class CodeGenerator extends DepthFirstAdapter
        stringValue = stringValue.replaceAll("\\\\v", "\\\\\\\\v");
        print(stringValue); 
     }
-
 }

@@ -3,8 +3,10 @@ package golite.type;
 import golite.node.*;
 import java.util.*;
 
-// Stores a mapping between a type alias and the dimension 
-// of the array (if applicable)
+/**
+ * Stores a mapping between a type alias and the dimension 
+ * of the array (if applicable)
+ */
 public class TypeAlias
 {
     public Node node;
