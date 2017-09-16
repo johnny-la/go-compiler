@@ -13,7 +13,6 @@ import java.util.*;
  */
 public class TypeChecker extends DepthFirstAdapter
 {
-
     public enum BinaryOps { BOOL, COMPARABLE, ORDERED, NUMERIC, NUMORSTRING, INTEGER }
     public enum Operator { PLUS, MINUS, MULTIPLY, DIVIDE, CARET, EXCLAMATION_MARK}
 
@@ -854,72 +853,72 @@ public class TypeChecker extends DepthFirstAdapter
                         return;
 
                     Symbol l = symbolTable.get(leftArgs.get(i));
-                    if (l != null && l.kind != Symbol.SymbolKind.LOCAL) {
+                    if (l != null && l.kind != Symbol.SymbolKind.LOCAL) 
                         ErrorManager.printError("Assignment of non locals not allowed");
-                    }
-                    if (right != null) {
-                        if (right.functionSignature != null 
-                            && right.functionSignature.returnType.baseType == Type.VOID) {
-                            ErrorManager.printError("assigning to a void value");
-                        }
-                    }
 
-                    if (left.isNull()) {
-                        if (!newIds.add(getIdName(((AIdExp)leftArgs.get(i)).getIdType()))) {
+                    if (right != null &&right.functionSignature != null 
+                        && right.functionSignature.returnType.baseType == Type.VOID) 
+                        ErrorManager.printError("assigning to a void value");
+
+                    if (left.isNull()) 
+                    {
+                        if (!newIds.add(getIdName(((AIdExp)leftArgs.get(i)).getIdType()))) 
                             ErrorManager.printError("Cannot redeclare same id twice");
-                        }
-                        if (isBlankId(((AIdExp)leftArgs.get(i)).getIdType())) {
+
+                        if (isBlankId(((AIdExp)leftArgs.get(i)).getIdType()))
                             continue;
-                        }
+
                         newDecl = true;
                         Symbol s = symbolTable.get(rightArgs.get(i));
-                            if (s != null) {
-                                if (s.kind == Symbol.SymbolKind.TYPE) {
-                                ErrorManager.printError("Assignment of only local variable or primitive allowed");
-                            }
-                        }
+                        if (s != null && s.kind == Symbol.SymbolKind.TYPE) 
+                            ErrorManager.printError("Assignment of only local variable or primitive allowed");
 
                         TypeClass copy = new TypeClass(right);
                         Symbol lhsSymbol = symbolTable.get(leftArgs.get(i));
-                        //System.out.println("Setting dynamic type of " + lhsSymbol + " to: " + copy);
                         lhsSymbol.setType(copy);
                         nodeTypes.put(leftArgs.get(i), lhsSymbol.typeClass);
-                    } else if (right.baseType != left.baseType) {
+                    } 
+                    else if (right.baseType != left.baseType) 
+                    {
                         ErrorManager.printError("Assignment of incompatible types: " + left + ", " + right);
                         return;
                     }
                 }
-                if (!newDecl) {
+
+                if (!newDecl) 
                     ErrorManager.printError("Short declarations must contain one new variable");
-                }
+
                 return;
             }
-        } else {
-            if (leftArgs.size() == 1 && rightArgs.size() == 1) {
+        }
+        else 
+        {
+            if (leftArgs.size() == 1 && rightArgs.size() == 1) 
+            {
                 TypeClass left = getType(leftArgs.get(0));
                 TypeClass right = getType(rightArgs.get(0));
                 AOpEqualsExp op = (AOpEqualsExp) operator;
                 
                 if (leftArgs.get(0) instanceof AIdExp && isBlankId( ((AIdExp)leftArgs.get(0)).getIdType() ))
-                {
                     ErrorManager.printError("Expression on left-hand-side is not an lvalue: " + leftArgs.get(0));
-                }
 
-                if (op.getOpEquals().getText().equals("+=")) {
-                    if (!isComparable(left, right, BinaryOps.NUMORSTRING)) {
+                if (op.getOpEquals().getText().equals("+=")) 
+                {
+                    if (!isComparable(left, right, BinaryOps.NUMORSTRING)) 
+                    {
                         ErrorManager.printError("Operation of incompatible types: " +
                         left + ", " + right);
-                        return;
                     }
                     return;
                 }
 
                 if (op.getOpEquals().getText().equals("-=") || op.getOpEquals().getText().equals("*=") 
-                    || op.getOpEquals().getText().equals("/=")) {
-                    if (!isComparable(left, right, BinaryOps.NUMERIC)) {
+                    || op.getOpEquals().getText().equals("/=")) 
+                {
+                    if (!isComparable(left, right, BinaryOps.NUMERIC))
+                    {
                         ErrorManager.printError("Operation of incompatible types: " +
                         left + ", " + right);
-                        return;
                     }
                     return;
                 }
@@ -927,16 +926,17 @@ public class TypeChecker extends DepthFirstAdapter
                 if (op.getOpEquals().getText().equals("&=") || op.getOpEquals().getText().equals("&^=") 
                     || op.getOpEquals().getText().equals("|=") || op.getOpEquals().getText().equals("<<=")
                     || op.getOpEquals().getText().equals(">>=") || op.getOpEquals().getText().equals("%=")
-                    || op.getOpEquals().getText().equals("^=")) {
-                    if (!isComparable(left, right, BinaryOps.INTEGER)) {
+                    || op.getOpEquals().getText().equals("^=")) 
+                {
+                    if (!isComparable(left, right, BinaryOps.INTEGER)) 
+                    {
                         ErrorManager.printError("Operation of incompatible types: " +
                         left + ", " + right);
-                        return;
                     }
                     return;
                 }
-
             }
+
             ErrorManager.printError("Only single arguments allowed for operations");
             return;
         }
@@ -945,9 +945,8 @@ public class TypeChecker extends DepthFirstAdapter
     // These are IDs in expressions
     public void outAIdExp(AIdExp node)
     {
-        // System.out.println("Traversing ID: " + node);
-
-        if (getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false")){
+        if (getIdName(node.getIdType()).equals("true") || getIdName(node.getIdType()).equals("false"))
+        {
             addType(node, Type.BOOL);
             return;
         }
@@ -961,66 +960,65 @@ public class TypeChecker extends DepthFirstAdapter
             return;
         }
 
-
-
         addType(node, new TypeClass(type));        
     }
 
-
-    //array dimensions List<Dimension> size of all lists of itself and its aliases
-    //returning type associated with a certain dimension of the node
-    //so i want to be looking at size - levels and retrieve that type
-    //i..e [][][] int
-    //level levels = 2 [] ->[] []
-    //slice = [] int
-    //[][] slice
-    // levels = 2 -> slice
-    //figure out either: a) which alias it belongs to or b) return base type
-    // Struct selector
-    // Ex: "x.y.z"
-    //iterate through and find base type of current index
     public void outAArrayElementExp(AArrayElementExp node)
     {
         int levels = 0;
         Node cur = node;
-        while (cur instanceof AArrayElementExp) {
+        while (cur instanceof AArrayElementExp) 
+        {
             ((AArrayElementExp) cur).getIndex().apply(this);
             TypeClass i = nodeTypes.get(((AArrayElementExp) cur).getIndex());
-            if (i.baseType != Type.INT) {
+            if (i.baseType != Type.INT) 
+            {
                 ErrorManager.printError("Only integer indexes allowed");
             }
+
             cur = ((AArrayElementExp) cur).getArray();
             levels++;
         }
+
         AIdExp id = (AIdExp)cur;
         id.apply(this);
         TypeClass arrayType = getType(id);
-        if (levels > arrayType.totalArrayDimension.size()) {
+        if (levels > arrayType.totalArrayDimension.size()) 
+        {
             ErrorManager.printError("Index doesn't exist");
         }
+
         //iterate through aliases
         List<TypeAlias> typeAliases = arrayType.typeAliases;
         //return basetype in this case
-        if (typeAliases.size() == 0) {
+        if (typeAliases.size() == 0) 
+        {
             TypeClass temp = new TypeClass(arrayType);
-            for (int i = 0; i < levels; i++) {
+            for (int i = 0; i < levels; i++) 
+            {
                 temp.decrementDimension();
             }
             System.out.println("Array element is " + temp);
             addType(node, temp);
             return;
-        } else {
+        } 
+        else 
+        {
             //aliased and need to traverse
             Node prevNode = id;
             int prevDim = arrayType.totalArrayDimension.size();
             int totalDim = arrayType.totalArrayDimension.size();
-            for (int i = typeAliases.size() - 1; i >= 0; i--) {
+            for (int i = typeAliases.size() - 1; i >= 0; i--) 
+            {
                 int curDim = typeAliases.get(i).arrayDimensions.size();
-                if (prevDim != curDim) {
+                if (prevDim != curDim) 
+                {
                     levels = levels - (prevDim - curDim);
-                    if (levels <= 0) {
+                    if (levels <= 0) 
+                    {
                         TypeClass indexType = new TypeClass(symbolTable.get(prevNode).typeClass);
-                        for (int k = 0; k < (levels + (prevDim - curDim)); k++) {
+                        for (int k = 0; k < (levels + (prevDim - curDim)); k++) 
+                        {
                             indexType.totalArrayDimension.remove(0);
                         }
                         System.out.println("Type to insert is" + indexType);
@@ -1035,9 +1033,7 @@ public class TypeChecker extends DepthFirstAdapter
             TypeClass copy = new TypeClass(indexType);
             copy.totalArrayDimension = new LinkedList<Dimension>();
             addType(node, copy);
-            return; 
-            //last alias is the one
-            
+            return;  
         }
     }
 
@@ -1055,7 +1051,7 @@ public class TypeChecker extends DepthFirstAdapter
         declareNodeType(node);
     }
 
-     public void outATypeIdType(ATypeIdType node)
+    public void outATypeIdType(ATypeIdType node)
     {
         declareNodeType(node);
     }
@@ -1086,73 +1082,63 @@ public class TypeChecker extends DepthFirstAdapter
     {
         String idName = null;
 
-        if (node instanceof AIdIdType) { idName = ((AIdIdType)node).getId().getText(); }
-        else if (node instanceof ATypeIdType) { idName = ((ATypeIdType)node).getType().getText(); }
+        if (node instanceof AIdIdType) 
+            idName = ((AIdIdType)node).getId().getText(); 
+        else if (node instanceof ATypeIdType) 
+            idName = ((ATypeIdType)node).getType().getText();
     
         return idName;
     }
 
-    /**
-     * Returns the type (int, float, string) of an identifier token
-     */
-    // public Type getIdType(PIdType idTypeNode)
-    // {
-    //     return getIdType(getIdName(idTypeNode));
-    // }
-
-    // // /**
-    // //  * Returns the type of the given identifier
-    // //  *
-    // public Type getIdType(String id)
-    // {
-    //     // Retrieves the declaration node that created this variable
-    //     // AVarDecl declNode = (AVarDecl)symbolTable.get(id);
-    //     // // Gets the type of the identifier
-    //     // Type type = stringToType(declNode.getType().getText());
-
-    //     return null;
-    // }
-
-    public TypeClass invalidType(){
+    public TypeClass invalidType()
+    {
         TypeClass errorType = new TypeClass();
         errorType.baseType = Type.INVALID;
         return errorType;
     }
 
     // Resolve the type of an expression after a unary operator 
-    public TypeClass unaryOperationType(Operator op, TypeClass exprType){
-        if(exprType == null){
+    public TypeClass unaryOperationType(Operator op, TypeClass exprType)
+    {
+        if(exprType == null)
             return invalidType();
-        }
 
         if(exprType.baseType != Type.RUNE && exprType.baseType != Type.FLOAT64 && exprType.baseType != Type.INT 
-            && exprType.baseType != Type.BOOL) {
+            && exprType.baseType != Type.BOOL)
             return invalidType();
-        }
 
-        if(op == Operator.PLUS || op == Operator.MINUS){
-            if(exprType.baseType == Type.INT || exprType.baseType == Type.FLOAT64 || exprType.baseType == Type.RUNE){
+        if(op == Operator.PLUS || op == Operator.MINUS)
+        {
+            if(exprType.baseType == Type.INT || exprType.baseType == Type.FLOAT64 || exprType.baseType == Type.RUNE)
+            {
                 return exprType;
             }
-            else{
+            else
+            {
                 return invalidType();
             }
         }
 
-        if(op == Operator.CARET){
-            if(exprType.baseType == Type.INT || exprType.baseType == Type.RUNE){
+        if(op == Operator.CARET)
+        {
+            if(exprType.baseType == Type.INT || exprType.baseType == Type.RUNE)
+            {
                 return exprType;
             }
-            else{
+            else
+            {
                 return invalidType();
             }
         }
 
-        if(op == Operator.EXCLAMATION_MARK) {
-            if (exprType.baseType == Type.BOOL) {
+        if(op == Operator.EXCLAMATION_MARK) 
+        {
+            if (exprType.baseType == Type.BOOL) 
+            {
                 return exprType;
             }
-            else {
+            else 
+            {
                 return invalidType();
             }
         }
@@ -1162,10 +1148,13 @@ public class TypeChecker extends DepthFirstAdapter
     // Unary Expressions Start
     // ----------------------------------------
 
-    public void outAUnaryPlusExp(AUnaryPlusExp node){
+    public void outAUnaryPlusExp(AUnaryPlusExp node)
+    {
         TypeClass typeClass = unaryOperationType(Operator.PLUS, getType(node.getExp()));
-        if(typeClass != null){
-            if(typeClass.baseType == Type.INVALID){
+        if(typeClass != null)
+        {
+            if(typeClass.baseType == Type.INVALID)
+            {
                 ErrorManager.printError("Unary operator + used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A + unary operation can only be used with an int, float64, or rune literal.");
                 return;
             }
@@ -1173,41 +1162,41 @@ public class TypeChecker extends DepthFirstAdapter
         addType(node, typeClass.baseType);
     }
 
-    public void outAUnaryMinusExp(AUnaryMinusExp node){
+    public void outAUnaryMinusExp(AUnaryMinusExp node)
+    {
         TypeClass typeClass = unaryOperationType(Operator.MINUS, getType(node.getExp()));
-        if(typeClass != null){
-            if(typeClass.baseType == Type.INVALID){
-                ErrorManager.printError("Unary operator - used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A - unary operation can only be used with an int, float64, or rune literal.");
-                return;
-            }
+        if(typeClass != null && typeClass.baseType == Type.INVALID)
+        {
+            ErrorManager.printError("Unary operator - used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A - unary operation can only be used with an int, float64, or rune literal.");
+            return;
         }
         addType(node, typeClass.baseType);
     }
 
-    public void outAUnaryXorExp(AUnaryXorExp node){
+    public void outAUnaryXorExp(AUnaryXorExp node)
+    {
         TypeClass typeClass = unaryOperationType(Operator.CARET, getType(node.getExp()));
-        if(typeClass != null){
-            if(typeClass.baseType == Type.INVALID){
-                ErrorManager.printError("Unary operator ^ used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A ^ unary operation can only be used with an int or a rune literal.");
-                return;
-            }
+        if(typeClass != null && typeClass.baseType == Type.INVALID)
+        {
+            ErrorManager.printError("Unary operator ^ used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A ^ unary operation can only be used with an int or a rune literal.");
+            return;
         }
+
         addType(node, typeClass.baseType);
     }
 
-    public void outAUnaryExclamationExp(AUnaryExclamationExp node){
+    public void outAUnaryExclamationExp(AUnaryExclamationExp node)
+    {
         TypeClass typeClass = unaryOperationType(Operator.EXCLAMATION_MARK, getType(node.getExp()));
-        if(typeClass != null){
-            if(typeClass.baseType == Type.INVALID){
-                ErrorManager.printError("Unary operator ! used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A ! unary operation can only be used with a bool literal.");
-                return;
-            }
+        if(typeClass != null && typeClass.baseType == Type.INVALID)
+        {
+            ErrorManager.printError("Unary operator ! used on an expression of type: " + getType(node.getExp()) + "(" + node.getExp().toString().trim() + ")." + " A ! unary operation can only be used with a bool literal.");
+            return;
         }
         addType(node, typeClass.baseType);
     }    
 
-    // Base Literals Start
-    // ----------------------------------------
+    /** Base Literals **/
 
     public void outAIntExp(AIntExp node)
     {
@@ -1224,88 +1213,99 @@ public class TypeChecker extends DepthFirstAdapter
         addType(node, Type.INT);
     }
 
-    public void outAFloat64LiteralExp(AFloat64LiteralExp node){
-        //System.out.println("float: " + node);
+    public void outAFloat64LiteralExp(AFloat64LiteralExp node)
+    {
         addType(node, Type.FLOAT64);
     }
 
-    public void outARuneLiteralExp(ARuneLiteralExp node){
+    public void outARuneLiteralExp(ARuneLiteralExp node)
+    {
         addType(node, Type.RUNE);
     }
 
-    public void outARawStringLitExp(ARawStringLitExp node){
+    public void outARawStringLitExp(ARawStringLitExp node)
+    {
         addType(node, Type.STRING);
     }
 
-    public void outAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node){
+    public void outAInterpretedStringLiteralExp(AInterpretedStringLiteralExp node)
+    {
         addType(node, Type.STRING);
     }
+    
+    /** Statements Start */
 
-    // ----------------------------------------
-    // Base Literals End
-
-    // ----------------------------------------
-    // Statements Start
-
-    // Print stmt
-    public void outAPrintExp(APrintExp node){
+    /** Print stmt */
+    public void outAPrintExp(APrintExp node)
+    {
         LinkedList<PExp> expList = node.getExp();
-        if(expList != null){
+        if(expList != null)
+        {
             int size = expList.size();
             int i = 0;
-            while (i < size) {
+            while (i < size)
+            {
                 Symbol s = symbolTable.get(expList.get(i));
-                if (s != null) {
-                    if (s.kind == Symbol.SymbolKind.TYPE) {
-                        ErrorManager.printError("can't print types");
-                    }
-                }
+                if (s != null && s.kind == Symbol.SymbolKind.TYPE) 
+                    ErrorManager.printError("can't print types");
+
                 TypeClass typeClass = getType(expList.get(i));
-                if (typeClass != null) {
+
+                if (typeClass != null) 
+                {
                     if ((typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
-                    typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
-                    typeClass.baseType == Type.RUNE) && typeClass.totalArrayDimension.size() == 0){
+                        typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
+                        typeClass.baseType == Type.RUNE) && typeClass.totalArrayDimension.size() == 0)
+                    {
                         i++;
                         continue;
-                    } else {
+                    } 
+                    else 
+                    {
                         ErrorManager.printError("Argument to print at index " + i + " is of type: " + typeClass +". Type must be int, float64, bool, string, or rune.");
                         return;
                     }
-                } else {
+                } 
+                else 
+                {
                     ErrorManager.printError("Argument to print at index " + i + " is of type: " + typeClass +". Type must be int, float64, bool, string, or rune.");
                     return;
                 }
             }
         }
-            // Iterate over all the list of the expressions
-            // if none of them are invalid, then the expression is correct
     }
 
-    // Println stmt
-    public void outAPrintlnExp(APrintlnExp node){
+    /** Println stmt */
+    public void outAPrintlnExp(APrintlnExp node)
+    {
         LinkedList<PExp> expList = node.getExp();
-        if(expList != null){
+        if(expList != null)
+        {
             int size = expList.size();
             int i = 0;
-            while(i < size) {
+            while(i < size) 
+            {
                 Symbol s = symbolTable.get(expList.get(i));
-                if (s != null) {
-                    if (s.kind == Symbol.SymbolKind.TYPE) {
-                        ErrorManager.printError("can't print types");
-                    }
-                }
+                if (s != null && s.kind == Symbol.SymbolKind.TYPE) 
+                    ErrorManager.printError("can't print types");
+
                 TypeClass typeClass = getType(expList.get(i));
-                if(typeClass != null){
+                if(typeClass != null)
+                {
                     if ((typeClass.baseType == Type.INT || typeClass.baseType == Type.FLOAT64 ||
-                    typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
-                    typeClass.baseType == Type.RUNE) && typeClass.totalArrayDimension.size() == 0) {
+                        typeClass.baseType == Type.BOOL || typeClass.baseType == Type.STRING ||
+                        typeClass.baseType == Type.RUNE) && typeClass.totalArrayDimension.size() == 0) 
+                    {
                         i++;
                         continue;
-                    } else {
+                    } 
+                    else 
+                    {
                         ErrorManager.printError("Argument to print at index " + i + " is of type: " + typeClass +". Type must be int, float64, bool, string, or rune.");
                     }
                 }
-                else{
+                else
+                {
                     ErrorManager.printError("Argument to print at index " + i + " is of type: " + typeClass +". Type must be int, float64, bool, string, or rune.");
                     return;
                 }
@@ -1313,233 +1313,230 @@ public class TypeChecker extends DepthFirstAdapter
         }
     }
 
-    // For loops
-    public void outAForStmt(AForStmt node){
+    /** For loop */
+    public void outAForStmt(AForStmt node)
+    {
         PExp exp = node.getCondition();
-        if(exp instanceof AForCondExp){
+        if(exp instanceof AForCondExp)
+            return;
+
+        if(exp != null && getType(exp)!= null && getType(exp).baseType != Type.BOOL)
+        {
+            ErrorManager.printError("Expression of for loop: " + getType(exp) + "("  +node.getCondition().toString().trim() + ")"+ ". Expected a bool.");
             return;
         }
-
-        if(exp != null){
-            if(getType(exp)!= null){
-                if(getType(exp).baseType != Type.BOOL){
-                    ErrorManager.printError("Expression of for loop: " + getType(exp) + "("  +node.getCondition().toString().trim() + ")"+ ". Expected a bool.");
-                    return;
-                }
-            }
-        }
     }
 
-    // For loops
-    public void outAForCondExp(AForCondExp node){
+    /** For loop condition */
+    public void outAForCondExp(AForCondExp node)
+    {
         PExp exp = node.getSecond();
-        if(exp != null){
-            if(getType(exp)!= null){
-                if(getType(exp).baseType != Type.BOOL){
-                    ErrorManager.printError("Expression of for loop: " + getType(exp) + "(" + node.getSecond().toString().trim() + ")" +". Expected a bool.");
-                    return;                
-                }
-            }
+        if(exp != null && getType(exp)!= null && getType(exp).baseType != Type.BOOL)
+        {
+            ErrorManager.printError("Expression of for loop: " + getType(exp) + "(" + node.getSecond().toString().trim() + ")" +". Expected a bool.");
+            return;                
         }
     }
 
-    // If condition
-    public void outAIfStmt(AIfStmt node){
+    /** If condition */
+    public void outAIfStmt(AIfStmt node)
+    {
         TypeClass expType = getType(node.getExp());
-        if(expType != null){
-            if (expType.baseType != Type.BOOL){
-                ErrorManager.printError("If-statement expression type: " + expType + " (" + node.getExp().toString().trim() + "). Expected a boolean.");
-                return;
-            }
+        if(expType != null && expType.baseType != Type.BOOL)
+        {
+            ErrorManager.printError("If-statement expression type: " + expType + " (" + node.getExp().toString().trim() + "). Expected a boolean.");
+            return;
         }
     }
 
-    // Return statement with no expression
-    public void inASingleReturnFuncDecl(ASingleReturnFuncDecl node){
+    /** Return statement with no expression */
+    public void inASingleReturnFuncDecl(ASingleReturnFuncDecl node)
+    {
         Symbol signature_return_type_symbol = symbolTable.get(node);
-        if(signature_return_type_symbol != null){
+        if(signature_return_type_symbol != null)
+        {
             TypeClass tc = signature_return_type_symbol.typeClass;
             FunctionSignature fs = tc.functionSignature;
             tc = fs.returnType;
             global_return_type = tc;
         }
     }
-    
 
-    public void outASingleReturnFuncDecl(ASingleReturnFuncDecl node){
+    public void outASingleReturnFuncDecl(ASingleReturnFuncDecl node)
+    {
         global_return_type = null;
-        if (!containsAReturn(((ABlockStmt)node.getBlock()).getStmt())) {
+        if (!containsAReturn(((ABlockStmt)node.getBlock()).getStmt())) 
             ErrorManager.printError("Program doesn't contain a return statement");
-        }
     }
 
-    public boolean containsAReturn(List<PStmt> nodes){
-        for (int i = 0; i < nodes.size(); i++){
+    public boolean containsAReturn(List<PStmt> nodes)
+    {
+        for (int i = 0; i < nodes.size(); i++)
+        {
             PStmt node = nodes.get(i);
-            if(node instanceof AReturnStmt){
+            if(node instanceof AReturnStmt)
                 return true;
-            }
 
-            if (node instanceof AForStmt) {
+            if (node instanceof AForStmt) 
+            {
                 AForStmt forStmt = (AForStmt)node;
-                if(containsAReturn(((ABlockStmt)forStmt.getBlock()).getStmt())) {
+                if(containsAReturn(((ABlockStmt)forStmt.getBlock()).getStmt())) 
+                {
                     PExp exp = forStmt.getCondition();
-                    if(exp instanceof AForCondExp){
-                         PExp temp = ((AForCondExp) exp).getSecond();
-                            if(temp != null){
-                                if(getType(temp) != null) {
-                                    continue;
-                                }
-                            }
-                    } else if (exp != null){
-                        if (getType(exp) != null) {
+                    if(exp instanceof AForCondExp)
+                    {
+                        PExp temp = ((AForCondExp) exp).getSecond();
+                        if(temp != null && getType(temp) != null) 
                             continue;
-                        }
+                    } 
+                    else if (exp != null && getType(exp) != null) 
+                    {
+                        continue;
                     }
                     return true;
                 }
             }
                 
-            if (node instanceof AIfStmt){
+            if (node instanceof AIfStmt)
+            {
                 Node current = node;
-                while (current instanceof AIfStmt) {
+                while (current instanceof AIfStmt) 
+                {
                     AIfStmt temp = (AIfStmt) current;
-                    if(containsAReturn(((ABlockStmt) temp.getBlock()).getStmt())) {
+                    if(containsAReturn(((ABlockStmt) temp.getBlock()).getStmt())) 
+                    {
                         PStmt next = temp.getEnd();
                         if (next instanceof AElseIfStmt) {
-                        current = (AIfStmt) ((AElseIfStmt) next).getStmt();
-                        continue;
-                        } else {
+                            current = (AIfStmt) ((AElseIfStmt) next).getStmt();
+                            continue;
+                        }
+                        else 
+                        {
                             current = next;
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         return false;
                     }
                 }
-                if (current instanceof AElseStmt) {
-                        AElseStmt temp = (AElseStmt) current;
-                        return containsAReturn(((ABlockStmt) temp.getStmt()).getStmt());
+                if (current instanceof AElseStmt) 
+                {
+                    AElseStmt temp = (AElseStmt) current;
+                    return containsAReturn(((ABlockStmt) temp.getStmt()).getStmt());
                 } 
-                // else {
-                //         return false;
-                // }
             }
 
-            if (node instanceof AElseStmt) {
+            if (node instanceof AElseStmt) 
+            {
                 AElseStmt current = (AElseStmt) node;
                 ABlockStmt block = (ABlockStmt) current.getStmt();
                 return containsAReturn(block.getStmt());
             }
 
-            if (node instanceof ASwitchStmt) {
+            if (node instanceof ASwitchStmt) 
+            {
                 LinkedList<PStmt> switches = ((ASwitchStmt) node).getCaseStmts();
                 boolean containsDefault = false;
-                for (Node n : switches) {
+                for (Node n : switches) 
+                {
                     ACaseStmt cur = (ACaseStmt) n;
-                    if (!containsAReturn(cur.getStmtList())) {
+
+                    if (!containsAReturn(cur.getStmtList())) 
                         return false;
-                    }
-                    if (cur.getCaseExp() instanceof ADefaultExp) {
+
+                    if (cur.getCaseExp() instanceof ADefaultExp) 
                         containsDefault = true;
-                    }
                 }
-                if (containsDefault) {
+
+                if (containsDefault)
                     return true;
-                } else {
+                else 
                     continue;
-                }
             }
         }
         return false;
     }
 
-    public void outAReturnStmt(AReturnStmt node){
+    public void outAReturnStmt(AReturnStmt node)
+    {
         TypeClass return_type = getType(node.getExp());
-        if (return_type != null){
+        if (return_type != null)
+        {
             // meaning function signature and actual return type do not match
-            if (global_return_type == null) {
-                    ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
-                    return;
+            if (global_return_type == null) 
+            {
+                ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
+                return;
             }
-             // else if (return_type.baseType == Type.INT 
-            //     && node.getExp() instanceof AIntExp && ((AIntExp) node.getExp()).getInt().getText().equals("0")) {
-            //     ErrorManager.printError("Cannot return 0 with return type int");
-            // } 
-            else {
-                if (isAliasedCorrectly(return_type, global_return_type)) {
-                    if (return_type.baseType != global_return_type.baseType) {
-                        ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
-                        return;
-                    }
-                } 
+            else if (isAliasedCorrectly(return_type, global_return_type)
+                && return_type.baseType != global_return_type.baseType) 
+            {
+                ErrorManager.printError("Function returns a type: " +  return_type + " that does not match the function signature return type: " + global_return_type  + ".");
+                return;
             }
         }
         // return_type == null
-        else {
-            // their values being null
-            if(global_return_type != return_type){
-                ErrorManager.printError("Function does not return a type. "+ " Expecting: " + global_return_type  + ".");
-                return;
-            }
+        else if(global_return_type != return_type)
+        {
+            ErrorManager.printError("Function does not return a type. "+ " Expecting: " + global_return_type  + ".");
+            return;
         }
     }
 
-    public void outACaseExp(ACaseExp node){
+    public void outACaseExp(ACaseExp node)
+    {
         LinkedList<PExp> expList = node.getExpList();
-        if(expList != null){
+        if(expList != null)
+        {
             int size = expList.size();
             int i = 0;
             TypeClass temp_case_exp_type = getType(expList.get(0));
-            while(i < size && size >= 2){
+            while(i < size && size >= 2)
+            {
                 PExp singleExp = expList.get(i);
-                if(isAliasedCorrectly(getType(singleExp), temp_case_exp_type)) {
-                    if(temp_case_exp_type != null 
-                        && getType(singleExp).baseType != temp_case_exp_type.baseType) {
-                        ErrorManager.printError("The expressions in the case statement are not all of the same type");
-                        return;
-                    }
+                if(isAliasedCorrectly(getType(singleExp), temp_case_exp_type) 
+                    && temp_case_exp_type != null 
+                    && getType(singleExp).baseType != temp_case_exp_type.baseType) 
+                {
+                    ErrorManager.printError("The expressions in the case statement are not all of the same type");
+                    return;
                 }
                 i++;
             }
-            if (global_case_exp_type != null) {
+
+            if (global_case_exp_type != null) 
                 isAliasedCorrectly(global_case_exp_type, temp_case_exp_type);
-            } else {
+            else
                 global_case_exp_type = temp_case_exp_type;
-            }
         }
     }
 
-    public void outASwitchStmt(ASwitchStmt node){
+    public void outASwitchStmt(ASwitchStmt node)
+    {
         TypeClass typeClass = getType(node.getExp());
         // empty switch statement, assume it is of boolean type
-        if (typeClass == null && global_case_exp_type != null){
-            if(global_case_exp_type.baseType != Type.BOOL || global_case_exp_type.typeAliases.size() != 0){
-                ErrorManager.printError("Expecting BOOL in case statements, provided with: " + global_case_exp_type);
-                return;
-            }
-        }
-        if(typeClass != null && global_case_exp_type != null){
-            if(isAliasedCorrectly(typeClass, global_case_exp_type)) {
-                if (typeClass.baseType != global_case_exp_type.baseType) {
-                    ErrorManager.printError("The expression type " + typeClass.baseType.toString().trim() + " does not match the case expression type " + global_case_exp_type.baseType.toString());
-                    return;
-                } 
-            }
+        if (typeClass == null && global_case_exp_type != null
+            && (global_case_exp_type.baseType != Type.BOOL 
+                || global_case_exp_type.typeAliases.size() != 0))
+        {
+            ErrorManager.printError("Expecting BOOL in case statements, provided with: " + global_case_exp_type);
+            return;
         }
 
-        if (typeClass != null) {
-            if (typeClass.baseType == Type.VOID) {
-                ErrorManager.printError("No void switch expressions allowed");
-            }
+        if(typeClass != null && global_case_exp_type != null
+            && isAliasedCorrectly(typeClass, global_case_exp_type) 
+            && typeClass.baseType != global_case_exp_type.baseType) 
+        {
+            ErrorManager.printError("The expression type " + typeClass.baseType.toString().trim() + " does not match the case expression type " + global_case_exp_type.baseType.toString());
+            return;
         }
 
-
+        if (typeClass != null && typeClass.baseType == Type.VOID) 
+            ErrorManager.printError("No void switch expressions allowed");
 
         global_case_exp_type = null;
     }
-
-    // Statements End
-    // ----------------------------------------
 
     /** 
      * Returns the type of the given node
@@ -1549,25 +1546,25 @@ public class TypeChecker extends DepthFirstAdapter
         return nodeTypes.get(node);
     }
 
-    public void addType(Node node, Type type){
+    public void addType(Node node, Type type)
+    {
         TypeClass typeClass = new TypeClass();
         typeClass.baseType = type;
         nodeTypes.put(node, typeClass);
     }
 
-    public void addType(Node node, TypeClass typeClass){
+    public void addType(Node node, TypeClass typeClass)
+    {
         nodeTypes.put(node, typeClass);
     }
 
     public String toString()
     {
         StringBuilder output = new StringBuilder();
-
         for (Map.Entry<Node, TypeClass> entries : nodeTypes.entrySet())
         {
             output.append(entries.getKey()  + ": " + entries.getValue() + "\n");    
         }
-
         return output.toString();
     }
 }

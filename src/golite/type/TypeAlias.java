@@ -5,7 +5,7 @@ import java.util.*;
 
 /**
  * Stores a mapping between a type alias and the dimension 
- * of the array (if applicable)
+ * of its mapped array (if applicable)
  */
 public class TypeAlias
 {

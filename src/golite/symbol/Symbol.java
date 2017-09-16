@@ -5,7 +5,7 @@ import golite.type.*;
 import java.util.*;
 
 /**
- * Represents a symbol stored in the symbol table 
+ * Stores information about a node, such as its type and kind (function call, struct, etc.)
  */
 public class Symbol
 {

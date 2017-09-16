@@ -66,7 +66,8 @@ public class SymbolTable
     }
 
     /**
-     * Returns true if the symbol table in the current scope contains the given symbol
+     * Returns true if the symbol table in the current scope 
+     * contains the given symbol
      */
     public boolean contains(String name)
     {
