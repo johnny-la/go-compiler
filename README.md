@@ -7,23 +7,23 @@ Compiler which translates Golang to Java, built using SableCC.
 - Yan Qing Zhang
 
 ## Requirements
-- **Java 8 or higher**
 - **SableCC 3** 
   - [Download](http://www.sablecc.org/)
   - [Setup Tutorial](http://www.cs.mcgill.ca/~cs520/2009/howtosablecc.html) 
+- **Java 8 or higher**
 
-## How to Biuld and Run:
+## How to Build and Run:
 
-`./build.sh`
+To build the compiler, `cd` to the cloned repository and run:
 
-## To run dumpsymtab:
+```./build.sh```
 
-`java golite.Main -dumpsymtab <filename>`
+Then, run the compiler on a Golang program:
 
-## To run pptype:
+```./run.sh /path/to/program.go```
 
-`java golite.Main -pptype <filename>`
+## Testing the compiler 
 
-## Important note:
+To test the compiler, the repository includes a series of Golang test programs. To run the compiler on these programs, execute the following:
 
-Due to time constraints, this submission does not support array indexing and struct selecting. However, we have implemented the type checking for those despite the grammar not fully supporting their corresponding rules.
+```./test.sh```
