@@ -1,5 +1,7 @@
 # GoLite Compiler
-Compiler which translates Golang to Java, built using SableCC. 
+Compiler for a subset of Golang, built using SableCC. 
+
+Translates Golang to Java. 
 
 ## Authors 
 - Ralph Bou Samra 
@@ -16,14 +18,20 @@ Compiler which translates Golang to Java, built using SableCC.
 
 To build the compiler, `cd` to the cloned repository and run:
 
-```./build.sh```
+```
+./build.sh
+```
 
 Then, run the compiler on a Golang program:
 
-```./run.sh /path/to/program.go```
+```
+./run.sh /path/to/program.go
+```
 
 ## Testing the compiler 
 
 To test the compiler, the repository includes a series of Golang test programs. To run the compiler on these programs, execute the following:
 
-```./test.sh```
+```
+./test.sh
+```
