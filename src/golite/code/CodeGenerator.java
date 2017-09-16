@@ -240,9 +240,6 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAProgram(AProgram node)
     {
-        // Print declarations
-        //node.getPackageDecl().apply(this);
-
         // Print the file header        
         print(fileHeader);
         // Print the helper methods
@@ -434,20 +431,25 @@ public class CodeGenerator extends DepthFirstAdapter
         else 
             print(className + "class ");
 
-        if (levels > 1 || isAnon) {
+        if (levels > 1 || isAnon) 
+        {
             name = "AnonymousClass" + anonymousClassIndex;
             print(name);
             anonymousClassIndex++;
-        } else {
+        } 
+        else 
+        {
             name = topLevelName;
             print(name);
         }
 
         println(" {");
-        for (Node n : node.getInnerFields()) {
+        for (Node n : node.getInnerFields()) 
+        {
             indentLevel++;
             ASingleInnerFields cur = (ASingleInnerFields) n;
-            for (int i = 0; i < cur.getIdType().size(); i++) {
+            for (int i = 0; i < cur.getIdType().size(); i++) 
+            {
                 printi("");
                 System.out.println("declaring variable" + getIdName(cur.getIdType().get(i)));
                 declareVariable(cur.getIdType().get(i), true);
@@ -467,24 +469,31 @@ public class CodeGenerator extends DepthFirstAdapter
         {
             printiln("if (");
             indentLevel++;
-            for (int j = 0 ; j < node.getInnerFields().size(); j++) {
+
+            for (int j = 0 ; j < node.getInnerFields().size(); j++)
+            {
                 Node n = node.getInnerFields().get(j);
                 ASingleInnerFields cur = (ASingleInnerFields) n;
-                for (int i = 0; i < cur.getIdType().size(); i++) {
-                String curField = getIdName(cur.getIdType().get(i));
-                printi("");
-                print("this." + curField + " == ");
-                if (i == (cur.getIdType().size() - 1)) {
-                    print("cur." + curField);
-                } else {
-                    print("cur." + curField + " &&");
-                    println("");
+                for (int i = 0; i < cur.getIdType().size(); i++) 
+                {
+                    String curField = getIdName(cur.getIdType().get(i));
+                    printi("");
+                    print("this." + curField + " == ");
+                    if (i == (cur.getIdType().size() - 1))
+                    {
+                        print("cur." + curField);
+                    } 
+                    else 
+                    {
+                        print("cur." + curField + " &&");
+                        println("");
+                    }
                 }
-                }
-                if (j != (node.getInnerFields().size() - 1)) {
-                println(" &&");
-                }
+
+                if (j != (node.getInnerFields().size() - 1)) 
+                    println(" &&");
             }
+
             println("");
             indentLevel--;
             printiln(" ) return true;");
@@ -1928,12 +1937,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
         else
         {
-            print("(");
-            node.getL().apply(this);
-            print("==");
-            node.getR().apply(this);
-            print(")");
-            printWithType(node);
+            printBinaryExpression(node, node.getL(), node.getR(), "==");
         }
     }
 
@@ -1953,12 +1957,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
         else
         {
-            print("(");
-            node.getL().apply(this);
-            print("!=");
-            node.getR().apply(this);
-            print(")");
-            printWithType(node);
+            printBinaryExpression(node, node.getL(), node.getR(), "!=");
         }
     }
 
@@ -1978,12 +1977,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
         else
         {
-            print("(");
-            node.getL().apply(this);
-            print("<");
-            node.getR().apply(this);
-            print(")");
-            printWithType(node);
+            printBinaryExpression(node, node.getL(), node.getR(), "<");
         }
     }
 
@@ -2003,12 +1997,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
         else
         {
-            print("(");
-            node.getL().apply(this);
-            print(">");
-            node.getR().apply(this);
-            print(")");
-            printWithType(node);
+            printBinaryExpression(node, node.getL(), node.getR(), ">");
         }
     }
 
@@ -2141,32 +2130,17 @@ public class CodeGenerator extends DepthFirstAdapter
 
     public void caseAAmpersandExp(AAmpersandExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("&");
-        node.getR().apply(this);
-        print(")"); 
-        printWithType(node);
+        printBinaryExpression(node, node.getL(), node.getR(), "&");
     }
 
     public void caseAShiftLeftExp(AShiftLeftExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print("<<");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        printBinaryExpression(node, node.getL(), node.getR(), "<<");
     }
 
     public void caseAShiftRightExp(AShiftRightExp node)
     {
-        print("(");
-        node.getL().apply(this);
-        print(">>");
-        node.getR().apply(this);
-        print(")");
-        printWithType(node);
+        printBinaryExpression(node, node.getL(), node.getR(), ">>");
     }
 
     public void caseAAppendedExprExp(AAppendedExprExp node)
