@@ -3,11 +3,6 @@ Compiler for a subset of Golang, built using SableCC.
 
 Translates Golang to Java. 
 
-## Authors 
-- Ralph Bou Samra 
-- Jonathan Lucuix-André 
-- Yan Qing Zhang
-
 ## Requirements
 - **SableCC 3** 
   - [Download](http://www.sablecc.org/)
@@ -35,3 +30,8 @@ To test the compiler, a series of Golang test programs are included. To run the 
 ```
 ./test.sh
 ```
+
+## Authors 
+- Ralph Bou Samra 
+- Jonathan Lucuix-André 
+- Yan Qing Zhang
