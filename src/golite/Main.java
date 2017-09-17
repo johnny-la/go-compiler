@@ -11,12 +11,14 @@ import java.io.*;
 
 public class Main
 {
+    // Suffixes for saved files
     private static final String PRETTY_PRINT_SUFFIX = ".pretty.go",
                                 PRETTY_PRINT_TYPE_SUFFIX = ".pptype.go",
                                 DUMP_SYMBOL_TABLE_SUFFIX = ".symtab",
                                 SYMBOL_TABLE_SUFFIX = ".symbol.txt",
                                 CODE_GENERATOR_SUFFIX = ".java";   
                             
+    // Possible command-line arguments
     private static final String DUMP_SYMBOL_TABLE_ARG = "-dumpsymtab",
                                 PRETTY_PRINT_TYPE_ARG = "-pptype";
 
@@ -141,6 +143,7 @@ public class Main
             }
             else 
             {
+                // Error
                 System.out.println("Usage: java minilang.Main <input-file>");
                 System.exit(1);
             }
@@ -157,28 +160,16 @@ public class Main
 
                 SymbolTable symbolTable = new SymbolTable();
                 semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
-                // printDebug("Semantic Analyzer:");
                 tree.apply(semanticAnalyzer);
-                // printDebug("\nSymbol table:");
-                // printDebug(symbolTable.toString());
+
                 if (dumpSymbolTable)
                     printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
-                
-                // System.out.println("Semantic Analyzer Node Types:");
-                // printSymbolMap(semanticAnalyzer.symbolMap);
-                // System.out.println("-------------");
 
-                // printDebug("\nType Checker:");
                 TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
                 tree.apply(typeChecker);
-                // printDebug(typeChecker.toString()); 
 
-                // System.out.println("Type Checker Node Types:");
-                // printNodeTypes(typeChecker.nodeTypes);
-
-                if (prettyPrintType) {
+                if (prettyPrintType) 
                     prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
-                }
 
                 // Generate code if no type errors occurred
                 if (ErrorManager.errorCount <= 0)

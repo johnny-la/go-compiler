@@ -31,10 +31,12 @@ public class Weeder extends DepthFirstAdapter
             // Expressions cannot be print statements
             weedPrintStatement(node.getR().get(i));
 
-            if (!(lvalues.get(i) instanceof AIdExp)) {
+            if (!(lvalues.get(i) instanceof AIdExp)) 
+            {
                 allIds = false;
                 if (!(lvalues.get(i) instanceof AArrayElementExp) &&
-                    !(lvalues.get(i) instanceof AFieldExp)) {
+                    !(lvalues.get(i) instanceof AFieldExp)) 
+                {
                     allLValues = false;
                 }
             }
@@ -108,15 +110,19 @@ public class Weeder extends DepthFirstAdapter
     }
 
     //check expr is id or arraySelector
-    public void inAIncrementStmt(AIncrementStmt node) {
-        if (!(node.getExp() instanceof AIdExp || node.getExp() instanceof AArrayElementExp)) {
+    public void inAIncrementStmt(AIncrementStmt node) 
+    {
+        if (!(node.getExp() instanceof AIdExp || node.getExp() instanceof AArrayElementExp)) 
+        {
             throw new RuntimeException("Increment assignment ++ can only " +
                 "be used with proper LValues ");
         }
     }
 
-    public void inADecrementStmt(ADecrementStmt node) {
-        if (!(node.getExp() instanceof AIdExp || node.getExp() instanceof AArrayElementExp)) {
+    public void inADecrementStmt(ADecrementStmt node) 
+    {
+        if (!(node.getExp() instanceof AIdExp || node.getExp() instanceof AArrayElementExp)) 
+        {
             throw new RuntimeException("Increment assignment -- can only " +
                 "be used with proper LValues ");
         }
@@ -143,8 +149,7 @@ public class Weeder extends DepthFirstAdapter
             
             if (caseStmt.getCaseExp() instanceof ADefaultExp)
             {
-                // Throw an exception if the switch-statement has more that
-                // one default
+                // Throw an exception if the switch-statement has > 1 default
                 if (hasDefaultStatement)
                 {
                     throw new RuntimeException("Two default statements in a switch statement");
@@ -195,32 +200,6 @@ public class Weeder extends DepthFirstAdapter
         }
     }
 
-    public void inANoReturnFuncDecl(ANoReturnFuncDecl node)
-    {
-        /*if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
-        {
-            throwContinueError();
-        }
-
-        if (hasBreak(((ABlockStmt)node.getBlock()).getStmt()))
-        {
-            throwBreakError();
-        }*/
-    }
-
-    public void inASingleReturnFuncDecl(ASingleReturnFuncDecl node)
-    {
-        /*if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
-        {
-            throwContinueError();
-        }
-
-        if (hasBreak(((ABlockStmt)node.getBlock()).getStmt()))
-        {
-            throwBreakError();
-        }*/
-    } 
-
     public void inAExpStmt(AExpStmt node)
     {
         if (node.getExp() instanceof AAppendedExprExp)
@@ -230,56 +209,31 @@ public class Weeder extends DepthFirstAdapter
     public void inAIfStmt(AIfStmt node)
     {
         weedPrintStatement(node.getSimpleStmt());
-        /*if (hasContinue(((ABlockStmt)node.getBlock()).getStmt()))
-        {
-            throwContinueError();
-        }
-
-        if (hasBreak(((ABlockStmt)node.getBlock()).getStmt()))
-        {
-            throwBreakError();
-        }*/
     }
 
-    public void inAElseStmt(AElseStmt node)
+    public void inAFieldExp(AFieldExp node) 
     {
-        /*if (hasContinue(((ABlockStmt)node.getStmt()).getStmt()))
-        {
-            throwContinueError();
-        }
-
-        if (hasBreak(((ABlockStmt)node.getStmt()).getStmt()))
-        {
-            throwBreakError();
-        }*/
-    }
-
-    public void inACaseStmt(ACaseStmt node)
-    {
-        /*if (hasContinue(node.getStmtList()))
-        {
-            throwContinueError();
-        }*/
-    }
-    public void inAFieldExp(AFieldExp node) {
         Node id = node.getIdType();
-        if (id instanceof AIdIdType) {
+        if (id instanceof AIdIdType) 
+        {
             AIdIdType newTemp = (AIdIdType) id;
-            if (newTemp.getId().getText().equals("_")) {
+            if (newTemp.getId().getText().equals("_"))
                 throwBlankIdError("Trying to evaluate a struct selector with a blank identifier \n");
-            }
         }
     }
 
-    public void caseAAssignListStmt(AAssignListStmt node) {
+    public void caseAAssignListStmt(AAssignListStmt node) 
+    {
         inAAssignListStmt(node);
         {
             List<PExp> copy = new ArrayList<PExp>(node.getL());
-                for(PExp e : copy) { 
-                    System.out.println("The id in assign list is: ");  
-                    if (e instanceof AIdExp) {
-                        AIdExp temp = (AIdExp) e;
-                        if (temp.getIdType() instanceof AIdIdType) {
+            for(PExp e : copy) 
+            { 
+                if (e instanceof AIdExp)
+                {
+                    AIdExp temp = (AIdExp) e;
+                    if (temp.getIdType() instanceof AIdIdType) 
+                    {
                         AIdIdType newTemp = (AIdIdType) temp.getIdType();
                         if (newTemp.getId().getText().equals("_") && copy.size() > 1) {
                             //nothing
@@ -287,73 +241,49 @@ public class Weeder extends DepthFirstAdapter
                             e.apply(this);
                         }
                     }
-                } else {
+                } 
+                else 
+                {
                     e.apply(this);
-                    }
                 }
+            }
         }
         if(node.getOp() != null)
         {
             node.getOp().apply(this);
         }
+
+        List<PExp> copy = new ArrayList<PExp>(node.getR());
+        for(PExp e : copy)
         {
-            List<PExp> copy = new ArrayList<PExp>(node.getR());
-            for(PExp e : copy)
-            {
-                e.apply(this);
-            }
+            e.apply(this);
         }
+
         outAAssignListStmt(node);
     }
 
-    public void caseAIdExp(AIdExp node) {
+    public void caseAIdExp(AIdExp node) 
+    {
         PIdType id = node.getIdType();
-        if (id instanceof AIdIdType) {
+        if (id instanceof AIdIdType) 
+        {
             AIdIdType temp = (AIdIdType) id;
-            if (temp.getId().getText().equals("_")) {
+            if (temp.getId().getText().equals("_")) 
                 throwBlankIdError("Trying to evaluate an expression with a blank identifier \n");
-            }
         }
     }
 
 
-    public void inAPackageDecl(APackageDecl node) {
+    public void inAPackageDecl(APackageDecl node)
+    {
         PIdType id = node.getIdType();
-        if (id instanceof AIdIdType) {
+        if (id instanceof AIdIdType) 
+        {
             AIdIdType temp = (AIdIdType) id;
-            if (temp.getId().getText().equals("_")) {
+            if (temp.getId().getText().equals("_")) 
                 throwBlankIdError("Trying to declare a package with a blank identifier \n");
-            }
         }
     }
-
-    // public void inAStructSelectorExp(AStructSelectorExp node) {
-    //     PExp right = node.getR();
-    //     if (right instanceof AIdExp) {
-    //         AIdExp temp = (AIdExp) right;
-    //         if (temp.getIdType() instanceof AIdIdType) {
-    //             AIdIdType newTemp = (AIdIdType) temp.getIdType();
-    //             if (newTemp.getId().getText().equals("_")) {
-    //                 throwBlankIdError("Trying to evaluate an expression with a blank identifier \n");
-    //             }
-    //         }
-    //     }
-    // }
-
-    // public void inAStructWithIdTypeDecl(AStructWithIdTypeDecl node) {
-    //     PVarType current = node.getVarType();
-    //     while (current instanceof ASliceVarType || current instanceOf AArrayVarType) {
-    //         current = current.getVarType();
-    //     }
-
-    //     if (current instanceof AStructType) {
-    //         if (((AStructVarType) current).getId().getText().equals("struct")) {
-    //             return;
-    //         }
-    //     }
-
-    //     throwStructError();
-    // }
 
     public boolean hasContinue(List<PStmt> nodes)
     {
@@ -385,7 +315,8 @@ public class Weeder extends DepthFirstAdapter
         return false;
     } 
 
-    public void throwBlankIdError(String message) {
+    public void throwBlankIdError(String message) 
+    {
         ErrorManager.printError(message);
     }
 
@@ -399,7 +330,8 @@ public class Weeder extends DepthFirstAdapter
         ErrorManager.printError("Break must be inside a loop or a switch statement");
     }
 
-    public void throwReturnError(){
+    public void throwReturnError()
+    {
         throw new RuntimeException("Program missing a return statement");
     }
 }

@@ -15,7 +15,8 @@ Main:
 edit:
 	vim golite.sablecc
 clean:
-	rm -rf `find . -name *.class` golite/parser golite/lexer \
+	rm -rf `find . -name *.class` golite/parser \
 	golite/node golite/analysis *.pretty.min *.symbol.txt *.c \
 	../programs/valid/*.pretty.go ../programs/valid/*.pretty.symbol.txt \
-	../programs/valid/*.symbol.txt
+	../programs/valid/*.symbol.txt \
+	`find golite/lexer ! -name 'GoliteLexer.java' -type f -exec rm -f {} +`

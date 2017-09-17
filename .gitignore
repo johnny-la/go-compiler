@@ -1,7 +1,8 @@
 *.class
 
-src/golite/parser/ 
+src/golite/parser/
 src/golite/lexer/
+!src/golite/lexer/GoliteLexer.java
 src/golite/node/ 
 src/golite/analysis/ 
 grading/

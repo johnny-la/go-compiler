@@ -3,6 +3,9 @@ package golite.type;
 import golite.node.*;
 import java.util.*;
 
+/**
+ * Represents a variable or expression's type
+ */
 public class TypeClass
 {
     public PVarType varTypeNode;    // The top-most PVarType node
@@ -12,11 +15,9 @@ public class TypeClass
     public LinkedList<Dimension> totalArrayDimension; // The dimension of the base type
     public FunctionSignature functionSignature; // Only populated if baseType == FUNCTION
     public ArrayList<TypeAlias> typeAliases = new ArrayList<TypeAlias>(); 
-    //public Node typeAliasNode;      // If this variable is a custom type, this stores the type alias declaration node 
-    //public int aliasArrayDimension; // The array dimension of the outer-most type alias
 
-
-    public TypeClass() {
+    public TypeClass() 
+    {
         this.totalArrayDimension = new LinkedList<Dimension>();
     }
 
@@ -37,8 +38,6 @@ public class TypeClass
         structNode = other.structNode;
         functionSignature = (other.functionSignature != null)? 
                                 new FunctionSignature(other.functionSignature) : null;
-        //typeAliasNode = other.typeAliasNode;
-        //aliasArrayDimension = other.aliasArrayDimension;
 
         totalArrayDimension = new LinkedList<Dimension>();
         for (int i = 0; i < other.totalArrayDimension.size(); i++)
@@ -51,7 +50,8 @@ public class TypeClass
         }
     }
 
-    public void incrementDimension(Dimension d) {
+    public void incrementDimension(Dimension d) 
+    {
         totalArrayDimension.add(d);
     }
 
@@ -75,10 +75,6 @@ public class TypeClass
             {
                 // Remove last array dimension in the type alias
                 typeAlias.arrayDimensions.removeLast();
-                
-                //if (typeAlias.arrayDimension <= 0)
-                    //typeAliases.remove(i);
-
                 break;
             }
         }
