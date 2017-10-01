@@ -24,7 +24,7 @@ Then, compile a Golang program as follows:
 
 ## Testing the compiler 
 
-A series of Golang test programs are included in the repository. To run the test suite on the compiler, execute the following command:
+A series of Golang test programs are included in the repository. To run the test suite on the compiler, execute the following:
 
 ```
 ./test.sh
