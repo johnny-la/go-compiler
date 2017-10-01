@@ -16,7 +16,7 @@ To build the compiler, `cd` to the cloned repository and run:
 ./build.sh
 ```
 
-Then, run the compiler on a Golang program:
+Then, compile a Golang program as follows:
 
 ```
 ./run.sh /path/to/program.go
@@ -24,7 +24,7 @@ Then, run the compiler on a Golang program:
 
 ## Testing the compiler 
 
-To test the compiler, a series of Golang test programs are included. To run the compiler on these programs, execute the following:
+A series of Golang test programs are included in the repository. To run the test suite on the compiler, execute the following command:
 
 ```
 ./test.sh
