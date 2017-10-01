@@ -31,6 +31,6 @@ To test the compiler, a series of Golang test programs are included. To run the 
 ```
 
 ## Authors 
-- Ralph Bou Samra 
 - Jonathan Lucuix-André 
+- Ralph Bou Samra 
 - Yan Qing Zhang
