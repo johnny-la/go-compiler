@@ -49,7 +49,7 @@ public class CodeGenerator extends DepthFirstAdapter
     private String fileHeader;
 
     // Printed at the end of the file
-    private static final String fileFooter =
+    private static final String FILE_FOOTER =
         	"    public static <T> T _get_(ArrayList<T> list, int index, boolean isArray, int maxSize, T defaultValue) {\n" +
 		    "        _ensureCapacity_(list,isArray,maxSize,defaultValue);\n" +
 		    "        return list.get(index);\n" +
@@ -243,7 +243,7 @@ public class CodeGenerator extends DepthFirstAdapter
         // Print the file header        
         print(fileHeader);
         // Print the helper methods
-        print(fileFooter);
+        print(FILE_FOOTER);
 
         indentLevel++;
         
@@ -542,7 +542,7 @@ public class CodeGenerator extends DepthFirstAdapter
         print("_" + node.getType().getText());
     }
 
-    //package declarations
+    // Package declarations
     public void caseAPackageDecl(APackageDecl node) 
     {
         print("package ");
@@ -552,10 +552,7 @@ public class CodeGenerator extends DepthFirstAdapter
     //var declarations
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node) 
     {
-        //print("int ");
         node.getVarDecl().apply(this);
-        //println("");
-
     }
 
     // Prints the type of the node, followed by the name of the id
@@ -867,7 +864,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
     } 
 
-    //function declarations
+    // Function declarations
     public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node) {
         inFunction = true;
         print("public static ");
@@ -905,7 +902,7 @@ public class CodeGenerator extends DepthFirstAdapter
         node.getBlock().apply(this);
     }
 
-    //signature declarations
+    // Signature declarations
     public void caseAMultipleTypesSignature(AMultipleTypesSignature node)
     {
         printMethodParameters(node.getIdList());
@@ -1438,26 +1435,6 @@ public class CodeGenerator extends DepthFirstAdapter
                 defaultValue += ">";
 
             defaultValue += "()";
-
-            /*if (type.totalArrayDimension.size() > 1)
-            {
-                defaultValue += ";\n";
-                defaultValue += getIndent();
-            }
-
-            //String idName = getIdName(node);
-
-            for (int i = 0; i < type.totalArrayDimension.size(); i++)
-            {
-                Dimension dimension = type.totalArrayDimension.get(i);
-                if (dimension.isArray)
-                {
-                    for (int j = 0; j < dimension.size; j++)
-                    {
-
-                    }
-                }
-            }*/
         }
 
         return defaultValue;
@@ -1488,13 +1465,8 @@ public class CodeGenerator extends DepthFirstAdapter
         }
     }
 
-    public void caseAArrayElementExp(AArrayElementExp node){
-		// print("(");
-		// node.getArray().apply(this);
-		// print(".get(");
-		// node.getIndex().apply(this);
-		// print(")");
-
+    public void caseAArrayElementExp(AArrayElementExp node)
+    {
         print("_get_(");
         node.getArray().apply(this);
         print(",");

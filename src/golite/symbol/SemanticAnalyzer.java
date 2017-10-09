@@ -335,8 +335,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         declareVariable(node.getIdType(), type, SymbolKind.LOCAL, node);
     }
 
-
-
     public void outATypeAliasTypeDecl(ATypeAliasTypeDecl node)
     {
         //traverse VarType until base check if its an id, check if the id is declared
@@ -533,7 +531,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         if (current instanceof ATypeVarType)
         {
             Symbol s = symbolTable.get(((ATypeVarType)current).getType().getText());
-            if (s != null && s.kind != Symbol.SymbolKind.TYPE) {
+            if (s != null && s.kind != Symbol.SymbolKind.TYPE) 
+            {
                 ErrorManager.printError(s + " is already declared as a variable");
             }
 

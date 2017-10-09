@@ -10,7 +10,7 @@ public class Weeder extends DepthFirstAdapter
     // The number of switch statements/loops enterred
     private int inALoop, inASwitchStmt;
 
-    //short decls
+    // Short decls
     public void inAAssignListStmt(AAssignListStmt node)
     {
         // Stores true if all the lvalues are identifiers

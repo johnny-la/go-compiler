@@ -51,8 +51,10 @@ public class Symbol
         alreadyDeclared = false;
     }
 
-    // Sets the type of the symbol, along with all other symbols that
-    // reference this symbol
+    /**
+     * Sets the type of the symbol, along with all other symbols that
+     * reference this symbol
+     */
     public void setType(TypeClass typeClass)
     {
         this.typeClass.set(typeClass);
