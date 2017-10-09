@@ -30,7 +30,7 @@ The generated Java file will be created here:
 
 ## Testing the compiler 
 
-To test the compiler, a series of Golang test programs are included to run against the compiler. To run the test suite, execute the following:
+To test the compiler, a series of Golang test programs are included to run against the compiler. To run the test suite, execute the following command:
 
 ```
 ./test.sh
