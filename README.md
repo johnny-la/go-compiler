@@ -39,7 +39,9 @@ To test the compiler, a series of Golang test programs are included. To run the 
 ```
 
 ## Important Notes
-- This compiler only supports a subset of Golang's entire feature set. The list of supported features are detailed [here (Starts at page 24)](http://www.cs.mcgill.ca/~cs520/2017/slides/golite.pdf).
+- This compiler only supports a subset of Golang's entire feature set. The list of supported features are detailed in the following documents:
+  - [Syntax Specifications](http://www.cs.mcgill.ca/~cs520/2017/assignments/m1_syntax.pdf)
+  - [Typechecking Specifications](http://www.cs.mcgill.ca/~cs520/2017/assignments/m2_typechecker.pdf)
 - To compile a custom Go program, make sure that the program ends with an extra newline 
 
 ## Authors 
