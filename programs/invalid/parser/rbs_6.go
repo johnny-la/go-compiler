@@ -3,5 +3,5 @@
 package main;
 
 func main(){
-	var texting = 2 ? 3;
+    var texting = 2 ? 3;
 }

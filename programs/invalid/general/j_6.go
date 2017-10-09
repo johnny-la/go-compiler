@@ -7,6 +7,6 @@ func arb (a int, b int, c int) int {
 }
 
 func temp () int {
-	return arb(3, 7.0)
+    return arb(3, 7.0)
 
 }

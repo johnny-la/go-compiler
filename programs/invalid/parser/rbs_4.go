@@ -4,10 +4,10 @@ var x int = 2;
 var sum int;
 
 func getSum(a int, b int) int {
-	return a+b;
+    return a+b;
 }
 
 func main() {
-	// Function call with semicolon separating args
-	sum = getSum(2;3);
+    // Function call with semicolon separating args
+    sum = getSum(2;3);
 }

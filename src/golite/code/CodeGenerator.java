@@ -50,58 +50,58 @@ public class CodeGenerator extends DepthFirstAdapter
 
     // Printed at the end of the file
     private static final String FILE_FOOTER =
-        	"    public static <T> T _get_(ArrayList<T> list, int index, boolean isArray, int maxSize, T defaultValue) {\n" +
-		    "        _ensureCapacity_(list,isArray,maxSize,defaultValue);\n" +
-		    "        return list.get(index);\n" +
-	        "    }\n" +
-	        "\n" + 
+            "    public static <T> T _get_(ArrayList<T> list, int index, boolean isArray, int maxSize, T defaultValue) {\n" +
+            "        _ensureCapacity_(list,isArray,maxSize,defaultValue);\n" +
+            "        return list.get(index);\n" +
+            "    }\n" +
+            "\n" + 
             "    public static <T> void _set_(ArrayList<T> list, int index, T data, boolean isArray, int maxSize, T defaultValue) {\n" +
-		    "        _ensureCapacity_(list,isArray,maxSize,defaultValue);\n" +
+            "        _ensureCapacity_(list,isArray,maxSize,defaultValue);\n" +
             "        list.set(index, data);\n" +
             "    }\n" +
             "\n" +
             "    @SuppressWarnings(\"unchecked\")\n" +
             "    public static <T> void _ensureCapacity_(ArrayList<T> list, boolean isArray, int maxSize, T defaultValue) {\n" +
-	        "        if (isArray) {\n" +
-			"            for (int i = list.size(); i < maxSize; i++) {\n" +
-			"                try {\n" +
-	        "                    T value = null;\n" +
-		    "                    if (isPrimitive(defaultValue))\n" +
-			"                        value = defaultValue;\n" +
-			"                    else\n" +
-			"                        value = (T)defaultValue.getClass().newInstance();\n" +
+            "        if (isArray) {\n" +
+            "            for (int i = list.size(); i < maxSize; i++) {\n" +
+            "                try {\n" +
+            "                    T value = null;\n" +
+            "                    if (isPrimitive(defaultValue))\n" +
+            "                        value = defaultValue;\n" +
+            "                    else\n" +
+            "                        value = (T)defaultValue.getClass().newInstance();\n" +
             "                    list.add(value);\n" +
-		    "                } catch (Exception e) {\n" +
-			"                    throw new RuntimeException(e);\n" +
-			"                }\n" +
-			"            }\n" +
-		    "        }\n" +
-	        "    }\n" +
+            "                } catch (Exception e) {\n" +
+            "                    throw new RuntimeException(e);\n" +
+            "                }\n" +
+            "            }\n" +
+            "        }\n" +
+            "    }\n" +
             "\n" +
             "    public static <T> boolean isPrimitive(T value) {\n" +
-	        "        if (value.getClass().equals(Integer.class)\n" +
-			"            || value.getClass().equals(Double.class)\n" +
-			"            || value.getClass().equals(Character.class)\n" +
-			"            || value.getClass().equals(Boolean.class)\n" +
-		    "            || value.getClass().equals(String.class))\n" +
-		    "            return true;\n" +
+            "        if (value.getClass().equals(Integer.class)\n" +
+            "            || value.getClass().equals(Double.class)\n" +
+            "            || value.getClass().equals(Character.class)\n" +
+            "            || value.getClass().equals(Boolean.class)\n" +
+            "            || value.getClass().equals(String.class))\n" +
+            "            return true;\n" +
             "\n" +
-		    "        return false;\n" +
-	        "    }\n";
-	
-	public static <T> boolean isPrimitive(T value)
-	{
-		if (value.getClass().equals(Integer.class) 
-			|| value.getClass().equals(Double.class)
-			|| value.getClass().equals(Character.class)
-			|| value.getClass().equals(Boolean.class)
-		    || value.getClass().equals(String.class)) 
-		{
-		    return true;
-		}
+            "        return false;\n" +
+            "    }\n";
+    
+    public static <T> boolean isPrimitive(T value)
+    {
+        if (value.getClass().equals(Integer.class) 
+            || value.getClass().equals(Double.class)
+            || value.getClass().equals(Character.class)
+            || value.getClass().equals(Boolean.class)
+            || value.getClass().equals(String.class)) 
+        {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
     private static final int STRING_SIZE = 1024;
 
@@ -1474,7 +1474,7 @@ public class CodeGenerator extends DepthFirstAdapter
         print(",");
         
         printLastArrayArguments(node,true);
-	}
+    }
 
     // Print the last arguments in a _get_/_set_() call
     private void printLastArrayArguments(AArrayElementExp node, boolean get)
@@ -1495,11 +1495,11 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     public void caseAFieldExp(AFieldExp node) {
-		print("(");
-		node.getExp().apply(this);
-		print(").");
-		node.getIdType().apply(this);
-	}
+        print("(");
+        node.getExp().apply(this);
+        print(").");
+        node.getIdType().apply(this);
+    }
 
     public void caseABlockStmt(ABlockStmt node)
     {

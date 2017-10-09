@@ -100,19 +100,19 @@ public class PrettyPrinter extends DepthFirstAdapter
 
     public void caseAStructVarType(AStructVarType node) 
     {
-    		println("struct {");
-    		indentLevel++;
-    		for (Node n : node.getInnerFields()) {
-    				printi("");
-    				n.apply(this);
-    				println("");
-    		}
-    		print("}");
+            println("struct {");
+            indentLevel++;
+            for (Node n : node.getInnerFields()) {
+                    printi("");
+                    n.apply(this);
+                    println("");
+            }
+            print("}");
     }
 
     public void caseAIdVarType(AIdVarType node) 
     {
-    	  print(node.getId().getText());
+          print(node.getId().getText());
     }
 
     /** Field declarations */
@@ -140,7 +140,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print(node.getType().getText());
     }
 
-    //package declarations
+    // Package declarations
     public void caseAPackageDecl(APackageDecl node) 
     {
         print("package ");
@@ -148,7 +148,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         print("; \n");
     }
 
-    //var declarations
+    // Variable declarations
     public void caseAVarDeclAstDecl(AVarDeclAstDecl node) 
     {
         print("var ");
@@ -263,7 +263,7 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getBlock().apply(this);
     }
 
-    //signature declarations
+    // Signature declarations
     public void caseAMultipleTypesSignature(AMultipleTypesSignature node)
     {
         printNodesWithComma(node.getIdList());
@@ -288,8 +288,6 @@ public class PrettyPrinter extends DepthFirstAdapter
         node.getExp().apply(this);
         print(")");
     }
-
-    /** STATEMENTS */
 
     public void caseAReturnStmt(AReturnStmt node)
     {
@@ -480,22 +478,22 @@ public class PrettyPrinter extends DepthFirstAdapter
 
     public void caseAArrayElementExp(AArrayElementExp node)
     {
-		print("(");
-		node.getArray().apply(this);
-		print("[");
-		node.getIndex().apply(this);
-		print("]");
-		print(")");
-	}
+        print("(");
+        node.getArray().apply(this);
+        print("[");
+        node.getIndex().apply(this);
+        print("]");
+        print(")");
+    }
 
 
     public void caseAFieldExp(AFieldExp node)
     {
-		print("(");
-		node.getIdType().apply(this);
-		print(").");
-		node.getExp().apply(this);
-	}
+        print("(");
+        node.getIdType().apply(this);
+        print(").");
+        node.getExp().apply(this);
+    }
 
     public void caseAFunctionCallExp(AFunctionCallExp node)
     {
@@ -799,15 +797,15 @@ public class PrettyPrinter extends DepthFirstAdapter
 
     public void caseAPrintExp(APrintExp node) 
     {
-		print("print(");
-		printNodesWithComma(node.getExp());
-		print(")");
-	}
+        print("print(");
+        printNodesWithComma(node.getExp());
+        print(")");
+    }
 
     public void caseAPrintlnExp(APrintlnExp node) 
     {
-		print("println(");
-		printNodesWithComma(node.getExp());
-		print(")");
-	}
+        print("println(");
+        printNodesWithComma(node.getExp());
+        print(")");
+    }
 }

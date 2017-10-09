@@ -1,6 +1,6 @@
 package hello
 
-//binary ops on incompatible types
+// Binary ops on incompatible types
 func arb (a int, b int, c int) int {
        var y bool = true
        var z int = 5

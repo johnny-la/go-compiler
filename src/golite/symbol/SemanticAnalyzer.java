@@ -409,7 +409,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
       
         TypeClass typeClass = getTypeClass(varType);
         if (typeClass.baseType == Type.STRUCT && kind != SymbolKind.TYPE) {
-        	kind = SymbolKind.LOCAL;
+            kind = SymbolKind.LOCAL;
         }
 
         if(!inAFunction && kind == SymbolKind.LOCAL){
@@ -477,12 +477,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             } 
             else if (current instanceof AStructVarType) 
             {
-            		AStructVarType struct = (AStructVarType) current;
-            		typeClass.innerFields = struct.getInnerFields();
+                    AStructVarType struct = (AStructVarType) current;
+                    typeClass.innerFields = struct.getInnerFields();
                     typeClass.structNode = struct;
-            		typeClass.baseType = Type.STRUCT;
+                    typeClass.baseType = Type.STRUCT;
 
-            		break;
+                    break;
             }
             // Type alias
             else if (current instanceof AIdVarType)
