@@ -25,11 +25,6 @@ func main() {
     array[3] = 40
     array[4] = 50
 
-    /**
-     * /-/ Print the average of the array //
-     */
+    // Prin the average of the array
     println("The average is", average(array, 5))
 }
-
-// Returns the average of an array
-// with length n

@@ -29,9 +29,7 @@ func fib(n int) int {
         fib_helper(n, memo)
 
         return memo[n];
-    } else
-    {
-        // Never reached
+    } else {
         return -1
     }
 }
