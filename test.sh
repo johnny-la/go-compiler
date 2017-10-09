@@ -1,5 +1,23 @@
 #!/bin/bash
 
+LOG=0
+VERBOSE=0
+
+while getopts ":lv" opt; do
+	case $opt in
+		l)
+			LOG=1
+			;;
+		v)
+			VERBOSE=1
+			;;
+		\?)
+			echo "Invalid option: -$OPTARG" >&2
+			exit
+			;;
+	esac
+done
+
 # 1. Build the compiler.
 #
 # You *MUST* provide a build.sh script in the root directory
@@ -8,9 +26,11 @@
 # will be empty.
 # A sample build.sh file using Makefile has been provided.
 
+echo -n -e "\033[93m"
 echo "*****************************"
 echo "  Building compiler"
 echo "*****************************"
+echo -e -n "\033[0m"
 
 if [ ! -f build.sh ]
 then
@@ -33,81 +53,86 @@ then
 	exit
 fi
 
-# 2. Run all valid programs
-#
-# For valid programs, your compiler *MUST*
-#   (a) output only: VALID
-#   (b) exit with status code 0
-# A log of the output is written to valid.log
+SCORES=()
 
-VALID_DIR=./programs/valid/*.go
- 
-echo
+for DIR_TYPE in programs/*/; do
+	CONF=`cat $DIR_TYPE/CONF`
+	TYPE=$(basename $DIR_TYPE)
+	TYPE="${TYPE^}"
+
+	for DIR_PHASE in $DIR_TYPE*/; do
+		PHASE=$(basename $DIR_PHASE)
+		PHASE="${PHASE^}"
+
+		echo -e "\033[93m"
+		echo "*****************************"
+		echo "  $TYPE $PHASE"
+		echo "*****************************"
+		echo -e -n "\033[0m"
+
+		TESTS=`find $DIR_PHASE -type f \( -name "*.go" ! -name "*.pretty.go" \)`
+		COUNT=0
+		COUNT_CORRECT=0
+
+		for TEST in $TESTS
+		do
+			((COUNT++))
+			RESULT=$(./run.sh $TEST 2>&1)
+			STATUS=${PIPESTATUS[0]}
+
+			RESULT=${RESULT#$TEST}
+
+			if [[ $RESULT == *"java.lang.NullPointerException"* ]]; then
+				STATUS=-1
+			fi
+
+			if [ $STATUS -eq $CONF ]
+			then
+				if [ $VERBOSE -eq 1 ]
+				then
+					echo
+					echo "$TEST: $RESULT" | tr -d '\n'
+				       	echo -n -e " \033[0;32m[pass]\033[0m"
+					if [ $LOG -eq 1 ]
+					then
+						echo "$TEST: $RESULT [pass]" >> ${TYPE}_${PHASE}.log
+					fi
+				fi
+				((COUNT_CORRECT++))
+			else
+				echo
+				echo "$TEST: $RESULT" | tr -d '\n'
+				echo -n -e " \033[0;31m[fail]\033[0m"
+				if [ $LOG -eq 1 ]
+				then
+					echo "$TEST: $RESULT [fail]" >> ${TYPE}_${PHASE}.log
+				fi
+			fi 
+		done                                 
+		if [ $VERBOSE -eq 1 ]
+		then
+			if [ $COUNT -gt 0 ]
+			then
+				echo
+			fi
+		else
+			if [ $COUNT -ne $COUNT_CORRECT ]
+			then
+				echo
+			fi
+		fi
+		echo
+		echo -e "\e[41m# ${TYPE} ${PHASE}: ${COUNT_CORRECT}/${COUNT}\e[49m"
+		SCORES+=("\e[41m# ${TYPE} ${PHASE}: ${COUNT_CORRECT}/${COUNT}\e[49m")
+	done
+done
+
+echo -e "\033[93m"
 echo "*****************************"
-echo "  Valid programs"
+echo "  Overall"
 echo "*****************************"
+echo -e "\033[0m"
 
-if [ -f valid.log ]
-then
-	rm valid.log
-fi
-
-VALID=0
-VALID_CORRECT=0
-for PROG in $VALID_DIR
-do
-	((VALID++))
-
-	echo -n "$PROG: " | tee -a valid.log
-	./run.sh $PROG 2>&1 | tee -a valid.log | tr -d '\n'
-	if [ ${PIPESTATUS[0]} -eq 0 ]
-	then
-		echo -e -n " \033[0;32m[pass]"
-		((VALID_CORRECT++))
-	else
-		echo -e -n " \033[0;31m[fail]"
-	fi 
-	echo -e "\033[0m"
-done 
-echo
-echo ">>>>> # valid programs handled: ${VALID_CORRECT}/${VALID}"
- 
-# 3. Run all invalid programs
-#
-# For invalid programs, your compiler *MUST*
-#   (a) output: INVALID: <error>
-#   (b) exit with status code 1
-# A log of the output is written to invalid.log
-
-INVALID_DIR=./programs/invalid/*.go
-
-echo
-echo "*****************************"
-echo "  Invalid programs"
-echo "*****************************"
-
-if [ -f invalid.log ]
-then
-	rm invalid.log
-fi
-
-INVALID=0
-INVALID_CORRECT=0
-for PROG in $INVALID_DIR
-do
-	((INVALID++))
-	
-	echo -n "$PROG: " | tee -a invalid.log
-	./run.sh $PROG 2>&1 | tee -a invalid.log | tr -d '\n'
-	if [ ${PIPESTATUS[0]} -eq 1 ]
-	then
-		echo -e -n " \033[0;32m[pass]"
-		((INVALID_CORRECT++))
-	else
-		echo -e -n " \033[0;31m[fail]"
-	fi 
-	echo -e "\033[0m"
-done 
-echo
-echo ">>>>> # invalid programs handled: ${INVALID_CORRECT}/${INVALID}"
-
+for i in ${!SCORES[*]}; do
+	echo -e ${SCORES[$i]}
+done
