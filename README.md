@@ -39,6 +39,9 @@ To test the compiler, a series of Golang test programs are included. To run the 
 ```
 
 ## Important Notes
+
+<img src="https://user-images.githubusercontent.com/10332234/31354385-3d07f2ce-ad04-11e7-902d-ed1534c4a684.png" width="20%"/>
+
 - This compiler only supports a subset of Golang's entire feature set. The list of supported features are detailed in the following documents:
   - [Syntax Specifications](http://www.cs.mcgill.ca/~cs520/2017/assignments/m1_syntax.pdf)
   - [Typechecking Specifications](http://www.cs.mcgill.ca/~cs520/2017/assignments/m2_typechecker.pdf)
