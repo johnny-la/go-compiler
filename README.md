@@ -18,13 +18,19 @@ To build the compiler, `cd` to the cloned repository and run:
 
 Then, compile a Golang program as follows:
 
-```
-./run.sh /path/to/program.go
-```
+<pre>
+./run.sh /path/to/<b>&lt;program-name&gt;</b>.go
+</pre>
+
+The generated Java file will be created here:
+
+<pre>
+/path/to/GoLite<b>&lt;program-name&gt;</b>.java
+</pre>
 
 ## Testing the compiler 
 
-To test the compiler, a series of Golang test programs are included. To run the test suite, execute the following:
+To test the compiler, a series of Golang test programs are included to run against the compiler. To run the test suite, execute the following:
 
 ```
 ./test.sh
