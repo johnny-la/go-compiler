@@ -1,38 +1,30 @@
 package main;
+
 //testing type declarations
-type struct_1 []struct 
-{
+type struct_1 []struct {
 	str string
-	innerStruct struct 
-	{
+	innerStruct struct {
 		a, b, c float64
 	}
 }
 
-func foo(a int, b int, c int) 
-{
-	type struct_2 struct 
-	{
+func foo(a int, b int, c int) {
+	type struct_2 struct {
 		str string
-		innerStruct struct 
-		{
+		innerStruct struct {
 			a, b, c float64
 		}
 	}
-	var x struct 
-	{
+	var x struct {
 		str string
-		innerStruct struct 
-		{
+		innerStruct struct {
 			a, b, c float64
 		}
 	}
 
-	var y struct 
-	{
+	var y struct {
 		str string
-		innerStruct struct 
-		{
+		innerStruct struct {
 			a, b, c float64
 		}
 	}

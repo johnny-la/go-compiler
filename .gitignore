@@ -7,7 +7,8 @@ src/golite/node/
 src/golite/analysis/ 
 grading/
 grading.sh
-*.pretty.min 
-*.symbol.txt 
+*.pretty.go 
+*.symbol.txt
+GoLite*.java 
 .DS_Store
 src/.DS_Store

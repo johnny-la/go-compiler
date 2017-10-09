@@ -31,10 +31,5 @@ func main() {
     // Sort the array
     selection_sort(array, length)
 
-    // Print the sorted array
-    /*for i := 0; i < length; i++ {
-        print(array[i], ",")
-    }*/
-
     println("Done")
 }

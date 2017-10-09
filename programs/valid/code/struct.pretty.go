@@ -5,7 +5,7 @@ type struct_1 []struct {
         a, b, cfloat64
 }
 };
-func int (a int, b int, c int) {
+func foo (a int, b int, c int) {
             type struct_2 struct {
                 strstring
                 innerStructstruct {
