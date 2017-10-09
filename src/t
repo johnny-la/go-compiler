@@ -1,0 +1,35 @@
+package main 
+
+type point struct {
+	x, y int
+	thing struct {
+		y,z rune
+	}
+}
+
+type point2 struct {
+	p point
+}
+
+func test3(x point2) {
+	print(x.p.thing.z)
+} 
+
+/*type a []int
+var x a
+
+func test3() {
+	print(a[1])
+}*/
+
+/*func test2(x point) {
+	print(x.x)
+}*/
+
+//func test(x point, y struct{;thing rune;}) {
+	//print(x.y)	
+//}
+
+//func main(x, y int, s string, c rune, f float64, b1, b2 bool) {
+//	sdjfs := 3
+//}

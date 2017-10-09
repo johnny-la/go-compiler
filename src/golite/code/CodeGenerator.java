@@ -451,7 +451,6 @@ public class CodeGenerator extends DepthFirstAdapter
             for (int i = 0; i < cur.getIdType().size(); i++) 
             {
                 printi("");
-                System.out.println("declaring variable" + getIdName(cur.getIdType().get(i)));
                 declareVariable(cur.getIdType().get(i), true);
                 println(";");
             }
@@ -603,7 +602,6 @@ public class CodeGenerator extends DepthFirstAdapter
         // If the variable wasn't declared in this function, declare it
         if (symbol == null || !symbol.alreadyDeclared)
         {
-            System.out.println("Declaring variable: " + node);
             String typeName = (node != null)? getTypeName(node) : getTypeName(expNode);
             print(typeName + " ");
         }
@@ -630,8 +628,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
         
         TypeClass type = nodeTypes.get(node.getIdType());
-        System.out.println("type is " + type);
-
+        
         if (type.baseType == Type.STRUCT && type.typeAliases.size() == 0)
         {
             isAnon = true;
@@ -642,7 +639,6 @@ public class CodeGenerator extends DepthFirstAdapter
             }
             isAnon = false;
             printi("");
-            System.out.println("First time encountering struct: " + node.getIdType() + ". Creating the class");
         }
 
         declareVariable(node.getIdType(), true);
@@ -680,7 +676,6 @@ public class CodeGenerator extends DepthFirstAdapter
     // Returns true if the declaration has a blank identifier
     private boolean isBlankId(PVarDecl node)
     {
-        // System.out.println(node + " type = " + node.getClass());
         return getIdName(node).trim().equals("_");
     }
 
@@ -869,7 +864,6 @@ public class CodeGenerator extends DepthFirstAdapter
             if (varType instanceof AStructVarType) {
                 varType.apply(this);
             }
-            System.out.println("First time encountering struct: " + node.getIdType() + ". Creating the class");
         }
     } 
 
@@ -948,7 +942,6 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         // TypeClass type = nodeTypes.get(node);
         String typeName = "";
-        System.out.println("getting typeName" + type);
         if (type == null) 
         {
             ErrorManager.printWarning("Node has null type: " + node);
@@ -1023,7 +1016,7 @@ public class CodeGenerator extends DepthFirstAdapter
     {
         if (type.baseType != Type.STRUCT) 
         { 
-            System.out.println("getStructName(): type is not a struct: " + type);// + ". node = " + node);
+            System.out.println("getStructName(): type is not a struct: " + type);
             return null; 
         }
 
@@ -1046,7 +1039,6 @@ public class CodeGenerator extends DepthFirstAdapter
         }
         else
         {   
-            // System.out.println(" has an anonymous struct type: " + type.structNode);
             for (Node n : staticStructs.keySet()) {
                 AStructVarType cur = (AStructVarType) n;
                 if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
@@ -1221,9 +1213,7 @@ public class CodeGenerator extends DepthFirstAdapter
             expressionIndexMap.get(expression.toString()).add(i);
         }
 
-        System.out.println("Lvalue Index Map:");
         printIndexMap(lvalueIndexMap);
-        System.out.println("Expression Index Map:");
         printIndexMap(expressionIndexMap);
 
         // Get all lvalues that are swapped
@@ -1350,7 +1340,6 @@ public class CodeGenerator extends DepthFirstAdapter
             // If the lvalue is an expression on the LHS
             if (expressionIndexMap.containsKey(lvalue.toString()))
             {
-                //System.out.println("expressionIndexMap contains lvalue:" + lvalue);
                 // Find the corresponding expression on the RHS
                 ArrayList<Integer> matchingExpressionIndices = expressionIndexMap.get(lvalue.toString());
                 for (int j = 0; j < matchingExpressionIndices.size(); j++)

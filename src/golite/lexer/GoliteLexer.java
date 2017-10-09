@@ -33,7 +33,6 @@ public class GoliteLexer extends Lexer
                 lastToken instanceof THex ||
                 lastToken instanceof TFloat64Literal ||
                 lastToken instanceof TRuneLiteral ||
-                //lastToken instanceof TBoolLiteral ||
                 lastToken instanceof TRawStringLit ||
                 lastToken instanceof TInterpretedStringLiteral ||
                 lastToken instanceof TType ||
