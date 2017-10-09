@@ -1,6 +1,6 @@
 package hello
 
-//incorrect number of args
+// Incorrect number of args
 func arb (a int, b int, c int) int {
        var y = 3
        return y

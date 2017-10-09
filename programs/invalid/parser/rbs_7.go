@@ -1,7 +1,6 @@
-// invalid consecutive unary operators
-
 package main 
 
-func main(){
+func main() {
+	// Invalid consecutive unary operators
 	var x = --2;
 }

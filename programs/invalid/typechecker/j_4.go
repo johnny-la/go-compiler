@@ -1,6 +1,6 @@
 package hello
 
-//type casting string
+// Type casting string
 func arb (a int, b int, c int) int {
        var y bool = true
        y = bool(3);

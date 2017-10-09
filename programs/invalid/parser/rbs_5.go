@@ -1,7 +1,6 @@
-// 2 consecutive binary operators
-
 package main
 
-func main(){
+func main() {
+	// Two consecutive binary operators
 	var x = 2 != != 2;
 }

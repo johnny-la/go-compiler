@@ -1,8 +1,8 @@
 package xyz
-//adding commas between type declarations
+
+// Adding commas between type declarations
 type (
 				num int,
         point struct {
                 x, y float64
 } )
-

@@ -1,9 +1,8 @@
-// invalid expression in for loop
-
 package main
 
-func main(){
-	for 2{
+// Invalid expression in for loop
+func main() {
+	for 2 {
 
 	}
 }

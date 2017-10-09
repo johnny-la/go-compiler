@@ -1,7 +1,6 @@
- // invalid id used as an expression
+package main
   
- package main
-  
- func main(){
-         var x = $some_variable;
- } 
+func main() {
+    // Invalid ID used as an expression
+    var x = $some_variable;
+} 

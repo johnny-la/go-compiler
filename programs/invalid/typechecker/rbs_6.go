@@ -1,7 +1,6 @@
-// Non-matching switch expression and case expression
-
 package main
 
+// Non-matching switch expression and case expression
 func main(){
 	var x int;
 	var y int;

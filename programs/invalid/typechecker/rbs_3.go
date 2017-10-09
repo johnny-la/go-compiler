@@ -1,7 +1,6 @@
-// invalid type used with ^ operation
-
 package main 
 
-func main(){
+// Invalid type used with ^ operation
+func main() {
 	var x = ^2.0;
 }

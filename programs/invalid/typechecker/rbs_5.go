@@ -1,13 +1,11 @@
-// non matching return types
-
 package main
 
-func giveMeAFloat() float64{
+// Non-matching return types
+func giveMeAFloat() float64 {
 	return 5;
 }
 
-func main(){
-	
+func main() {
 	for true {
 		giveMeAFloat();
 	}

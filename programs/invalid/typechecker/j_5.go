@@ -1,6 +1,6 @@
 package hello
 
-//wrong arg type
+// Wrong arg type
 func arb (a int, b int, c int) int {
        var y = 3
        return y

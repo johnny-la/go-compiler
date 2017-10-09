@@ -1,5 +1,6 @@
-// no type 
 package main
+
+// No types 
 var 
 (	
         x1, x2
