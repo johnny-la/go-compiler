@@ -24,7 +24,7 @@ Then, compile a Golang program as follows:
 ./run.sh /path/to/<b>&lt;program-name&gt;</b>.go
 </pre>
 
-An equivalent Java program will be generated here:
+A corresponding Java program will be generated here:
 
 <pre>
 /path/to/GoLite<b>&lt;program-name&gt;</b>.java
