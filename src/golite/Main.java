@@ -180,12 +180,10 @@ public class Main
                 {
                     System.exit(1);
                 }
-                
             }
 
             System.out.println("VALID");
             System.exit(0);
-            
         }
         catch (Exception e)
         {

@@ -1,15 +1,16 @@
 package main;
 //testing type declarations
 type struct_1 []struct 
+{
+	str string
+	innerStruct struct 
 	{
-		str string
-		innerStruct struct 
-		{
-			a, b, c float64
-		}
+		a, b, c float64
 	}
-func int (a int, b int, c int) {
+}
 
+func foo(a int, b int, c int) 
+{
 	type struct_2 struct 
 	{
 		str string
@@ -18,7 +19,8 @@ func int (a int, b int, c int) {
 			a, b, c float64
 		}
 	}
-	var x struct {
+	var x struct 
+	{
 		str string
 		innerStruct struct 
 		{
@@ -26,14 +28,16 @@ func int (a int, b int, c int) {
 		}
 	}
 
-	var y struct {
+	var y struct 
+	{
 		str string
 		innerStruct struct 
 		{
 			a, b, c float64
 		}
 	}
-	//see if struct assignments work
+	
+	// Test struct assignments
 	var z struct_1
 	z = append(z, y)
 	x.str = "apple"

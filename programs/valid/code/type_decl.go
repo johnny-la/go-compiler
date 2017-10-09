@@ -1,14 +1,16 @@
 package main;
-//testing type declarations
-func apple(a int, b int, c int) {
-	//aliasing
+
+// Testing type declarations
+func apple(a int, b int, c int) 
+{
+	// Aliasing
 	type strAlias string
 	type floAlias float64
 	type runAlias rune
 	type boolAlias bool
 	type intAlias int
 
-	//struct nesting
+	// Struct nesting
 	type struct_1 struct 
 	{
 		aliasedStr strAlias
@@ -18,7 +20,7 @@ func apple(a int, b int, c int) {
 			a, b, c float64
 		}
 	}
-	//struct declarations with arrays
+	// Struct declarations with arrays
 	type struct_2 []struct 
 	{
 		b int
@@ -28,12 +30,15 @@ func apple(a int, b int, c int) {
 		}
 	}
 	var arrstr struct_2
-	//distributed declarations
-	type (
+
+	// Distributed declarations
+	type 
+	(
 		s1_alias struct_1
 		x float64
 		n []struct_2
-		struct_3 struct {
+		struct_3 struct 
+		{
 			random int
 		}
 	)

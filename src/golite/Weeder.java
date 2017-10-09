@@ -172,7 +172,6 @@ public class Weeder extends DepthFirstAdapter
         // Simple statement cannot be a print statement
         if (node.getCondition() != null && node.getCondition() instanceof AForCondExp)
         {
-            System.out.println("Weeding a for stmt. Condition = " + ((AForCondExp)node.getCondition()).getFirst());
             weedPrintStatement(((AForCondExp)node.getCondition()).getFirst());
             weedPrintStatement(((AForCondExp)node.getCondition()).getThird());
             weedForLoopPost(((AForCondExp)node.getCondition()).getThird());

@@ -1,7 +1,7 @@
 package main;
 
-func binaryOperationsIntegers(a int, b int, c int, j rune, k rune, str1 string, str2 string){
-	// simple binary operations on integers - no precedence testing
+func binaryOperationsIntegers(a int, b int, c int, j rune, k rune, str1 string, str2 string) {
+	// Simple binary operations on integers - no precedence testing
 	var addition = a + b;
 	var runeAdd = j + k;
 	var strConcatenation = str1 + str2;
@@ -24,7 +24,7 @@ func binaryOperationsIntegers(a int, b int, c int, j rune, k rune, str1 string, 
 	var bool_val7 = bool_val6 || bool_val5;
 	var bool_val8 = bool_val4 && bool_val3;
 
-	// test binary operator precedence
+	// Test binary operator precedence
 	var d = a*b+2;
 	var e = a^2/b; 
 	var l = a + b - c; 

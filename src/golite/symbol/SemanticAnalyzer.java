@@ -168,12 +168,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             }
 
             // Add the parameter type "n" times, for each identifier in the signature list
-            //System.out.println("Traversing parameter type: " + parameterType);
             for (int i = 0; i < idList.size(); i++)
             {
                 TypeClass newType = new TypeClass(parameterType);
                 parameterTypes.add(newType);
-                //System.out.println("Adding parameter type: " + newType);
             }
 
             if (signature instanceof AMultipleTypesSignature)
@@ -396,7 +394,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
      */
     public Symbol declareVariable(PIdType id, PVarType varType, SymbolKind kind, Node node)
     {
-        //System.out.println("Symbol table at var decl:\n" + symbolTable);
         String idName = getIdName(id);
 
         // Throw an exception if the identifier was already declared
@@ -437,8 +434,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         symbolMap.put(node, symbol);
         symbolMap.put(id, symbol);
 
-        System.out.println(symbol.toString());
-        System.out.println(typeClass);
         return symbol;
     }
 
@@ -609,13 +604,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter
                 {
                     newSymbol = symbol;
                 }   
-                System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap 1");
-
             }
             // Add a node->symbol mapping for future type checking
             symbolMap.put(node, newSymbol);
 
-            System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap 2");
         }
     }
 
@@ -633,7 +625,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         newSymbol.typeClass.decrementDimension();
 
         symbolMap.put(node, newSymbol);
-        System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
     }
 
     // Struct declaration:
@@ -642,8 +633,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     {
         // Struct is already declared. Exit function
         if (structHierarchy.containsKey(node)) { return; }
-
-        System.out.println("Enterring new scope for struct: " + node);
 
         // Create a new scope which will contain the struct fields
         scope();
@@ -654,7 +643,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
     public void outAStructVarType(AStructVarType node)
     {
-        System.out.println("Exitting scope for struct: " + node);
         unscope();
     }   
 
@@ -699,8 +687,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         Node structNode = symbol.typeClass.structNode;
 
         currentStructScope = structHierarchy.get(structNode);
-        System.out.println("Struct's symbol table: \n" + currentStructScope);
-
+        
         String rightId = getIdName(node.getIdType());
         Symbol rightSymbol = currentStructScope.get(rightId);
         if (rightSymbol == null)
@@ -711,12 +698,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
         currentStructScope = null;
 
-        System.out.println("Struct field: " + node + ". RHS has symbol " + rightSymbol + " in struct symbolTable");
-        
         Symbol newSymbol = new Symbol(rightSymbol);
         symbolMap.put(node, newSymbol);
 
-        System.out.println("Inserting (" + node + "," + newSymbol + ") into symbolMap");
     }
 
     /**

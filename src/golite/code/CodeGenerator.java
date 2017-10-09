@@ -1213,9 +1213,6 @@ public class CodeGenerator extends DepthFirstAdapter
             expressionIndexMap.get(expression.toString()).add(i);
         }
 
-        printIndexMap(lvalueIndexMap);
-        printIndexMap(expressionIndexMap);
-
         // Get all lvalues that are swapped
         HashSet<PExp> swappedExpressions = new HashSet<PExp>();
         HashSet<PExp> swappedLvalues = getSwappedLvalues(lvalues,expressions,expressionIndexMap,lvalueIndexMap,swappedExpressions);
@@ -1466,19 +1463,6 @@ public class CodeGenerator extends DepthFirstAdapter
         return defaultValue;
     }
 
-    private void printIndexMap(HashMap<String,ArrayList<Integer>> indexMap)
-    {
-        for (Map.Entry<String,ArrayList<Integer>> entries : indexMap.entrySet())
-        {
-            System.out.print(entries.getKey() + ":");
-            for (int i = 0; i < entries.getValue().size(); i++)
-            {
-                System.out.print(entries.getValue().get(i) + ",");
-            }
-            System.out.println();
-        }
-    }
-
     public void caseAEqualsExp(AEqualsExp node)
     {
         print("=");
@@ -1518,22 +1502,13 @@ public class CodeGenerator extends DepthFirstAdapter
         print(",");
         
         printLastArrayArguments(node,true);
-        
-		// print(")");
 	}
 
     // Print the last arguments in a _get_/_set_() call
     private void printLastArrayArguments(AArrayElementExp node, boolean get)
     {
-        TypeClass arrayType =  nodeTypes.get(node.getArray());//(get)? nodeTypes.get(node.getArray()) : nodeType.get(node);
+        TypeClass arrayType =  nodeTypes.get(node.getArray());
         int dimensions = arrayType.totalArrayDimension.size();
-
-        System.out.println(node.getArray() + " array dimensions: ");
-        for (int i = 0; i < dimensions; i++)
-        {
-            System.out.print(arrayType.totalArrayDimension.get(i) + ",");
-        }
-        System.out.println();
 
         Dimension firstDimension = arrayType.totalArrayDimension.get(0);
         print(firstDimension.isArray + ",");
