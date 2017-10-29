@@ -1,8 +1,8 @@
 # GoLite Compiler
 
-![pirate gopher](https://user-images.githubusercontent.com/10332234/31352779-0bed0b44-acfe-11e7-83b4-a2cddcf54e2c.png)
+<img src="https://user-images.githubusercontent.com/10332234/31352779-0bed0b44-acfe-11e7-83b4-a2cddcf54e2c.png" width="20%" height="20%" hspace="15">
 
-Compiler for a subset of Golang that translates Go programs to Java. 
+Compiler built for a subset of the Go programming language. Translates Go programs to Java. 
 
 ## Requirements
 - **SableCC 3** 
@@ -40,7 +40,7 @@ To test the compiler, a series of Golang test programs are included. To run the 
 
 ## Important Notes
 
-<img src="https://user-images.githubusercontent.com/10332234/31354385-3d07f2ce-ad04-11e7-902d-ed1534c4a684.png" width="20%"/>
+<img src="https://user-images.githubusercontent.com/10332234/31354385-3d07f2ce-ad04-11e7-902d-ed1534c4a684.png" width="15%" hspace="15"/>
 
 - This compiler only supports a subset of Golang's entire feature set. The list of supported features are detailed in the following documents:
   - [Syntax Specifications](http://www.cs.mcgill.ca/~cs520/2017/assignments/m1_syntax.pdf)
