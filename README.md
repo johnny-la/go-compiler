@@ -45,7 +45,7 @@ To test the compiler, a series of Golang test programs are included. To run the 
 - This compiler only supports a subset of Golang's entire feature set. The list of supported features are detailed in the following documents:
   - [Syntax Specifications](http://www.cs.mcgill.ca/~cs520/2017/assignments/m1_syntax.pdf)
   - [Typechecking Specifications](http://www.cs.mcgill.ca/~cs520/2017/assignments/m2_typechecker.pdf)
-- To compile a custom Go program, the program must end with an extra newline 
+- To compile a custom Go program, the program must end with an extra newline for parsing purposes
 
 ## Authors 
 - Jonathan Lucuix-André 
