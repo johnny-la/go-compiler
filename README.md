@@ -2,7 +2,7 @@
 
 ![pirate gopher](https://user-images.githubusercontent.com/10332234/31352779-0bed0b44-acfe-11e7-83b4-a2cddcf54e2c.png)
 
-Compiler for a subset of Golang. Translates Go programs to Java. 
+Compiler for a subset of Golang that translates Go programs to Java. 
 
 ## Requirements
 - **SableCC 3** 
