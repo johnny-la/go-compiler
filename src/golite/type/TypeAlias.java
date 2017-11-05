@@ -33,8 +33,10 @@ public class TypeAlias
     {
         String output = "";
 
-        if (arrayDimensions !=null) {
-            for (int i = 0; i < arrayDimensions.size(); i++) {
+        if (arrayDimensions != null) 
+        {
+            for (int i = 0; i < arrayDimensions.size(); i++) 
+            {
                 output += arrayDimensions.get(i).toString();
             }
         }

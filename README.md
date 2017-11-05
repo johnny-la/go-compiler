@@ -1,6 +1,8 @@
-# GoLite Compiler <img src="https://user-images.githubusercontent.com/10332234/30514818-68895c98-9aea-11e7-8a6f-122bab4691e5.png" width="4.5%" height="4.5%">
+# GoLite Compiler
 
-Compiler for a subset of Golang. Translates Go programs to Java. 
+<img src="https://user-images.githubusercontent.com/10332234/31352779-0bed0b44-acfe-11e7-83b4-a2cddcf54e2c.png" width="20%" height="20%" hspace="15">
+
+Compiler built for a subset of the Go programming language. Translates Go programs to Java. 
 
 ## Requirements
 - **SableCC 3** 
@@ -16,13 +18,13 @@ To build the compiler, `cd` to the cloned repository and run:
 ./build.sh
 ```
 
-Then, compile a Golang program as follows:
+Then, compile a Golang program as follows: (see *Important Notes* section below for list of supported language features):
 
 <pre>
 ./run.sh /path/to/<b>&lt;program-name&gt;</b>.go
 </pre>
 
-The generated Java file will be created here:
+A corresponding Java program will be generated here:
 
 <pre>
 /path/to/GoLite<b>&lt;program-name&gt;</b>.java
@@ -30,11 +32,20 @@ The generated Java file will be created here:
 
 ## Testing the compiler 
 
-To test the compiler, a series of Golang test programs are included to run against the compiler. To run the test suite, execute the following:
+To test the compiler, a series of Golang test programs are included in the **programs/** directory. To run the test suite, execute the following command:
 
 ```
 ./test.sh
 ```
+
+## Important Notes
+
+<img src="https://user-images.githubusercontent.com/10332234/31354385-3d07f2ce-ad04-11e7-902d-ed1534c4a684.png" width="15%" hspace="15"/>
+
+- This compiler only supports a subset of Golang's entire feature set. The list of supported features are detailed in the following documents:
+  - [Syntax Specifications](http://www.cs.mcgill.ca/~cs520/2017/assignments/m1_syntax.pdf)
+  - [Typechecking Specifications](http://www.cs.mcgill.ca/~cs520/2017/assignments/m2_typechecker.pdf)
+- To compile a custom Go program, the program must end with an extra newline for parsing purposes
 
 ## Authors 
 - Jonathan Lucuix-André 

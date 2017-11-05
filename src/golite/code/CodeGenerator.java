@@ -865,7 +865,8 @@ public class CodeGenerator extends DepthFirstAdapter
     } 
 
     // Function declarations
-    public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node) {
+    public void caseAFuncDeclAstDecl(AFuncDeclAstDecl node) 
+    {
         inFunction = true;
         print("public static ");
         node.getFuncDecl().apply(this);
@@ -874,12 +875,15 @@ public class CodeGenerator extends DepthFirstAdapter
         localStructs = new HashMap<Node,String>();
     }
     
-    public void caseANoReturnFuncDecl(ANoReturnFuncDecl node) {
+    public void caseANoReturnFuncDecl(ANoReturnFuncDecl node) 
+    {
         String functionName = node.getIdType().toString().trim();
-        if((new String(functionName).equals("main"))){
+        if((new String(functionName).equals("main")))
+        {
             print("void main(String[] args)");
         }
-        else{
+        else
+        {
             print("void ");
             node.getIdType().apply(this);
             print("(");
@@ -889,7 +893,8 @@ public class CodeGenerator extends DepthFirstAdapter
         node.getBlock().apply(this);
     }
 
-    public void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node) {
+    public void caseASingleReturnFuncDecl(ASingleReturnFuncDecl node)
+    {
         // Return type
         TypeClass type = nodeTypes.get(node.getIdType());
         print(getTypeName(type.functionSignature.returnType,node.getIdType()) + " ");
