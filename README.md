@@ -32,7 +32,7 @@ A corresponding Java program will be generated here:
 
 ## Testing the compiler 
 
-To test the compiler, a series of Golang test programs are included. To run the test suite, execute the following command:
+To test the compiler, a series of Golang test programs are included in the **programs/** directory. To run the test suite, execute the following command:
 
 ```
 ./test.sh
