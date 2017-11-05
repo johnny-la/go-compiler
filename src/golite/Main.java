@@ -45,33 +45,21 @@ public class Main
                     prettyPrintType = true;
             }
         }
+        else 
+        {
+            // Error
+            System.out.println("Usage: ./run.sh <input-file>");
+            System.exit(1);
+        }
 
         try 
         {
-            Parser parser = null;
-            if (args.length == 0)
-            {
-                 // Read from stdin
-                 parser = new Parser(
-                            new GoliteLexer(
-                                new PushbackReader(
-                                    new InputStreamReader(System.in), 1024)));
-            }
-            else if (args.length >= 1)
-            {
-                // Read from a file
-                parser = new Parser(
-                            new GoliteLexer(
-                                new PushbackReader(
-                                    new BufferedReader(
-                                        new FileReader(inputFilename)), 1024)));
-            }
-            else 
-            {
-                // Error
-                System.out.println("Usage: ./run.sh <input-file>");
-                System.exit(1);
-            }
+            // Read from the Go file
+            Parser parser = new Parser(
+                                new GoliteLexer(
+                                    new PushbackReader(
+                                        new BufferedReader(
+                                            new FileReader(inputFilename)), 1024)));
 
             Start tree = parser.parse();
             ParseTree(tree, inputFilename, dumpSymbolTable, prettyPrintType);
