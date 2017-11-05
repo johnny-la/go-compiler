@@ -41,7 +41,7 @@ To test the compiler, a series of Golang test programs are included in the **pro
 
 ## Important Notes
 
-<img src="https://user-images.githubusercontent.com/10332234/31354385-3d07f2ce-ad04-11e7-902d-ed1534c4a684.png" width="15%" hspace="15"/>
+<img src="https://user-images.githubusercontent.com/10332234/31354385-3d07f2ce-ad04-11e7-902d-ed1534c4a684.png" width="10%" hspace="15"/>
 
 - This compiler only supports a subset of Golang's entire feature set. The list of supported features are detailed in the following documents:
   - [Syntax Specifications](http://www.cs.mcgill.ca/~cs520/2017/assignments/m1_syntax.pdf)
