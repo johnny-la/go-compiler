@@ -145,17 +145,6 @@ public class Main
         printToFile(inputFilename + PRETTY_PRINT_TYPE_SUFFIX, prettyPrint);
     }
 
-    /**
-     * Prints the given string to stdout if PRINT_TO_FILE == false
-     */
-    private static void printDebug(String output)
-    {
-        // Don't print debug lines if we are printing to files
-        if (PRINT_TO_FILE) { return; }
-
-        System.out.println(output);
-    }
-
     /** 
      * Generates C code from the given AST
      */
@@ -194,5 +183,16 @@ public class Main
         {
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * Prints the given string to stdout if PRINT_TO_FILE == false
+     */
+    private static void printDebug(String output)
+    {
+        // Don't print debug lines if we are printing to files
+        if (PRINT_TO_FILE) { return; }
+
+        System.out.println(output);
     }
 }
