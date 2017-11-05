@@ -25,9 +25,106 @@ public class Main
     // If true, print to file. Else, print to STDOUT
     private static final boolean PRINT_TO_FILE = true;
 
-    private static SemanticAnalyzer semanticAnalyzer;
+    public static void main(String[] args)
+    {
+        // Caches command-line arguments
+        String inputFilename = null;
+        boolean dumpSymbolTable = false;
+        boolean prettyPrintType = false;
 
-    // Pretty prints the given AST
+        // Parse the command-line arguments
+        if (args.length >= 1)
+        {
+            inputFilename = args[args.length-1];
+            
+            for (int i = 0; i < args.length; i++)
+            {
+                if (args[i].equals(DUMP_SYMBOL_TABLE_ARG))
+                    dumpSymbolTable = true;
+                if (args[i].equals(PRETTY_PRINT_TYPE_ARG))
+                    prettyPrintType = true;
+            }
+        }
+
+        try 
+        {
+            Parser parser = null;
+            if (args.length == 0)
+            {
+                 // Read from stdin
+                 parser = new Parser(
+                            new GoliteLexer(
+                                new PushbackReader(
+                                    new InputStreamReader(System.in), 1024)));
+            }
+            else if (args.length >= 1)
+            {
+                // Read from a file
+                parser = new Parser(
+                            new GoliteLexer(
+                                new PushbackReader(
+                                    new BufferedReader(
+                                        new FileReader(inputFilename)), 1024)));
+            }
+            else 
+            {
+                // Error
+                System.out.println("Usage: ./run.sh <input-file>");
+                System.exit(1);
+            }
+
+            Start tree = parser.parse();
+            ParseTree(tree, inputFilename, dumpSymbolTable, prettyPrintType);
+
+            System.out.println("VALID");
+            System.exit(0);
+        }
+        catch (Exception e)
+        {
+            System.out.print("INVALID: " + e);
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private static void ParseTree(Start tree, String inputFilename, boolean dumpSymbolTable, boolean prettyPrintType)
+    {
+        Weeder weeder = new Weeder();
+        tree.apply(weeder);
+
+        if (inputFilename != null)
+        {
+            String filenamePrefix = inputFilename.split(".go")[0];
+            prettyPrint(tree, filenamePrefix);
+
+            SymbolTable symbolTable = new SymbolTable();
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
+            tree.apply(semanticAnalyzer);
+
+            if (dumpSymbolTable)
+                printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
+
+            TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
+            tree.apply(typeChecker);
+
+            if (prettyPrintType) 
+                prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
+
+            // Generate code if no type errors occurred
+            if (ErrorManager.errorCount <= 0)
+            {
+                generateCode(tree, typeChecker.nodeTypes, semanticAnalyzer, filenamePrefix);
+            }
+            else
+            {
+                System.exit(1);
+            }
+        }
+    }
+
+    /**
+     * Pretty prints the given AST
+     */
     private static void prettyPrint(Start tree, String inputFilename)
     {
         PrettyPrinter prettyPrinter = new PrettyPrinter();
@@ -63,12 +160,12 @@ public class Main
      * Generates C code from the given AST
      */
     private static void generateCode(Start tree, HashMap<Node,TypeClass> nodeTypes,
-            HashSet<Node> newShortDeclarationVariables, String inputFilename)
+            SemanticAnalyzer semanticAnalyzer, String inputFilename)
     {
         printDebug("Code Generator:");
         File f = new File(inputFilename);
         String baseFileName = f.getName().replaceAll("-", "_");
-        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, newShortDeclarationVariables, semanticAnalyzer, "GoLite" + baseFileName);
+        CodeGenerator codeGenerator = new CodeGenerator(tree, nodeTypes, semanticAnalyzer.newShortDeclarationVariables, semanticAnalyzer, "GoLite" + baseFileName);
         String code = codeGenerator.generateCode();
 
         String absolutePath = f.getAbsolutePath();
@@ -96,116 +193,6 @@ public class Main
         catch (IOException e)
         {
             e.printStackTrace();
-        }
-    }
-
-    public static void main(String[] args)
-    {
-        // Caches command-line arguments
-        String inputFilename = null;
-        boolean dumpSymbolTable = false;
-        boolean prettyPrintType = false;
-
-        // Parse the command-line arguments
-        if (args.length >= 1)
-        {
-            inputFilename = args[args.length-1];
-            
-            for (int i = 0; i < args.length; i++)
-            {
-                if (args[i].equals(DUMP_SYMBOL_TABLE_ARG))
-                    dumpSymbolTable = true;
-                if (args[i].equals(PRETTY_PRINT_TYPE_ARG))
-                    prettyPrintType = true;
-            }
-        }
-
-        try 
-        {
-            Parser parser = null;
-
-            if (args.length == 0)
-            {
-                 // Read from stdin
-                 parser = new Parser(
-                            new GoliteLexer(
-                                new PushbackReader(
-                                    new InputStreamReader(System.in), 1024)));
-            }
-            else if (args.length >= 1)
-            {
-                // Read from a file
-                parser = new Parser(
-                            new GoliteLexer(
-                                new PushbackReader(
-                                    new BufferedReader(
-                                        new FileReader(inputFilename)), 1024)));
-            }
-            else 
-            {
-                // Error
-                System.out.println("Usage: java minilang.Main <input-file>");
-                System.exit(1);
-            }
-
-            Start tree = parser.parse();
-
-            Weeder weeder = new Weeder();
-            tree.apply(weeder);
-
-            if (args[0] != null)
-            {
-                String filenamePrefix = inputFilename.split(".go")[0];
-                prettyPrint(tree, filenamePrefix);
-
-                SymbolTable symbolTable = new SymbolTable();
-                semanticAnalyzer = new SemanticAnalyzer(symbolTable, dumpSymbolTable);
-                tree.apply(semanticAnalyzer);
-
-                if (dumpSymbolTable)
-                    printToFile(inputFilename + DUMP_SYMBOL_TABLE_SUFFIX, semanticAnalyzer.dumpSymbolTableOutput);
-
-                TypeChecker typeChecker = new TypeChecker(semanticAnalyzer.symbolMap);
-                tree.apply(typeChecker);
-
-                if (prettyPrintType) 
-                    prettyPrint(tree, filenamePrefix, typeChecker.nodeTypes, true);
-
-                // Generate code if no type errors occurred
-                if (ErrorManager.errorCount <= 0)
-                {
-                    generateCode(tree, typeChecker.nodeTypes, semanticAnalyzer.newShortDeclarationVariables, filenamePrefix);
-                }
-                else
-                {
-                    System.exit(1);
-                }
-            }
-
-            System.out.println("VALID");
-            System.exit(0);
-        }
-        catch (Exception e)
-        {
-            System.out.print("INVALID: " + e);
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-
-    public static void printNodeTypes(HashMap<Node,TypeClass> nodeTypes)
-    {
-        for (Map.Entry<Node,TypeClass> entry : nodeTypes.entrySet())
-        {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
-    }
-
-    public static void printSymbolMap(HashMap<Node,Symbol> symbolMap)
-    {
-        for (Map.Entry<Node,Symbol> entry : symbolMap.entrySet())
-        {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
 }
