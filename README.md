@@ -18,9 +18,10 @@ To build the compiler, `cd` to the cloned repository and run:
 ./build.sh
 ```
 
-Then, compile a Golang program as follows: (see *Important Notes* section below for list of supported language features):
+Then, compile a Golang program as follows: 
 
 <pre>
+# See "Important Notes" section below for list of supported language features
 ./run.sh /path/to/<b>&lt;program-name&gt;</b>.go
 </pre>
 

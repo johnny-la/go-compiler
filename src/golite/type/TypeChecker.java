@@ -37,7 +37,8 @@ public class TypeChecker extends DepthFirstAdapter
         return (isComparable != Type.VOID && isComparable != Type.INVALID);
     }
 
-    public boolean isOrdered(Type isOrdered) {
+    public boolean isOrdered(Type isOrdered) 
+    {
         return (isOrdered == Type.INT || isOrdered == Type.STRING 
             || isOrdered == Type.FLOAT64 || isOrdered == Type.RUNE);
     }
@@ -48,11 +49,13 @@ public class TypeChecker extends DepthFirstAdapter
             || isNumericOrString == Type.FLOAT64 || isNumericOrString == Type.RUNE);
     }
 
-    public boolean isNumeric(Type isNumeric) {
+    public boolean isNumeric(Type isNumeric) 
+    {
         return (isNumeric == Type.INT || isNumeric == Type.FLOAT64 || isNumeric == Type.RUNE);
     }
 
-    public boolean isInteger(Type isInteger) {
+    public boolean isInteger(Type isInteger) 
+    {
         return (isInteger == Type.INT || isInteger == Type.RUNE);
     }
 
@@ -81,7 +84,6 @@ public class TypeChecker extends DepthFirstAdapter
 
     public boolean isComparable(TypeClass left, TypeClass right, BinaryOps op) 
     {
-
         if (left.totalArrayDimension.size() != right.totalArrayDimension.size()) {
             ErrorManager.printError("Array of different sizes");
             return false;
@@ -737,7 +739,6 @@ public class TypeChecker extends DepthFirstAdapter
                 }
             }  
         }
- 
     }
 
     public void inAExpStmt(AExpStmt node) 

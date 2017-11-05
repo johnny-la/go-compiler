@@ -88,20 +88,6 @@ public class CodeGenerator extends DepthFirstAdapter
             "\n" +
             "        return false;\n" +
             "    }\n";
-    
-    public static <T> boolean isPrimitive(T value)
-    {
-        if (value.getClass().equals(Integer.class) 
-            || value.getClass().equals(Double.class)
-            || value.getClass().equals(Character.class)
-            || value.getClass().equals(Boolean.class)
-            || value.getClass().equals(String.class)) 
-        {
-            return true;
-        }
-
-        return false;
-    }
 
     private static final int STRING_SIZE = 1024;
 
@@ -148,6 +134,20 @@ public class CodeGenerator extends DepthFirstAdapter
         root.apply(this);
 
         return output.toString();
+    }
+    
+    public static <T> boolean isPrimitive(T value)
+    {
+        if (value.getClass().equals(Integer.class) 
+            || value.getClass().equals(Double.class)
+            || value.getClass().equals(Character.class)
+            || value.getClass().equals(Boolean.class)
+            || value.getClass().equals(String.class)) 
+        {
+            return true;
+        }
+
+        return false;
     }
 
     // Prints the given string without a newline
@@ -302,7 +302,6 @@ public class CodeGenerator extends DepthFirstAdapter
         print("[" + node.getInt().getText() + "]");
         node.getVarType().apply(this);
     }
-
 
     public boolean isSameIdType(PIdType left, PIdType right) 
     {
@@ -841,9 +840,8 @@ public class CodeGenerator extends DepthFirstAdapter
         inATypeAliasTypeDecl(node);
     }
 
-    public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node) {
-        //node.getIdType().apply(this);
-        //print(" ");
+    public void inATypeAliasTypeDecl(ATypeAliasTypeDecl node) 
+    {
         Node varType = node.getVarType();
         while (varType instanceof ASliceVarType || varType instanceof AArrayVarType) {
             if (varType instanceof ASliceVarType) {
@@ -858,7 +856,8 @@ public class CodeGenerator extends DepthFirstAdapter
         if (type.baseType == Type.STRUCT && type.typeAliases.size() == 0)
         {
             topLevelName = getIdName(node.getIdType());
-            if (varType instanceof AStructVarType) {
+            if (varType instanceof AStructVarType) 
+            {
                 varType.apply(this);
             }
         }
@@ -1025,34 +1024,34 @@ public class CodeGenerator extends DepthFirstAdapter
         // If the struct was declared using a type alias
         if (type.typeAliases.size() > 0)
         {   
-            for (Node n : localStructs.keySet()) {
+            for (Node n : localStructs.keySet()) 
+            {
                 AStructVarType cur = (AStructVarType) n;
-                if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
-                return localStructs.get(n);
-                }
+                if (isSameStruct(cur.getInnerFields(), type.innerFields)) 
+                    return localStructs.get(n);
             }
             // Index 0 stores the first type alias of the struct 
-            for (Node n : staticStructs.keySet()) {
+            for (Node n : staticStructs.keySet()) 
+            {
                 AStructVarType cur = (AStructVarType) n;
-                if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
+                if (isSameStruct(cur.getInnerFields(), type.innerFields)) 
                     return staticStructs.get(n);
-                }
             }
         }
         else
         {   
-            for (Node n : staticStructs.keySet()) {
+            for (Node n : staticStructs.keySet()) 
+            {
                 AStructVarType cur = (AStructVarType) n;
-                if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
+                if (isSameStruct(cur.getInnerFields(), type.innerFields)) 
                     return staticStructs.get(n);
-                }
             }
 
-            for (Node n : localStructs.keySet()) {
+            for (Node n : localStructs.keySet()) 
+            {
                 AStructVarType cur = (AStructVarType) n;
-                if (isSameStruct(cur.getInnerFields(), type.innerFields)) {
-                return localStructs.get(n);
-                }
+                if (isSameStruct(cur.getInnerFields(), type.innerFields)) 
+                    return localStructs.get(n);
             }
         }
 
@@ -1069,13 +1068,12 @@ public class CodeGenerator extends DepthFirstAdapter
             for (int i = 0; i < node.getExp().size(); i++)
             {
                 TypeClass type = nodeTypes.get(node.getExp().get(i));
-                if(type.baseType == Type.RUNE){
+                if(type.baseType == Type.RUNE)
                     print("(int)");
-                }
+                    
                 node.getExp().get(i).apply(this);
-                if (i != node.getExp().size()-1) { 
+                if (i != node.getExp().size()-1)
                     print(" + \"\" + "); 
-                }
             }
         }
         else
@@ -1095,13 +1093,12 @@ public class CodeGenerator extends DepthFirstAdapter
             for (int i = 0; i < node.getExp().size(); i++)
             {
                 TypeClass type = nodeTypes.get(node.getExp().get(i));
-                if(type.baseType == Type.RUNE){
+                if(type.baseType == Type.RUNE)
                     print("(int)");
-                }
+                    
                 node.getExp().get(i).apply(this);
-                if (i != node.getExp().size()-1) { 
+                if (i != node.getExp().size()-1)
                     print(" + \" \" + "); 
-                }
             }
         }
         print(")");
@@ -1461,8 +1458,10 @@ public class CodeGenerator extends DepthFirstAdapter
     }
 
     private void printIndices(LinkedList<? extends Node> nodes){
-        for( int i = 0; i<nodes.size(); i++){
-            if (i != nodes.size()) { 
+        for( int i = 0; i<nodes.size(); i++)
+        {
+            if (i != nodes.size()) 
+            { 
                 print("["); 
                 nodes.get(i).apply(this);
                 print("]");
@@ -1499,7 +1498,8 @@ public class CodeGenerator extends DepthFirstAdapter
         print(getDefaultValue(node) + ")"); 
     }
 
-    public void caseAFieldExp(AFieldExp node) {
+    public void caseAFieldExp(AFieldExp node) 
+    {
         print("(");
         node.getExp().apply(this);
         print(").");
@@ -1535,6 +1535,7 @@ public class CodeGenerator extends DepthFirstAdapter
         }
         return false;
     }
+    
     // Returns true if the node is an if/switch/for statement
     private boolean isControlStatement(Node node)
     {
