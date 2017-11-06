@@ -19,12 +19,6 @@ while getopts ":lv" opt; do
 done
 
 # 1. Build the compiler.
-#
-# You *MUST* provide a build.sh script in the root directory
-# to build your compiler. If you do not produce a binary
-# (i.e. something like python), then the build.sh script
-# will be empty.
-# A sample build.sh file using Makefile has been provided.
 
 echo -n -e "\033[93m"
 echo "*****************************"
@@ -41,11 +35,6 @@ fi
 ./build.sh
 
 # 2. Run script checking
-#
-# You *MUST* provide a run.sh script in the root directory
-# to run your compiler. The run.sh script must take a single
-# argument, the filename, and pass the contents to your compiler.
-# A sample run.sh file using rediction has been provided.
  
 if [ ! -f run.sh ]
 then
