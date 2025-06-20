@@ -165,9 +165,11 @@ public class CodeGenerator extends DepthFirstAdapter
 
     private String getIndent()
     {
-        String output = "";
-        for (int i = 0; i < indentLevel; i++) { output += ("    "); }
-        return output;
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < indentLevel; i++) { 
+            output.append("    "); 
+        }
+        return output.toString();
     }
 
     /** 
